@@ -1,0 +1,8 @@
+/home/abdullah/Desktop/hotel_stack_project/full_stack_hotel/hotel_api/hotel_api/obj/Debug/net8.0/hotel_api.csproj.AssemblyReference.cache
+/home/abdullah/Desktop/hotel_stack_project/full_stack_hotel/hotel_api/hotel_api/obj/Debug/net8.0/hotel_api.GeneratedMSBuildEditorConfig.editorconfig
+/home/abdullah/Desktop/hotel_stack_project/full_stack_hotel/hotel_api/hotel_api/obj/Debug/net8.0/hotel_api.AssemblyInfoInputs.cache
+/home/abdullah/Desktop/hotel_stack_project/full_stack_hotel/hotel_api/hotel_api/obj/Debug/net8.0/hotel_api.AssemblyInfo.cs
+/home/abdullah/Desktop/hotel_stack_project/full_stack_hotel/hotel_api/hotel_api/obj/Debug/net8.0/hotel_api.csproj.CoreCompileInputs.cache
+/home/abdullah/Desktop/hotel_stack_project/full_stack_hotel/hotel_api/hotel_api/obj/Debug/net8.0/hotel_api.MvcApplicationPartsAssemblyInfo.cs
+/home/abdullah/Desktop/hotel_stack_project/full_stack_hotel/hotel_api/hotel_api/obj/Debug/net8.0/hotel_api.MvcApplicationPartsAssemblyInfo.cache
+/home/abdullah/Desktop/hotel_stack_project/full_stack_hotel/hotel_api/hotel_api/obj/Debug/net8.0/hotel_api.sourcelink.json

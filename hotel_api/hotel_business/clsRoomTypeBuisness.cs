@@ -12,19 +12,21 @@ namespace hotel_business
         public int? RoomTypeID { get; set; } = null;
         public string TypeName { get; set; } = "";
         public string Description { get; set; } = "";
+        public int EmployeeID { get; set; }
 
 
-        public clsRoomTypeBuisness(string name, string des, enMode enMode = enMode.add)
+        public clsRoomTypeBuisness(string name, string des, int employeeid, enMode enMode = enMode.add)
         {
             RoomTypeID = 0;
             mode = enMode;
             TypeName = name;
             Description = des;
+            EmployeeID = employeeid;
         }
 
-        private bool createNewRoomType(string name,string description)
+        private bool createNewRoomType()
         {
-            return clsRoomTypeData.createRoomType(name,description);
+            return clsRoomTypeData.createRoomType(TypeName, Description, EmployeeID);
         }
 
         public bool Save()
@@ -37,10 +39,15 @@ namespace hotel_business
                     }
                 default:
                     {
-                        if (createNewRoomType(this.TypeName,this.Description)) return true;
+                        if (createNewRoomType()) return true;
                         return false;
                     }
             }
+        }
+
+        public static Boolean isExistByName(string typeName)
+        {
+            return clsRoomTypeData.isExist(typeName);
         }
 
     }
