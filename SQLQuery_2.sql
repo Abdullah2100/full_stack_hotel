@@ -48,7 +48,9 @@ CREATE TABLE Employees (
 CREATE TABLE RoomTypes (
     RoomTypeID BIGSERIAL PRIMARY KEY,
     TypeName VARCHAR(50) NOT NULL,
-    Description TEXT);
+    Description TEXT,
+    EmployeeID INT NOT NULL REFERENCES Employees(EmployeeID)
+    );
  
 CREATE TABLE Rooms (
     RoomID BIGSERIAL PRIMARY KEY,
