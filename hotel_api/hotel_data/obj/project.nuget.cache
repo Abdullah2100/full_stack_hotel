@@ -1,8 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "sH6Wefl99wfPRGcgHxZR4BZVYtWyYFa4kaiqj143tJU6num22aCV1mIqgd3bNqjKyD95p0ezXcU83A527ZxkSA==",
+  "dgSpecHash": "Ey0bWMXxlqnSgLiLDMy/kU/4Iw102w+CLLIXpz05OYCvjqNeCAGg6lOCfglPm1ioprxEiRr9gO0ftqv7UuvAeg==",
   "success": true,
-  "projectFilePath": "/home/abdullh-alhashmi/Desktop/my_traing_forlder/hotel_api/hotel_data/hotel_data.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "/home/abdullh-alhashmi/Public/my_traing_forlder/hotel_api/hotel_data/hotel_data.csproj",
+  "expectedPackageFiles": [
+    "/home/abdullh-alhashmi/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/8.0.2/microsoft.extensions.dependencyinjection.abstractions.8.0.2.nupkg.sha512",
+    "/home/abdullh-alhashmi/.nuget/packages/microsoft.extensions.logging.abstractions/8.0.2/microsoft.extensions.logging.abstractions.8.0.2.nupkg.sha512",
+    "/home/abdullh-alhashmi/.nuget/packages/npgsql/9.0.1/npgsql.9.0.1.nupkg.sha512"
+  ],
   "logs": []
 }

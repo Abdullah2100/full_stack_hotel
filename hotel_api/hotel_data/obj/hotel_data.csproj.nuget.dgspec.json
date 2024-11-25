@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/home/abdullh-alhashmi/Desktop/my_traing_forlder/hotel_api/hotel_data/hotel_data.csproj": {}
+    "/home/abdullh-alhashmi/Public/my_traing_forlder/hotel_api/hotel_data/hotel_data.csproj": {}
   },
   "projects": {
-    "/home/abdullh-alhashmi/Desktop/my_traing_forlder/hotel_api/hotel_data/hotel_data.csproj": {
+    "/home/abdullh-alhashmi/Public/my_traing_forlder/hotel_api/hotel_data/hotel_data.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/abdullh-alhashmi/Desktop/my_traing_forlder/hotel_api/hotel_data/hotel_data.csproj",
+        "projectUniqueName": "/home/abdullh-alhashmi/Public/my_traing_forlder/hotel_api/hotel_data/hotel_data.csproj",
         "projectName": "hotel_data",
-        "projectPath": "/home/abdullh-alhashmi/Desktop/my_traing_forlder/hotel_api/hotel_data/hotel_data.csproj",
+        "projectPath": "/home/abdullh-alhashmi/Public/my_traing_forlder/hotel_api/hotel_data/hotel_data.csproj",
         "packagesPath": "/home/abdullh-alhashmi/.nuget/packages/",
-        "outputPath": "/home/abdullh-alhashmi/Desktop/my_traing_forlder/hotel_api/hotel_data/obj/",
+        "outputPath": "/home/abdullh-alhashmi/Public/my_traing_forlder/hotel_api/hotel_data/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/abdullh-alhashmi/.nuget/NuGet/NuGet.Config"
@@ -37,6 +37,12 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "Npgsql": {
+              "target": "Package",
+              "version": "[9.0.1, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",

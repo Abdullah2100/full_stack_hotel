@@ -48,19 +48,18 @@ CREATE TABLE Employees (
 CREATE TABLE RoomTypes (
     RoomTypeID BIGSERIAL PRIMARY KEY,
     TypeName VARCHAR(50) NOT NULL,
-    Description TEXT,
-);
+    Description TEXT);
  
 CREATE TABLE Rooms (
     RoomID BIGSERIAL PRIMARY KEY,
     RoomNumber VARCHAR(10) UNIQUE NOT NULL,
     Status VARCHAR(10) CHECK (Status IN ('Available', 'Booked', 'Under Maintenance')) DEFAULT 'Available',
-    PricePerOneDay NUMERIC(10, 2)
+    PricePerOneDay NUMERIC(10, 2),
     CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     RoomTypeID INT NOT NULL REFERENCES RoomTypes(RoomTypeID)
 );
 
- 
+
 CREATE TABLE Bookings (
     BookingID BIGSERIAL PRIMARY KEY,
     Dayes INT NOT NULL,
