@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\hotel_business\hotel_business.csproj" />
+    <ProjectReference Include="hotel_api.csproj" />
   </ItemGroup>
 
 </Project>
