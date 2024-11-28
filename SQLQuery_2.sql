@@ -4,14 +4,13 @@ CREATE TABLE Persons(
     PersonID BIGSERIAL PRIMARY KEY,
     Name VARCHAR(50) NOT NULL,
     Phone VARCHAR(13) NOT NULL,
-    Address TEXT NULL,
+    Address TEXT NULL
 );
-
+ 
 CREATE TABLE Departments(
     DepartmentID BIGSERIAL PRIMARY KEY,
     Name VARCHAR(50) NOT NULL
 );
-
 CREATE TABLE Permissions(
     PermissionID BIGSERIAL PRIMARY KEY,
     PermissionNum INT NOT NULL,
@@ -38,7 +37,6 @@ CREATE TABLE EmployeePermissions(
     EmployeeID BIGINT NULL REFERENCES Employees(EmployeeID)
 );
 
-
 CREATE TABLE EmployeeDeltedBy(
     EmployeeDeltedByID BIGSERIAL PRIMARY KEY,
     DeletedBy BIGINT NULL REFERENCES Employees(EmployeeID),
@@ -47,6 +45,28 @@ CREATE TABLE EmployeeDeltedBy(
 );
 
 --this trigger to handle if employee deleted
+
+CREATE
+OR REPLACE FUNCTION handle_employee_deleted() RETURNS TRIGGER AS $ $ BEGIN IF OLD.IsDeleted = FALSE
+AND OLD.DeletedBy IS NOT NULL THEN
+UPDATE
+    Employees
+SET
+    IsDeleted = TRUE,
+    DeletedBy = OLD.DeletedBy,
+    DeletedDate = CURRENT_TIMESTAMP
+WHERE
+    EmployeeID = OLD.EmployeeID;
+
+INSERT INTO
+    EmployeeDeletedBy (DeletedBy, EmployeeDeletedID)
+VALUES
+    (OLD.DeletedBy, OLD.EmployeeID);
+
+END IF;
+
+RETURN OLD;
+
 
 CREATE OR REPLACE FUNCTION handle_employee_deleted() 
 RETURNS TRIGGER AS
@@ -64,12 +84,10 @@ BEGIN
     END IF;
 
     RETURN OLD;
-
 EXCEPTION
-    WHEN OTHERS THEN
-        RETURN NULL;
-END;
-$$ LANGUAGE plpgsql;
+WHEN OTHERS THEN RETURN NULL;
+$ $ LANGUAGE plpgsql;
+
 
 CREATE TRIGGER handle_employeeDeleted BEFORE DELETE ON Employees FOR EACH ROW EXECUTE FUNCTION handle_employee_deleted();
 
@@ -86,7 +104,9 @@ CREATE TABLE Users (
     DeletedBy BIGINT NULL REFERENCES Employees(EmployeeID)
 );
 
+
 CREATE TABLE RoomTypes (
+
     RoomTypeID BIGSERIAL PRIMARY KEY,
     TypeName VARCHAR(50) NOT NULL,
     Description TEXT,
@@ -96,8 +116,6 @@ CREATE TABLE RoomTypes (
     DeletedAt TIMESTAMP NULL,
     IsDeleted BOOLEAN DEFAULT FALSE,
 );
-
-
 CREATE TABLE Rooms (
     RoomID BIGSERIAL PRIMARY KEY,
     RoomNumber VARCHAR(10) UNIQUE NOT NULL,
@@ -114,7 +132,6 @@ CREATE TABLE Rooms (
     DeletedAt TIMESTAMP NULL,
     ExcptedAt TIMESTAMP NULL,
 );
-
 
 CREATE TABLE Bookings (
     BookingID BIGSERIAL PRIMARY KEY,
@@ -138,7 +155,6 @@ CREATE TABLE Bookings (
     ExcptedAt TIMESTAMP NULL,
 );
 
-
 CREATE TABLE Reviews (
     ReviewID BIGSERIAL PRIMARY KEY,
     Rating INT CHECK (
@@ -153,6 +169,7 @@ CREATE TABLE Reviews (
 );
 
 CREATE TABLE Payments (
+
     PaymentID BIGSERIAL PRIMARY KEY,
     PaymentDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     --PaymentMethod VARCHAR(50),
@@ -162,14 +179,14 @@ CREATE TABLE Payments (
 );
 
 CREATE TABLE Services (
+
     ServiceID BIGSERIAL PRIMARY KEY,
     ServiceName VARCHAR(100) NOT NULL,
     Description TEXT,
     Price NUMERIC(10, 2) NOT NULL
 );
 
-
-CREATE TABLE BookingServices (
+ CREATE TABLE BookingServices (
     BookingServiceID BIGSERIAL PRIMARY KEY,
     TotalPrice NUMERIC(10, 2),
     BookingID BIGINT NOT NULL REFERENCES Bookings(BookingID),
@@ -177,7 +194,6 @@ CREATE TABLE BookingServices (
     ExpectedBy BIGINT NOT NULL REFERENCES Employees(EmployeeID),
     CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 );
-
 
 CREATE TABLE Maintenances (
     MaintenanceID BIGSERIAL PRIMARY KEY,
