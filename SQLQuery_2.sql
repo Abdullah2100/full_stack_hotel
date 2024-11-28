@@ -12,6 +12,7 @@ CREATE TABLE Departments(
     Name VARCHAR(50) NOT NULL
 );
 
+
 CREATE TABLE Permissions(
     PermissionID BIGSERIAL PRIMARY KEY,
     PermissionNum INT NOT NULL,
