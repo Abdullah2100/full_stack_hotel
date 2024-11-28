@@ -4,23 +4,18 @@ CREATE TABLE Persons(
     PersonID BIGSERIAL PRIMARY KEY,
     Name VARCHAR(50) NOT NULL,
     Phone VARCHAR(13) NOT NULL,
-    Address TEXT NULL,
+    Address TEXT NULL
 );
-
+ 
 CREATE TABLE Departments(
     DepartmentID BIGSERIAL PRIMARY KEY,
     Name VARCHAR(50) NOT NULL
 );
-
 CREATE TABLE Permissions(
     PermissionID BIGSERIAL PRIMARY KEY,
     PermissionNum INT NOT NULL,
+    DepartmentID BIGINT NOT NULL REFERENCES Departments(DepartmentID),
     DESCRIPTION VARCHAR(50)
-);
-
-CREATE TABLE Departments(
-    DepartmentID BIGSERIAL PRIMARY KEY,
-    Name VARCHAR(50)
 );
 
 CREATE TABLE Employees (
@@ -28,7 +23,6 @@ CREATE TABLE Employees (
     HireDate DATE DEFAULT CURRENT_DATE,
     Salary NUMERIC(10, 2) NOT NULL,
     CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PersonID BIGINT NOT NULL REFERENCES Persons(PersonID),
     DepartmentID BIGINT NOT NULL REFERENCES Departments(DepartmentID),
     PermissionID BIGINT NOT NULL REFERENCES Permissions(PermissionID),
     PersonID BIGINT NOT NULL REFERENCES Persons(PersonID),
@@ -51,6 +45,7 @@ CREATE TABLE EmployeeDeltedBy(
 );
 
 --this trigger to handle if employee deleted
+
 CREATE
 OR REPLACE FUNCTION handle_employee_deleted() RETURNS TRIGGER AS $ $ BEGIN IF OLD.IsDeleted = FALSE
 AND OLD.DeletedBy IS NOT NULL THEN
@@ -72,14 +67,27 @@ END IF;
 
 RETURN OLD;
 
+
+CREATE OR REPLACE FUNCTION handle_employee_deleted() 
+RETURNS TRIGGER AS
+$$
+BEGIN 
+    IF OLD.IsDeleted = FALSE AND OLD.DeletedBy IS NOT NULL THEN
+        UPDATE Employees
+        SET IsDeleted = TRUE,
+            DeletedBy = OLD.DeletedBy,
+            DeletedDate = CURRENT_TIMESTAMP
+        WHERE EmployeeID = OLD.EmployeeID;
+
+        INSERT INTO EmployeeDeletedBy (DeletedBy, EmployeeDeletedID)
+        VALUES (OLD.DeletedBy, OLD.EmployeeID);
+    END IF;
+
+    RETURN OLD;
 EXCEPTION
 WHEN OTHERS THEN RETURN NULL;
-
-END;
-
 $ $ LANGUAGE plpgsql;
 
-END;
 
 CREATE TRIGGER handle_employeeDeleted BEFORE DELETE ON Employees FOR EACH ROW EXECUTE FUNCTION handle_employee_deleted();
 
@@ -96,7 +104,9 @@ CREATE TABLE Users (
     DeletedBy BIGINT NULL REFERENCES Employees(EmployeeID)
 );
 
-< < < < < < < HEAD == == == = > > > > > > > 693af4e9547a1317bc47c3000e1987842de9457f CREATE TABLE RoomTypes (
+
+CREATE TABLE RoomTypes (
+
     RoomTypeID BIGSERIAL PRIMARY KEY,
     TypeName VARCHAR(50) NOT NULL,
     Description TEXT,
@@ -106,8 +116,7 @@ CREATE TABLE Users (
     DeletedAt TIMESTAMP NULL,
     IsDeleted BOOLEAN DEFAULT FALSE,
 );
-
-< < < < < < < HEAD == == == = > > > > > > > 693af4e9547a1317bc47c3000e1987842de9457f CREATE TABLE Rooms (
+CREATE TABLE Rooms (
     RoomID BIGSERIAL PRIMARY KEY,
     RoomNumber VARCHAR(10) UNIQUE NOT NULL,
     Status VARCHAR(10) CHECK (
@@ -124,7 +133,7 @@ CREATE TABLE Users (
     ExcptedAt TIMESTAMP NULL,
 );
 
-< < < < < < < HEAD == == == = > > > > > > > 693af4e9547a1317bc47c3000e1987842de9457f CREATE TABLE Bookings (
+CREATE TABLE Bookings (
     BookingID BIGSERIAL PRIMARY KEY,
     Dayes INT NOT NULL,
     BookingStatus VARCHAR(50) CHECK (
@@ -146,7 +155,7 @@ CREATE TABLE Users (
     ExcptedAt TIMESTAMP NULL,
 );
 
-< < < < < < < HEAD == == == = > > > > > > > 693af4e9547a1317bc47c3000e1987842de9457f CREATE TABLE Reviews (
+CREATE TABLE Reviews (
     ReviewID BIGSERIAL PRIMARY KEY,
     Rating INT CHECK (
         Rating BETWEEN 1
@@ -159,7 +168,8 @@ CREATE TABLE Users (
     RoomID INT NOT NULL REFERENCES Rooms(RoomID),
 );
 
-< < < < < < < HEAD == == == = > > > > > > > 693af4e9547a1317bc47c3000e1987842de9457f CREATE TABLE Payments (
+CREATE TABLE Payments (
+
     PaymentID BIGSERIAL PRIMARY KEY,
     PaymentDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     --PaymentMethod VARCHAR(50),
@@ -168,14 +178,15 @@ CREATE TABLE Users (
     BookingID BIGINT NOT NULL REFERENCES Bookings(BookingID)
 );
 
-< < < < < < < HEAD == == == = > > > > > > > 693af4e9547a1317bc47c3000e1987842de9457f CREATE TABLE Services (
+CREATE TABLE Services (
+
     ServiceID BIGSERIAL PRIMARY KEY,
     ServiceName VARCHAR(100) NOT NULL,
     Description TEXT,
     Price NUMERIC(10, 2) NOT NULL
 );
 
-< < < < < < < HEAD == == == = > > > > > > > 693af4e9547a1317bc47c3000e1987842de9457f CREATE TABLE BookingServices (
+ CREATE TABLE BookingServices (
     BookingServiceID BIGSERIAL PRIMARY KEY,
     TotalPrice NUMERIC(10, 2),
     BookingID BIGINT NOT NULL REFERENCES Bookings(BookingID),
