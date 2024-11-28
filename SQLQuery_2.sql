@@ -12,7 +12,6 @@ CREATE TABLE Departments(
     Name VARCHAR(50) NOT NULL
 );
 
-
 CREATE TABLE Permissions(
     PermissionID BIGSERIAL PRIMARY KEY,
     PermissionNum INT NOT NULL,
@@ -29,8 +28,7 @@ CREATE TABLE Employees (
     PermissionID BIGINT NOT NULL REFERENCES Permissions(PermissionID),
     PersonID BIGINT NOT NULL REFERENCES Persons(PersonID),
     AddBy BIGINT NULL REFERENCES Employees(EmployeeID),
-    DeletedBy BIGINT NULL REFERENCES Employees(EmployeeID),
-    UpdatedBy BIGINT NULL REFERENCES Employees(EmployeeID),
+    ModifiedBy BIGINT NULL REFERENCES Employees(EmployeeID),
     IsDeleted BOOLEAN DEFAULT FALSE
 );
 
@@ -74,14 +72,11 @@ END;
 
 $ $ LANGUAGE plpgsql;
 
-CREATE TRIGGER trg_employee_deleted
-AFTER
-UPDATE
-    ON Employees FOR EACH ROW
-    WHEN (
-        OLD.IsDeleted = FALSE
-        AND NEW.IsDeleted = TRUE
-    ) EXECUTE FUNCTION handle_employee_deleted();
+CREATE TRIGGER trg_employee_deleted BEFORE DELETE ON Employees FOR EACH ROW
+WHEN (
+    OLD.IsDeleted = FALSE
+    AND NEW.IsDeleted = TRUE
+) EXECUTE FUNCTION handle_employee_deleted();
 
 CREATE TABLE Users (
     UserID BIGSERIAL PRIMARY KEY,
