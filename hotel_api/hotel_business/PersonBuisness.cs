@@ -16,16 +16,15 @@ namespace hotel_business
         public string name { get; set; }
         public string phone { get; set; }
         public string address { get; set; }
-        public Boolean isDeleted { get; set; }
+        public Boolean isDeleted { get; set; } = false
 
-        public PersonBuisness(long id, string name, string phone, string address, Boolean isDeleted, enMode enMode)
+        public PersonBuisness(long id, string name, string phone, string address, enMode enMode)
         {
             this.ID = id;
             this.name = name;
             this.phone = phone;
             this.address = address;
             this.mode = enMode;
-            this.isDeleted = isDeleted;
         }
 
         public PersonBuisness(PersonDto personData, Boolean isDeleted, enMode enMode)
