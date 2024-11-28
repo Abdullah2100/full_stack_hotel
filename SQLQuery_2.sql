@@ -1,31 +1,37 @@
 create database hotel_db;
+
 CREATE TABLE Persons(
     PersonID BIGSERIAL PRIMARY KEY,
     Name VARCHAR(50) NOT NULL,
-    Phone VARCHAR(13) NOT NULL  ,
-    Address TEXT NULL
+    Phone VARCHAR(13) NOT NULL,
+    Address TEXT NULL,
 );
+
+CREATE TABLE Departments(
+    DepartmentID BIGSERIAL PRIMARY KEY,
+    Name VARCHAR(50) NOT NULL
+);
+
 CREATE TABLE Permissions(
     PermissionID BIGSERIAL PRIMARY KEY,
     PermissionNum INT NOT NULL,
+    DepartmentID BIGINT NOT NULL REFERENCES Departments(DepartmentID),
     DESCRIPTION VARCHAR(50)
 );
-CREATE TABLE Departments(
-    DepartmentID BIGSERIAL PRIMARY KEY,
-    Name VARCHAR(50)
-);
+
 CREATE TABLE Employees (
     EmployeeID BIGSERIAL PRIMARY KEY,
-    HireDate DATE,
-    Salary NUMERIC(10, 2),
+    HireDate DATE DEFAULT CURRENT_DATE,
+    Salary NUMERIC(10, 2) NOT NULL,
     CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PersonID BIGINT NOT NULL REFERENCES Persons(PersonID),
     DepartmentID BIGINT NOT NULL REFERENCES Departments(DepartmentID),
-    CreatedBy BIGINT NULL REFERENCES Employees(EmployeeID),
-    DeletedBy BIGINT NULL REFERENCES Employees(EmployeeID),
-    UpdatedBy BIGINT NULL REFERENCES Employees(EmployeeID),
+    PermissionID BIGINT NOT NULL REFERENCES Permissions(PermissionID),
+    PersonID BIGINT NOT NULL REFERENCES Persons(PersonID),
+    AddBy BIGINT NULL REFERENCES Employees(EmployeeID),
+    ModifiedBy BIGINT NULL REFERENCES Employees(EmployeeID),
     IsDeleted BOOLEAN DEFAULT FALSE
 );
+
 CREATE TABLE EmployeePermissions(
     EmployeePermissions BIGSERIAL PRIMARY KEY,
     PermissionID BIGINT NOT NULL REFERENCES PermissionS(PermissionID),
@@ -41,6 +47,7 @@ CREATE TABLE EmployeeDeltedBy(
 );
 
 --this trigger to handle if employee deleted
+
 CREATE OR REPLACE FUNCTION handle_employee_deleted() 
 RETURNS TRIGGER AS
 $$
@@ -64,10 +71,7 @@ EXCEPTION
 END;
 $$ LANGUAGE plpgsql;
 
-
 CREATE TRIGGER handle_employeeDeleted BEFORE DELETE ON Employees FOR EACH ROW EXECUTE FUNCTION handle_employee_deleted();
-
-
 
 CREATE TABLE Users (
     UserID BIGSERIAL PRIMARY KEY,
@@ -81,7 +85,6 @@ CREATE TABLE Users (
     DeletedDate TIMESTAMP NULL,
     DeletedBy BIGINT NULL REFERENCES Employees(EmployeeID)
 );
-
 
 CREATE TABLE RoomTypes (
     RoomTypeID BIGSERIAL PRIMARY KEY,
@@ -139,7 +142,8 @@ CREATE TABLE Bookings (
 CREATE TABLE Reviews (
     ReviewID BIGSERIAL PRIMARY KEY,
     Rating INT CHECK (
-        Rating BETWEEN 1 AND 5
+        Rating BETWEEN 1
+        AND 5
     ),
     Comment TEXT,
     CreatedBy BIGINT NOT NULL REFERENCES Users(UserID),
@@ -147,7 +151,6 @@ CREATE TABLE Reviews (
     BookingID BIGINT NOT NULL REFERENCES Bookings(BookingID),
     RoomID INT NOT NULL REFERENCES Rooms(RoomID),
 );
-
 
 CREATE TABLE Payments (
     PaymentID BIGSERIAL PRIMARY KEY,
@@ -157,7 +160,6 @@ CREATE TABLE Payments (
     PaymentStatus VARCHAR(10) CHECK (PaymentStatus IN ('Paid', 'Pending', 'Failed')) DEFAULT 'Pending',
     BookingID BIGINT NOT NULL REFERENCES Bookings(BookingID)
 );
-
 
 CREATE TABLE Services (
     ServiceID BIGSERIAL PRIMARY KEY,
