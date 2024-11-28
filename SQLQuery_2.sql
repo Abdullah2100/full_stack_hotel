@@ -1,11 +1,76 @@
 create database hotel_db;
 
+\ c hotel_db;
+
 CREATE TABLE Persons(
     PersonID BIGSERIAL PRIMARY KEY,
     Name VARCHAR(50) NOT NULL,
     Phone VARCHAR(13) NOT NULL,
     Address TEXT NULL,
+    IsDeleted BOOLEAN DEFAULT FALSE
 );
+
+CREATE TABLE PersonUpdated(
+    PersonUpdateID BIGSERIAL PRIMARY KEY,
+    PreviusName VARCHAR(50) NULL,
+    PreviusPhone VARCHAR(13) NOT NULL,
+    PreviusAddress TEXT NULL,
+    CurrentName VARCHAR(50) NULL,
+    CurrentPhone VARCHAR(13) NULL,
+    CurrentAddress TEXT NULL,
+    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PersonID BIGINT NOT NULL REFERENCES Persons(PersonID)
+);
+
+CREATE
+OR REPLACE FUNCTION fn_person_update() RETURNS TRIGGER AS $ $ BEGIN
+INSERT INTO
+    PersonUpdated (
+        previusName,
+        previusPhone,
+        previusAddress,
+        currentName,
+        currentPhone,
+        currentAddress,
+        PersonID
+    )
+VALUES
+    (
+        OLD.Name,
+        OLD.Phone,
+        OLD.Address,
+        NEW.Name,
+        NEW.Phone,
+        NEW.Address,
+        OLD.PersonID
+    );
+
+RETURN NEW;
+
+END;
+
+$ $ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_person_update BEFORE
+UPDATE
+    ON Persons FOR EACH ROW EXECUTE FUNCTION log_person_update();
+
+CREATE
+OR REPLACE FUNCTION fn_person_delete() RETURNS TRIGGER AS $ $ BEGIN
+UPDATE
+    Persons
+SET
+    isdeleted = true
+where
+    personid = OLD.personid;
+
+RETURN NULL;
+
+END;
+
+$ $ LANGUAGE plpgsql;
+
+CREATE TRIGGER tr_person_deleted BEFORE DELETE ON Persons FOR EACH ROW EXECUTE FUNCTION fn_person_delete();
 
 CREATE TABLE Departments(
     DepartmentID BIGSERIAL PRIMARY KEY,
