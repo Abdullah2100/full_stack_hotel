@@ -15,8 +15,8 @@ CREATE TABLE Departments(
 CREATE TABLE Permissions(
     PermissionID BIGSERIAL PRIMARY KEY,
     PermissionNum INT NOT NULL,
-    Name VARCHAR(50) NOT NULL,
     DepartmentID BIGINT NOT NULL REFERENCES Departments(DepartmentID),
+    DESCRIPTION VARCHAR(50)
 );
 
 CREATE TABLE Employees (
@@ -38,6 +38,7 @@ CREATE TABLE EmployeePermissions(
     EmployeeID BIGINT NULL REFERENCES Employees(EmployeeID)
 );
 
+
 CREATE TABLE EmployeeDeltedBy(
     EmployeeDeltedByID BIGSERIAL PRIMARY KEY,
     DeletedBy BIGINT NULL REFERENCES Employees(EmployeeID),
@@ -46,37 +47,31 @@ CREATE TABLE EmployeeDeltedBy(
 );
 
 --this trigger to handle if employee deleted
--- Function to handle employee deletion
-CREATE
-OR REPLACE FUNCTION handle_employee_deleted() RETURNS TRIGGER AS $ $ BEGIN IF OLD.IsDeleted = FALSE
-AND OLD.DeletedBy IS NOT NULL THEN -- Mark the employee as deleted
-UPDATE
-    Employees
-SET
-    IsDeleted = TRUE,
-    DeletedBy = OLD.DeletedBy,
-    CreatedAt = CURRENT_TIMESTAMP
-WHERE
-    EmployeeID = OLD.EmployeeID;
 
-INSERT INTO
-    EmployeeDeltedBy (DeletedBy, EmployeeDeletedID, CreatedAt)
-VALUES
-    (OLD.DeletedBy, OLD.EmployeeID, CURRENT_TIMESTAMP);
+CREATE OR REPLACE FUNCTION handle_employee_deleted() 
+RETURNS TRIGGER AS
+$$
+BEGIN 
+    IF OLD.IsDeleted = FALSE AND OLD.DeletedBy IS NOT NULL THEN
+        UPDATE Employees
+        SET IsDeleted = TRUE,
+            DeletedBy = OLD.DeletedBy,
+            DeletedDate = CURRENT_TIMESTAMP
+        WHERE EmployeeID = OLD.EmployeeID;
 
-END IF;
+        INSERT INTO EmployeeDeletedBy (DeletedBy, EmployeeDeletedID)
+        VALUES (OLD.DeletedBy, OLD.EmployeeID);
+    END IF;
 
-RETURN OLD;
+    RETURN OLD;
 
+EXCEPTION
+    WHEN OTHERS THEN
+        RETURN NULL;
 END;
+$$ LANGUAGE plpgsql;
 
-$ $ LANGUAGE plpgsql;
-
-CREATE TRIGGER trg_employee_deleted BEFORE DELETE ON Employees FOR EACH ROW
-WHEN (
-    OLD.IsDeleted = FALSE
-    AND NEW.IsDeleted = TRUE
-) EXECUTE FUNCTION handle_employee_deleted();
+CREATE TRIGGER handle_employeeDeleted BEFORE DELETE ON Employees FOR EACH ROW EXECUTE FUNCTION handle_employee_deleted();
 
 CREATE TABLE Users (
     UserID BIGSERIAL PRIMARY KEY,
@@ -102,6 +97,7 @@ CREATE TABLE RoomTypes (
     IsDeleted BOOLEAN DEFAULT FALSE,
 );
 
+
 CREATE TABLE Rooms (
     RoomID BIGSERIAL PRIMARY KEY,
     RoomNumber VARCHAR(10) UNIQUE NOT NULL,
@@ -118,6 +114,7 @@ CREATE TABLE Rooms (
     DeletedAt TIMESTAMP NULL,
     ExcptedAt TIMESTAMP NULL,
 );
+
 
 CREATE TABLE Bookings (
     BookingID BIGSERIAL PRIMARY KEY,
@@ -140,6 +137,7 @@ CREATE TABLE Bookings (
     DeletedAt TIMESTAMP NULL,
     ExcptedAt TIMESTAMP NULL,
 );
+
 
 CREATE TABLE Reviews (
     ReviewID BIGSERIAL PRIMARY KEY,
@@ -170,6 +168,7 @@ CREATE TABLE Services (
     Price NUMERIC(10, 2) NOT NULL
 );
 
+
 CREATE TABLE BookingServices (
     BookingServiceID BIGSERIAL PRIMARY KEY,
     TotalPrice NUMERIC(10, 2),
@@ -178,6 +177,7 @@ CREATE TABLE BookingServices (
     ExpectedBy BIGINT NOT NULL REFERENCES Employees(EmployeeID),
     CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 );
+
 
 CREATE TABLE Maintenances (
     MaintenanceID BIGSERIAL PRIMARY KEY,
