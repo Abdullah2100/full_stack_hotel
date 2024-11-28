@@ -10,37 +10,88 @@ namespace hotel_business
 {
     public class PersonBuisness
     {
-        public enum enMode {add, update};
+        public enum enMode { add, update };
         enMode mode = enMode.add;
-        public int ID { get; set; }
+        public long ID { get; set; }
         public string name { get; set; }
         public string phone { get; set; }
-        public string  address { get; set; }
+        public string address { get; set; }
+        public Boolean isDeleted { get; set; }
 
-        public PersonBuisness(string name,string phone,string address,enMode enMode){
+        public PersonBuisness(long id, string name, string phone, string address, Boolean isDeleted, enMode enMode)
+        {
+            this.ID = id;
             this.name = name;
             this.phone = phone;
             this.address = address;
             this.mode = enMode;
+            this.isDeleted = isDeleted;
         }
 
-        private  bool createPerson(){
-            return PersonData.createPerson(name,phone,address);
+        public PersonBuisness(PersonDto personData, Boolean isDeleted, enMode enMode)
+        {
+            this.name = personData.name;
+            this.phone = personData.phone;
+            this.address = personData.address;
+            this.mode = enMode;
+            this.isDeleted = isDeleted;
+        }
+
+        private bool createPerson()
+        {
+            return PersonData.createPerson(name, phone, address);
+        }
+
+        private bool updatePerson()
+        {
+            return PersonData.updatePerson(ID, name, phone, address);
         }
 
 
-        public bool save(){
-            switch(mode){
-                case enMode.add:{
-                    if(createPerson()){
-                        return true;
-                    }return false;
-                }
-                case enMode.update:{
-                    return false;
-                }
-                default:return false;
+        public bool save()
+        {
+            switch (mode)
+            {
+                case enMode.add:
+                    {
+                        if (createPerson())
+                        {
+                            return true;
+                        }
+                        return false;
+                    }
+                case enMode.update:
+                    {
+                        if (updatePerson())
+                        {
+                            return true;
+                        }
+                        return false;
+                    }
+                default: return false;
             }
+        }
+
+        public static PersonBuisness? getPersonByID(long peronsID)
+        {
+            bool isDeleted = false;
+            var personData = PersonData.getPerson(peronsID, ref isDeleted);
+            if (personData != null)
+            {
+                return new PersonBuisness(personData, isDeleted, enMode.update);
+            }
+            return null;
+        }
+
+
+        public static Boolean isPersonExistByID(long peronsID)
+        {
+            return PersonData.isExist(peronsID);
+        }
+
+        public static Boolean isPersonExistByName(string name)
+        {
+            return PersonData.isExist(name);
         }
     }
 

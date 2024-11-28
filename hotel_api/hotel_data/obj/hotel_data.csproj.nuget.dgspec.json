@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/home/abdullh-alhashmi/Public/my_traing_forlder/hotel_api/hotel_data/hotel_data.csproj": {}
+    "/home/abdullah/Desktop/hotel_stack_project/full_stack_hotel/hotel_api/hotel_data/hotel_data.csproj": {}
   },
   "projects": {
-    "/home/abdullh-alhashmi/Public/my_traing_forlder/hotel_api/hotel_data/hotel_data.csproj": {
+    "/home/abdullah/Desktop/hotel_stack_project/full_stack_hotel/hotel_api/hotel_data/hotel_data.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/abdullh-alhashmi/Public/my_traing_forlder/hotel_api/hotel_data/hotel_data.csproj",
+        "projectUniqueName": "/home/abdullah/Desktop/hotel_stack_project/full_stack_hotel/hotel_api/hotel_data/hotel_data.csproj",
         "projectName": "hotel_data",
-        "projectPath": "/home/abdullh-alhashmi/Public/my_traing_forlder/hotel_api/hotel_data/hotel_data.csproj",
-        "packagesPath": "/home/abdullh-alhashmi/.nuget/packages/",
-        "outputPath": "/home/abdullh-alhashmi/Public/my_traing_forlder/hotel_api/hotel_data/obj/",
+        "projectPath": "/home/abdullah/Desktop/hotel_stack_project/full_stack_hotel/hotel_api/hotel_data/hotel_data.csproj",
+        "packagesPath": "/home/abdullah/.nuget/packages/",
+        "outputPath": "/home/abdullah/Desktop/hotel_stack_project/full_stack_hotel/hotel_api/hotel_data/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/abdullh-alhashmi/.nuget/NuGet/NuGet.Config"
+          "/home/abdullah/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -32,6 +32,11 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -59,7 +64,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/8.0.110/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.401/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
