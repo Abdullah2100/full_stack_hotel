@@ -1,7 +1,4 @@
-\c postgres;
-DROP DATABASE hotel_db;
 CREATE DATABASE  hotel_db;
-\c hotel_db
 CREATE TABLE Persons 
 (
     PersonID BIGSERIAL PRIMARY KEY,
