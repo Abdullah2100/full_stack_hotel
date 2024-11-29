@@ -1,16 +1,6 @@
-/home/abdullah/Desktop/hotel_stack_project/full_stack_hotel/hotel_api/hotel_business/bin/Debug/net8.0/hotel_business.deps.json
-/home/abdullah/Desktop/hotel_stack_project/full_stack_hotel/hotel_api/hotel_business/bin/Debug/net8.0/hotel_business.dll
-/home/abdullah/Desktop/hotel_stack_project/full_stack_hotel/hotel_api/hotel_business/bin/Debug/net8.0/hotel_business.pdb
-/home/abdullah/Desktop/hotel_stack_project/full_stack_hotel/hotel_api/hotel_business/bin/Debug/net8.0/hotel_data.dll
-/home/abdullah/Desktop/hotel_stack_project/full_stack_hotel/hotel_api/hotel_business/bin/Debug/net8.0/hotel_data.pdb
 /home/abdullah/Desktop/hotel_stack_project/full_stack_hotel/hotel_api/hotel_business/obj/Debug/net8.0/hotel_business.csproj.AssemblyReference.cache
 /home/abdullah/Desktop/hotel_stack_project/full_stack_hotel/hotel_api/hotel_business/obj/Debug/net8.0/hotel_business.GeneratedMSBuildEditorConfig.editorconfig
 /home/abdullah/Desktop/hotel_stack_project/full_stack_hotel/hotel_api/hotel_business/obj/Debug/net8.0/hotel_business.AssemblyInfoInputs.cache
 /home/abdullah/Desktop/hotel_stack_project/full_stack_hotel/hotel_api/hotel_business/obj/Debug/net8.0/hotel_business.AssemblyInfo.cs
 /home/abdullah/Desktop/hotel_stack_project/full_stack_hotel/hotel_api/hotel_business/obj/Debug/net8.0/hotel_business.csproj.CoreCompileInputs.cache
 /home/abdullah/Desktop/hotel_stack_project/full_stack_hotel/hotel_api/hotel_business/obj/Debug/net8.0/hotel_business.sourcelink.json
-/home/abdullah/Desktop/hotel_stack_project/full_stack_hotel/hotel_api/hotel_business/obj/Debug/net8.0/hotel_bu.E4DB504B.Up2Date
-/home/abdullah/Desktop/hotel_stack_project/full_stack_hotel/hotel_api/hotel_business/obj/Debug/net8.0/hotel_business.dll
-/home/abdullah/Desktop/hotel_stack_project/full_stack_hotel/hotel_api/hotel_business/obj/Debug/net8.0/refint/hotel_business.dll
-/home/abdullah/Desktop/hotel_stack_project/full_stack_hotel/hotel_api/hotel_business/obj/Debug/net8.0/hotel_business.pdb
-/home/abdullah/Desktop/hotel_stack_project/full_stack_hotel/hotel_api/hotel_business/obj/Debug/net8.0/ref/hotel_business.dll

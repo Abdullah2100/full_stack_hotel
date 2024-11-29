@@ -10,10 +10,8 @@
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.10" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
-
-  <ItemGroup>
+  
+ <ItemGroup>
     <ProjectReference Include="..\hotel_business\hotel_business.csproj" />
-    <ProjectReference Include="hotel_api.csproj" />
   </ItemGroup>
-
 </Project>
