@@ -16,19 +16,19 @@ namespace hotel_business
         public string name { get; set; }
         public string phone { get; set; }
         public string address { get; set; }
-        public Boolean isDeleted { get; set; }
 
-        public PersonBuisness(long id, string name, string phone, string address, Boolean isDeleted, enMode enMode)
+        public bool isDeleted { get; set; } = false;
+
+        public PersonBuisness(long id, string name, string phone, string address, enMode enMode)
         {
             this.ID = id;
             this.name = name;
             this.phone = phone;
             this.address = address;
             this.mode = enMode;
-            this.isDeleted = isDeleted;
         }
 
-        public PersonBuisness(PersonDto personData, Boolean isDeleted, enMode enMode)
+        public PersonBuisness(PersonDto personData, bool isDeleted, enMode enMode)
         {
             this.name = personData.name;
             this.phone = personData.phone;
@@ -84,12 +84,12 @@ namespace hotel_business
         }
 
 
-        public static Boolean isPersonExistByID(long peronsID)
+        public static bool isPersonExistByID(long peronsID)
         {
             return PersonData.isExist(peronsID);
         }
 
-        public static Boolean isPersonExistByName(string name)
+        public static bool isPersonExistByName(string name)
         {
             return PersonData.isExist(name);
         }
