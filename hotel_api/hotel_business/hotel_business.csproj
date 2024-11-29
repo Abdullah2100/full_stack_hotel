@@ -2,7 +2,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\hotel_data\hotel_data.csproj" />
-    <ProjectReference Include="hotel_business.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

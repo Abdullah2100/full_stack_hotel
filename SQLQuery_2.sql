@@ -1,16 +1,19 @@
+\c postgres;
+DROP DATABASE hotel_db;
+
 CREATE DATABASE  hotel_db;
+\c hotel_db;
 CREATE TABLE Persons 
 (
     PersonID BIGSERIAL PRIMARY KEY,
     Name VARCHAR(50) NOT NULL,
     Phone VARCHAR(13) NOT NULL,
     Address TEXT NULL,
-    IsDeleted BOOLEAN DEFAULT FALSE
+    IsDeleted bool DEFAULT FALSE
 );
 
 --dumy insert
 INSERT INTO Persons(name,phone,address) values('ahmed','735501225','fack');
-UPDATE Persons SET name = 'fackkdddd' WHERE personid = 1;
 --
 
 CREATE TABLE PersonUpdated 
@@ -59,14 +62,14 @@ AS $$
         END IF;
 
 
-        IF NEW.phone IS NULL NULL THEN 
+        IF NEW.phone IS NULL  THEN 
             CurrentPhone := NEW.phone;
         ELSE 
             CurrentPhone := OLD.phone;
         END IF;
 
 
-        IF NEW.Address IS NULL NULL THEN 
+        IF NEW.Address IS NULL  THEN 
             CurrentAddress := NEW.address;
         ELSE 
             CurrentAddress := NEW.address;
@@ -95,6 +98,11 @@ AS $$
                 );
 
         RETURN NEW;
+    EXCEPTION
+        WHEN OTHERS THEN
+            -- Handle exceptions with a warning
+            RAISE WARNING 'Something went wrong: %', SQLERRM;
+    
     END;
 $$ LANGUAGE plpgsql;
 
@@ -119,6 +127,10 @@ CREATE TRIGGER tr_peSrson_update
 BEFORE UPDATE ON Persons 
 FOR EACH ROW EXECUTE FUNCTION fn_person_update ();
 
+
+--dumy update
+UPDATE Persons SET name = 'fackkdddd' WHERE personid = 1;
+--
 CREATE TABLE Admins 
 (
     AdminID BIGSERIAL PRIMARY KEY,
@@ -126,6 +138,65 @@ CREATE TABLE Admins
     UserName VARCHAR(50) NOT NULL,
     Password TEXT NOT NULL
 );
+
+CREATE OR REPLACE FUNCTION fn_admin_insert
+(
+    name VARCHAR(50),
+    phone VARCHAR(13),
+    address TEXT,
+    personid BIGINT,
+    username varchar(50),
+    password TEXT
+) RETURNS INT
+AS 
+$$
+DECLARE 
+   person_id BIGINT;
+BEGIN
+    BEGIN 
+        INSERT INTO persons(name,phone,address)
+        values (name,phone,address) RETURNING personid INTO person_id;
+        INSERT INTO Admins (Personid,username,password)
+        VALUES (person_id,username,password)RETURNING adminid;
+
+    EXCEPTION
+        WHEN OTHERS THEN
+            -- Handle exceptions with a warning
+            RAISE WARNING 'Something went wrong: %', SQLERRM;
+            RETURN 0;
+    END;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+CREATE OR REPLACE FUNCTION fn_admin_update
+( 
+    adminid INT,
+    name VARCHAR(50),
+    phone VARCHAR(13),
+    address TEXT,
+    personid BIGINT,
+    username varchar(50),
+    password TEXT
+) RETURNS INT
+AS 
+$$
+DECLARE 
+   person_id BIGINT;
+BEGIN
+    BEGIN 
+        UPDATE persons  SET name = name , phone= phone,address = address WHERE personid= personid;
+        UPDATE admin SET  username=username,password =password where adminid=adminid;
+        return 1;
+    EXCEPTION
+        WHEN OTHERS THEN
+            -- Handle exceptions with a warning
+            RAISE WARNING 'Something went wrong: %', SQLERRM;
+            RETURN 0;
+    END;
+END;
+$$ LANGUAGE plpgsql;
 
 --dumy insert 
 INSERT INTO Admins(personid,username,password) values (1,'facknice','771ali@..');
@@ -154,7 +225,7 @@ BEFORE UPDATE ON AdminUpdate
 FOR EACH ROW EXECUTE FUNCTION fn_adminUpdate_modi();
 
 CREATE TRIGGER tr_adminUpdate_delete
-BEFORE DELETE ON AdminUpdateID
+BEFORE DELETE ON AdminUpdate 
 FOR EACH ROW EXECUTE FUNCTION fn_adminUpdate_modi();
 
 
@@ -193,6 +264,12 @@ AS $$
         );
 
         RETURN NEW;
+
+    EXCEPTION
+        WHEN OTHERS THEN
+            -- Handle exceptions with a warning
+            RAISE WARNING 'Something went wrong: %', SQLERRM;
+    RETURN NULL;
     END;
 $$ LANGUAGE plpgsql;
 
@@ -206,6 +283,10 @@ AS $$
         END IF;
 
         RETURN NEW;
+    EXCEPTION
+        WHEN OTHERS THEN
+            -- Handle exceptions with a warning
+            RAISE WARNING 'Something went wrong: %', SQLERRM;
     END;
 $$ LANGUAGE plpgsql;
 
@@ -268,7 +349,7 @@ CREATE TABLE Employees (
     PersonID BIGINT NOT NULL REFERENCES Persons (PersonID),
     AddBy BIGINT NULL REFERENCES Employees (EmployeeID),
     ModifiedBy BIGINT NULL REFERENCES Employees (EmployeeID),
-    IsDeleted BOOLEAN DEFAULT FALSE
+    IsDeleted bool DEFAULT FALSE
 );
 
 CREATE TABLE EmployeePermissions 
@@ -321,10 +402,10 @@ CREATE TABLE Users
     Email VARCHAR(100) UNIQUE NOT NULL,
     Phone VARCHAR(15),
     DateOfBirth DATE,
-    IsVIP BOOLEAN DEFAULT FALSE,
+    IsVIP bool DEFAULT FALSE,
     PersonID BIGINT PRIMARY KEY Persons (PersonID),
     CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ,
-    IsDeleted BOOLEAN DEFAULT FALSE,
+    IsDeleted bool DEFAULT FALSE,
     DeletedDate TIMESTAMP NULL,
     DeletedBy BIGINT NULL REFERENCES Employees (EmployeeID)
 );
@@ -337,7 +418,7 @@ RoomTypes (
     DeletedBy INT NULL REFERENCES Employees (EmployeeID),
     CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     DeletedAt TIMESTAMP NULL,
-    IsDeleted BOOLEAN DEFAULT FALSE,
+    IsDeleted bool DEFAULT FALSE,
 );
 
 

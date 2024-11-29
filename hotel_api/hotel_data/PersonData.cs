@@ -52,7 +52,7 @@ namespace hotel_data
         }
 
         public static bool updatePerson(
-                long id,
+          long id,
           string name,
           string phone,
           string address
@@ -96,7 +96,7 @@ namespace hotel_data
 
 
         public static bool deletePerson(
-       int presonId
+          int presonId
        )
         {
             bool isDelelted = false;
@@ -149,14 +149,14 @@ namespace hotel_data
                         {
                             if (result.HasRows)
                             {
-                                isDelelted = result.GetBoolean(result.GetOrdinal("isdeleted"));
+                                isDelelted = (bool)result["isdeleted"];
                                 var person = new PersonDto
-                                {
-                                    personID = presonId,
-                                    name = result.GetString(result.GetOrdinal("name")),
-                                    address = result["address"] == DBNull.Value ? "" : result.GetString(result.GetOrdinal("address")),
-                                    phone = result.GetString(result.GetOrdinal("phone"))
-                                };
+                                (
+                                    presonId,
+                                    (string)result["name"],
+                                    result["address"] == DBNull.Value ? "" : (string)result["address"],
+                                    (string)result["phone"]
+                                );
                             }
                         }
                     }
@@ -171,10 +171,92 @@ namespace hotel_data
             return null;
         }
 
+        public static List<PersonDto> getPersonsDeleted()
+        {
+            var personsList = new List<PersonDto>();
+            try
+            {
+                using (var connection = new NpgsqlConnection(connectionUrl))
+                {
+
+                    connection.Open();
+
+                    string query = @" SELECT * FROM  persons WHERE isdeleted = true";
+
+                    using (var cmd = new NpgsqlCommand(query, connection))
+                    {
 
 
+                        using (var result = cmd.ExecuteReader())
+                        {
+                            while (result.Read())
+                            {
+                                var person = new PersonDto
+                                (
+                                    (long)result["personid"],
+                                    (string)result["name"],
+                                    result["address"] == DBNull.Value ? "" : (string)result["address"],
+                                    (string)result["phone"]
+                                );
+                                personsList.Add(person);
+                            }
+                            return personsList;
+                        }
+                    }
+                }
+                return personsList;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("\nthis error from person getPersons deleted by id {0} \n", ex.Message);
+
+            }
+            return personsList;
+        }
 
 
+        public static List<PersonDto> getPersonsNotDeleted()
+        {
+            var personsList = new List<PersonDto>();
+            try
+            {
+                using (var connection = new NpgsqlConnection(connectionUrl))
+                {
+
+                    connection.Open();
+
+                    string query = @" SELECT * FROM  persons WHERE isdeleted = false";
+
+                    using (var cmd = new NpgsqlCommand(query, connection))
+                    {
+
+
+                        using (var result = cmd.ExecuteReader())
+                        {
+                            while (result.Read())
+                            {
+                                var person = new PersonDto
+                              (
+                                  (long)result["personid"],
+                                  (string)result["name"],
+                                  result["address"] == DBNull.Value ? "" : (string)result["address"],
+                                  (string)result["phone"]
+                              );
+                                personsList.Add(person);
+                            }
+                            return personsList;
+                        }
+                    }
+                }
+                return personsList;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("\nthis error from person getPersons deleted by id {0} \n", ex.Message);
+
+            }
+            return personsList;
+        }
 
 
 
@@ -214,9 +296,6 @@ namespace hotel_data
         }
 
 
-
-
-
         public static bool isExist(
                string name
                )
@@ -251,8 +330,6 @@ namespace hotel_data
             }
             return isExist;
         }
-
-
 
 
     }
