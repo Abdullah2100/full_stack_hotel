@@ -12,9 +12,7 @@ namespace hotel_data
         public static string connectionUrl = clsConnnectionUrl.url;
 
         public static bool createPerson(
-            string name,
-            string phone,
-            string address
+           PersonDto personHolder
             )
         {
             bool isCreated = false;
@@ -26,16 +24,17 @@ namespace hotel_data
                     connection.Open();
 
                     string query = @"
-                                INSERT INTO persons (name, phone, address)
-                                VALUES (@name,@phone,@address);
+                                INSERT INTO persons (name, phone, email, address)
+                                VALUES (@name,@phone,@email,@address);
                                 RETURNING personid;";
 
                     using (var cmd = new NpgsqlCommand(query, connection))
                     {
 
-                        cmd.Parameters.AddWithValue("@name", name);
-                        cmd.Parameters.AddWithValue("@phone", phone);
-                        cmd.Parameters.AddWithValue("@address", address);
+                        cmd.Parameters.AddWithValue("@name", personHolder.name);
+                        cmd.Parameters.AddWithValue("@phone", personHolder.phone);
+                        cmd.Parameters.AddWithValue("@email", personHolder.email);
+                        cmd.Parameters.AddWithValue("@address", personHolder.address);
 
                         var resultID = cmd.ExecuteScalar();
                         isCreated = ((long)resultID) > 0 ? true : false;
@@ -51,12 +50,7 @@ namespace hotel_data
             return isCreated;
         }
 
-        public static bool updatePerson(
-          long id,
-          string name,
-          string phone,
-          string address
-           )
+        public static bool updatePerson(PersonDto personHolder)
         {
             bool isUpdate = false;
             try
@@ -68,15 +62,19 @@ namespace hotel_data
 
                     string query = @"
                                 UPDATE INTO persons 
-                                SET name = @name, phone = @phone,address=@address)
+                                SET name = @name, 
+                                phone = @phone,
+                                address=@address,
+                                email=@email
                                 WHERE personid =@id;";
 
                     using (var cmd = new NpgsqlCommand(query, connection))
                     {
-                        cmd.Parameters.AddWithValue("@id", id);
-                        cmd.Parameters.AddWithValue("@name", name);
-                        cmd.Parameters.AddWithValue("@phone", phone);
-                        cmd.Parameters.AddWithValue("@address", address);
+                        cmd.Parameters.AddWithValue("@id", personHolder.personID);
+                        cmd.Parameters.AddWithValue("@name", personHolder.name);
+                        cmd.Parameters.AddWithValue("@phone", personHolder.phone);
+                        cmd.Parameters.AddWithValue("@email", personHolder.email);
+                        cmd.Parameters.AddWithValue("@address", personHolder.address);
 
                         cmd.ExecuteNonQuery();
                         isUpdate = true;
@@ -154,8 +152,9 @@ namespace hotel_data
                                 (
                                     presonId,
                                     (string)result["name"],
-                                    result["address"] == DBNull.Value ? "" : (string)result["address"],
-                                    (string)result["phone"]
+                                    (string)result["phone"],
+                                    (string)result["email"],
+                                    result["address"] == DBNull.Value ? "" : (string)result["address"]
                                 );
                             }
                         }
@@ -194,10 +193,11 @@ namespace hotel_data
                                 var person = new PersonDto
                                 (
                                     (long)result["personid"],
-                                    (string)result["name"],
-                                    result["address"] == DBNull.Value ? "" : (string)result["address"],
-                                    (string)result["phone"]
-                                );
+                                   (string)result["name"],
+                                    (string)result["phone"],
+                                    (string)result["email"],
+                                    result["address"] == DBNull.Value ? "" : (string)result["address"]
+                               );
                                 personsList.Add(person);
                             }
                             return personsList;
@@ -239,9 +239,10 @@ namespace hotel_data
                               (
                                   (long)result["personid"],
                                   (string)result["name"],
-                                  result["address"] == DBNull.Value ? "" : (string)result["address"],
-                                  (string)result["phone"]
-                              );
+                                    (string)result["phone"],
+                                    (string)result["email"],
+                                    result["address"] == DBNull.Value ? "" : (string)result["address"]
+                                  );
                                 personsList.Add(person);
                             }
                             return personsList;
