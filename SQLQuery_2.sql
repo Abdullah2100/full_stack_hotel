@@ -7,13 +7,14 @@ CREATE TABLE Persons
 (
     PersonID BIGSERIAL PRIMARY KEY,
     Name VARCHAR(50) NOT NULL,
+    Email varchar(100) UNIQUE NOT NULL,
     Phone VARCHAR(13) NOT NULL,
     Address TEXT NULL,
     IsDeleted bool DEFAULT FALSE
 );
 
 --dumy insert
-INSERT INTO Persons(name,phone,address) values('ahmed','735501225','fack');
+INSERT INTO Persons(name,email,phone,address) values('ahmed','justfack@gmail.com','735501225','fack');
 --
 
 CREATE TABLE PersonUpdated 
@@ -21,9 +22,11 @@ CREATE TABLE PersonUpdated
     PersonUpdateID BIGSERIAL PRIMARY KEY,
     PreviusName VARCHAR(50) NULL,
     PreviusPhone VARCHAR(13) NOT NULL,
+    PreviusEmail TEXT NULL,
     PreviusAddress TEXT NULL,
     CurrentName VARCHAR(50) NULL,
     CurrentPhone VARCHAR(13) NULL,
+    CurrentEmail TEXT NULL,
     CurrentAddress TEXT NULL,
     CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PersonID BIGINT NOT NULL REFERENCES Persons (PersonID)
@@ -52,6 +55,7 @@ AS $$
     DECLARE
         CurrentName VARCHAR(50):=''; 
         CurrentPhone VARCHAR(13):='';
+        CurrentEmail VARCHAR(100):='';
         CurrentAddress TEXT:='';
     BEGIN
 
@@ -72,17 +76,25 @@ AS $$
         IF NEW.Address IS NULL  THEN 
             CurrentAddress := NEW.address;
         ELSE 
-            CurrentAddress := NEW.address;
+            CurrentAddress := OLD.address;
         END IF;
 
+
+        IF NEW.Email IS NULL  THEN 
+            CurrentEmail := NEW.email;
+        ELSE 
+            CurrentEmail := OLD.email;
+        END IF;
            
             INSERT INTO
                 PersonUpdated (
                     previusName,
                     previusPhone,
                     previusAddress,
+                    PreviusEmail,
                     currentName,
                     currentPhone,
+                    currentEmail,
                     currentAddress,
                     PersonID
                 )
@@ -91,8 +103,10 @@ AS $$
                     OLD.Name,
                     OLD.Phone,
                     OLD.Address,
+                    OLD.Email,
                     CurrentName,
                     CurrentPhone,
+                    CurrentEmail,
                     CurrentAddress,
                     OLD.PersonID
                 );
@@ -143,6 +157,7 @@ CREATE OR REPLACE FUNCTION fn_admin_insert
 (
     name VARCHAR(50),
     phone VARCHAR(13),
+    email VARCHAR(100),
     address TEXT,
     personid BIGINT,
     username varchar(50),
@@ -154,8 +169,8 @@ DECLARE
    person_id BIGINT;
 BEGIN
     BEGIN 
-        INSERT INTO persons(name,phone,address)
-        values (name,phone,address) RETURNING personid INTO person_id;
+        INSERT INTO persons(name,email,phone,address)
+        values (name,email,phone,address) RETURNING personid INTO person_id;
         INSERT INTO Admins (Personid,username,password)
         VALUES (person_id,username,password)RETURNING adminid;
 
@@ -175,6 +190,7 @@ CREATE OR REPLACE FUNCTION fn_admin_update
     adminid INT,
     name VARCHAR(50),
     phone VARCHAR(13),
+    email VARCHAR(100),
     address TEXT,
     personid BIGINT,
     username varchar(50),
@@ -186,7 +202,7 @@ DECLARE
    person_id BIGINT;
 BEGIN
     BEGIN 
-        UPDATE persons  SET name = name , phone= phone,address = address WHERE personid= personid;
+        UPDATE persons  SET name = name , phone= phone, email=email,address = address WHERE personid= personid;
         UPDATE admin SET  username=username,password =password where adminid=adminid;
         return 1;
     EXCEPTION
