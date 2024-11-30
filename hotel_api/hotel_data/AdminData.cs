@@ -28,6 +28,7 @@ namespace hotel_data
 
                         cmd.Parameters.AddWithValue("@name", adminData.personData.name);
                         cmd.Parameters.AddWithValue("@phone", adminData.personData.phone);
+                        cmd.Parameters.AddWithValue("@email", adminData.personData.email);
                         cmd.Parameters.AddWithValue("@address", adminData.personData.address);
                         cmd.Parameters.AddWithValue("@personid", adminData.personData.personID!);
                         cmd.Parameters.AddWithValue("@username", adminData.userName);
@@ -66,6 +67,7 @@ namespace hotel_data
                         cmd.Parameters.AddWithValue("@adminid", adminData.adminID!);
                         cmd.Parameters.AddWithValue("@name", adminData.personData.name);
                         cmd.Parameters.AddWithValue("@phone", adminData.personData.phone);
+                        cmd.Parameters.AddWithValue("@email", adminData.personData.email);
                         cmd.Parameters.AddWithValue("@address", adminData.personData.address);
                         cmd.Parameters.AddWithValue("@personid", adminData.personData.personID);
                         cmd.Parameters.AddWithValue("@username", adminData.userName);
@@ -143,6 +145,7 @@ namespace hotel_data
                                   ID,
                                   (string)result["name"],
                                   result["address"] == DBNull.Value ? "" : (string)result["address"],
+                                  (string)result["email"],
                                   (string)result["phone"]
                               );
 
@@ -198,8 +201,8 @@ namespace hotel_data
                                 var person = new PersonDto
                               (
                                   (long)result["personid"],
-                                  (string)result["name"],
-                                  result["address"] == DBNull.Value ? "" : (string)result["address"],
+                                   result["address"] == DBNull.Value ? "" : (string)result["address"],
+                                  (string)result["email"],
                                   (string)result["phone"]
                               );
 
