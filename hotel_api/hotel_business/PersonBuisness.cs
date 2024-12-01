@@ -12,19 +12,24 @@ namespace hotel_business
     {
         public enum enMode { add, update };
         enMode mode = enMode.add;
-        public long ID { get; set; }
+        public Guid? ID { get; set; }
         public string name { get; set; }
         public string phone { get; set; }
+        public string email { get; set; }
         public string address { get; set; }
 
         public bool isDeleted { get; set; } = false;
 
-        public PersonBuisness(long id, string name, string phone, string address, enMode enMode)
+        public PersonDto peronData{
+            get {return new PersonDto(ID,name,phone,email,address);}
+        }
+
+        public PersonBuisness(PersonDto personData, enMode enMode)
         {
-            this.ID = id;
-            this.name = name;
-            this.phone = phone;
-            this.address = address;
+            this.ID = personData.personID;
+            this.name = personData.name;
+            this.phone = personData.phone;
+            this.address = personData.address;
             this.mode = enMode;
         }
 
@@ -39,12 +44,12 @@ namespace hotel_business
 
         private bool createPerson()
         {
-            return PersonData.createPerson(name, phone, address);
+            return PersonData.createPerson(peronData);
         }
 
         private bool updatePerson()
         {
-            return PersonData.updatePerson(ID, name, phone, address);
+            return PersonData.updatePerson(peronData);
         }
 
 
@@ -72,7 +77,7 @@ namespace hotel_business
             }
         }
 
-        public static PersonBuisness? getPersonByID(long peronsID)
+        public static PersonBuisness? getPersonByID(Guid peronsID)
         {
             bool isDeleted = false;
             var personData = PersonData.getPerson(peronsID, ref isDeleted);

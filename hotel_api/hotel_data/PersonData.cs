@@ -144,7 +144,7 @@ namespace hotel_data
         /// <param name="isDelelted">Reference parameter indicating if the person is deleted.</param>
         /// <returns>A PersonDto object if the person exists; otherwise, null.</returns>
         public static PersonDto? getPerson(
-            long presonId, ref bool isDelelted
+            Guid presonId, ref bool isDelelted
             )
         {
             try
@@ -213,7 +213,7 @@ namespace hotel_data
                             {
                                 var person = new PersonDto
                                 (
-                                    (long)result["personid"],
+                                    (Guid)result["personid"],
                                    (string)result["name"],
                                     (string)result["phone"],
                                     (string)result["email"],
@@ -261,7 +261,7 @@ namespace hotel_data
                             {
                                 var person = new PersonDto
                               (
-                                  (long)result["personid"],
+                                  (Guid)result["personid"],
                                   (string)result["name"],
                                     (string)result["phone"],
                                     (string)result["email"],

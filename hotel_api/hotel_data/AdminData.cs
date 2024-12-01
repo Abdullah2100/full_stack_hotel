@@ -140,7 +140,7 @@ namespace hotel_data
         /// <param name="ID">The ID of the admin to retrieve.</param>
         /// <returns>An AdminDto object if the admin exists; otherwise, null.</returns>
         public static AdminDto? getAdmin(
-            int ID
+            Guid ID
             )
         {
             try
@@ -171,7 +171,7 @@ namespace hotel_data
 
                                 var admin = new AdminDto
                                 (
-                                    (int)result["amdinid"],
+                                    (Guid)result["amdinid"],
                                     (string)result["username"],
                                     (string)result["password"],
                                     person
@@ -226,7 +226,8 @@ namespace hotel_data
                             {
                                 var person = new PersonDto
                               (
-                                  (long)result["personid"],
+                                  (Guid)result["personid"],
+                                  (string)result["name"],
                                    result["address"] == DBNull.Value ? "" : (string)result["address"],
                                   (string)result["email"],
                                   (string)result["phone"]
@@ -234,7 +235,7 @@ namespace hotel_data
 
                                 var admin = new AdminDto
                                 (
-                                    (int)result["amdinid"],
+                                    (Guid)result["amdinid"],
                                     username,
                                     password,
                                     person

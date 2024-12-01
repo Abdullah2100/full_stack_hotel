@@ -8,13 +8,13 @@ namespace hotel_data.dto
     public class PersonDto
     {
 
-        public long? personID { get; set; }
+        public Guid? personID { get; set; }
         public string name { get; set; }
         public string phone { get; set; }
         public string email { get; set; }
         public string address { get; set; }
 
-        public PersonDto(long? personID, string name, string phone,string email, string address)
+        public PersonDto(Guid? personID, string name, string phone,string email, string address)
         {
             this.personID = personID;
             this.name = name;

@@ -12,41 +12,41 @@ namespace hotel_business
 
         public enum enMode { add, update }
         enMode mode = enMode.add;
-        public int ID { get; set; }
-        public string userName { get; set; }
+        public Guid id { get; set; }
+        public string username { get; set; }
         public string password { get; set; }
-        public long? personID { get; set; }
-        public bool isDeleted { get; set; } = false;
-        public PersonDto? personData { get; set; }
+        public Guid? personid { get; set; }
+        public bool isdeleted { get; set; } = false;
+        public PersonDto? persondata { get; set; }
 
-        public AdminDto amdinData
+        public AdminDto amdindata
         {
-            get { return new AdminDto(ID, userName, password, personData); }
+            get { return new AdminDto(id, username, password, persondata); }
         }
 
-        public AdminBuissnes(AdminDto adminData, enMode mode = enMode.add)
+        public AdminBuissnes(AdminDto AdminData, enMode mode = enMode.add)
         {
-            bool isDeleted = false;
-            this.ID = ID;
-            this.userName = adminData.userName;
-            this.password = adminData.password;
-            this.personID = adminData.personData.personID;
+            bool isdeleted = false;
+            this.id = id;
+            this.username = AdminData.userName;
+            this.password = AdminData.password;
+            this.personid = AdminData.personData.personID;
             this.mode = mode;
-            this.personData = adminData.personData;
-            this.isDeleted = isDeleted;
+            this.persondata = AdminData.personData;
+            this.isdeleted = isdeleted;
         }
 
-        private bool _createAdmin()
+        private bool _createadmin()
         {
 
-            bool result = AdminData.createAdmin(adminData: amdinData);
+            bool result = AdminData.createAdmin(amdindata);
             return result == true;
         }
 
-        private bool _updateAdmin()
+        private bool _updateadmin()
         {
 
-            bool result = AdminData.updateAdmin(adminData: amdinData);
+            bool result = AdminData.updateAdmin(amdindata);
             return result == true;
         }
 
@@ -56,13 +56,13 @@ namespace hotel_business
             {
                 case enMode.add:
                     {
-                        if (_createAdmin()) return true;
+                        if (_createadmin()) return true;
                         return false;
                     }
 
                 case enMode.update:
                     {
-                        if (_updateAdmin()) return true;
+                        if (_updateadmin()) return true;
                         return false;
                     }
                 default: return false;
@@ -74,14 +74,14 @@ namespace hotel_business
             return AdminData.deleteAdmin(id);
         }
 
-        public static AdminDto? getAdmin(int id)
+        public static AdminDto? getAdmin(Guid id)
         {
             return AdminData.getAdmin(id);
         }
 
-        public static AdminDto? getAdmin(string userName, string password)
+        public static AdminDto? getAdmin(string username, string password)
         {
-            return AdminData.getAdmin(userName, password);
+            return AdminData.getAdmin(username, password);
         }
 
         public static bool isAdminExist(int id)
@@ -94,7 +94,7 @@ namespace hotel_business
             return PersonData.getPersonsDeleted();
         }
 
-        public static List<PersonDto> getNotDeletedPersons()
+        public static  List<PersonDto> getnotDeletedPersons()
         {
             return PersonData.getPersonsNotDeleted();
         }
