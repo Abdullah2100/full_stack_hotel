@@ -1,6 +1,7 @@
 # .NET build folders
 /hotel_api/hotel_api/bin/
 /hotel_api/hotel_api/obj/
+/hotel_api/hotel_api/Properties/
 
 /hotel_api/hotel_business/bin/
 /hotel_api/hotel_business/obj/
