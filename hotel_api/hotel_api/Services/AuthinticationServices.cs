@@ -13,13 +13,7 @@ namespace hotel_api.Services
     {
         
         public enum enTokenMode{AccessToken,RefreshToken}
-        public static string generateToken(
-            Guid userID,
-            string email,
-            bool isRefresh,
-        IConfigurationServices config,
-            enTokenMode enTokenMode=enTokenMode.AccessToken
-        )
+        public static string generateToken(Guid userID,string email,bool isRefresh,enTokenMode enTokenMode=enTokenMode.AccessToken,IConfigurationServices config)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = config.getKey("credentials:key");
