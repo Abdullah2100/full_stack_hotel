@@ -14,11 +14,9 @@ namespace hotel_api.Services
         
         public enum enTokenMode{AccessToken,RefreshToken}
         public static string generateToken(
-            Guid userID,
-            string email,
-            bool isRefresh,
-        IConfigurationServices config,
-            enTokenMode enTokenMode=enTokenMode.AccessToken
+                Guid userID,string email,
+                IConfigurationServices config,
+                enTokenMode enTokenMode=enTokenMode.AccessToken
         )
         {
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -47,5 +45,7 @@ namespace hotel_api.Services
             return tokenHandler.WriteToken(token);
 
         }
+
+        
     }
 }
