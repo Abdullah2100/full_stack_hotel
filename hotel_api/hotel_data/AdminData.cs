@@ -31,6 +31,7 @@ namespace hotel_data
                     using (var cmd = new NpgsqlCommand(query, connection))
                     {
 
+                        cmd.Parameters.AddWithValue("@adminid", adminData.adminID);
                         cmd.Parameters.AddWithValue("@name", adminData.personData.name);
                         cmd.Parameters.AddWithValue("@phone", adminData.personData.phone);
                         cmd.Parameters.AddWithValue("@email", adminData.personData.email);

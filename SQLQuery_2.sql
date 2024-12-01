@@ -147,7 +147,7 @@ UPDATE Persons SET name = 'fackkdddd' WHERE personid = 1;
 --
 CREATE TABLE Admins 
 (
-    AdminID UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    AdminID UUID PRIMARY KEY ,
     PersonID UUID NOT NULL REFERENCES Persons (PersonID),
     UserName VARCHAR(50) NOT NULL,
     Password TEXT NOT NULL
@@ -155,6 +155,7 @@ CREATE TABLE Admins
 
 CREATE OR REPLACE FUNCTION fn_admin_insert
 (
+    AdminID UUID,
     name VARCHAR(50),
     phone VARCHAR(13),
     email VARCHAR(100),
@@ -171,9 +172,9 @@ BEGIN
     BEGIN 
         INSERT INTO persons(name,email,phone,address)
         values (name,email,phone,address) RETURNING personid INTO person_id;
-        INSERT INTO Admins (Personid,username,password)
-        VALUES (person_id,username,password)RETURNING adminid;
-
+        INSERT INTO Admins (adminid,personid,username,password)
+        VALUES (adminid,person_id,username,password);
+        RETURN 0
     EXCEPTION
         WHEN OTHERS THEN
             -- Handle exceptions with a warning
