@@ -5,7 +5,7 @@ CREATE DATABASE  hotel_db;
 \c hotel_db;
 CREATE TABLE Persons 
 (
-    PersonID BIGSERIAL PRIMARY KEY,
+    PersonID UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     Name VARCHAR(50) NOT NULL,
     Email varchar(100) UNIQUE NOT NULL,
     Phone VARCHAR(13) NOT NULL,
@@ -29,7 +29,7 @@ CREATE TABLE PersonUpdated
     CurrentEmail TEXT NULL,
     CurrentAddress TEXT NULL,
     CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PersonID BIGINT NOT NULL REFERENCES Persons (PersonID)
+    PersonID UUID NOT NULL REFERENCES Persons (PersonID)
 );
 CREATE OR REPLACE FUNCTION fn_personUpdate_modi()
 RETURNS TRIGGER 
@@ -147,19 +147,20 @@ UPDATE Persons SET name = 'fackkdddd' WHERE personid = 1;
 --
 CREATE TABLE Admins 
 (
-    AdminID BIGSERIAL PRIMARY KEY,
-    PersonID BIGINT NOT NULL REFERENCES Persons (PersonID),
+    AdminID UUID PRIMARY KEY ,
+    PersonID UUID NOT NULL REFERENCES Persons (PersonID),
     UserName VARCHAR(50) NOT NULL,
     Password TEXT NOT NULL
 );
 
 CREATE OR REPLACE FUNCTION fn_admin_insert
 (
+    AdminID UUID,
     name VARCHAR(50),
     phone VARCHAR(13),
     email VARCHAR(100),
     address TEXT,
-    personid BIGINT,
+    personid UUID,
     username varchar(50),
     password TEXT
 ) RETURNS INT
@@ -171,9 +172,9 @@ BEGIN
     BEGIN 
         INSERT INTO persons(name,email,phone,address)
         values (name,email,phone,address) RETURNING personid INTO person_id;
-        INSERT INTO Admins (Personid,username,password)
-        VALUES (person_id,username,password)RETURNING adminid;
-
+        INSERT INTO Admins (adminid,personid,username,password)
+        VALUES (adminid,person_id,username,password);
+        RETURN 0
     EXCEPTION
         WHEN OTHERS THEN
             -- Handle exceptions with a warning
@@ -192,7 +193,7 @@ CREATE OR REPLACE FUNCTION fn_admin_update
     phone VARCHAR(13),
     email VARCHAR(100),
     address TEXT,
-    personid BIGINT,
+    personid UUID,
     username varchar(50),
     password TEXT
 ) RETURNS INT
@@ -221,7 +222,7 @@ INSERT INTO Admins(personid,username,password) values (1,'facknice','771ali@..')
 CREATE TABLE AdminUpdate 
 (
     AdminUpdateID BIGSERIAL PRIMARY KEY,
-    AdminID BIGINT NOT NULL REFERENCES Admins (AdminID),
+    AdminID UUID NOT NULL REFERENCES Admins (AdminID),
     PreviusUserName VARCHAR(50) NOT NULL,
     PreviusPassword VARCHAR(50) NOT NULL,
     CurrentUserName VARCHAR(50)  NULL,
