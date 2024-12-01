@@ -1,7 +1,6 @@
 # .NET build folders
-bin
-obj
-Properties
+bin/
+obj/
 
 # User-specific files
 *.rsuser
