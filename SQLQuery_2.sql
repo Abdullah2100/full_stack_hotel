@@ -1,8 +1,8 @@
-\c postgres;
+--\c postgres;
 DROP DATABASE hotel_db;
 
 CREATE DATABASE  hotel_db;
-\c hotel_db;
+--\c hotel_db;
 CREATE TABLE Persons 
 (
     PersonID UUID PRIMARY KEY DEFAULT gen_random_uuid(),
