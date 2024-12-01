@@ -1,7 +1,7 @@
 # .NET build folders
-*/*/bin/
-*/*/obj/
-*/*/Properties/
+bin
+obj
+Properties
 
 # User-specific files
 *.rsuser
