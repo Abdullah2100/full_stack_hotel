@@ -10,6 +10,12 @@ namespace hotel_data
     {
         public static string connectionUrl = clsConnnectionUrl.url;
 
+        /// <summary>
+        /// Creates a new permission entry in the database.
+        /// </summary>
+        /// <param name="permissionNum">The permission number.</param>
+        /// <param name="description">The description of the permission.</param>
+        /// <returns>True if the permission was created successfully; otherwise, false.</returns>
         public static bool createPermission(
             int permissionNum,
             string description

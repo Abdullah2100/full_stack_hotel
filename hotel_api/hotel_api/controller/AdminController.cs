@@ -18,7 +18,7 @@ namespace hotel_api.controller
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult createAdmin(AdminDto adminData)
+        public ActionResult adminSignUp(AdminDto adminData)
         {
             if (adminData.personData == null)
                 return BadRequest("data must not be empty");
@@ -36,6 +36,8 @@ namespace hotel_api.controller
             return StatusCode(201, "admin created");
 
         }
+
+        
 
 
     }

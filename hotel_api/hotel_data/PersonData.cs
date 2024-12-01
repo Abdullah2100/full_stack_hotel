@@ -11,6 +11,11 @@ namespace hotel_data
     {
         public static string connectionUrl = clsConnnectionUrl.url;
 
+        /// <summary>
+        /// Creates a new person entry in the database.
+        /// </summary>
+        /// <param name="personHolder">The PersonDto object containing person details.</param>
+        /// <returns>True if the person was created successfully; otherwise, false.</returns>
         public static bool createPerson(
            PersonDto personHolder
             )
@@ -50,6 +55,11 @@ namespace hotel_data
             return isCreated;
         }
 
+        /// <summary>
+        /// Updates an existing person entry in the database.
+        /// </summary>
+        /// <param name="personHolder">The PersonDto object containing updated person details.</param>
+        /// <returns>True if the person was updated successfully; otherwise, false.</returns>
         public static bool updatePerson(PersonDto personHolder)
         {
             bool isUpdate = false;
@@ -90,9 +100,11 @@ namespace hotel_data
             return isUpdate;
         }
 
-
-
-
+        /// <summary>
+        /// Deletes a person entry from the database.
+        /// </summary>
+        /// <param name="presonId">The ID of the person to delete.</param>
+        /// <returns>True if the person was deleted successfully; otherwise, false.</returns>
         public static bool deletePerson(
           int presonId
        )
@@ -125,7 +137,12 @@ namespace hotel_data
             return isDelelted;
         }
 
-
+        /// <summary>
+        /// Retrieves a person entry from the database by ID.
+        /// </summary>
+        /// <param name="presonId">The ID of the person to retrieve.</param>
+        /// <param name="isDelelted">Reference parameter indicating if the person is deleted.</param>
+        /// <returns>A PersonDto object if the person exists; otherwise, null.</returns>
         public static PersonDto? getPerson(
             long presonId, ref bool isDelelted
             )
@@ -170,6 +187,10 @@ namespace hotel_data
             return null;
         }
 
+        /// <summary>
+        /// Retrieves a list of deleted persons from the database.
+        /// </summary>
+        /// <returns>A list of PersonDto objects representing deleted persons.</returns>
         public static List<PersonDto> getPersonsDeleted()
         {
             var personsList = new List<PersonDto>();
@@ -214,7 +235,10 @@ namespace hotel_data
             return personsList;
         }
 
-
+        /// <summary>
+        /// Retrieves a list of persons not marked as deleted from the database.
+        /// </summary>
+        /// <returns>A list of PersonDto objects representing persons not deleted.</returns>
         public static List<PersonDto> getPersonsNotDeleted()
         {
             var personsList = new List<PersonDto>();
@@ -259,8 +283,11 @@ namespace hotel_data
             return personsList;
         }
 
-
-
+        /// <summary>
+        /// Checks if a person exists in the database by ID.
+        /// </summary>
+        /// <param name="presonId">The ID of the person to check for existence.</param>
+        /// <returns>True if the person exists; otherwise, false.</returns>
         public static bool isExist(
             long presonId
             )
@@ -296,7 +323,11 @@ namespace hotel_data
             return isExist;
         }
 
-
+        /// <summary>
+        /// Checks if a person exists in the database by name.
+        /// </summary>
+        /// <param name="name">The name of the person to check for existence.</param>
+        /// <returns>True if the person exists; otherwise, false.</returns>
         public static bool isExist(
                string name
                )
@@ -331,7 +362,5 @@ namespace hotel_data
             }
             return isExist;
         }
-
-
     }
 }

@@ -11,6 +11,11 @@ namespace hotel_data
     {
         public static string connectionUrl = clsConnnectionUrl.url;
 
+        /// <summary>
+        /// Creates a new admin user in the database.
+        /// </summary>
+        /// <param name="adminData">The AdminDto object containing admin details.</param>
+        /// <returns>True if the admin was created successfully; otherwise, false.</returns>
         public static bool createAdmin(AdminDto adminData)
         {
             bool isCreated = false;
@@ -48,6 +53,11 @@ namespace hotel_data
             return isCreated;
         }
 
+        /// <summary>
+        /// Updates an existing admin user in the database.
+        /// </summary>
+        /// <param name="adminData">The AdminDto object containing updated admin details.</param>
+        /// <returns>True if the admin was updated successfully; otherwise, false.</returns>
         public static bool updateAdmin(
                 AdminDto adminData
            )
@@ -87,6 +97,11 @@ namespace hotel_data
             return isUpdate;
         }
 
+        /// <summary>
+        /// Deletes an admin user from the database.
+        /// </summary>
+        /// <param name="ID">The ID of the admin to delete.</param>
+        /// <returns>True if the admin was deleted successfully; otherwise, false.</returns>
         public static bool deleteAdmin(
        int ID
        )
@@ -119,6 +134,11 @@ namespace hotel_data
             return isDelelted;
         }
 
+        /// <summary>
+        /// Retrieves an admin user from the database by ID.
+        /// </summary>
+        /// <param name="ID">The ID of the admin to retrieve.</param>
+        /// <returns>An AdminDto object if the admin exists; otherwise, null.</returns>
         public static AdminDto? getAdmin(
             int ID
             )
@@ -174,6 +194,12 @@ namespace hotel_data
 
 
 
+        /// <summary>
+        /// Retrieves an admin user from the database by username and password.
+        /// </summary>
+        /// <param name="username">The username of the admin to retrieve.</param>
+        /// <param name="password">The password of the admin to retrieve.</param>
+        /// <returns>An AdminDto object if the admin exists; otherwise, null.</returns>
         public static AdminDto getAdmin(
                string username,
                string password
@@ -231,6 +257,11 @@ namespace hotel_data
 
 
 
+        /// <summary>
+        /// Checks if an admin exists in the database by ID.
+        /// </summary>
+        /// <param name="ID">The ID of the admin to check for existence.</param>
+        /// <returns>True if the admin exists; otherwise, false.</returns>
         public static bool isExist(
             int ID
             )

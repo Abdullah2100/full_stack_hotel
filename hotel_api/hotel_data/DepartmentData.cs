@@ -10,6 +10,11 @@ namespace hotel_data
     {
            public static string connectionUrl = clsConnnectionUrl.url;
 
+        /// <summary>
+        /// Creates a new department in the database.
+        /// </summary>
+        /// <param name="name">The name of the department to create.</param>
+        /// <returns>True if the department was created successfully; otherwise, false.</returns>
         public static bool createDeparmtment(
             string name 
             )
