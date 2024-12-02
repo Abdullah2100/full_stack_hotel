@@ -26,6 +26,7 @@ namespace hotel_data
                     using (var cmd = new NpgsqlCommand(query, connection))
                     {
 
+                        cmd.Parameters.AddWithValue("@adminid", adminData.adminID);
                         cmd.Parameters.AddWithValue("@name", adminData.personData.name);
                         cmd.Parameters.AddWithValue("@phone", adminData.personData.phone);
                         cmd.Parameters.AddWithValue("@address", adminData.personData.address);
@@ -34,14 +35,14 @@ namespace hotel_data
                         cmd.Parameters.AddWithValue("@password", adminData.password);
 
                         var resultID = cmd.ExecuteScalar();
-                        isCreated = ((int)resultID) > 0 ? true : false;
+                        isCreated = true;
                     }
                 }
                 return isCreated;
             }
             catch (Exception ex)
             {
-                Console.WriteLine("\nthis error from person create {0} \n", ex.Message);
+                Console.WriteLine("\nthis error from admin create {0} \n", ex.Message);
 
             }
             return isCreated;
@@ -86,7 +87,7 @@ namespace hotel_data
         }
 
         public static bool deleteAdmin(
-       int ID
+       Guid ID
        )
         {
             bool isDelelted = false;
@@ -104,10 +105,10 @@ namespace hotel_data
                         cmd.Parameters.AddWithValue("@id", ID);
 
                         cmd.ExecuteNonQuery();
-                        return isDelelted;
+                          isDelelted = true;
                     }
                 }
-                return isDelelted;
+          
             }
             catch (Exception ex)
             {
@@ -118,7 +119,7 @@ namespace hotel_data
         }
 
         public static AdminDto? getAdmin(
-            int ID
+            Guid ID
             )
         {
             try
@@ -142,13 +143,14 @@ namespace hotel_data
                               (
                                   ID,
                                   (string)result["name"],
+                                  (string)result["email"],
                                   result["address"] == DBNull.Value ? "" : (string)result["address"],
                                   (string)result["phone"]
                               );
 
                                 var admin = new AdminDto
                                 (
-                                    (int)result["amdinid"],
+                                    (Guid)result["amdinid"],
                                     (string)result["username"],
                                     (string)result["password"],
                                     person
@@ -176,7 +178,7 @@ namespace hotel_data
                string password
                )
         {
-            bool isExist = false;
+
             try
             {
                 using (var connection = new NpgsqlConnection(connectionUrl))
@@ -197,15 +199,16 @@ namespace hotel_data
                             {
                                 var person = new PersonDto
                               (
-                                  (long)result["personid"],
+                                  (Guid)result["personid"],
                                   (string)result["name"],
+                                  (string)result["email"],
                                   result["address"] == DBNull.Value ? "" : (string)result["address"],
                                   (string)result["phone"]
                               );
 
                                 var admin = new AdminDto
                                 (
-                                    (int)result["amdinid"],
+                                    (Guid)result["amdinid"],
                                     username,
                                     password,
                                     person
@@ -229,7 +232,7 @@ namespace hotel_data
 
 
         public static bool isExist(
-            int ID
+            Guid ID
             )
         {
             bool isExist = false;
