@@ -144,6 +144,44 @@ CREATE TABLE Admins
     Password TEXT NOT NULL
 );
 
+CREATE OR REPLACE FUNCTION fn_admin_get_by_id(id UUID)
+RETURNS TABLE(adminid UUID, personid UUID, name TEXT, phone TEXT, address TEXT, username TEXT) AS $$
+BEGIN
+  RETURN QUERY
+  SELECT
+    ad.adminid as adminid,
+    ad.personid as personid,
+    per.name as name,
+    per.phone as phone ,
+    per.address as address,
+    ad.username as userName
+  FROM Admins ad
+  INNER JOIN Persons per
+    ON ad.personid = per.personid
+  WHERE ad.adminid = id; -- Assuming you want to filter by adminId
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION fn_admin_get_username_password(u_userName VARCHAR(50),u_password TEXT)
+RETURNS TABLE(adminid UUID, personid UUID, name TEXT, phone TEXT, address TEXT, username TEXT) AS $$
+BEGIN
+  RETURN QUERY
+  SELECT
+    ad.adminid as adminid,
+    ad.personid as personid,
+    per.name as name,
+    per.phone as phone ,
+    per.address as address,
+    ad.username as userName
+  FROM Admins ad
+  INNER JOIN Persons per
+    ON ad.personid = per.personid
+  WHERE ad.username = username AND ad.password = passow; -- Assuming you want to filter by adminId
+END;
+$$ LANGUAGE plpgsql;
+
+
 CREATE OR REPLACE FUNCTION fn_admin_insert
 (
     adminid UUID ,
