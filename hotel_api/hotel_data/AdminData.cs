@@ -21,7 +21,7 @@ namespace hotel_data
 
                     connection.Open();
 
-                    string query = @"pr_admin_insert";
+                    string query = @" SELECT fn_admin_insert(@adminid, @name, @phone, @email, @address, @personid, @username, @password)";
 
                     using (var cmd = new NpgsqlCommand(query, connection))
                     {
@@ -60,7 +60,7 @@ namespace hotel_data
 
                     connection.Open();
 
-                    string query = @"fn_admin_update";
+                    string query = @"SELECT fn_admin_update(@adminid, @name, @phone, @address, @personid, @username, @password)";
 
                     using (var cmd = new NpgsqlCommand(query, connection))
                     {
@@ -87,7 +87,7 @@ namespace hotel_data
         }
 
         public static bool deleteAdmin(
-       Guid ID
+              Guid ID
        )
         {
             bool isDelelted = false;
@@ -98,7 +98,7 @@ namespace hotel_data
 
                     connection.Open();
 
-                    string query = @" DELETE FROM  admins WHERE adminid =@id;";
+                    string query = @"DELETE FROM  admins WHERE adminid =@id;";
 
                     using (var cmd = new NpgsqlCommand(query, connection))
                     {
@@ -129,7 +129,7 @@ namespace hotel_data
 
                     connection.Open();
 
-                    string query = @" SELECT * FROM  admins WHERE adminid =@ID;";
+                    string query = @"SELECT * FROM fn_admin_get(@ID)";
 
                     using (var cmd = new NpgsqlCommand(query, connection))
                     {
@@ -141,7 +141,7 @@ namespace hotel_data
                             {
                                 var person = new PersonDto
                               (
-                                  ID,
+                                  (Guid)result["personid"],
                                   (string)result["name"],
                                   (string)result["email"],
                                   result["address"] == DBNull.Value ? "" : (string)result["address"],
@@ -150,9 +150,9 @@ namespace hotel_data
 
                                 var admin = new AdminDto
                                 (
-                                    (Guid)result["amdinid"],
+                                    ID,
                                     (string)result["username"],
-                                    (string)result["password"],
+                                    "",
                                     person
                                 );
 
@@ -186,7 +186,7 @@ namespace hotel_data
 
                     connection.Open();
 
-                    string query = @" SELECT * FROM  admins WHERE username =@username AND password = @password;";
+                    string query = @"SELECT * FROM fn_admin_get_username_password(@username,@password)";
 
                     using (var cmd = new NpgsqlCommand(query, connection))
                     {
