@@ -12,9 +12,7 @@ namespace hotel_data
         public static string connectionUrl = clsConnnectionUrl.url;
 
         public static bool createPerson(
-            string name,
-            string phone,
-            string address
+           PersonDto personData
             )
         {
             bool isCreated = false;
@@ -26,16 +24,17 @@ namespace hotel_data
                     connection.Open();
 
                     string query = @"
-                                INSERT INTO persons (name, phone, address)
-                                VALUES (@name,@phone,@address);
+                                INSERT INTO persons ( name , email, phone, address)
+                                VALUES (@name,@email,@phone,@address);
                                 RETURNING personid;";
 
                     using (var cmd = new NpgsqlCommand(query, connection))
                     {
 
-                        cmd.Parameters.AddWithValue("@name", name);
-                        cmd.Parameters.AddWithValue("@phone", phone);
-                        cmd.Parameters.AddWithValue("@address", address);
+                        cmd.Parameters.AddWithValue("@name", personData.name);
+                        cmd.Parameters.AddWithValue("@phone", personData.phone);
+                        cmd.Parameters.AddWithValue("@email", personData.email);
+                        cmd.Parameters.AddWithValue("@address", personData.address);
 
                         var resultID = cmd.ExecuteScalar();
                         isCreated = ((long)resultID) > 0 ? true : false;
@@ -52,10 +51,7 @@ namespace hotel_data
         }
 
         public static bool updatePerson(
-          long id,
-          string name,
-          string phone,
-          string address
+                    PersonDto personData
            )
         {
             bool isUpdate = false;
@@ -73,10 +69,10 @@ namespace hotel_data
 
                     using (var cmd = new NpgsqlCommand(query, connection))
                     {
-                        cmd.Parameters.AddWithValue("@id", id);
-                        cmd.Parameters.AddWithValue("@name", name);
-                        cmd.Parameters.AddWithValue("@phone", phone);
-                        cmd.Parameters.AddWithValue("@address", address);
+                        cmd.Parameters.AddWithValue("@id", personData.personID);
+                        cmd.Parameters.AddWithValue("@name", personData.name);
+                        cmd.Parameters.AddWithValue("@phone", personData.phone);
+                        cmd.Parameters.AddWithValue("@address", personData.address);
 
                         cmd.ExecuteNonQuery();
                         isUpdate = true;
@@ -96,7 +92,7 @@ namespace hotel_data
 
 
         public static bool deletePerson(
-          int presonId
+          Guid id
        )
         {
             bool isDelelted = false;
@@ -107,11 +103,11 @@ namespace hotel_data
 
                     connection.Open();
 
-                    string query = @" DELETE FROM  persons WHERE personid =@personID;";
+                    string query = @" DELETE FROM  persons WHERE personid =@id;";
 
                     using (var cmd = new NpgsqlCommand(query, connection))
                     {
-                        cmd.Parameters.AddWithValue("@personID", presonId);
+                        cmd.Parameters.AddWithValue("@id", id);
 
                         cmd.ExecuteNonQuery();
                         return isDelelted;
@@ -129,7 +125,7 @@ namespace hotel_data
 
 
         public static PersonDto? getPerson(
-            long presonId, ref bool isDelelted
+            Guid id, ref bool isDelelted
             )
         {
             try
@@ -139,11 +135,11 @@ namespace hotel_data
 
                     connection.Open();
 
-                    string query = @" SELECT * FROM  persons WHERE personid =@personID;";
+                    string query = @" SELECT * FROM  persons WHERE personid =@id;";
 
                     using (var cmd = new NpgsqlCommand(query, connection))
                     {
-                        cmd.Parameters.AddWithValue("@personID", presonId);
+                        cmd.Parameters.AddWithValue("@id", id);
 
                         using (var result = cmd.ExecuteReader())
                         {
@@ -152,8 +148,9 @@ namespace hotel_data
                                 isDelelted = (bool)result["isdeleted"];
                                 var person = new PersonDto
                                 (
-                                    presonId,
+                                    id,
                                     (string)result["name"],
+                                    (string)result["email"],
                                     result["address"] == DBNull.Value ? "" : (string)result["address"],
                                     (string)result["phone"]
                                 );
@@ -193,8 +190,9 @@ namespace hotel_data
                             {
                                 var person = new PersonDto
                                 (
-                                    (long)result["personid"],
+                                    (Guid)result["personid"],
                                     (string)result["name"],
+                                    (string)result["email"],
                                     result["address"] == DBNull.Value ? "" : (string)result["address"],
                                     (string)result["phone"]
                                 );
@@ -237,8 +235,9 @@ namespace hotel_data
                             {
                                 var person = new PersonDto
                               (
-                                  (long)result["personid"],
+                                  (Guid)result["personid"],
                                   (string)result["name"],
+                                  (string)result["email"],
                                   result["address"] == DBNull.Value ? "" : (string)result["address"],
                                   (string)result["phone"]
                               );
@@ -261,7 +260,7 @@ namespace hotel_data
 
 
         public static bool isExist(
-            long presonId
+            Guid id
             )
         {
             bool isExist = false;
@@ -272,11 +271,11 @@ namespace hotel_data
 
                     connection.Open();
 
-                    string query = @" SELECT * FROM  persons WHERE personid =@personID;";
+                    string query = @" SELECT * FROM  persons WHERE personid =@id;";
 
                     using (var cmd = new NpgsqlCommand(query, connection))
                     {
-                        cmd.Parameters.AddWithValue("@personID", presonId);
+                        cmd.Parameters.AddWithValue("@id", id);
 
                         using (var result = cmd.ExecuteReader())
                         {

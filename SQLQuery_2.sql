@@ -3,9 +3,11 @@ DROP DATABASE hotel_db;
 
 CREATE DATABASE  hotel_db;
 \c hotel_db;
+
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE Persons 
 (
-    PersonID BIGSERIAL PRIMARY KEY,
+    PersonID UUID PRIMARY KEY DEFAULT uuid_generate_v4() ,
     Name VARCHAR(50) NOT NULL,
     Phone VARCHAR(13) NOT NULL,
     Address TEXT NULL,
@@ -26,7 +28,7 @@ CREATE TABLE PersonUpdated
     CurrentPhone VARCHAR(13) NULL,
     CurrentAddress TEXT NULL,
     CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PersonID BIGINT NOT NULL REFERENCES Persons (PersonID)
+    PersonID UUID NOT NULL REFERENCES Persons (PersonID)
 );
 CREATE OR REPLACE FUNCTION fn_personUpdate_modi()
 RETURNS TRIGGER 
@@ -75,7 +77,10 @@ AS $$
             CurrentAddress := NEW.address;
         END IF;
 
-           
+            UPDATE Persons 
+            SET name = CurrentName ,phone = CurrentPhone ,address = CurrentAddress
+            where  PersonID = OLD.personid;
+
             INSERT INTO
                 PersonUpdated (
                     previusName,
@@ -97,12 +102,12 @@ AS $$
                     OLD.PersonID
                 );
 
-        RETURN NEW;
+        RETURN NULL;
     EXCEPTION
         WHEN OTHERS THEN
             -- Handle exceptions with a warning
             RAISE WARNING 'Something went wrong: %', SQLERRM;
-    
+    RETURN NULL;
     END;
 $$ LANGUAGE plpgsql;
 
@@ -129,20 +134,22 @@ FOR EACH ROW EXECUTE FUNCTION fn_person_update ();
 
 
 --dumy update
-UPDATE Persons SET name = 'fackkdddd' WHERE personid = 1;
+UPDATE Persons SET name = 'fackkdddd' WHERE personid = '62597b4d-838d-4455-86f9-bd97b525b567';
 --
 CREATE TABLE Admins 
 (
-    AdminID BIGSERIAL PRIMARY KEY,
-    PersonID BIGINT NOT NULL REFERENCES Persons (PersonID),
+    AdminID UUID PRIMARY KEY,
+    PersonID UUID NOT NULL REFERENCES Persons (PersonID),
     UserName VARCHAR(50) NOT NULL,
     Password TEXT NOT NULL
 );
 
 CREATE OR REPLACE FUNCTION fn_admin_insert
 (
+    adminid UUID ,
     name VARCHAR(50),
-    phone VARCHAR(13),
+    phone VARCHAR(13), 
+    email VARCHAR(100),
     address TEXT,
     personid BIGINT,
     username varchar(50),
@@ -154,8 +161,8 @@ DECLARE
    person_id BIGINT;
 BEGIN
     BEGIN 
-        INSERT INTO persons(name,phone,address)
-        values (name,phone,address) RETURNING personid INTO person_id;
+        INSERT INTO persons(adminid,name,email,phone,address)
+        values (adminid,name,email,phone,address) RETURNING personid INTO person_id;
         INSERT INTO Admins (Personid,username,password)
         VALUES (person_id,username,password)RETURNING adminid;
 
@@ -172,7 +179,7 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION fn_admin_update
 ( 
-    adminid INT,
+    adminid UUID,
     name VARCHAR(50),
     phone VARCHAR(13),
     address TEXT,
@@ -182,30 +189,31 @@ CREATE OR REPLACE FUNCTION fn_admin_update
 ) RETURNS INT
 AS 
 $$
-DECLARE 
-   person_id BIGINT;
-BEGIN
-    BEGIN 
-        UPDATE persons  SET name = name , phone= phone,address = address WHERE personid= personid;
-        UPDATE admin SET  username=username,password =password where adminid=adminid;
-        return 1;
-    EXCEPTION
-        WHEN OTHERS THEN
-            -- Handle exceptions with a warning
-            RAISE WARNING 'Something went wrong: %', SQLERRM;
-            RETURN 0;
+    DECLARE 
+        person_id BIGINT;
+    BEGIN
+
+            UPDATE persons  SET name = name , phone= phone,address = address WHERE personid= OLD.personid;
+            UPDATE admin SET  username=username,password =password where adminid=adminid;
+            return 1;
+        EXCEPTION
+            WHEN OTHERS THEN
+ 
+                RAISE WARNING 'Something went wrong: %', SQLERRM;
+                RETURN 0;
+
     END;
-END;
 $$ LANGUAGE plpgsql;
 
 --dumy insert 
-INSERT INTO Admins(personid,username,password) values (1,'facknice','771ali@..');
+INSERT INTO Admins(adminid,personid,username,password) 
+values (uuid_generate_v4(),'62597b4d-838d-4455-86f9-bd97b525b567 ','facknice','771ali@..');
 --
 
 CREATE TABLE AdminUpdate 
 (
-    AdminUpdateID BIGSERIAL PRIMARY KEY,
-    AdminID BIGINT NOT NULL REFERENCES Admins (AdminID),
+    AdminUpdateID UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    AdminID UUID NOT NULL REFERENCES Admins (AdminID),
     PreviusUserName VARCHAR(50) NOT NULL,
     PreviusPassword VARCHAR(50) NOT NULL,
     CurrentUserName VARCHAR(50)  NULL,

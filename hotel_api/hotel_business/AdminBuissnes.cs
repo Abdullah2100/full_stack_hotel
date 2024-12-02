@@ -12,10 +12,10 @@ namespace hotel_business
 
         public enum enMode { add, update }
         enMode mode = enMode.add;
-        public int ID { get; set; }
+        public Guid ID { get; set; }
         public string userName { get; set; }
         public string password { get; set; }
-        public long? personID { get; set; }
+        public Guid? personID { get; set; }
         public bool isDeleted { get; set; } = false;
         public PersonDto? personData { get; set; }
 
@@ -69,12 +69,12 @@ namespace hotel_business
             }
         }
 
-        public static bool deleteAdmin(int id)
+        public static bool deleteAdmin(Guid id)
         {
             return AdminData.deleteAdmin(id);
         }
 
-        public static AdminDto? getAdmin(int id)
+        public static AdminDto? getAdmin(Guid id)
         {
             return AdminData.getAdmin(id);
         }
@@ -84,7 +84,7 @@ namespace hotel_business
             return AdminData.getAdmin(userName, password);
         }
 
-        public static bool isAdminExist(int id)
+        public static bool isAdminExist(Guid id)
         {
             return AdminData.isExist(id);
         }

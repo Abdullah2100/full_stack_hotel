@@ -12,14 +12,19 @@ namespace hotel_business
     {
         public enum enMode { add, update };
         enMode mode = enMode.add;
-        public long ID { get; set; }
+        public Guid ID { get; set; }
         public string name { get; set; }
+        public string email { get; set; }
         public string phone { get; set; }
         public string address { get; set; }
 
         public bool isDeleted { get; set; } = false;
 
-        public PersonBuisness(long id, string name, string phone, string address, enMode enMode)
+        public PersonDto personData {
+            get{return new PersonDto(ID, name, email,phone, address); }
+        }
+
+        public PersonBuisness(Guid id, string name, string phone, string address, enMode enMode)
         {
             this.ID = id;
             this.name = name;
@@ -39,12 +44,12 @@ namespace hotel_business
 
         private bool createPerson()
         {
-            return PersonData.createPerson(name, phone, address);
+            return PersonData.createPerson(personData);
         }
 
         private bool updatePerson()
         {
-            return PersonData.updatePerson(ID, name, phone, address);
+            return PersonData.updatePerson(personData);
         }
 
 
@@ -72,10 +77,10 @@ namespace hotel_business
             }
         }
 
-        public static PersonBuisness? getPersonByID(long peronsID)
+        public static PersonBuisness? getPersonByID(Guid ID)
         {
             bool isDeleted = false;
-            var personData = PersonData.getPerson(peronsID, ref isDeleted);
+            var personData = PersonData.getPerson(ID, ref isDeleted);
             if (personData != null)
             {
                 return new PersonBuisness(personData, isDeleted, enMode.update);
@@ -84,9 +89,9 @@ namespace hotel_business
         }
 
 
-        public static bool isPersonExistByID(long peronsID)
+        public static bool isPersonExistByID(Guid ID)
         {
-            return PersonData.isExist(peronsID);
+            return PersonData.isExist(ID);
         }
 
         public static bool isPersonExistByName(string name)
