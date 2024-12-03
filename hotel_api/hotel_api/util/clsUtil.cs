@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Security.Cryptography;
+using System.Text;
 using static hotel_api.Services.AuthinticationServices;
 
 namespace hotel_api.util
@@ -18,28 +19,27 @@ namespace hotel_api.util
             switch (mode)
             {
                 case enTokenMode.AccessToken:
-                    {
-                        return DateTime.Now.AddSeconds(40);
-                    }
+                {
+                    return DateTime.Now.AddSeconds(40);
+                }
                 default:
-                    {
-                        return DateTime.Now.AddDays(30);
-                    }
+                {
+                    return DateTime.Now.AddDays(30);
+                }
             }
         }
+
 
         public static string hashingText(string text)
         {
- 
-
-            using (var sha = new System.Security.Cryptography.SHA256Managed())
+            using (SHA256 sha256 = SHA256.Create())
             {
-                byte[] textData = System.Text.Encoding.UTF8.GetBytes(text);
-                byte[] hash = sha.ComputeHash(textData);
-                return BitConverter.ToString(hash).Replace("-", String.Empty);
-            }
-           
+                // Compute the hash of the given string
+                byte[] hashValue = sha256.ComputeHash(Encoding.UTF8.GetBytes(text));
+ 
+                // Convert the byte array to string format
+                return BitConverter.ToString(hashValue).Replace("-", "");
+            } 
         }
-
     }
 }

@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Mvc;
-using hotel_data;
 using hotel_data.dto;
 using hotel_business;
 using hotel_api.util;
@@ -12,15 +8,20 @@ using hotel_api.Services;
 namespace hotel_api.controller
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/admins")]
     public class AdminController : ControllerBase
     {
 
         private readonly IConfigurationServices _config;
 
+        public AdminController( IConfigurationServices config)
+        {
+           this._config = config;    
+        }
 
 
-        [HttpPost(Name = "AddStudent")]
+
+        [HttpPost("adminSinUp")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
@@ -30,7 +31,8 @@ namespace hotel_api.controller
             if (adminData.personData == null)
                 return BadRequest("data must not be empty");
 
-            var data = AdminBuissnes.getAdmin(adminData.userName, clsUtil.hashingText(adminData.password));
+            var data = AdminBuissnes.getAdmin(adminData.userName, 
+                clsUtil.hashingText(adminData.password));
             if (data != null)
                 return StatusCode(409, "amdin already exist");
             var adminId = Guid.NewGuid();
@@ -41,15 +43,15 @@ namespace hotel_api.controller
             if (result == false)
                 return StatusCode(500, "some thing wrong");
 
-            accesstoken = AuthinticationServices.generateToken((Guid)data.adminID, adminData.personData.email, _config, AuthinticationServices.enTokenMode.AccessToken);
-            refreshToken = AuthinticationServices.generateToken((Guid)data.adminID, adminData.personData.email, _config, AuthinticationServices.enTokenMode.RefreshToken);
+            accesstoken = AuthinticationServices.generateToken(adminId, adminData.personData.email, _config, AuthinticationServices.enTokenMode.AccessToken);
+            refreshToken = AuthinticationServices.generateToken(adminId, adminData.personData.email, _config, AuthinticationServices.enTokenMode.RefreshToken);
 
             return StatusCode(201, new { accessToken = $"{accesstoken}", refreshToken = $"{refreshToken}" });
 
         }
 
 
-        [HttpPost(Name = "AddStudent")]
+        [HttpPost( "addminSinIn")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
@@ -66,8 +68,8 @@ namespace hotel_api.controller
             if (data.adminID == null)
             {
 
-                accesstoken = AuthinticationServices.generateToken((Guid)data.adminID, adminData.personData.email, _config, AuthinticationServices.enTokenMode.AccessToken);
-                refreshToken = AuthinticationServices.generateToken((Guid)data.adminID, adminData.personData.email, _config, AuthinticationServices.enTokenMode.RefreshToken);
+                accesstoken = AuthinticationServices.generateToken(data.adminID, adminData.personData.email, _config, AuthinticationServices.enTokenMode.AccessToken);
+                refreshToken = AuthinticationServices.generateToken(data.adminID, adminData.personData.email, _config, AuthinticationServices.enTokenMode.RefreshToken);
             }
 
 

@@ -36,8 +36,8 @@ namespace hotel_data
                         cmd.Parameters.AddWithValue("@email", personData.email);
                         cmd.Parameters.AddWithValue("@address", personData.address);
 
-                        var resultID = cmd.ExecuteScalar();
-                        isCreated = ((long)resultID) > 0 ? true : false;
+                      cmd.ExecuteScalar();
+                        isCreated =  true ;
                     }
                 }
                 return isCreated;
@@ -69,11 +69,15 @@ namespace hotel_data
 
                     using (var cmd = new NpgsqlCommand(query, connection))
                     {
-                        cmd.Parameters.AddWithValue("@id", personData.personID);
+                        if (personData != null)
+                        {
+                            cmd.Parameters.AddWithValue("@id", personData.personID!);
+                            
                         cmd.Parameters.AddWithValue("@name", personData.name);
                         cmd.Parameters.AddWithValue("@phone", personData.phone);
                         cmd.Parameters.AddWithValue("@address", personData.address);
-
+                        }
+                        
                         cmd.ExecuteNonQuery();
                         isUpdate = true;
                     }
@@ -110,7 +114,7 @@ namespace hotel_data
                         cmd.Parameters.AddWithValue("@id", id);
 
                         cmd.ExecuteNonQuery();
-                        return isDelelted;
+                         isDelelted = true;
                     }
                 }
                 return isDelelted;
@@ -198,7 +202,6 @@ namespace hotel_data
                                 );
                                 personsList.Add(person);
                             }
-                            return personsList;
                         }
                     }
                 }
@@ -243,7 +246,6 @@ namespace hotel_data
                               );
                                 personsList.Add(person);
                             }
-                            return personsList;
                         }
                     }
                 }

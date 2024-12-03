@@ -30,7 +30,7 @@ namespace hotel_business
             this.ID = ID;
             this.userName = adminData.userName;
             this.password = adminData.password;
-            this.personID = adminData.personData.personID;
+            this.personID = adminData.personData?.personID;
             this.mode = mode;
             this.personData = adminData.personData;
             this.isDeleted = isDeleted;

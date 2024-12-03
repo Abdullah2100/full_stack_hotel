@@ -7,7 +7,7 @@ namespace hotel_api.Services
 {
     public interface IConfigurationServices
     {
-         
+
         public  string getKey(string key);
 
     }

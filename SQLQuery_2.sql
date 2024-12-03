@@ -189,7 +189,6 @@ CREATE OR REPLACE FUNCTION fn_admin_insert
     phone VARCHAR(13), 
     email VARCHAR(100),
     address TEXT,
-    personid BIGINT,
     username varchar(50),
     password TEXT
 ) RETURNS INT
@@ -201,7 +200,7 @@ BEGIN
     BEGIN 
         INSERT INTO persons(adminid,name,email,phone,address)
         values (adminid,name,email,phone,address) RETURNING personid INTO person_id;
-        INSERT INTO Admins (Personid,username,password)
+        INSERT INTO Admins (personid,username,password)
         VALUES (person_id,username,password)RETURNING adminid;
 
     EXCEPTION
