@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using hotel_api.util;
 using Microsoft.IdentityModel.Tokens;
 
@@ -14,11 +10,12 @@ namespace hotel_api.Services
         
         public enum enTokenMode{AccessToken,RefreshToken}
         public static string generateToken(
-                Guid userID,string email,
+                Guid? userID,string email,
                 IConfigurationServices config,
                 enTokenMode enTokenMode=enTokenMode.AccessToken
         )
         {
+            if (userID == null) return "";
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = config.getKey("credentials:key");
             var issuer = config.getKey("credentials:Issuer");
@@ -26,7 +23,7 @@ namespace hotel_api.Services
 
             var claims = new List<Claim>(){
                 new (JwtRegisteredClaimNames.Jti,clsUtil.generateGuid()),
-                new (JwtRegisteredClaimNames.Sub,userID.ToString()),
+                new (JwtRegisteredClaimNames.Sub,userID.ToString()??""),
                 new (JwtRegisteredClaimNames.Email,email)
             };
 
