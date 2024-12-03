@@ -32,7 +32,7 @@ namespace hotel_data
                         cmd.Parameters.AddWithValue("@permissionNum", permissionNum);
                         cmd.Parameters.AddWithValue("@desicription", description);
                         var resultID = cmd.ExecuteScalar();
-                        isCreated = ((long)resultID) > 0 ? true : false;
+                        isCreated =  true ;
                     }
                 }
                 return isCreated;

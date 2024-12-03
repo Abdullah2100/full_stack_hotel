@@ -24,13 +24,14 @@ namespace hotel_business
             get{return new PersonDto(ID, name, email,phone, address); }
         }
 
-        public PersonBuisness(Guid id, string name, string phone, string address, enMode enMode)
+        public PersonBuisness(Guid id, string name,string email, string phone, string address, enMode enMode)
         {
             this.ID = id;
             this.name = name;
             this.phone = phone;
             this.address = address;
             this.mode = enMode;
+            this.email = email; 
         }
 
         public PersonBuisness(PersonDto personData, bool isDeleted, enMode enMode)
@@ -38,6 +39,7 @@ namespace hotel_business
             this.name = personData.name;
             this.phone = personData.phone;
             this.address = personData.address;
+            this.email= personData.email;
             this.mode = enMode;
             this.isDeleted = isDeleted;
         }
