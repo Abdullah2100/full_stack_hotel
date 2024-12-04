@@ -1,21 +1,26 @@
 \c postgres;
+
 DROP DATABASE hotel_db;
 
 CREATE DATABASE  hotel_db;
+
 \c hotel_db;
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+
 CREATE TABLE Persons 
 (
     PersonID UUID PRIMARY KEY DEFAULT uuid_generate_v4() ,
     Name VARCHAR(50) NOT NULL,
     Phone VARCHAR(13) NOT NULL,
+    Email VARCHAR(100) NOT NULL,
     Address TEXT NULL,
     IsDeleted bool DEFAULT FALSE
 );
 
 --dumy insert
-INSERT INTO Persons(name,phone,address) values('ahmed','735501225','fack');
+INSERT INTO Persons(name,email,phone,address) values('ahmed','fack@gmail.com','735501225','fack');
 --
 
 CREATE TABLE PersonUpdated 
@@ -106,7 +111,7 @@ AS $$
     EXCEPTION
         WHEN OTHERS THEN
             -- Handle exceptions with a warning
-            RAISE WARNING 'Something went wrong: %', SQLERRM;
+            RAISE EXCEPTION 'Something went wrong: %', SQLERRM;
     RETURN NULL;
     END;
 $$ LANGUAGE plpgsql;
@@ -182,6 +187,17 @@ END;
 $$ LANGUAGE plpgsql;
 
 
+select "fn_admin_insert"
+(
+    uuid_generate_v4() ,
+    'fadsf',
+    'fffffff', 
+    'ffff@gmail.com',
+    'fffffff',
+    'lommmmmm',
+    '735555555asfd'
+)
+
 CREATE OR REPLACE FUNCTION fn_admin_insert
 (
     adminid UUID ,
@@ -195,18 +211,18 @@ CREATE OR REPLACE FUNCTION fn_admin_insert
 AS 
 $$
 DECLARE 
-   person_id BIGINT;
+   person_id UUID;
 BEGIN
     BEGIN 
-        INSERT INTO persons(adminid,name,email,phone,address)
-        values (adminid,name,email,phone,address) RETURNING personid INTO person_id;
-        INSERT INTO Admins (personid,username,password)
-        VALUES (person_id,username,password)RETURNING adminid;
-
+        INSERT INTO persons(name,email,phone,address)
+        values (name,email,phone,address) RETURNING personid INTO person_id;
+        INSERT INTO Admins (adminid,personid,username,password)
+        VALUES (adminid,person_id,username,password);
+        RETURN 1;
     EXCEPTION
         WHEN OTHERS THEN
             -- Handle exceptions with a warning
-            RAISE WARNING 'Something went wrong: %', SQLERRM;
+            RAISE EXCEPTION 'Something went wrong: %', SQLERRM;
             RETURN 0;
     END;
 END;
@@ -236,11 +252,36 @@ $$
         EXCEPTION
             WHEN OTHERS THEN
  
-                RAISE WARNING 'Something went wrong: %', SQLERRM;
+                RAISE EXCEPTION 'Something went wrong: %', SQLERRM;
                 RETURN 0;
 
     END;
 $$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION fn_admin_delete() 
+RETURNS TRIGGER 
+AS $$
+    BEGIN 
+        RETURN null;
+    END;
+$$ LANGUAGE plpgsql;
+
+-- CREATE TRIGGER tr_admin_insert 
+-- BEFORE INSERT ON Admins 
+-- FOR EACH ROW EXECUTE FUNCTION fn_admin_insert();
+
+
+CREATE TRIGGER tr_admin_update 
+BEFORE UPDATE ON Admins
+FOR EACH ROW EXECUTE FUNCTION fn_admin_update();
+
+CREATE TRIGGER tr_admin_delete
+BEFORE DELETE ON Admins
+FOR EACH ROW EXECUTE FUNCTION fn_admin_delete ();
+
+
+
+
 
 --dumy insert 
 INSERT INTO Admins(adminid,personid,username,password) 
@@ -313,47 +354,10 @@ AS $$
     EXCEPTION
         WHEN OTHERS THEN
             -- Handle exceptions with a warning
-            RAISE WARNING 'Something went wrong: %', SQLERRM;
+            RAISE EXCEPTION 'Something went wrong: %', SQLERRM;
     RETURN NULL;
     END;
 $$ LANGUAGE plpgsql;
-
-
-CREATE OR REPLACE FUNCTION fn_admin_insert() 
-RETURNS TRIGGER 
-AS $$ 
-    BEGIN 
-        IF NEW.AdminID <> 1 THEN
-            RETURN NULL;
-        END IF;
-
-        RETURN NEW;
-    EXCEPTION
-        WHEN OTHERS THEN
-            -- Handle exceptions with a warning
-            RAISE WARNING 'Something went wrong: %', SQLERRM;
-    END;
-$$ LANGUAGE plpgsql;
-
-CREATE OR REPLACE FUNCTION fn_admin_delete() 
-RETURNS TRIGGER 
-AS $$
-    BEGIN 
-        RETURN null;
-    END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER tr_admin_insert 
-BEFORE INSERT ON Admins 
-FOR EACH ROW EXECUTE FUNCTION fn_admin_insert();
-
-CREATE TRIGGER tr_admin_update 
-BEFORE UPDATE ON Admins
-FOR EACH ROW EXECUTE FUNCTION fn_admin_update();
-
-CREATE TRIGGER tr_admin_delete
-BEFORE DELETE ON Admins
-FOR EACH ROW EXECUTE FUNCTION fn_admin_delete ();
 
 
 

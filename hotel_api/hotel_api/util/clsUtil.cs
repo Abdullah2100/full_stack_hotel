@@ -41,5 +41,7 @@ namespace hotel_api.util
                 return BitConverter.ToString(hashValue).Replace("-", "");
             } 
         }
+        
+        
     }
 }
