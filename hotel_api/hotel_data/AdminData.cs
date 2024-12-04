@@ -32,7 +32,6 @@ namespace hotel_data
                             cmd.Parameters.AddWithValue("@phone", adminData.personData.phone);
                             cmd.Parameters.AddWithValue("@address", adminData.personData.address);
                             cmd.Parameters.AddWithValue("@email", adminData.personData.email);
-                            cmd.Parameters.AddWithValue("@personid", adminData.personData.personID!);
                         }
 
                         cmd.Parameters.AddWithValue("@username", adminData.userName);
