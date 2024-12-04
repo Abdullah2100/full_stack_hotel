@@ -27,7 +27,8 @@ namespace hotel_business
         public AdminBuissnes(AdminDto adminData, enMode mode = enMode.add)
         {
             bool isDeleted = false;
-            this.ID = ID;
+            if(adminData.adminID!=null)
+            this.ID = adminData.adminID;
             this.userName = adminData.userName;
             this.password = adminData.password;
             this.personID = adminData.personData?.personID;
