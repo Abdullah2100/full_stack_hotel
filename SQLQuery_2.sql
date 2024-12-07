@@ -1,8 +1,9 @@
-\ c postgres;
+\c postgres;
 DROP DATABASE hotel_db;
 CREATE DATABASE hotel_db;
-\ c hotel_db;
+\c hotel_db;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 CREATE TABLE Persons (
     PersonID UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     Name VARCHAR(50) NOT NULL,
@@ -50,43 +51,26 @@ UPDATE ON PersonUpdated FOR EACH ROW EXECUTE FUNCTION fn_personUpdate_modi();
 --
 
 --
-CREATE TRIGGER tr_personUpdate_delete BEFORE DELETE ON PersonUpdated FOR EACH ROW EXECUTE FUNCTION fn_personUpdate_modi();
-CREATE OR REPLACE FUNCTION fn_person_update () RETURNS TRIGGER AS $$
-DECLARE CurrentName VARCHAR(50) := '';
-CurrentPhone VARCHAR(13) := '';
-CurrentAddress TEXT := '';
-BEGIN IF NEW.name IS NULL THEN CurrentName := OLD.name;
-ELSE CurrentName := NEW.name;
-END IF;
-IF NEW.phone IS NULL THEN CurrentPhone := OLD.phone;
-ELSE CurrentPhone := NEW.phone;
-END IF;
-IF NEW.Address IS NULL THEN CurrentAddress := OLD.address;
-ELSE CurrentAddress := NEW.address;
-END IF;
+CREATE TRIGGER tr_personUpdate_delete 
+BEFORE DELETE ON PersonUpdated 
+FOR EACH ROW EXECUTE FUNCTION fn_personUpdate_modi();
+
+
+CREATE OR REPLACE FUNCTION fn_person_update () 
+RETURNS TRIGGER 
+AS $$
+BEGIN 
+
 UPDATE Persons
-SET name = CurrentName,
-    phone = CurrentPhone,
-    address = CurrentAddress
+SET 
+name = CASE WHEN OLD.name <> NEW.name THEN NEW.name ELSE OLD.name END,
+phone = CASE WHEN  OLD.phone <> NEW.phone THEN NEW.phone ELSE OLD.phone END,
+address = CASE WHEN OLD.address <> NEW.address THEN  NEW.address ELSE OLD.address END 
 where PersonID = OLD.personid;
-INSERT INTO PersonUpdated (
-        previusName,
-        previusPhone,
-        previusAddress,
-        currentName,
-        currentPhone,
-        currentAddress,
-        PersonID
-    )
-VALUES (
-        OLD.Name,
-        OLD.Phone,
-        OLD.Address,
-        CurrentName,
-        CurrentPhone,
-        CurrentAddress,
-        OLD.PersonID
-    );
+
+INSERT INTO PersonUpdated ( previusName, previusPhone, previusAddress, currentName, currentPhone, currentAddress, PersonID)
+VALUES ( OLD.Name, OLD.Phone, OLD.Address, CurrentName, CurrentPhone, CurrentAddress, OLD.PersonID);
+
 RETURN NULL;
 EXCEPTION
 WHEN OTHERS THEN -- Handle exceptions with a warning
@@ -190,21 +174,8 @@ $$ LANGUAGE plpgsql;
 
 
 --
-select "fn_admin_insert" (
-        uuid_generate_v4(),
-        'fadsf',
-        'fffffff',
-        'ffff@gmail.com',
-        'fffffff',
-        'lommmmmm',
-        '735555555asfd'
-    )
-
-    --
-
-    --
 CREATE OR REPLACE FUNCTION fn_admin_insert (
-        adminid UUID,
+        adminid_n UUID,
         name VARCHAR(50),
         phone VARCHAR(13),
         email VARCHAR(100),
@@ -218,7 +189,7 @@ INSERT INTO persons(name, email, phone, address)
 values (name, email, phone, address)
 RETURNING personid INTO person_id;
 INSERT INTO Admins (adminid, personid, username, password)
-VALUES (adminid, person_id, username, password);
+VALUES (adminid_a, person_id, username, password);
 RETURN 1;
 EXCEPTION
 WHEN OTHERS THEN -- Handle exceptions with a warning
@@ -229,6 +200,18 @@ END;
 END;
 $$ LANGUAGE plpgsql;
 --
+
+--
+select "fn_admin_insert" (
+        uuid_generate_v4(),
+        'fadsf',
+        'fffffff',
+        'ffff@gmail.com',
+        'fffffff',
+        'lommmmmm',
+        '735555555asfd'
+    );
+
 
 
 --
@@ -263,7 +246,9 @@ $$ LANGUAGE plpgsql;
 
 
 ---
-CREATE OR REPLACE FUNCTION fn_admin_delete() RETURNS TRIGGER AS $$ BEGIN RETURN null;
+CREATE OR REPLACE FUNCTION fn_admin_delete() RETURNS TRIGGER AS $$ 
+BEGIN 
+RETURN null;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -356,7 +341,7 @@ $$ LANGUAGE plpgsql;
 
 --
 
-CREATE TABLE Users (
+CREATE  TABLE Users (
     UserID UUID PRIMARY KEY,
     DateOfBirth DATE NOT NULL,
     UserName VARCHAR(50) NOT NULL,
@@ -364,14 +349,27 @@ CREATE TABLE Users (
     IsVIP bool DEFAULT FALSE,
     PersonID UUID NOT NULL REFERENCES Persons (personid),
     CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    IsDeleted bool DEFAULT FALSE,
     DeletedDate TIMESTAMP NULL,
     DeletedByItSelf BOOLEAN DEFAULT FALSE
 );
 --
 
 --
-CREATE OR REPLACE VIEW usersView AS
+CREATE TABLE UserUpdate(
+    userUpdateID UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    userId UUID REFERENCES Users(userid),
+    currentUsername VARCHAR(50),
+    currentpassword TEXT,
+    currentIsVIP bool,
+    username VARCHAR(50),
+    password TEXT,
+    IsVIP bool
+)
+--
+
+
+--
+CREATE  VIEW usersView AS
 SELECT per.PersonID,
     per.Name,
     per.Phone,
@@ -381,8 +379,6 @@ SELECT per.PersonID,
     us.UserID,
     us.UserName,
     us.Password,
-    us.IsDeleted AS isUserDeleted,
-    -- To avoid ambiguity
     us.DateOfBirth,
     us.IsVIP
 FROM Persons per
@@ -391,7 +387,7 @@ FROM Persons per
 
 --  
 CREATE OR REPLACE FUNCTION fn_user_insert (
-        userId UUID,
+        userId_u UUID,
         name VARCHAR(50),
         phone VARCHAR(13),
         email VARCHAR(100),
@@ -413,7 +409,7 @@ INSERT INTO Users (
         Password,
         IsVIP,
         personid
-    ) VALUES( userId,DateOfBirth, UserName, Password, IsVIP, person_id); RETURN 1;
+    ) VALUES( userId_u,DateOfBirth, UserName, Password, IsVIP, person_id); RETURN 1;
 EXCEPTION
 WHEN OTHERS THEN RAISE EXCEPTION 'Something went wrong: %',
 SQLERRM;
@@ -421,6 +417,53 @@ RETURN 0;
 END;
 $$ LANGUAGE plpgsql;
 --
+
+
+--
+CREATE OR REPLACE FUNCTION fn_user_update()
+RETURNS TRIGGER 
+AS $$
+DECLARE
+    userid_u UUID;
+    name_u VARCHAR(50);
+    phone_u VARCHAR(13);
+    address_u TEXT;
+    username_u varchar(50);
+    password_u TEXT;
+    IsVIP_u bool;
+    personid_u UUID ;
+BEGIN
+
+   UPDATE persons SET 
+   name = CASE WHEN name <> name_u THEN name_u ELSE name END, 
+   phone = CASE WHEN phone <> phone_u THEN phone_u ELSE phone END, 
+   address = CASE WHEN address <> address_u THEN address_u ELSE address END
+   WHERE personid = person_id;
+
+   UPDATE  users
+   SET username = CASE WHEN username_u <> username THEN username_u ELSE username END,
+    password = CASE WHEN password_u <> password THEN passowrd_u ELSE password END,
+    username = CASE WHEN IsVIP_u <> isvip THEN IsVIP_u ELSE isvip END
+   WHERE userid=userid_u;
+
+   INSERT INTO UserUpdate(userId ,currentUsername , currentpassword , currentIsVIP, username , password , IsVIP ) 
+   VALUES ( userid_u,OLD.username,OLD.password,OLD.isvip,NEW.username,NEW.password,NEW.svip);
+
+   RETURN NEW;
+
+   EXCEPTION
+     WHEN OTHERS THEN RAISE EXCEPTION  'Something went wrong: %', SQLERRM;
+   RETURN NULL;
+END;
+$$LANGUAGE plpgsql;
+
+--
+
+--
+
+CREATE  TRIGGER tr_user_update 
+BEFORE UPDATE on users
+FOR EACH ROW EXECUTE FUNCTION fn_user_update();
 
 
 --
