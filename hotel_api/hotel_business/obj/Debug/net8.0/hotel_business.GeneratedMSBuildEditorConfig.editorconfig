@@ -11,5 +11,3 @@ build_property.RootNamespace = hotel_business
 build_property.ProjectDir = /home/abdullah/Desktop/hotel_stack_project/full_stack_hotel/hotel_api/hotel_business/
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
-build_property.EffectiveAnalysisLevelStyle = 8.0
-build_property.EnableCodeStyleSeverity = 

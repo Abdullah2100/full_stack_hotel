@@ -1,12 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "VWu934IBxlg=",
+  "dgSpecHash": "5imvlKrxgF8=",
   "success": true,
   "projectFilePath": "/home/abdullah/Desktop/hotel_stack_project/full_stack_hotel/hotel_api/hotel_data/hotel_data.csproj",
   "expectedPackageFiles": [
     "/home/abdullah/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/8.0.2/microsoft.extensions.dependencyinjection.abstractions.8.0.2.nupkg.sha512",
     "/home/abdullah/.nuget/packages/microsoft.extensions.logging.abstractions/8.0.2/microsoft.extensions.logging.abstractions.8.0.2.nupkg.sha512",
-    "/home/abdullah/.nuget/packages/npgsql/9.0.1/npgsql.9.0.1.nupkg.sha512"
+    "/home/abdullah/.nuget/packages/npgsql/9.0.1/npgsql.9.0.1.nupkg.sha512",
+    "/home/abdullah/.nuget/packages/microsoft.netcore.app.ref/8.0.11/microsoft.netcore.app.ref.8.0.11.nupkg.sha512",
+    "/home/abdullah/.nuget/packages/microsoft.aspnetcore.app.ref/8.0.11/microsoft.aspnetcore.app.ref.8.0.11.nupkg.sha512"
   ],
   "logs": []
 }
