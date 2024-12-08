@@ -8,6 +8,7 @@ namespace hotel_api.Services
     public class AuthinticationServices
     {
         
+        
         public enum enTokenMode{AccessToken,RefreshToken}
         public static string generateToken(
                 Guid? userID,string email,
@@ -43,6 +44,24 @@ namespace hotel_api.Services
 
         }
 
-        
+
+        public static object decodeToken(string key, string token)
+        {
+            try
+            {
+                var handler = new JwtSecurityTokenHandler();
+                if (!handler.CanReadToken(token))
+                {
+                    var jwtToken = handler.ReadJwtToken(token);
+                    return jwtToken.Payload[$"{key}"];
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("this error from decode token function {0}",ex);
+            }
+            
+        }
     }
 }
