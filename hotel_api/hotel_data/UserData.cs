@@ -71,6 +71,7 @@ namespace hotel_data
             string password
         )
         {
+            UserDto? userHolder = null;
             try
             {
                 using (var con = new NpgsqlConnection(connectionUr))
@@ -97,17 +98,17 @@ namespace hotel_data
                                     reader["address"] == DBNull.Value ? "" : (string)reader["address"]
                                 );
 
-                                var userData = new UserDto(
+                                userHolder = new UserDto(
                                     userId: (Guid)reader["userid"],
                                     personID: (Guid)reader["personid"],
-                                    brithDay: (DateTime)reader["dateofbrith"],
+                                    brithDay: (DateTime)reader["dateofbirth"],
                                     isVip: (bool)reader["isvip"],
                                     personData: personData,
                                     userName: userName,
                                     password: password
                                 );
 
-                                return userData;
+                                return userHolder;
                             }
                         }
                     }
@@ -118,7 +119,7 @@ namespace hotel_data
                 Console.WriteLine("this from getting user by id error {0}", ex);
             }
 
-            return null;
+            return userHolder;
         }
 
 
@@ -131,15 +132,15 @@ namespace hotel_data
                 {
                     con.Open();
                     string query = @"SELECT fn_user_insert ( 
-                                  @userId_u , 
-                                  @name ,
-                                  @phone ,
-                                  @email ,
-                                  @address ,
-                                  @username ,
-                                  @password ,
+                                  @userId_u::UUID , 
+                                  @name::VARCHAR(50) ,
+                                  @phone::VARCHAR(13) ,
+                                  @email::VARCHAR(100) ,
+                                  @address::TEXT ,
+                                  @username::VARCHAR(50) ,
+                                  @password::TEXT ,
                                   @IsVIP , 
-                                  @DateOfBirth  ) ";
+                                  @DateOfBirth::DATE  ) ";
                     using (var cmd = new NpgsqlCommand(query, con))
                     {
                         cmd.Parameters.AddWithValue("@userId_u", userData.userId);
@@ -151,10 +152,11 @@ namespace hotel_data
                         cmd.Parameters.AddWithValue("@password", userData.password);
                         cmd.Parameters.AddWithValue("@IsVIP", userData.isVip);
                         cmd.Parameters.AddWithValue("@DateOfBirth", userData.brithDay);
-
-                    }
+                        cmd.ExecuteNonQuery();
 
                     isCreated = true;
+                    }
+
                 }
 
             }
