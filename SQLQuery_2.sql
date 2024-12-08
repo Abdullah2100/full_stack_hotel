@@ -524,6 +524,42 @@ EXECUTE FUNCTION fn_user_deleted();
 CREATE  TRIGGER tr_user_update 
 BEFORE UPDATE on users
 FOR EACH ROW EXECUTE FUNCTION fn_user_update();
+--
+
+
+
+--
+CREATE OR REPLACE FUNCTION isExistById(id UUID)
+RETURNS BOOLEAN 
+AS $$
+DECLARE
+email VARCHAR(100); 
+personid UUID;
+BEGIN
+SELECT EXISTS(
+        SELECT 1
+        FROM persons per
+        INNER JOIN admins ad ON per.personid = ad.personid
+        WHERE ad.adminid = id
+
+        UNION ALL
+
+        SELECT 1
+        FROM persons per
+        INNER JOIN users us ON per.personid = us.personid
+        WHERE us.userid = id
+    )
+    INTO email;
+
+    RETURN email;
+
+RETURN is_exist_id;
+  EXCEPTION
+     WHEN OTHERS THEN RAISE EXCEPTION  'Something went wrong: %', SQLERRM;
+   RETURN FALSE;
+
+END;
+$$LANGUAGE plpgsql;
 
 
 --
