@@ -96,9 +96,9 @@ namespace hotel_business
             return PersonData.isExist(ID);
         }
 
-        public static bool isPersonExistByName(string name)
+        public static bool isPersonExistByEmail(string email)
         {
-            return PersonData.isExist(name);
+            return PersonData.isExist(email);
         }
     }
 

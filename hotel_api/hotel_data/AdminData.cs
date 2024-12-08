@@ -21,11 +21,11 @@ namespace hotel_data
                     connection.Open();
 
                     string query =
-                        @" SELECT fn_admin_insert(@adminid, @name, @phone, @email, @address, @username, @password)";
+                        @" SELECT fn_admin_insert(@adminid_n, @name, @phone, @email, @address, @username, @password)";
 
                     using (var cmd = new NpgsqlCommand(query, connection))
                     {
-                        cmd.Parameters.AddWithValue("@adminid", adminData.adminID!);
+                        cmd.Parameters.AddWithValue("@adminid_n", adminData.adminID!);
                         if (adminData.personData != null)
                         {
                             cmd.Parameters.AddWithValue("@name", adminData.personData.name);
@@ -69,13 +69,13 @@ namespace hotel_data
                     using (var cmd = new NpgsqlCommand(query, connection))
                     {
                         cmd.Parameters.AddWithValue("@adminid", adminData.adminID!);
-                        
+
                         if (adminData.personData != null)
                         {
-                        cmd.Parameters.AddWithValue("@name", adminData.personData.name);
-                        cmd.Parameters.AddWithValue("@phone", adminData.personData.phone);
-                        cmd.Parameters.AddWithValue("@address", adminData.personData.address);
-                        cmd.Parameters.AddWithValue("@personid", adminData.personData.personID!);
+                            cmd.Parameters.AddWithValue("@name", adminData.personData.name);
+                            cmd.Parameters.AddWithValue("@phone", adminData.personData.phone);
+                            cmd.Parameters.AddWithValue("@address", adminData.personData.address);
+                            cmd.Parameters.AddWithValue("@personid", adminData.personData.personID!);
                         }
                         cmd.Parameters.AddWithValue("@username", adminData.userName);
                         cmd.Parameters.AddWithValue("@password", adminData.password);
@@ -184,52 +184,50 @@ namespace hotel_data
             string password
         )
         {
+            AdminDto? adminData = null;
             try
             {
                 using (var connection = new NpgsqlConnection(connectionUrl))
                 {
                     connection.Open();
-
-                    string query = @"SELECT * FROM fn_admin_get_username_password(@username,@password)";
+                    string query = " SELECT * from fn_admin_get_username_password(@username_a, @password_a) ";
 
                     using (var cmd = new NpgsqlCommand(query, connection))
                     {
-                        cmd.Parameters.AddWithValue("@username", username);
-                        cmd.Parameters.AddWithValue("@password", password);
+                        cmd.Parameters.AddWithValue("@username_a", username);
+                        cmd.Parameters.AddWithValue("@password_a", password);
 
-                        using (var result = cmd.ExecuteReader())
+                        using (NpgsqlDataReader? result = cmd.ExecuteReader())
                         {
-                            if (result.HasRows)
+                            if (result.Read())
                             {
-                                var person = new PersonDto
-                                (
-                                    (Guid)result["personid"],
-                                    (string)result["name"],
-                                    (string)result["email"],
-                                    result["address"] == DBNull.Value ? "" : (string)result["address"],
-                                    (string)result["phone"]
-                                );
 
-                                var admin = new AdminDto
-                                (
-                                    (Guid)result["amdinid"],
-                                    username,
-                                    password,
-                                    person
-                                );
+                                adminData = new AdminDto
+                               (
+                                  adminID: (Guid)result["adminid"],
+                                   userName: username,
+                                   password: password,
+                                   personData: new PersonDto
+                                   (
+                                       (Guid)result["personid"],
+                                       (string)result["name"],
+                                       (string)result["email"],
+                                       result["address"] == DBNull.Value ? "" : (string)result["address"],
+                                       (string)result["phone"]
+                                   )
+                               );
 
-                                return admin;
                             }
                         }
                     }
                 }
 
-                return null;
+                return adminData;
             }
             catch (Exception ex)
             {
                 Console.WriteLine("\nthis error from person deleted {0} \n", ex.Message);
-            return null;
+                return adminData;
             }
 
         }

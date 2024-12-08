@@ -17,17 +17,12 @@ namespace hotel_business
         public string password { get; set; }
         public Guid? personID { get; set; }
         public bool isDeleted { get; set; } = false;
+
         public PersonDto? personData { get; set; }
 
-        public AdminDto amdinData
+        public AdminBuissnes(AdminDto adminData, enMode mode = enMode.add,bool isDeleted = false)
         {
-            get { return new AdminDto(ID, userName, password, personData); }
-        }
-
-        public AdminBuissnes(AdminDto adminData, enMode mode = enMode.add)
-        {
-            bool isDeleted = false;
-            if(adminData.adminID!=null)
+            this.isDeleted = isDeleted;
             this.ID = adminData.adminID;
             this.userName = adminData.userName;
             this.password = adminData.password;
@@ -35,6 +30,11 @@ namespace hotel_business
             this.mode = mode;
             this.personData = adminData.personData;
             this.isDeleted = isDeleted;
+        }
+
+        public AdminDto amdinData
+        {
+            get { return new AdminDto(ID, userName, password, personData); }
         }
 
         private bool _createAdmin()

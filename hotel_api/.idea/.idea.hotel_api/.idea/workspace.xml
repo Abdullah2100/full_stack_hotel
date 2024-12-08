@@ -9,92 +9,62 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cc4137bb-6819-4e3a-9ae3-65d56ec75884" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hotel_business/UserBuissnes.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hotel_data/AdminData.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hotel_data/UserData.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/hotel_api/RequestDto/LoginRequestDto.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../SQLQuery_2.sql" beforeDir="false" afterPath="$PROJECT_DIR$/../SQLQuery_2.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/Properties/launchSettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/Properties/launchSettings.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/appsettings.Development.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/appsettings.Development.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/appsettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/appsettings.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/controller/clsRoomType.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/hotel_api.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/hotel_api.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/hotel_api.http" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/obj/Debug/net8.0/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/obj/Debug/net8.0/hotel_api.AssemblyInfo.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/obj/Debug/net8.0/hotel_api.AssemblyInfoInputs.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/obj/Debug/net8.0/hotel_api.GeneratedMSBuildEditorConfig.editorconfig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/obj/Debug/net8.0/hotel_api.GlobalUsings.g.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/obj/Debug/net8.0/hotel_api.MvcApplicationPartsAssemblyInfo.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/obj/Debug/net8.0/hotel_api.MvcApplicationPartsAssemblyInfo.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/obj/Debug/net8.0/hotel_api.assets.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/obj/Debug/net8.0/hotel_api.csproj.AssemblyReference.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/obj/Debug/net8.0/hotel_api.csproj.CoreCompileInputs.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/obj/Debug/net8.0/hotel_api.csproj.FileListAbsolute.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/obj/Debug/net8.0/hotel_api.sourcelink.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.hotel_api/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.hotel_api/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_api/controller/UserController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/controller/UserController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_api/obj/hotel_api.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/obj/hotel_api.csproj.nuget.dgspec.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/obj/hotel_api.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/obj/hotel_api.csproj.nuget.g.props" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_api/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/obj/project.assets.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_api/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/obj/project.nuget.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_business/bin/Debug/net8.0/hotel_business.deps.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_business/bin/Debug/net8.0/hotel_business.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_business/bin/Debug/net8.0/hotel_business.pdb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_business/bin/Debug/net8.0/hotel_data.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_business/bin/Debug/net8.0/hotel_data.pdb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_business/clsRoomTypeBuisness.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_business/hotel_business.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/hotel_business.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_business/obj/Debug/net8.0/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_business/obj/Debug/net8.0/hotel_bu.E4DB504B.Up2Date" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_business/obj/Debug/net8.0/hotel_business.AssemblyInfo.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_business/obj/Debug/net8.0/hotel_business.AssemblyInfoInputs.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_business/obj/Debug/net8.0/hotel_business.GeneratedMSBuildEditorConfig.editorconfig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_business/obj/Debug/net8.0/hotel_business.GlobalUsings.g.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_business/obj/Debug/net8.0/hotel_business.assets.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_business/obj/Debug/net8.0/hotel_business.csproj.AssemblyReference.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_business/obj/Debug/net8.0/hotel_business.csproj.CoreCompileInputs.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_business/obj/Debug/net8.0/hotel_business.csproj.FileListAbsolute.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_business/obj/Debug/net8.0/hotel_business.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_business/obj/Debug/net8.0/hotel_business.pdb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_business/obj/Debug/net8.0/hotel_business.sourcelink.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_business/obj/Debug/net8.0/ref/hotel_business.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_business/obj/Debug/net8.0/refint/hotel_business.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_api/util/clsValidation.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/util/clsValidation.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_business/AdminBuissnes.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/AdminBuissnes.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_business/PersonBuisness.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/PersonBuisness.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_business/obj/hotel_business.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/obj/hotel_business.csproj.nuget.dgspec.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_business/obj/hotel_business.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/obj/hotel_business.csproj.nuget.g.props" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_business/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/obj/project.assets.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_business/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/obj/project.nuget.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_data/bin/Debug/net8.0/hotel_data.deps.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_data/bin/Debug/net8.0/hotel_data.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_data/bin/Debug/net8.0/hotel_data.pdb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_data/clsRoomTypeData.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_data/dto/clsRoomTypeDto.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_data/hotel_data.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/hotel_data.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_data/obj/Debug/net8.0/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_data/obj/Debug/net8.0/hotel_data.AssemblyInfo.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_data/obj/Debug/net8.0/hotel_data.AssemblyInfoInputs.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_data/obj/Debug/net8.0/hotel_data.GeneratedMSBuildEditorConfig.editorconfig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_data/obj/Debug/net8.0/hotel_data.GlobalUsings.g.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_data/obj/Debug/net8.0/hotel_data.assets.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_data/obj/Debug/net8.0/hotel_data.csproj.AssemblyReference.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_data/obj/Debug/net8.0/hotel_data.csproj.CoreCompileInputs.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_data/obj/Debug/net8.0/hotel_data.csproj.FileListAbsolute.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_data/obj/Debug/net8.0/hotel_data.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_data/obj/Debug/net8.0/hotel_data.pdb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_data/obj/Debug/net8.0/hotel_data.sourcelink.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_data/obj/Debug/net8.0/ref/hotel_data.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_data/obj/Debug/net8.0/refint/hotel_data.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_data/obj/hotel_data.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/obj/hotel_data.csproj.nuget.dgspec.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_data/obj/hotel_data.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/obj/hotel_data.csproj.nuget.g.props" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_data/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/obj/project.assets.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_data/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/obj/project.nuget.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_data/AdminData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/AdminData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_data/PersonData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/PersonData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_data/UserData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/UserData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_data/obj/hotel_data.csproj.nuget.dgspec.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_data/obj/hotel_data.csproj.nuget.g.props" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_data/obj/hotel_data.csproj.nuget.g.targets" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_data/obj/project.assets.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_data/obj/project.nuget.cache" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="DpaMonitoringSettings">
+    <option name="firstShow" value="false" />
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Abdullah2100&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;git@github.com:Abdullah2100/full_stack_hotel.git&quot;,
+    &quot;accountId&quot;: &quot;f83b8517-6056-40d2-9d9f-76c5845fae87&quot;
+  }
+}</component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/4e5a9639249143f08b4f100fbba5057b15d000/53/a92391fc/NpgsqlDataReader.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6b68996d3f744ce29d899145be2c2f0c1de400/7c/fb17133d/ActionMethodExecutor.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6b68996d3f744ce29d899145be2c2f0c1de400/e0/1cfa06c1/ControllerActionInvoker.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6b68996d3f744ce29d899145be2c2f0c1de400/f2/79c5651e/ResourceInvoker.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/d62eb286436a45a6a9ba2df86a4c8444e28400/ac/9b12a14f/RuntimeHelpers.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/4adb5b691829c26d83fa849c65de669c2b38704fa6a8e6216dafbcb24e24d4f/NpgsqlDataReader.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file:///usr/share/dotnet/sdk/9.0.101/Sdks/Microsoft.NET.Sdk/targets/Microsoft.PackageDependencyResolution.targets" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 4
@@ -106,16 +76,23 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    ".NET Launch Settings Profile.hotel_api: http.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
+    "XThreadsFramesViewSplitterKey": "0.13084112",
     "git-widget-placeholder": "main",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.sourceCode.C#",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
     "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "postgresql"
+    ]
   }
 }]]></component>
   <component name="RunManager" selected=".NET Launch Settings Profile.hotel_api: http">
@@ -162,6 +139,10 @@
       <workItem from="1733561962285" duration="28000" />
       <workItem from="1733562018490" duration="106000" />
       <workItem from="1733562687838" duration="6441000" />
+      <workItem from="1733581139507" duration="7603000" />
+      <workItem from="1733640644562" duration="1701000" />
+      <workItem from="1733658682720" duration="1355000" />
+      <workItem from="1733664855668" duration="9235000" />
     </task>
     <servers />
   </component>
@@ -169,7 +150,83 @@
     <option name="version" value="3" />
   </component>
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/hotel_api/controller/UserController.cs</url>
+          <line>30</line>
+          <properties documentPath="$PROJECT_DIR$/hotel_api/controller/UserController.cs" containingFunctionPresentation="Method 'adminSignUp'">
+            <startOffsets>
+              <option value="787" />
+            </startOffsets>
+            <endOffsets>
+              <option value="950" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/hotel_api/controller/AdminController.cs</url>
+          <line>32</line>
+          <properties documentPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" containingFunctionPresentation="Method 'adminSignUp'">
+            <startOffsets>
+              <option value="936" />
+            </startOffsets>
+            <endOffsets>
+              <option value="1106" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/hotel_api/controller/UserController.cs</url>
+          <line>96</line>
+          <properties documentPath="$PROJECT_DIR$/hotel_api/controller/UserController.cs" containingFunctionPresentation="Method 'adminSignIn'">
+            <startOffsets>
+              <option value="3249" />
+            </startOffsets>
+            <endOffsets>
+              <option value="3370" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/hotel_api/controller/AdminController.cs</url>
+          <line>84</line>
+          <properties documentPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" containingFunctionPresentation="Method 'adminSignIn'">
+            <startOffsets>
+              <option value="3268" />
+            </startOffsets>
+            <endOffsets>
+              <option value="3370" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <watches-manager>
+      <configuration name="LaunchSettings">
+        <watch expression="result[&quot;adminid&quot;]" />
+        <watch expression="result[&quot;phone&quot;]" />
+        <watch expression="reader[&quot;dateofbirth&quot;]" language="C#" />
+      </configuration>
+    </watches-manager>
   </component>
 </project>

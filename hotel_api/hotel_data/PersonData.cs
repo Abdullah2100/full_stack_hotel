@@ -298,7 +298,7 @@ namespace hotel_data
 
 
         public static bool isExist(
-               string name
+               string email
                )
         {
             bool isExist = false;
@@ -309,11 +309,11 @@ namespace hotel_data
 
                     connection.Open();
 
-                    string query = @" SELECT * FROM  persons WHERE name =@name;";
+                    string query = @" SELECT * FROM  persons WHERE email =@email;";
 
                     using (var cmd = new NpgsqlCommand(query, connection))
                     {
-                        cmd.Parameters.AddWithValue("@name", name);
+                        cmd.Parameters.AddWithValue("@email", email);
 
                         using (var result = cmd.ExecuteReader())
                         {
