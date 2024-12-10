@@ -176,8 +176,8 @@ RETURN QUERY
             INNER JOIN 
             persons per 
                 ON ad.personid = per.personid
-        WHERE  ad.username = @username_a OR per.email = @username_a
-        AND ad.password =  @password_a;
+        WHERE  ad.username = username_a OR per.email = username_a
+        AND ad.password =  password_a;
         EXCEPTION
 WHEN OTHERS THEN RAISE EXCEPTION 'Something went wrong: %',
 SQLERRM;
@@ -199,6 +199,14 @@ WHERE (ad.username = 'sdaf' OR per.email = 'sdaf')
     AND ad.password = '71620152A16EBE4E23FB4C550510C41113E41E4E58352718527BF859A91603B5';
 
 
+-- {
+--  "userName": "asdfasdfsdaf",
+--  "password": "ASdf!@12",
+--  "name": "ffffff",
+--  "email": "gakkkkk@gmail.com",
+--  "phone": "7894561234",
+--  "address": "sdafasdfdasf"
+-- }
 
 --
 CREATE OR REPLACE FUNCTION fn_admin_insert (
@@ -391,7 +399,7 @@ CREATE TABLE UserUpdate(
     username VARCHAR(50),
     password TEXT,
     IsVIP bool
-)
+);
 --
 
 
@@ -562,7 +570,31 @@ END;
 $$LANGUAGE plpgsql;
 
 
+
+CREATE OR REPLACE FUNCTION isExistByIdAndEmail(email_hold VARCHAR(100),id UUID)
+RETURNS BOOLEAN
+AS $$
+DECLARE 
+isExist INT; 
+BEGIN
+SELECT COUNT(*)
+INTO isExist
+FROM(
+    SELECT * FROM 
+    persons per 
+    LEFT JOIN admins ad  ON per.personid = ad.personid 
+    LEFT JOIN users use  ON per.personid = use.personid 
+    WHERE per.email = email_hold AND ad.adminid = id OR use.userid =id
+)d;
+RETURN isExist>=1;
+  EXCEPTION
+     WHEN OTHERS THEN RAISE EXCEPTION  'Something went wrong: %', SQLERRM;
+   RETURN FALSE;
+END;
+$$LANGUAGE plpgsql;
+
 --
+
 CREATE TABLE Departments (
     DepartmentID BIGSERIAL PRIMARY KEY,
     Name VARCHAR(50) NOT NULL

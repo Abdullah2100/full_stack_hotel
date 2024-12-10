@@ -190,7 +190,7 @@ namespace hotel_data
                 using (var connection = new NpgsqlConnection(connectionUrl))
                 {
                     connection.Open();
-                    string query = " SELECT * from fn_admin_get_username_password(@username_a, @password_a) ";
+                    string query = " SELECT * from fn_admin_get_username_password(@username_a::VARCHAR(50), @password_a::TEXT) ";
 
                     using (var cmd = new NpgsqlCommand(query, connection))
                     {

@@ -8,4 +8,9 @@ public class GeneralBuisness
     {
         return GeneralData.isValideId(id);
     }
+
+    public static bool isExistByEmailAndID(string email, Guid id)
+    {
+       return GeneralData.isExistByEmailAndID(email, id); 
+    }
 }
