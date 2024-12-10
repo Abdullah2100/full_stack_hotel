@@ -9,10 +9,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cc4137bb-6819-4e3a-9ae3-65d56ec75884" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/hotel_business/GeneralBuisness.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../SQLQuery_2.sql" beforeDir="false" afterPath="$PROJECT_DIR$/../SQLQuery_2.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.hotel_api/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.hotel_api/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_api/Services/AuthinticationServices.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/Services/AuthinticationServices.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_api/controller/RefreshTokenController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/controller/RefreshTokenController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_api/hotel_api.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/hotel_api.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_api/obj/hotel_api.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/obj/hotel_api.csproj.nuget.dgspec.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_api/obj/hotel_api.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/obj/hotel_api.csproj.nuget.g.props" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_api/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/obj/project.assets.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_api/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/obj/project.nuget.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_business/GeneralBuisness.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/GeneralBuisness.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_business/obj/hotel_business.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/obj/hotel_business.csproj.nuget.dgspec.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_business/obj/hotel_business.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/obj/hotel_business.csproj.nuget.g.props" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_business/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/obj/project.assets.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_business/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/obj/project.nuget.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_data/AdminData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/AdminData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_data/GeneralData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/GeneralData.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,15 +51,13 @@
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/4e5a9639249143f08b4f100fbba5057b15d000/53/a92391fc/NpgsqlDataReader.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6b68996d3f744ce29d899145be2c2f0c1de400/7c/fb17133d/ActionMethodExecutor.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6b68996d3f744ce29d899145be2c2f0c1de400/e0/1cfa06c1/ControllerActionInvoker.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6b68996d3f744ce29d899145be2c2f0c1de400/f2/79c5651e/ResourceInvoker.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/d62eb286436a45a6a9ba2df86a4c8444e28400/ac/9b12a14f/RuntimeHelpers.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/4adb5b691829c26d83fa849c65de669c2b38704fa6a8e6216dafbcb24e24d4f/NpgsqlDataReader.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file:///usr/share/dotnet/sdk/9.0.101/Sdks/Microsoft.NET.Sdk/targets/Microsoft.PackageDependencyResolution.targets" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/2b24c82392e049eb3194fd98c227c6f0b28fdb15e9b92497a8bb899fb8f7a2/DateTimeParse.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/3ebffcd2ab98c3abdcb6c2c350fb49783e75ae2d26c32d1ab7d87c9e84e4/JwtSecurityToken.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/71ea5c4edeff4385acb72ebe8dd9eb825939c97d1f1cb41dc463babd91cf34/ControllerActionInvoker.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/db7395f4add94e6d10e515b3e55373f2821f8323de7dc8e314d78feefacf5584/ActionMethodExecutor.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f0e62cf3fcafec12baaa8b324345dde874d42ef7eb3911f7d53153ee3f57cb3e/Controller.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f894e33213ba52cc2be6895907c89a75cbadbb4cfbe396263c4caf92da1d1/Claim.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 4
@@ -56,27 +67,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    ".NET Launch Settings Profile.hotel_api: http.executor": "Debug",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "XThreadsFramesViewSplitterKey": "0.13084112",
-    "git-widget-placeholder": "validate-user-admin-signin-signup",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "com.maddyhome.idea.vim.ui.VimEmulationConfigurable",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;.NET Launch Settings Profile.hotel_api: http.executor&quot;: &quot;Debug&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;XThreadsFramesViewSplitterKey&quot;: &quot;0.06866953&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;validate__refresh__token&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.maddyhome.idea.vim.ui.VimEmulationConfigurable&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "postgresql"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;postgresql&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected=".NET Launch Settings Profile.hotel_api: http">
     <configuration name="hotel_api: http" type="LaunchSettings" factoryName=".NET Launch Settings Profile">
       <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/hotel_api/hotel_api.csproj" />
@@ -125,6 +136,11 @@
       <workItem from="1733640644562" duration="1701000" />
       <workItem from="1733658682720" duration="1355000" />
       <workItem from="1733664855668" duration="13785000" />
+      <workItem from="1733738014006" duration="8383000" />
+      <workItem from="1733768693315" duration="1539000" />
+      <workItem from="1733808530472" duration="5000" />
+      <workItem from="1733810822458" duration="2352000" />
+      <workItem from="1733824088956" duration="6430000" />
     </task>
     <servers />
   </component>
@@ -163,19 +179,6 @@
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/hotel_api/controller/AdminController.cs</url>
-          <line>32</line>
-          <properties documentPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" containingFunctionPresentation="Method 'adminSignUp'">
-            <startOffsets>
-              <option value="936" />
-            </startOffsets>
-            <endOffsets>
-              <option value="1106" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/hotel_api/controller/UserController.cs</url>
           <line>96</line>
           <properties documentPath="$PROJECT_DIR$/hotel_api/controller/UserController.cs" containingFunctionPresentation="Method 'adminSignIn'">
@@ -189,25 +192,60 @@
           <option name="timeStamp" value="3" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/hotel_api/controller/RefreshTokenController.cs</url>
+          <line>27</line>
+          <properties documentPath="$PROJECT_DIR$/hotel_api/controller/RefreshTokenController.cs" containingFunctionPresentation="Method 'generateRefreshToken'">
+            <startOffsets>
+              <option value="752" />
+            </startOffsets>
+            <endOffsets>
+              <option value="828" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/hotel_api/controller/RefreshTokenController.cs</url>
+          <line>25</line>
+          <properties documentPath="$PROJECT_DIR$/hotel_api/controller/RefreshTokenController.cs" containingFunctionPresentation="Method 'generateRefreshToken'">
+            <startOffsets>
+              <option value="679" />
+            </startOffsets>
+            <endOffsets>
+              <option value="742" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/hotel_api/controller/AdminController.cs</url>
           <line>84</line>
           <properties documentPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" containingFunctionPresentation="Method 'adminSignIn'">
             <startOffsets>
-              <option value="3268" />
+              <option value="3289" />
             </startOffsets>
             <endOffsets>
-              <option value="3370" />
+              <option value="3391" />
             </endOffsets>
           </properties>
-          <option name="timeStamp" value="4" />
+          <option name="timeStamp" value="8" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+    <pin-to-top-manager>
+      <pinned-members>
+        <PinnedItemInfo parentTag="Type#System.ArgumentException" memberName="Message" />
+      </pinned-members>
+    </pin-to-top-manager>
     <watches-manager>
       <configuration name="LaunchSettings">
         <watch expression="result[&quot;adminid&quot;]" />
         <watch expression="result[&quot;phone&quot;]" />
         <watch expression="reader[&quot;dateofbirth&quot;]" language="C#" />
+        <watch expression="claim.First(x =&gt; x.Type == &quot;lat&quot;);" />
+        <watch expression="issuDateTime.CompareTo(expireTime) &gt;= 29" />
+        <watch expression="issuDateTime.CompareTo(expireTime)" />
+        <watch expression=" rsult.Days&gt;=29" />
       </configuration>
     </watches-manager>
   </component>

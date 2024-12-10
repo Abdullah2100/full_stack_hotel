@@ -1,14 +1,14 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using hotel_api.util;
+
 using Microsoft.IdentityModel.Tokens;
 
 namespace hotel_api.Services
 {
     public class AuthinticationServices
     {
-        
-        
+      
         public enum enTokenMode{AccessToken,RefreshToken}
         public static string generateToken(
                 Guid? userID,string email,
@@ -38,30 +38,30 @@ namespace hotel_api.Services
                         System.Text.Encoding.UTF8.GetBytes(key))
                         ,SecurityAlgorithms.HmacSha256Signature) 
             };
-
+            
+          
             var token = tokenHandler.CreateToken(tokenDescip);
             return tokenHandler.WriteToken(token);
 
         }
-
-
-        public static object decodeToken(string key, string token)
+     
+      
+        public static Claim?  GetPayloadFromToken(string key,string token)
         {
             try
             {
-                var handler = new JwtSecurityTokenHandler();
-                if (!handler.CanReadToken(token))
-                {
-                    var jwtToken = handler.ReadJwtToken(token);
-                    return jwtToken.Payload[$"{key}"];
-                }
-
+                var tokenHandler = new JwtSecurityTokenHandler();
+        
+                var jwtToken = tokenHandler.ReadJwtToken(token);
+                return clsTokenUtil.getClaimType(jwtToken.Claims, key);
             }
             catch (Exception ex)
             {
-                Console.WriteLine("this error from decode token function {0}",ex);
+                Console.WriteLine($"Error extracting payload: {ex.Message}");
+                return null;
             }
-            
         }
+
+     
     }
 }

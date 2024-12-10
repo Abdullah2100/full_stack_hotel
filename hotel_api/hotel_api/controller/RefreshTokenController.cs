@@ -1,4 +1,5 @@
 using hotel_api.Services;
+using hotel_api.util;
 using hotel_business;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,30 +23,41 @@ public class RefreshTokenController : Controller
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public ActionResult generateRefreshToken(string tokenHolder)
     {
-        var issuer = (Guid)AuthinticationServices.decodeToken("iss", tokenHolder);
-        var issAt = (DateTime)AuthinticationServices.decodeToken("iat", tokenHolder);
-        var expireAt = (DateTime)AuthinticationServices.decodeToken("exp", tokenHolder);
-        string? email = GeneralBuisness.isExistById(issuer);
-        if (email!=null)
+        AuthinticationServices.GetPayloadFromToken("iss", tokenHolder);
+
+        var issuer = AuthinticationServices.GetPayloadFromToken("iss", tokenHolder);
+        var aud = AuthinticationServices.GetPayloadFromToken("aud", tokenHolder);
+        var issuAt = AuthinticationServices.GetPayloadFromToken("exp", tokenHolder);
+        var expire = AuthinticationServices.GetPayloadFromToken("lat", tokenHolder);
+        var email = AuthinticationServices.GetPayloadFromToken("email", tokenHolder);
+        var id = AuthinticationServices.GetPayloadFromToken("id", tokenHolder);
+        
+        if(issuer==null||aud==null||issuAt==null||expire==null||email==null||id==null)
+            return Unauthorized("Invalid token");
+        
+        if(!clsTokenUtil.isValidIssuerAndAudience(issuer.Value,aud.Value,_config))
+            return Unauthorized("Invalid token");
+        
+        if (!clsTokenUtil.isRefreshToken(issuAt.Value, expire.Value))
         {
-            var dayBetween = issAt - expireAt;
-            if (dayBetween.Days == 30)
-            {
-               string accesstoken = AuthinticationServices.generateToken(issuer, email??"", _config,
-                    AuthinticationServices.enTokenMode.AccessToken),
-                refreshToken = AuthinticationServices.generateToken(issuer, email ?? "", _config,
-                    AuthinticationServices.enTokenMode.RefreshToken);
-               return Ok(new { accessToken = $"{accesstoken}", refreshToken = $"{refreshToken}"});
-            }
-            else
-            {
-                return BadRequest("send valide token ");
-            }
+            return Unauthorized("Invalid token");
+ 
         }
-        else
-        {
-            return StatusCode(401, "Invalid token");
-        }
-      
+         var guid_id = Guid.Parse(id.Value);
+         
+         if (!GeneralBuisness.isExistByEmailAndID(email.Value, guid_id))
+         {
+             return Unauthorized("unAuthorize person ");
+         }
+         string accesstoken = "", refreshToken = "";
+            
+         accesstoken = AuthinticationServices.generateToken(guid_id, email.Value , _config,
+             AuthinticationServices.enTokenMode.AccessToken);
+         refreshToken = AuthinticationServices.generateToken(guid_id, email.Value, _config,
+             AuthinticationServices.enTokenMode.RefreshToken);
+
+         return Ok(new { accessToken = $"{accesstoken}", refreshToken = $"{refreshToken}" });
+
+         
     }
 }

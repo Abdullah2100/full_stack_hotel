@@ -51,9 +51,9 @@ namespace hotel_api.controller
                 password: clsUtil.hashingText(adminRequestData.password)
                 ,
                 new PersonDto(
-                    null,
-                    adminRequestData.name,
-                    adminRequestData.email,
+                    personID: null,
+                    email:adminRequestData.email,
+                    name:adminRequestData.name,
                     adminRequestData.phone,
                     adminRequestData.address));
 
