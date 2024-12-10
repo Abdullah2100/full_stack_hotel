@@ -1,7 +1,11 @@
 
+# User-specific files
+*.rsuser
+
 # Ignore build and publish outputs
 bin/
 obj/
+.idea/
 out/
 *.exe
 *.dll

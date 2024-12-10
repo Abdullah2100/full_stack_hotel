@@ -7,7 +7,7 @@ public class clsTokenUtil
 {
     public   enum enTokenClaimType
     {
-        Iss, Aud,Email,Jti,Exp,Lat,None
+        Iss, Aud,Email,Sub,Exp,Lat,None
     }
     private static enTokenClaimType _convertKeyToClaimType(string key)
     {
@@ -16,7 +16,7 @@ public class clsTokenUtil
             case "iss":return enTokenClaimType.Iss;
             case "aud":return enTokenClaimType.Aud;
             case "email":return enTokenClaimType.Email;
-            case "id": return enTokenClaimType.Jti;
+            case "id": return enTokenClaimType.Sub;
             case "lat":return enTokenClaimType.Lat;
             case "exp":return enTokenClaimType.Exp;
             default:return enTokenClaimType.None;
@@ -40,9 +40,9 @@ public class clsTokenUtil
             {
                 return claim.First(x => x.Type == "email");
             }
-            case enTokenClaimType.Jti:
+            case enTokenClaimType.Sub:
             {
-                return claim.First(x => x.Type == "jti");
+                return claim.First(x => x.Type == "sub");
             }
             case enTokenClaimType.Lat:
             {
