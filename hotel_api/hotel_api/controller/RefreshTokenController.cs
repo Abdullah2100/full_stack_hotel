@@ -23,19 +23,15 @@ public class RefreshTokenController : Controller
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public ActionResult generateRefreshToken(string tokenHolder)
     {
-        AuthinticationServices.GetPayloadFromToken("iss", tokenHolder);
-
-        var issuer = AuthinticationServices.GetPayloadFromToken("iss", tokenHolder);
-        var aud = AuthinticationServices.GetPayloadFromToken("aud", tokenHolder);
+        if (!clsTokenUtil.isValidToken(tokenHolder, _config))
+            return Unauthorized("Invalid token");
+        
         var issuAt = AuthinticationServices.GetPayloadFromToken("exp", tokenHolder);
         var expire = AuthinticationServices.GetPayloadFromToken("lat", tokenHolder);
         var email = AuthinticationServices.GetPayloadFromToken("email", tokenHolder);
         var id = AuthinticationServices.GetPayloadFromToken("id", tokenHolder);
         
-        if(issuer==null||aud==null||issuAt==null||expire==null||email==null||id==null)
-            return Unauthorized("Invalid token");
-        
-        if(!clsTokenUtil.isValidIssuerAndAudience(issuer.Value,aud.Value,_config))
+        if(issuAt==null||expire==null||email==null||id==null)
             return Unauthorized("Invalid token");
         
         if (!clsTokenUtil.isRefreshToken(issuAt.Value, expire.Value))

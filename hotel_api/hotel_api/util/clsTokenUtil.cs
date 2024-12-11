@@ -1,5 +1,8 @@
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text;
 using hotel_api.Services;
+using Microsoft.IdentityModel.Tokens;
 
 namespace hotel_api.util;
 
@@ -7,14 +10,12 @@ public class clsTokenUtil
 {
     public   enum enTokenClaimType
     {
-        Iss, Aud,Email,Sub,Exp,Lat,None
+       Email,Sub,Exp,Lat,None
     }
     private static enTokenClaimType _convertKeyToClaimType(string key)
     {
         switch (key)
         {
-            case "iss":return enTokenClaimType.Iss;
-            case "aud":return enTokenClaimType.Aud;
             case "email":return enTokenClaimType.Email;
             case "id": return enTokenClaimType.Sub;
             case "lat":return enTokenClaimType.Lat;
@@ -28,14 +29,6 @@ public class clsTokenUtil
         enTokenClaimType claimType = _convertKeyToClaimType(key);
         switch (claimType)
         {
-            case enTokenClaimType.Aud:
-            {
-                return claim.First(x=>x.Type=="aud");
-            }
-            case enTokenClaimType.Iss:
-            {
-                return claim.First(x => x.Type == "iss");
-            }
             case enTokenClaimType.Email:
             {
                 return claim.First(x => x.Type == "email");
@@ -61,16 +54,6 @@ public class clsTokenUtil
 
     }
 
-    public static bool isValidIssuerAndAudience(string issuer, string audience, IConfigurationServices _config)
-    {
-        var currentIssuer = _config.getKey("credentials:Issuer");
-        var currentIudience = _config.getKey("credentials:Audience");
-        
-        return  currentIssuer.Equals(issuer)&& currentIudience.Equals(audience);
-        
-
-    }
-
 
     public static bool isRefreshToken(string issuAt, string expireAt)
     {
@@ -83,4 +66,51 @@ public class clsTokenUtil
         var rsult = issuDateTime-expireTime;
         return rsult.Days>=29;
     }
+
+    public static bool isValidToken(string token, IConfigurationServices _config)
+    {
+        var key = _config.getKey("credentials:key");
+        var issuer = _config.getKey("credentials:Issuer");
+        var audience = _config.getKey("credentials:Audience");
+        try
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+
+            var validationParameters = new TokenValidationParameters
+            {
+                IssuerSigningKey = new SymmetricSecurityKey( Encoding.ASCII.GetBytes(key)),
+
+                ValidIssuer = issuer, 
+                ValidAudience = audience,
+
+                ClockSkew = TimeSpan.Zero, 
+
+                ValidateIssuerSigningKey = true,
+
+            };
+
+           tokenHandler.ValidateToken(token, validationParameters, out SecurityToken validatedToken);
+
+            Console.WriteLine("Token is valid.");
+            return true;
+        }
+        catch (SecurityTokenExpiredException)
+        {
+            Console.WriteLine("Token is expired.");
+            return false;
+        }
+        catch (SecurityTokenInvalidSignatureException)
+        {
+            Console.WriteLine("Invalid token signature.");
+            return false;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Token validation failed: " + ex.Message);
+            return false;
+        }
+    }
+
+    
 }
