@@ -17,9 +17,7 @@ namespace hotel_business
         public string email { get; set; }
         public string phone { get; set; }
         public string address { get; set; }
-
-        public bool isDeleted { get; set; } = false;
-
+        
         public PersonDto personData {
             get{return new PersonDto(ID, name, email,phone, address); }
         }
@@ -34,14 +32,13 @@ namespace hotel_business
             this.email = email; 
         }
 
-        public PersonBuisness(PersonDto personData, bool isDeleted, enMode enMode)
+        public PersonBuisness(PersonDto personData,  enMode enMode)
         {
             this.name = personData.name;
             this.phone = personData.phone;
             this.address = personData.address;
             this.email= personData.email;
             this.mode = enMode;
-            this.isDeleted = isDeleted;
         }
 
         private bool createPerson()
@@ -85,7 +82,7 @@ namespace hotel_business
             var personData = PersonData.getPerson(ID, ref isDeleted);
             if (personData != null)
             {
-                return new PersonBuisness(personData, isDeleted, enMode.update);
+                return new PersonBuisness(personData, enMode.update);
             }
             return null;
         }

@@ -90,5 +90,10 @@ public class UserBuissnes
     {
         return UserData.delete(id);
     }
+
+    public static List<UserDto> getAllUsers(int pageNumber)
+    {
+        return UserData.getUsersByPage(pageNumber:pageNumber);
+    }
     
 }

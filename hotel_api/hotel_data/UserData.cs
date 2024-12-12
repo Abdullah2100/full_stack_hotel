@@ -122,6 +122,60 @@ namespace hotel_data
             return userHolder;
         }
 
+    public static  List<UserDto> getUsersByPage (int pageNumber=1,int numberOfUser=20)
+        {
+                List<UserDto> users = new List<UserDto>();
+            try
+            {
+                using (var con = new NpgsqlConnection(connectionUr))
+                {
+                    con.Open();
+                    string query = @"SELECT * getUserPagination(pageNumber,limitNumber)";
+
+                    using (var cmd = new NpgsqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("pageNumber", pageNumber);
+                        cmd.Parameters.AddWithValue("limitNumber", numberOfUser);
+
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            if (reader.HasRows)
+                            {
+                                if ((bool)reader["ispersondeleted"] == true) return null;
+                                
+                                var personData = new PersonDto(
+                                    (Guid)reader["personid"],
+                                   email: (string)reader["email"],
+                                    name:(string)reader["name"],
+                                    phone:(string)reader["phone"],
+                                    address:reader["address"] == DBNull.Value ? "" : (string)reader["address"]
+                                );
+
+                               var  userHolder = new UserDto(
+                                    userId: (Guid)reader["userid"],
+                                    personID: (Guid)reader["personid"],
+                                    brithDay: (DateTime)reader["dateofbirth"],
+                                    isVip: (bool)reader["isvip"],
+                                    personData: personData,
+                                    userName: (string)reader["UserName"],
+                                    password:"" 
+                                );
+
+                                users.Add(userHolder);
+                            }
+                        }
+                    }
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("this from getting user by id error {0}", ex);
+                return null;
+            }
+
+            return users;
+        }
 
         public static bool createUser ( UserDto userData )
         {
