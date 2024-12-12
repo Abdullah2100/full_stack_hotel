@@ -90,15 +90,6 @@ namespace hotel_business
             return AdminData.isExist(id);
         }
 
-        public static List<PersonDto> getDeletedPersons()
-        {
-            return PersonData.getPersonsDeleted();
-        }
-
-        public static List<PersonDto> getNotDeletedPersons()
-        {
-            return PersonData.getPersonsNotDeleted();
-        }
-
+       
     }
 }
