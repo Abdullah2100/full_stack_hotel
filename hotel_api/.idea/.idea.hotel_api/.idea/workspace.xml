@@ -8,17 +8,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cc4137bb-6819-4e3a-9ae3-65d56ec75884" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../.$hote_design_erd.drawio.bkp" beforeDir="false" afterPath="$PROJECT_DIR$/../.$hote_design_erd.drawio.bkp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.$hote_design_erd.drawio.dtmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../SQLQuery_2.sql" beforeDir="false" afterPath="$PROJECT_DIR$/../SQLQuery_2.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hote_design_erd.drawio" beforeDir="false" afterPath="$PROJECT_DIR$/../hote_design_erd.drawio" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.hotel_api/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.hotel_api/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_business/PersonBuisness.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/PersonBuisness.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_business/UserBuissnes.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/UserBuissnes.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_data/PersonData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/PersonData.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_data/UserData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/UserData.cs" afterDir="false" />
-    </list>
+    <list default="true" id="cc4137bb-6819-4e3a-9ae3-65d56ec75884" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -65,7 +55,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "XThreadsFramesViewSplitterKey": "0.055793993",
-    "git-widget-placeholder": "roomt__type__implement",
+    "git-widget-placeholder": "update__sql__file",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -136,7 +126,7 @@
       <workItem from="1733851255759" duration="930000" />
       <workItem from="1733898028157" duration="1284000" />
       <workItem from="1733921831913" duration="243000" />
-      <workItem from="1733989319263" duration="792000" />
+      <workItem from="1733989319263" duration="2574000" />
     </task>
     <servers />
   </component>
