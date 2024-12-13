@@ -835,6 +835,62 @@ CREATE TABLE RoomTypes (
     IsDeleted bool DEFAULT FALSE,
 );
 
+CREATE OR REPLACE FUNCTION fn_roomtype_insert(
+    name_n VARCHAR(50),
+    createdBy_n UUID
+)
+RETURNS BOOLEAN
+AS $$
+DECLARE
+is_hasPermission BOOLEAN :=FALSE;
+is_exist BOOLEAN :=FALSE;
+BEGIN
+    is_hasPermission := isAdminOrSomeOneHasPersmission(CreatedBy);
+    IF  is_hasPermission = false THEN 
+         RAISE EXCEPTION  'you do not have permission to create roomtype';
+         RETURN 0;
+    END IF ;
+    SELECT COUT(*)>0
+    INTO is_exist FROM roomtypes 
+    
+    INSERT INTO roomtypes(name,createdby)
+    VALUES (name_n,createdBy_n);
+    RETURN TRUE;
+  EXCEPTION
+     WHEN OTHERS THEN RAISE EXCEPTION  'Something went wrong: %', SQLERRM;
+     RETURN FALSE;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION fn_roomtype_update(
+    name_n VARCHAR(50),
+    createdBy_n UUID
+)
+RETURNS BOOLEAN
+AS $$
+DECLARE
+is_hasPermission BOOLEAN :=FALSE;
+is_exist BOOLEAN :=FALSE;
+BEGIN
+    is_hasPermission := isAdminOrSomeOneHasPersmission(CreatedBy);
+    IF  is_hasPermission = false THEN 
+         RAISE EXCEPTION  'you do not have permission to update roomtype';
+         RETURN 0;
+    END IF ;
+    SELECT COUT(*)>0
+    INTO is_exist FROM roomtypes 
+    
+    UPDATE   roomtypes SET  name = name_n ,
+    createdby = createdBy_n;
+
+    RETURN TRUE;
+  EXCEPTION
+     WHEN OTHERS THEN RAISE EXCEPTION  'Something went wrong: %', SQLERRM;
+     RETURN FALSE;
+END;
+$$ LANGUAGE plpgsql;
+
 -- CREATE TABLE RoomTypeUpdate (
 --     RoomTypeUpdateID UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
 --     RoomTypeID UUID NOT NULL   REFERENCES RoomTypes (RoomTypeID),
@@ -1152,3 +1208,46 @@ CREATE TABLE Maintenances (
     ExpectedBy BIGINT NOT NULL REFERENCES Employees (EmployeeID),
     CreatedBy BIGINT NULL REFERENCES Users (UserID),
 );
+
+
+
+
+
+
+
+--
+
+
+
+--this table is for holding images for all tables 
+CREATE TABLE  Images_tb(
+    imageId UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    belongTo UUID NOT NULL,
+    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    path varchar(MAX)NOT NULL
+    );
+
+CREATE OR REPLACE FUNCTION fn_images_tb_insert(
+belongTo_i UUID,
+path_i varchar(MAX)
+)
+RETURNS BOOLEAN 
+AS $$
+DECLARE
+is_exist BOOLEAN := FALSE;
+BEGIN
+SELECT 
+COUNT(*)>0
+FROM RoomTypes WHERE  roomtypeid = belongTo_i;
+
+IF is_exist THEN
+INSERT INTO Images_tb(belongTo,path) values(belongTo_i,path_i);
+
+END IF;
+
+
+   EXCEPTION
+     WHEN OTHERS THEN RAISE EXCEPTION  'Something went wrong: %', SQLERRM;
+     RETURN NULL;
+END
+$$LANGUAGE plpgsql;
