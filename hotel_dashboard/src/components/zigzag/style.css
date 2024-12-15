@@ -1,0 +1,6 @@
+.zizag {
+     width: 100px;
+  height: 1300px;
+  background-color: #5c63a6;
+  clip-path: polygon(0% 0%, 10% 10%, 20% 0%, 30% 10%, 40% 0%, 50% 10%, 60% 0%, 70% 10%, 80% 0%, 90% 10%, 100% 0%);
+}
