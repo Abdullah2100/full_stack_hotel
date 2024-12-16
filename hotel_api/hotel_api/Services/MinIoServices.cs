@@ -4,7 +4,9 @@ using Minio.DataModel.Args;
 namespace hotel_api.Services;
 
 public class MinIoServices
-{
+
+    public enum enBucketName{RoomType}
+
 
     private static IMinioClient? _client(IConfigurationServices _config)
     {
@@ -23,21 +25,47 @@ public class MinIoServices
         }
     }
 
-    private static async Task<bool> isExistBouket(IConfigurationServices _config, IMinioClient client)
+    private static async Task<bool> _isExistBouket(IConfigurationServices _config, IMinioClient client)
+
+
     {
         var beArgs = new BucketExistsArgs()
             .WithBucket(_config.getKey("bucket_name"));
         return await client.BucketExistsAsync(beArgs).ConfigureAwait(false);
 
     }
-    private static async Task<bool> uploadFile(IConfigurationServices _config,IFormFile file)
+
+    private static async void _createNewBuket(IMinioClient client, enBucketName bukentName)
+    {
+        try
+        {
+            await client.MakeBucketAsync(
+                new MakeBucketArgs()
+                    .WithBucket(bukentName.ToString())
+            ).ConfigureAwait(false);
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("this error from create new Bukent name {0}",ex.Message);
+        }
+    }
+  
+    public static async Task<bool> uploadFile(IConfigurationServices _config,IFormFile file , enBucketName bukentName)
+
+
     {
         try
         {
             using (var minioClient = _client(_config))
             {
-                var isExistBuket = await isExistBouket(_config, minioClient);
-                if (!isExistBuket) return false;
+                var isExistBuket = await _isExistBouket(_config, minioClient);
+                if (!isExistBuket)
+                {
+                    _createNewBuket(minioClient,bukentName);
+                };
+                
+
                 using (var fileStream = file.OpenReadStream())
                 {
                     var putObject= new PutObjectArgs()
@@ -63,7 +91,8 @@ public class MinIoServices
         {
             using (var minioClient = _client(_config))
             {
-                var isExistBuket = await isExistBouket(_config, minioClient);
+                var isExistBuket = await _isExistBouket(_config, minioClient);
+
                 if (!isExistBuket) return false;
                  
                 await minioClient.RemoveObjectAsync(
