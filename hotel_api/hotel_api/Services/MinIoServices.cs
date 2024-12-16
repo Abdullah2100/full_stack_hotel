@@ -4,8 +4,9 @@ using Minio.DataModel.Args;
 namespace hotel_api.Services;
 
 public class MinIoServices
-{
+
     public enum enBucketName{RoomType}
+
 
     private static IMinioClient? _client(IConfigurationServices _config)
     {
@@ -25,6 +26,8 @@ public class MinIoServices
     }
 
     private static async Task<bool> _isExistBouket(IConfigurationServices _config, IMinioClient client)
+
+
     {
         var beArgs = new BucketExistsArgs()
             .WithBucket(_config.getKey("bucket_name"));
@@ -48,7 +51,9 @@ public class MinIoServices
         }
     }
   
-    private static async Task<bool> uploadFile(IConfigurationServices _config,IFormFile file , enBucketName bukentName)
+    public static async Task<bool> uploadFile(IConfigurationServices _config,IFormFile file , enBucketName bukentName)
+
+
     {
         try
         {
@@ -60,6 +65,7 @@ public class MinIoServices
                     _createNewBuket(minioClient,bukentName);
                 };
                 
+
                 using (var fileStream = file.OpenReadStream())
                 {
                     var putObject= new PutObjectArgs()
@@ -86,6 +92,7 @@ public class MinIoServices
             using (var minioClient = _client(_config))
             {
                 var isExistBuket = await _isExistBouket(_config, minioClient);
+
                 if (!isExistBuket) return false;
                  
                 await minioClient.RemoveObjectAsync(
