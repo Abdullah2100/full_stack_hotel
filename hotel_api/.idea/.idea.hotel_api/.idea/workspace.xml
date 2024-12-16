@@ -8,66 +8,52 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cc4137bb-6819-4e3a-9ae3-65d56ec75884" name="Changes" comment="" />
+    <list default="true" id="a5d946be-ded5-4850-9962-9f8d801bf9de" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.hotel_api/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.hotel_api/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.vscode/settings.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_api/appsettings.Development.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/appsettings.Development.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_api/appsettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/appsettings.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_api/hotel_api.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/hotel_api.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_api/obj/hotel_api.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/obj/hotel_api.csproj.nuget.dgspec.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_api/obj/hotel_api.csproj.nuget.g.targets" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/obj/hotel_api.csproj.nuget.g.targets" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_api/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/obj/project.assets.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_api/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/obj/project.nuget.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_api/util/clsUtil.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/util/clsUtil.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_business/obj/hotel_business.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/obj/hotel_business.csproj.nuget.dgspec.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_business/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/obj/project.assets.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_business/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/obj/project.nuget.cache" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="DpaMonitoringSettings">
-    <option name="firstShow" value="false" />
-  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="GitHubPullRequestSearchHistory">{
-  &quot;lastFilter&quot;: {
-    &quot;state&quot;: &quot;OPEN&quot;,
-    &quot;assignee&quot;: &quot;Abdullah2100&quot;
-  }
-}</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;git@github.com:Abdullah2100/full_stack_hotel.git&quot;,
-    &quot;accountId&quot;: &quot;f83b8517-6056-40d2-9d9f-76c5845fae87&quot;
-  }
-}</component>
-  <component name="HighlightingSettingsPerFile">
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/d62eb286436a45a6a9ba2df86a4c8444e28400/ac/9b12a14f/RuntimeHelpers.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/2b24c82392e049eb3194fd98c227c6f0b28fdb15e9b92497a8bb899fb8f7a2/DateTimeParse.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/3ebffcd2ab98c3abdcb6c2c350fb49783e75ae2d26c32d1ab7d87c9e84e4/JwtSecurityToken.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/71ea5c4edeff4385acb72ebe8dd9eb825939c97d1f1cb41dc463babd91cf34/ControllerActionInvoker.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/db7395f4add94e6d10e515b3e55373f2821f8323de7dc8e314d78feefacf5584/ActionMethodExecutor.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f0e62cf3fcafec12baaa8b324345dde874d42ef7eb3911f7d53153ee3f57cb3e/Controller.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f894e33213ba52cc2be6895907c89a75cbadbb4cfbe396263c4caf92da1d1/Claim.cs" root0="FORCE_HIGHLIGHTING" />
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="Toolset" />
   </component>
   <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 4
 }</component>
-  <component name="ProjectId" id="2ppl0BhZS7jVCy9MWo0uzjdEKw9" />
+  <component name="ProjectId" id="2qHsnUWfTzBPgbe8rIUpp5UNGAh" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    ".NET Launch Settings Profile.hotel_api: http.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "XThreadsFramesViewSplitterKey": "0.055793993",
-    "git-widget-placeholder": "update__sql__file",
+    "git-widget-placeholder": "handle__image__minio__bucket__creation",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "com.maddyhome.idea.vim.ui.VimEmulationConfigurable",
     "vue.rearranger.settings.migration": "true"
-  },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "postgresql"
-    ]
   }
 }]]></component>
   <component name="RunManager" selected=".NET Launch Settings Profile.hotel_api: http">
@@ -105,28 +91,14 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="cc4137bb-6819-4e3a-9ae3-65d56ec75884" name="Changes" comment="" />
-      <created>1733470675088</created>
+      <changelist id="a5d946be-ded5-4850-9962-9f8d801bf9de" name="Changes" comment="" />
+      <created>1734331003112</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1733470675088</updated>
-      <workItem from="1733470678406" duration="2772000" />
-      <workItem from="1733561962285" duration="28000" />
-      <workItem from="1733562018490" duration="106000" />
-      <workItem from="1733562687838" duration="6441000" />
-      <workItem from="1733581139507" duration="7603000" />
-      <workItem from="1733640644562" duration="1701000" />
-      <workItem from="1733658682720" duration="1355000" />
-      <workItem from="1733664855668" duration="13785000" />
-      <workItem from="1733738014006" duration="8383000" />
-      <workItem from="1733768693315" duration="1539000" />
-      <workItem from="1733808530472" duration="5000" />
-      <workItem from="1733810822458" duration="2352000" />
-      <workItem from="1733824088956" duration="6430000" />
-      <workItem from="1733851255759" duration="930000" />
-      <workItem from="1733898028157" duration="1284000" />
-      <workItem from="1733921831913" duration="243000" />
-      <workItem from="1733989319263" duration="2632000" />
+      <updated>1734331003112</updated>
+      <workItem from="1734331007608" duration="130000" />
+      <workItem from="1734331310809" duration="22000" />
+      <workItem from="1734331456003" duration="329000" />
     </task>
     <servers />
   </component>
@@ -134,105 +106,7 @@
     <option name="version" value="3" />
   </component>
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
-  </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/hotel_api/controller/UserController.cs</url>
-          <line>30</line>
-          <properties documentPath="$PROJECT_DIR$/hotel_api/controller/UserController.cs" containingFunctionPresentation="Method 'adminSignUp'">
-            <startOffsets>
-              <option value="787" />
-            </startOffsets>
-            <endOffsets>
-              <option value="950" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/hotel_api/controller/UserController.cs</url>
-          <line>96</line>
-          <properties documentPath="$PROJECT_DIR$/hotel_api/controller/UserController.cs" containingFunctionPresentation="Method 'adminSignIn'">
-            <startOffsets>
-              <option value="3249" />
-            </startOffsets>
-            <endOffsets>
-              <option value="3370" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="3" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/hotel_api/controller/AdminController.cs</url>
-          <line>84</line>
-          <properties documentPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" containingFunctionPresentation="Method 'adminSignIn'">
-            <startOffsets>
-              <option value="3289" />
-            </startOffsets>
-            <endOffsets>
-              <option value="3391" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="8" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/hotel_api/controller/RefreshTokenController.cs</url>
-          <line>25</line>
-          <properties documentPath="$PROJECT_DIR$/hotel_api/controller/RefreshTokenController.cs" containingFunctionPresentation="Method 'generateRefreshToken'">
-            <startOffsets>
-              <option value="679" />
-            </startOffsets>
-            <endOffsets>
-              <option value="732" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="11" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/hotel_api/controller/AdminController.cs</url>
-          <line>32</line>
-          <properties documentPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" containingFunctionPresentation="Method 'adminSignUp'">
-            <startOffsets>
-              <option value="936" />
-            </startOffsets>
-            <endOffsets>
-              <option value="1106" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="12" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
-    <pin-to-top-manager>
-      <pinned-members>
-        <PinnedItemInfo parentTag="Type#System.ArgumentException" memberName="Message" />
-      </pinned-members>
-    </pin-to-top-manager>
-    <watches-manager>
-      <configuration name="LaunchSettings">
-        <watch expression="result[&quot;adminid&quot;]" />
-        <watch expression="result[&quot;phone&quot;]" />
-        <watch expression="reader[&quot;dateofbirth&quot;]" language="C#" />
-        <watch expression="claim.First(x =&gt; x.Type == &quot;lat&quot;);" />
-        <watch expression="issuDateTime.CompareTo(expireTime) &gt;= 29" />
-        <watch expression="issuDateTime.CompareTo(expireTime)" />
-        <watch expression=" rsult.Days&gt;=29" />
-      </configuration>
-    </watches-manager>
   </component>
 </project>

@@ -43,5 +43,9 @@ namespace hotel_api.util
         }
         
         
+        public static string getFileExtention(string filename){
+            return new FileInfo(filename).Extension;
+        }
+        
     }
 }
