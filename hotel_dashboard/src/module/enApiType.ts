@@ -1,0 +1,1 @@
+export enum enApiType{POST,PUT,DELETE,GET}
