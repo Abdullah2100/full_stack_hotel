@@ -3,7 +3,7 @@ using Minio.DataModel.Args;
 
 namespace hotel_api.Services;
 
-public class MinIoServices
+public class MinIoServices{
 
     public enum enBucketName{RoomType}
 

@@ -10,26 +10,41 @@
   <component name="ChangeListManager">
     <list default="true" id="a5d946be-ded5-4850-9962-9f8d801bf9de" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.hotel_api/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.hotel_api/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vscode/settings.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/appsettings.Development.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/appsettings.Development.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/appsettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/appsettings.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/hotel_api.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/hotel_api.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_api/Services/MinIoServices.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/Services/MinIoServices.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_api/obj/hotel_api.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/obj/hotel_api.csproj.nuget.dgspec.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/obj/hotel_api.csproj.nuget.g.targets" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/obj/hotel_api.csproj.nuget.g.targets" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_api/obj/hotel_api.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/obj/hotel_api.csproj.nuget.g.props" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_api/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/obj/project.assets.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_api/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/obj/project.nuget.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/util/clsUtil.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/util/clsUtil.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_business/obj/hotel_business.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/obj/hotel_business.csproj.nuget.dgspec.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_business/obj/hotel_business.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/obj/hotel_business.csproj.nuget.g.props" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_business/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/obj/project.assets.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_business/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/obj/project.nuget.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/App.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/components/zigzag/style.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/components/zigzag/zigzag.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/main.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/main.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/pages/login/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/pages/login/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/services/authServices.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/services/authServices.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/services/privateRout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/services/privateRout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/tailwind.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/tailwind.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="DpaMonitoringSettings">
+    <option name="firstShow" value="false" />
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/ILViewer/9238511098ef479f9854fbef222c58807a00/03/be0df6b6/0200000Apdb13.il" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="Toolset" />
@@ -45,9 +60,10 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    ".NET Launch Settings Profile.hotel_api: http.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "handle__image__minio__bucket__creation",
+    "git-widget-placeholder": "main",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -99,6 +115,7 @@
       <workItem from="1734331007608" duration="130000" />
       <workItem from="1734331310809" duration="22000" />
       <workItem from="1734331456003" duration="329000" />
+      <workItem from="1734419815235" duration="253000" />
     </task>
     <servers />
   </component>

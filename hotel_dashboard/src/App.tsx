@@ -5,6 +5,7 @@ import userAuthContext from "./context/validLogin";
 import PrivateRout from "./services/privateRout";
 import Home from "./pages/home";
 import Login from "./pages/login";
+import SignUp from "./pages/signUp";
 
 const App = () => {
 
@@ -18,13 +19,15 @@ const App = () => {
 
                 <Route path='/login' element={
                     <PrivateRout Page={
-                    <Login />
-                }
-                        isRequriedAdmin={false}
-                       isNavigateToLogin={true}
+                        <Login />
+                    }
+                        isNavigateToLogin={true}
                     />
                 } />
 
+                <Route path='/signup' element={
+                        <SignUp />
+                } />
                 <Route path='*' element={<NotFoundPage />} />
             </Routes>
         </BrowserRouter>
