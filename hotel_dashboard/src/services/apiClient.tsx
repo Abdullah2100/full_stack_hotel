@@ -4,14 +4,14 @@ import { enStatus } from "../module/enState";
 
 interface ApiClientProps {
     enType: enApiType;
-    prameters?: any | undefined;
     endPoint: string;
+    prameters?: any | undefined;
     jwtValue?: string | undefined;
     isFormData?: boolean | undefined;
     isRquireAuth?: boolean | undefined;
 
 }
-const ApiClient = async (
+export default async function apiClient(
     {
         enType,
         prameters,
@@ -20,42 +20,33 @@ const ApiClient = async (
         isFormData = false,
         isRquireAuth = false,
     }: ApiClientProps
-) => {
-    var header = handleHeader(isFormData, isRquireAuth, jwtValue)
+) {
+    const full_url = import.meta.env.VITE_BASE_URL + endPoint
+    const header = handleHeader(isFormData, isRquireAuth, jwtValue)
+    try {
 
-
-    let result;
-    switch (enType) {
-        case enApiType.DELETE: {
-            result = axios.delete(endPoint, {
-                headers: header,
-                params: prameters
-            }
-            )
-
-        } break;
-        case enApiType.GET: {
-            result = axios.get(endPoint, { headers: header, params: prameters })
-        } break;
-        case enApiType.PUT: {
-            result = axios.put(endPoint, { headers: header, params: prameters })
-        } break;
-        default: {
-            result = axios.post(endPoint, {
-                headers: header,
-                params: prameters
-            }
-            )
-        } break;
+        const repsonse = await axios({
+            url: full_url,
+            method: enType.toString(),
+            data: prameters,
+            headers: header
+        });
+        return repsonse;
+    } catch (error) {
+        throw {
+            message: error?.message,
+            response: error?.response?.data,
+            status: error?.response?.status,
+        };
     }
-    return (await result).data
 }
 
 function handleHeader(isRquireAuth: boolean, isFormData: boolean, jwtValue: string) {
-    var header = {
+    const header = {
         'Authorization': !isRquireAuth ? undefined : `Bearer ${jwtValue}`,
         "Content-Type": (isFormData ? 'multipart/form-data' : 'application/json')
     }
 
     return header;
 }
+

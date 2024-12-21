@@ -1,36 +1,41 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import NotFoundPage from "./pages/NotFound/notfound";
-import { useContext } from "react";
-import userAuthContext from "./context/validLogin";
 import PrivateRout from "./services/privateRout";
 import Home from "./pages/home";
 import Login from "./pages/login";
 import SignUp from "./pages/signUp";
+import {
+    QueryClient,
+    QueryClientProvider,
+} from '@tanstack/react-query'
+import AuthRoute from "./services/AuthRoute";
+
 
 const App = () => {
+    const queryClient = new QueryClient()
 
     return (
-        <BrowserRouter>
-            <Routes>
-                <Route path="/" element={
-                    <PrivateRout Page={<Home />}
-                        isRequriedAdmin={false} />
-                } />
+        <QueryClientProvider client={queryClient}>
 
-                <Route path='/login' element={
-                    <PrivateRout Page={
-                        <Login />
-                    }
-                        isNavigateToLogin={true}
-                    />
-                } />
+            <BrowserRouter>
+                <Routes>
+                    <Route path="/" element={
+                        <PrivateRout Page={Home} />
+                    } />
 
-                <Route path='/signup' element={
-                        <SignUp />
-                } />
-                <Route path='*' element={<NotFoundPage />} />
-            </Routes>
-        </BrowserRouter>
+                    <Route path='/login' element={
+                        <AuthRoute Page={Login}
+                        />
+                    } />
+
+                    <Route path='/signup' element={
+                        <AuthRoute Page={SignUp} />
+                    } />
+                    <Route path='*' element={<NotFoundPage />} />
+                </Routes>
+            </BrowserRouter>
+        </QueryClientProvider>
+
     )
 }
 export default App;

@@ -1,21 +1,18 @@
 import { useContext } from "react"
 import { userAuthContext } from "../context/validLogin"
+import { Navigate, Route } from 'react-router-dom'
 import { generalMessage } from "../util/generalPrint";
 import Login from "../pages/login";
 
-
-
-const PrivateRout = ({ Page }) => {
+const AuthRoute = ({ Page }) => {
     const { hasValidToken } = useContext(userAuthContext)
 
+    if (hasValidToken)
+        return <Navigate to={'/'} />
 
-    if (!hasValidToken) {
-        generalMessage("this from  not have validation ")
-        return <Login />
-    }
+    return (<Page />)
+}
 
-    return <Page />
-
-};
-
-export default PrivateRout
+export default AuthRoute
+        
+    

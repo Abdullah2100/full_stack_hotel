@@ -1,11 +1,11 @@
-import { CircularProgress } from "@mui/material";
+import { Button, CircularProgress } from "@mui/material";
 import { enStatus } from "../../module/enState";
 
 interface submitButtonProps {
     placeHolder: string;
-    onSubmit: () => void;
+    onSubmit: () => Promise<void>;
     buttonStatus?: enStatus | undefined;
-    style?:string|undefined
+    style?: string | undefined
 }
 
 const SubmitButton = (
@@ -13,18 +13,18 @@ const SubmitButton = (
         onSubmit,
         placeHolder,
         buttonStatus = enStatus.none,
-        style =undefined
+        style = undefined
     }: submitButtonProps) => {
-        return <button
+    return (<button
+        onClick={buttonStatus !== enStatus.loading ? onSubmit : undefined}
         className={style}
-        onSubmit={onSubmit}>
-            {
-             buttonStatus ===enStatus.loading?
-             <CircularProgress sx={{ color: 'white' }} size={10} className="mt-1" />
-             :placeHolder
-
-            }
-        </button>
+    >
+        {
+            buttonStatus === enStatus.loading ?
+                <CircularProgress sx={{ color: 'white' }} size={10} className="mt-1" />
+                : placeHolder
+        }
+    </button>)
 
 }
 export default SubmitButton;

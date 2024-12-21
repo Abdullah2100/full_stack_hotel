@@ -10,7 +10,9 @@
   <component name="ChangeListManager">
     <list default="true" id="a5d946be-ded5-4850-9962-9f8d801bf9de" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.hotel_api/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.hotel_api/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/Services/MinIoServices.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/Services/MinIoServices.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_api/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_api/RequestDto/UserRequestDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/RequestDto/UserRequestDto.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_api/controller/UserController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/controller/UserController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_api/obj/hotel_api.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/obj/hotel_api.csproj.nuget.dgspec.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_api/obj/hotel_api.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/obj/hotel_api.csproj.nuget.g.props" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_api/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/obj/project.assets.json" afterDir="false" />
@@ -19,17 +21,18 @@
       <change beforePath="$PROJECT_DIR$/hotel_business/obj/hotel_business.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/obj/hotel_business.csproj.nuget.g.props" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_business/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/obj/project.assets.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_business/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/obj/project.nuget.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../hotel_dashboard/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/App.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/components/zigzag/style.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/components/zigzag/zigzag.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/components/button/submitButton.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/components/button/submitButton.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/components/input/textInput.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/components/input/textInput.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/main.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/main.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/pages/login/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/pages/login/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/services/authServices.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/services/authServices.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/module/enApiType.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/module/enApiType.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/pages/signUp/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/pages/signUp/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/services/apiClient.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/services/apiClient.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/services/apiServices.tsx" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/services/privateRout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/services/privateRout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/tailwind.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/tailwind.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/services/reactQ" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/vite-env.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/vite-env.d.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../hotel_dashboard/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -44,7 +47,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/ILViewer/9238511098ef479f9854fbef222c58807a00/03/be0df6b6/0200000Apdb13.il" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6b68996d3f744ce29d899145be2c2f0c1de400/77/53552a2e/ControllerBase.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="Toolset" />
@@ -60,9 +63,10 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    ".NET Launch Settings Profile.hotel_api: http.executor": "Run",
+    ".NET Launch Settings Profile.hotel_api: http.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
+    "XThreadsFramesViewSplitterKey": "0.33966243",
     "git-widget-placeholder": "main",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -116,6 +120,10 @@
       <workItem from="1734331310809" duration="22000" />
       <workItem from="1734331456003" duration="329000" />
       <workItem from="1734419815235" duration="253000" />
+      <workItem from="1734541272379" duration="67000" />
+      <workItem from="1734547417110" duration="3367000" />
+      <workItem from="1734592909967" duration="14826000" />
+      <workItem from="1734776029617" duration="4779000" />
     </task>
     <servers />
   </component>
@@ -123,7 +131,42 @@
     <option name="version" value="3" />
   </component>
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/hotel_api/controller/UserController.cs</url>
+          <line>30</line>
+          <properties documentPath="$PROJECT_DIR$/hotel_api/controller/UserController.cs" containingFunctionPresentation="Method 'adminSignUp'">
+            <startOffsets>
+              <option value="788" />
+            </startOffsets>
+            <endOffsets>
+              <option value="951" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <pin-to-top-manager>
+      <pinned-members>
+        <PinnedItemInfo parentTag="Type#System.ArgumentException" memberName="Message" />
+      </pinned-members>
+    </pin-to-top-manager>
   </component>
 </project>

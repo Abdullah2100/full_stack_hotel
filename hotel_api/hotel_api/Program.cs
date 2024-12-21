@@ -43,7 +43,15 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidAudience = configuration["credentials:Audience"]
         };
     });
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins", policy =>
+    {
+        policy.AllowAnyOrigin()    // Allows all origins
+            .AllowAnyMethod()    // Allows any HTTP methods (GET, POST, etc.)
+            .AllowAnyHeader();   // Allows any headers
+    });
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline
@@ -59,7 +67,7 @@ if (app.Environment.IsDevelopment())
         c.RoutePrefix = string.Empty;  // Swagger UI will be available at the root URL
     });
 }
-
+app.UseCors("AllowAllOrigins");
 // Authentication and Authorization middleware
 app.UseAuthentication();
 app.UseAuthorization();

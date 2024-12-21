@@ -24,7 +24,7 @@ public class UserController : Controller
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public ActionResult adminSignUp(
+    public IActionResult adminSignUp(
         UserRequestDto userRequestData
     )
     {
@@ -32,12 +32,14 @@ public class UserController : Controller
             email: userRequestData.email, password: userRequestData.password);
 
         if (validateRequeset != null)
-            return BadRequest($"{validateRequeset}");
+            return StatusCode(400, validateRequeset);
+
 
         bool isExistEmail = PersonBuisness.isPersonExistByEmail(userRequestData.email);
 
         if (isExistEmail)
-            return BadRequest("email is already in use");
+            return StatusCode(400, "email is already in use");
+
         
         var data = UserBuissnes.getUserByUserNameAndPassword(userRequestData.userName,
             clsUtil.hashingText(userRequestData.password));

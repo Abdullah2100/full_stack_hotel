@@ -6,7 +6,7 @@ interface iUserAuthReq{
     hasValidToken:boolean,
  
 }
-let userAuth:iUserAuthReq={
+const userAuth:iUserAuthReq={
 hasValidToken:false,
 isLogin:false
 }
@@ -18,9 +18,9 @@ interface UseAuthUserProps {
 export const userAuthContext = createContext<iUserAuthReq>(userAuth);
 
 const UseAuthUser = ({children}:UseAuthUserProps)=>{
-    let accessToken = localStorage.getItem('access_token')||'';
-    let [isLogin,changeLoginState] = useState((accessToken!==undefined&&accessToken?.length>0)||false);
-    let [hasValidToken,chageTokenValidation] = useState(false);
+    const accessToken = localStorage.getItem('access_token')||'';
+    const [isLogin,changeLoginState] = useState((accessToken!==undefined&&accessToken?.length>0)||false);
+    const [hasValidToken,chageTokenValidation] = useState(false);
     
     //async function validateToken(token:string){
 

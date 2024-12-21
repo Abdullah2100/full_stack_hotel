@@ -1,1 +1,1 @@
-export enum enApiType{POST,PUT,DELETE,GET}
+export enum enApiType { POST = "POST", PUT = "PUT", DELETE = "DELETE", GET = "GET" }
