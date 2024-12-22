@@ -13,19 +13,23 @@ import { isHasCapitalLetter, isHasNumber, isHasSmallLetter, isHasSpicalCharacter
 import { useToastifiContext } from '../../context/toastifyCustom';
 import { enMessage } from '../../module/enMessageType';
 import { PasswordInput } from '../../components/input/passwordInput';
+import { useDispatch } from 'react-redux';
+import { setTokens } from '../../controller/redux/jwtSlice';
+import { AuthResult } from '../../module/userAuthResult';
 
 const SignUp = () => {
+    const dispatcher = useDispatch()
     const { showToastiFy } = useContext(useToastifiContext)
     const [isPasswordFocuse, setPasswordFocuse] = useState<boolean | undefined>(undefined)
     const [status, setState] = useState<enStatus>(enStatus.none)
     const { handleSubmit } = useForm();
     const [userAuth, setUser] = useState<userAuthModule>({
         name: 'asdf',
-        email: 'asda',
-        phone: '7.5501225',
+        email: 'asda@gmail.com',
+        phone: '7755012257',
         address: 'sadf',
         username: 'asdf',
-        password: 'asdfsad',
+        password: 'asAS12#$',
         brithDay: undefined,
     });
 
@@ -48,7 +52,9 @@ const SignUp = () => {
             }),
         onSuccess: (data) => {
             setState(enStatus.complate)
-            generalMessage(data)
+            generalMessage(data.data)
+            const result = data.data as unknown as AuthResult;
+            dispatcher(setTokens({ accessToken: result.accessToken, refreshToken: result.refreshToken }))
         },
         onError: (error) => {
             setState(enStatus.complate);
@@ -188,9 +194,8 @@ const SignUp = () => {
                 placeHolder="735501225"
                 style="mb-1"
                 isRequire={true}
-                maxLength={13}
+                maxLength={10}
                 type='number'
-
             />
             <TextInput
                 keyType='username'

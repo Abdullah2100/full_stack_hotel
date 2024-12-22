@@ -13,14 +13,23 @@ namespace hotel_data.dto
         public string email { get; set; }
         public string phone { get; set; }
         public string address { get; set; }
+        public DateTime?  createdAt { get; set; }
 
-        public PersonDto(Guid? personID,string email, string name, string phone, string address)
+        public PersonDto(
+            Guid? personID,
+            string email, 
+            string name, 
+            string phone, 
+            string address,
+            DateTime? createdAt= null
+            )
         {
             this.personID = personID;
             this.name = name;
             this.phone = phone;
             this.address = address;
             this.email = email;
+            this.createdAt = createdAt;
         }
 
     }

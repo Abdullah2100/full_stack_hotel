@@ -1427,20 +1427,19 @@
     ]
   },
   "packageFolders": {
-    "/home/abdullah/.nuget/packages/": {}
+    "/home/abdullh-alhashmi/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/abdullah/Desktop/hotel_stack_project/full_stack_hotel/hotel_api/hotel_api/hotel_api.csproj",
+      "projectUniqueName": "/home/abdullh-alhashmi/Public/full_stack_hotel/hotel_api/hotel_api/hotel_api.csproj",
       "projectName": "hotel_api",
-      "projectPath": "/home/abdullah/Desktop/hotel_stack_project/full_stack_hotel/hotel_api/hotel_api/hotel_api.csproj",
-      "packagesPath": "/home/abdullah/.nuget/packages/",
-      "outputPath": "/home/abdullah/Desktop/hotel_stack_project/full_stack_hotel/hotel_api/hotel_api/obj/",
+      "projectPath": "/home/abdullh-alhashmi/Public/full_stack_hotel/hotel_api/hotel_api/hotel_api.csproj",
+      "packagesPath": "/home/abdullh-alhashmi/.nuget/packages/",
+      "outputPath": "/home/abdullh-alhashmi/Public/full_stack_hotel/hotel_api/hotel_api/obj/",
       "projectStyle": "PackageReference",
-      "UsingMicrosoftNETSdk": false,
       "configFilePaths": [
-        "/home/abdullah/.nuget/NuGet/NuGet.Config"
+        "/home/abdullh-alhashmi/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
@@ -1452,8 +1451,8 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "projectReferences": {
-            "/home/abdullah/Desktop/hotel_stack_project/full_stack_hotel/hotel_api/hotel_business/hotel_business.csproj": {
-              "projectPath": "/home/abdullah/Desktop/hotel_stack_project/full_stack_hotel/hotel_api/hotel_business/hotel_business.csproj"
+            "/home/abdullh-alhashmi/Public/full_stack_hotel/hotel_api/hotel_business/hotel_business.csproj": {
+              "projectPath": "/home/abdullh-alhashmi/Public/full_stack_hotel/hotel_api/hotel_business/hotel_business.csproj"
             }
           }
         }
@@ -1467,7 +1466,8 @@
         "enableAudit": "true",
         "auditLevel": "low",
         "auditMode": "direct"
-      }
+      },
+      "SdkAnalysisLevel": "9.0.100"
     },
     "frameworks": {
       "net9.0": {

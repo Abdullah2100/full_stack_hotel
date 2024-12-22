@@ -9,9 +9,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a5d946be-ded5-4850-9962-9f8d801bf9de" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../SQLQuery_2.sql" beforeDir="false" afterPath="$PROJECT_DIR$/../SQLQuery_2.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.hotel_api/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.hotel_api/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/RequestDto/UserRequestDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/RequestDto/UserRequestDto.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_api/controller/UserController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/controller/UserController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_api/obj/hotel_api.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/obj/hotel_api.csproj.nuget.dgspec.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_api/obj/hotel_api.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/obj/hotel_api.csproj.nuget.g.props" afterDir="false" />
@@ -21,18 +20,12 @@
       <change beforePath="$PROJECT_DIR$/hotel_business/obj/hotel_business.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/obj/hotel_business.csproj.nuget.g.props" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_business/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/obj/project.assets.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_business/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/obj/project.nuget.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_data/AdminData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/AdminData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_data/PersonData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/PersonData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_data/UserData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/UserData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_data/dto/PersonDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/dto/PersonDto.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../hotel_dashboard/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/App.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/components/button/submitButton.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/components/button/submitButton.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/components/input/textInput.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/components/input/textInput.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/main.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/main.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/module/enApiType.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/module/enApiType.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/pages/signUp/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/pages/signUp/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/services/apiClient.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/services/apiClient.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/services/apiServices.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/services/privateRout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/services/privateRout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/services/reactQ" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/vite-env.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/vite-env.d.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../hotel_dashboard/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -66,7 +59,7 @@
     ".NET Launch Settings Profile.hotel_api: http.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "XThreadsFramesViewSplitterKey": "0.33966243",
+    "XThreadsFramesViewSplitterKey": "0.3272727",
     "git-widget-placeholder": "main",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -124,6 +117,7 @@
       <workItem from="1734547417110" duration="3367000" />
       <workItem from="1734592909967" duration="14826000" />
       <workItem from="1734776029617" duration="4779000" />
+      <workItem from="1734884511988" duration="6187000" />
     </task>
     <servers />
   </component>
@@ -160,6 +154,19 @@
             </endOffsets>
           </properties>
           <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/hotel_api/controller/UserController.cs</url>
+          <line>99</line>
+          <properties documentPath="$PROJECT_DIR$/hotel_api/controller/UserController.cs" containingFunctionPresentation="Method 'adminSignIn'">
+            <startOffsets>
+              <option value="3270" />
+            </startOffsets>
+            <endOffsets>
+              <option value="3391" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="2" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
