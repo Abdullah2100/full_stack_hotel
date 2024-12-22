@@ -9,7 +9,7 @@ CREATE TABLE Persons (
     Name VARCHAR(50) NOT NULL,
     Phone VARCHAR(13) NOT NULL UNIQUE,
     Email VARCHAR(100) NOT NULL UNIQUE,
-    Address TEXT NULL,
+    Address TEXT NULL
     -- modifyBy UUID,
 );
 
@@ -339,17 +339,14 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION isAdminOrSomeOneHasPersmission(id UUID)
 RETURNS BOOLEAN 
 AS $$
-
+DECLARE
+is_exist_id BOOLEAN;
 BEGIN
-SELECT EXISTS(
-        SELECT 1
+SELECT COUNT(*)>=1
         FROM persons per
         LEFT JOIN admins ad ON per.personid = ad.personid
         WHERE ad.adminid = id
-    )
-    INTO email;
-
-    RETURN email;
+		INTO is_exist_id;
 
 RETURN is_exist_id;
   EXCEPTION
@@ -372,12 +369,27 @@ CREATE  TABLE Users (
     IsVIP bool DEFAULT FALSE,
     PersonID UUID NOT NULL REFERENCES Persons (personid),
     CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    IsDeleted bool DEFAULT FALSE,
+    IsDeleted bool DEFAULT FALSE
     -- ModifyBy UUID NULL,
 );
 --
 
-
+CREATE VIEW usersview AS 
+SELECT
+ per.PersonID,
+    per.Name ,
+    per.Phone ,
+    per.Email ,
+    per.Address, 
+    use.UserID ,
+    use.DateOfBirth,
+    use.UserName,
+    use.IsVIP, 
+    use.CreatedAt  
+   
+FROM users use
+INNER JOIN persons per
+ON use.personid = per.personid;
 
 --
 -- CREATE TABLE UserDeleted{
@@ -548,38 +560,41 @@ CREATE  TABLE Users (
 
 
 --
-CREATE  OR REPLACE FUNCTION getUserPagination(pageNumber INT,limitNumber INT)
+CREATE OR REPLACE FUNCTION getUserPagination(pageNumber INT, limitNumber INT)
 RETURNS TABLE (
     Name VARCHAR(50),
     Phone VARCHAR(13),
     Email VARCHAR(100),
-    Address TEXT ,
-    IsDeleted bool,
+    Address TEXT,
+    IsDeleted BOOL,
     UserName VARCHAR(50),
-    DateOfBirth DATE ,
-    IsVIP bool
+    DateOfBirth DATE,
+    IsVIP BOOL
 )
-AS$$
+AS $$
 BEGIN
-    SELECT per.PersonID,
+    RETURN QUERY
+    SELECT 
         per.Name,
         per.Phone,
         per.Email,
         per.Address,
         us.IsDeleted,
-        us.UserID,
         us.UserName,
         us.DateOfBirth,
         us.IsVIP
     FROM Persons per
-        INNER JOIN Users us ON per.PersonID = us.PersonID
-        ORDER BY us.UserID DESC LIMIT limitNumber OFFSET limitNumber * pageNumber;
+    INNER JOIN Users us ON per.PersonID = us.PersonID
+    ORDER BY us.UserID DESC
+    LIMIT limitNumber OFFSET limitNumber * pageNumber;
+    
 EXCEPTION
-     WHEN OTHERS THEN RAISE EXCEPTION  'Something went wrong: %', SQLERRM;
-   RETURN NULL;
-END
-$$LANGUAGE plpgsql;
---
+    WHEN OTHERS THEN
+        RAISE EXCEPTION 'Something went wrong: %', SQLERRM;
+        RETURN QUERY SELECT NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL;  -- Return an empty row in case of error
+END;
+$$ LANGUAGE plpgsql;
+
 
 
 --  
@@ -620,24 +635,23 @@ $$ LANGUAGE plpgsql;
 
 
 --
-CREATE OR REPLACE PROCEDURE fn_user_update(
-    userid_u UUID;
-    name_u VARCHAR(50);
-    phone_u VARCHAR(13);
-    address_u TEXT;
-    username_u varchar(50);
-    password_u TEXT;
-    IsVIP_u bool;
-    personid_u UUID ;
+CREATE OR REPLACE FUNCTION  fn_user_update(
+    userid_u UUID,
+    name_u VARCHAR(50),
+    phone_u VARCHAR(13),
+    address_u TEXT,
+    username_u varchar(50),
+    password_u TEXT,
+    IsVIP_u bool,
+    personid_u UUID ,
     is_canModifi BOOLEAN,
-    modifiBy_u :UUID;
-)
+    modifiBy_u UUID
+) RETURNS INT
 AS $$   
 BEGIN
     is_canModifi :=isAdminOrSomeOneHasPersmission(modifiBy_u);
     IF modifiBy_u <> userid_u.userId OR is_canModifi= FAIL THEN
-        EXCEPTION
-        WHEN OTHERS THEN RAISE EXCEPTION  'just user OR person that has permission can modify data ', SQLERRM;
+       RETURN 0;
     END IF;
 
     UPDATE persons SET 
@@ -649,17 +663,18 @@ BEGIN
     UPDATE  users  SET 
     username = CASE WHEN username_u <> username THEN username_u ELSE username END,
     password = CASE WHEN password_u <> password THEN passowrd_u ELSE password END,
-    username = CASE WHEN IsVIP_u <> isvip THEN IsVIP_u ELSE isvip END,
+    username = CASE WHEN IsVIP_u <> isvip THEN IsVIP_u ELSE isvip END
     -- ModifyBy = modifiBy_u
      WHERE userid=userid_u;
 
     -- INSERT INTO UserUpdate(userId ,currentUsername , currentpassword , currentIsVIP, username , password , IsVIP,modifiBy_u ) 
     -- VALUES ( userid_u,OLD.username,OLD.password,OLD.isvip,NEW.username,NEW.password,NEW.svip,NEW.modifyBy);
     -- RETURN NEW;
+    RETURN 1;
 
    EXCEPTION
-     WHEN OTHERS THEN RAISE EXCEPTION  'Something went wrong: %', SQLERRM;
---    RETURN NULL;
+      WHEN OTHERS THEN RAISE EXCEPTION  'Something went wrong: %', SQLERRM;
+    RETURN NULL;
 END;
 $$LANGUAGE plpgsql;
 --

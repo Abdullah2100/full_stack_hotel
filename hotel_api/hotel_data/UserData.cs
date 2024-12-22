@@ -38,6 +38,8 @@ namespace hotel_data
                                     email: (string)reader["email"],
                                     name: (string)reader["name"],
                                     phone: (string)reader["phone"],
+                                    createdAt: (DateTime)reader["dateofbrith"],
+
                                     address: reader["address"] == DBNull.Value ? "" : (string)reader["address"]
                                 );
 
@@ -89,13 +91,14 @@ namespace hotel_data
                             if (reader.Read())
                             {
                                 if ((bool)reader["ispersondeleted"] == true) return null;
-                                
+
                                 var personData = new PersonDto(
-                                    (Guid)reader["personid"],
-                                    (string)reader["email"],
-                                    (string)reader["name"],
-                                    (string)reader["phone"],
-                                    reader["address"] == DBNull.Value ? "" : (string)reader["address"]
+                                    personID: (Guid)reader["personid"],
+                                    email: (string)reader["email"],
+                                    name: (string)reader["name"],
+                                    phone: (string)reader["phone"],
+                                    createdAt: (DateTime)reader["dateofbrith"],
+                                    address: reader["address"] == DBNull.Value ? "" : (string)reader["address"]
                                 );
 
                                 userHolder = new UserDto(
@@ -122,9 +125,9 @@ namespace hotel_data
             return userHolder;
         }
 
-    public static  List<UserDto> getUsersByPage (int pageNumber=1,int numberOfUser=20)
+        public static List<UserDto> getUsersByPage(int pageNumber = 1, int numberOfUser = 20)
         {
-                List<UserDto> users = new List<UserDto>();
+            List<UserDto> users = new List<UserDto>();
             try
             {
                 using (var con = new NpgsqlConnection(connectionUr))
@@ -142,23 +145,25 @@ namespace hotel_data
                             if (reader.HasRows)
                             {
                                 if ((bool)reader["ispersondeleted"] == true) return null;
-                                
+
                                 var personData = new PersonDto(
                                     (Guid)reader["personid"],
-                                   email: (string)reader["email"],
-                                    name:(string)reader["name"],
-                                    phone:(string)reader["phone"],
-                                    address:reader["address"] == DBNull.Value ? "" : (string)reader["address"]
+                                    email: (string)reader["email"],
+                                    name: (string)reader["name"],
+                                    phone: (string)reader["phone"],
+                                    createdAt: (DateTime)reader["dateofbrith"],
+
+                                    address: reader["address"] == DBNull.Value ? "" : (string)reader["address"]
                                 );
 
-                               var  userHolder = new UserDto(
+                                var userHolder = new UserDto(
                                     userId: (Guid)reader["userid"],
                                     personID: (Guid)reader["personid"],
                                     brithDay: (DateTime)reader["dateofbirth"],
                                     isVip: (bool)reader["isvip"],
                                     personData: personData,
                                     userName: (string)reader["UserName"],
-                                    password:"" 
+                                    password: ""
                                 );
 
                                 users.Add(userHolder);
@@ -166,7 +171,6 @@ namespace hotel_data
                         }
                     }
                 }
-                
             }
             catch (Exception ex)
             {
@@ -177,7 +181,7 @@ namespace hotel_data
             return users;
         }
 
-        public static bool createUser ( UserDto userData )
+        public static bool createUser(UserDto userData)
         {
             bool isCreated = false;
             try
@@ -208,11 +212,9 @@ namespace hotel_data
                         cmd.Parameters.AddWithValue("@DateOfBirth", userData.brithDay);
                         cmd.ExecuteNonQuery();
 
-                    isCreated = true;
+                        isCreated = true;
                     }
-
                 }
-
             }
             catch (Exception ex)
             {
@@ -221,8 +223,8 @@ namespace hotel_data
 
             return isCreated;
         }
-        
-        public static bool updateUser ( UserDto userData )
+
+        public static bool updateUser(UserDto userData)
         {
             bool isCreated = false;
             try
@@ -250,12 +252,10 @@ namespace hotel_data
                         cmd.Parameters.AddWithValue("@username", userData.userName);
                         cmd.Parameters.AddWithValue("@password", userData.password);
                         cmd.Parameters.AddWithValue("@IsVIP", userData.isVip);
-
                     }
 
                     isCreated = true;
                 }
-
             }
             catch (Exception ex)
             {
@@ -265,16 +265,15 @@ namespace hotel_data
             return isCreated;
         }
 
-            public static bool isExist(
+        public static bool isExist(
             Guid id
-            )
+        )
         {
             bool isExist = false;
             try
             {
                 using (var connection = new NpgsqlConnection(connectionUr))
                 {
-
                     connection.Open();
 
                     string query = @" SELECT * FROM  users WHERE userid =@id;";
@@ -290,28 +289,28 @@ namespace hotel_data
                         }
                     }
                 }
+
                 return isExist;
             }
             catch (Exception ex)
             {
                 Console.WriteLine("\nthis error from person deleted {0} \n", ex.Message);
-
             }
+
             return isExist;
         }
 
 
         public static bool isExist(
-               string username,
-               string password
-               )
+            string username,
+            string password
+        )
         {
             bool isExist = false;
             try
             {
                 using (var connection = new NpgsqlConnection(connectionUr))
                 {
-
                     connection.Open();
 
                     string query = @" SELECT * FROM  users WHERE username =@name AND password =@password;";
@@ -328,19 +327,20 @@ namespace hotel_data
                         }
                     }
                 }
+
                 return isExist;
             }
             catch (Exception ex)
             {
                 Console.WriteLine("\nthis error from person deleted {0} \n", ex.Message);
-
             }
+
             return isExist;
         }
- 
-        
+
+
         public static bool delete(
-           Guid id 
+            Guid id
         )
         {
             bool isDeleted = false;
@@ -348,10 +348,9 @@ namespace hotel_data
             {
                 using (var connection = new NpgsqlConnection(connectionUr))
                 {
-
                     connection.Open();
 
-                    string query = @"DELETE FROM  users WHERE userid =@id;"; 
+                    string query = @"DELETE FROM  users WHERE userid =@id;";
                     using (var cmd = new NpgsqlCommand(query, connection))
                     {
                         cmd.Parameters.AddWithValue("@id", id);
@@ -363,16 +362,15 @@ namespace hotel_data
                         }
                     }
                 }
+
                 return isDeleted;
             }
             catch (Exception ex)
             {
                 Console.WriteLine("\nthis error from person deleted {0} \n", ex.Message);
-
             }
+
             return isDeleted;
         }
-
-   
     }
 }

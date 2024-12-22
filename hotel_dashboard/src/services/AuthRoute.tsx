@@ -3,11 +3,16 @@ import { userAuthContext } from "../context/validLogin"
 import { Navigate, Route } from 'react-router-dom'
 import { generalMessage } from "../util/generalPrint";
 import Login from "../pages/login";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../controller/rootReducer";
+import { setTokens } from "../controller/redux/jwtSlice";
 
 const AuthRoute = ({ Page }) => {
-    const { hasValidToken } = useContext(userAuthContext)
+    const userAuth =   useSelector((state:RootState) => state.auth.refreshToken)
+    
+    generalMessage(`this from  not have validation ${userAuth}`)
 
-    if (hasValidToken)
+    if (userAuth!==undefined)
         return <Navigate to={'/'} />
 
     return (<Page />)

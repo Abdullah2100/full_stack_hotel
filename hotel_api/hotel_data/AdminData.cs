@@ -151,7 +151,9 @@ namespace hotel_data
                                     (string)result["name"],
                                     (string)result["email"],
                                     result["address"] == DBNull.Value ? "" : (string)result["address"],
-                                    (string)result["phone"]
+                                    (string)result["phone"] ,
+                                    createdAt: (DateTime)result["CreatedAt"]
+
                                 );
 
                                 var admin = new AdminDto
@@ -213,7 +215,9 @@ namespace hotel_data
                                        (string)result["name"],
                                        (string)result["email"],
                                        result["address"] == DBNull.Value ? "" : (string)result["address"],
-                                       (string)result["phone"]
+                                       (string)result["phone"],
+                                       createdAt: (DateTime)result["CreatedAt"]
+
                                    )
                                );
 

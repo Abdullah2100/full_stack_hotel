@@ -152,11 +152,12 @@ namespace hotel_data
                                 isDelelted = (bool)result["isdeleted"];
                                 var person = new PersonDto
                                 (
-                                    id,
-                                    (string)result["name"],
-                                    (string)result["email"],
-                                    result["address"] == DBNull.Value ? "" : (string)result["address"],
-                                    (string)result["phone"]
+                                   personID: id,
+                                    email:(string)result["name"],
+                                    name:(string)result["email"],
+                                    phone:result["address"] == DBNull.Value ? "" : (string)result["address"],
+                                    address:(string)result["phone"],
+                                    createdAt: (DateTime)result["CreatedAt"]
                                 );
                             }
                         }
