@@ -385,8 +385,9 @@ SELECT
     use.DateOfBirth,
     use.UserName,
     use.IsVIP, 
-    use.CreatedAt  
-   
+    use.CreatedAt, 
+    use.password,
+    user.IsDeleted as ispersondeleted  
 FROM users use
 INNER JOIN persons per
 ON use.personid = per.personid;

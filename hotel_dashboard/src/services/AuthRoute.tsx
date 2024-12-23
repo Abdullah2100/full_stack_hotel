@@ -12,7 +12,7 @@ const AuthRoute = ({ Page }) => {
     
     generalMessage(`this from  not have validation ${userAuth}`)
 
-    if (userAuth!==undefined)
+    if (userAuth!==null)
         return <Navigate to={'/'} />
 
     return (<Page />)

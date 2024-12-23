@@ -9,6 +9,7 @@ import {
     QueryClientProvider,
 } from '@tanstack/react-query'
 import AuthRoute from "./services/AuthRoute";
+import User from "./pages/user/user";
 
 
 const App = () => {
@@ -21,6 +22,10 @@ const App = () => {
                 <Routes>
                     <Route path="/" element={
                         <PrivateRout Page={Home} />
+                    } />
+
+                    <Route path="/users" element={
+                        <PrivateRout Page={User} />
                     } />
 
                     <Route path='/login' element={

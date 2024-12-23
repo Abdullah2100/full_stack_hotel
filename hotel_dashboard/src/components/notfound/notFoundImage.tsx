@@ -1,6 +1,6 @@
 import 'react'
 import './style.css';
-import notFoundImage from '../../assets/page-not-found-removebg-preview.png'
+import notFoundImage from '../../assets/page-not-found.png'
 
 const NotFoundImage = ()=>{
 return (

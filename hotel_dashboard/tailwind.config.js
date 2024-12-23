@@ -6,6 +6,10 @@ export default {
       backgroundColor:{
         mainBg:'#5d2fd5'
       }
+      ,
+      textColor:{
+        mainColor:'#5d2fd5'
+      }
     },
 },
   plugins: [],
