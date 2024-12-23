@@ -79,7 +79,7 @@ namespace hotel_data
                 using (var con = new NpgsqlConnection(connectionUr))
                 {
                     con.Open();
-                    string query = @"SELECT * FROM usersview WHERE username = @username AND password = @password";
+                    string query = @"SELECT * FROM usersview WHERE username = @username OR email = @username AND password = @password";
 
                     using (var cmd = new NpgsqlCommand(query, con))
                     {
@@ -97,7 +97,7 @@ namespace hotel_data
                                     email: (string)reader["email"],
                                     name: (string)reader["name"],
                                     phone: (string)reader["phone"],
-                                    createdAt: (DateTime)reader["dateofbrith"],
+                                    createdAt: (DateTime)reader["createdat"],
                                     address: reader["address"] == DBNull.Value ? "" : (string)reader["address"]
                                 );
 
