@@ -21,7 +21,7 @@ const NavLink = ({ navTo, name,navType ,isCurrentIndex=false }: iNavLinkProps) =
   return (
     <div >
       <Link
-      className={`group flex flex-row justify-between w-52 items-center   ps-6 pe-3 mt-6 ms-3 hover:bg-black/10 py-2 ${isCurrentIndex&&'bg-black/10'}`}
+      className={`group flex flex-row justify-start w-44 items-center mt-4  ms-[27px] ps-2 hover:bg-black/10 py-1 ${isCurrentIndex&&'bg-black/10'}`}
       to={navTo}>
         {handleNavImage()}
         <h3 className='text-white group-hover:text-blue-200 text-sm ms-3'>{name}</h3>

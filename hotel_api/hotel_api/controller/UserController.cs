@@ -3,6 +3,7 @@ using hotel_api.Services;
 using hotel_api.util;
 using hotel_business;
 using hotel_data.dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace hotel_api.controller;
@@ -112,4 +113,20 @@ public class UserController : Controller
 
         return StatusCode(200, new { accessToken = $"{accesstoken}", refreshToken = $"{refreshToken}" });
     }
+
+
+    [Authorize]
+    [HttpPost("{page:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public IActionResult getUserByPage(int page)
+    {
+        var users = UserBuissnes.getAllUsers(page);
+        if (users != null)
+            return Ok(users);
+        return StatusCode(500, "Something went wrong");
+    }
+    
+    
 }

@@ -39,7 +39,6 @@ namespace hotel_data
                                     name: (string)reader["name"],
                                     phone: (string)reader["phone"],
                                     createdAt: (DateTime)reader["dateofbrith"],
-
                                     address: reader["address"] == DBNull.Value ? "" : (string)reader["address"]
                                 );
 
@@ -79,7 +78,8 @@ namespace hotel_data
                 using (var con = new NpgsqlConnection(connectionUr))
                 {
                     con.Open();
-                    string query = @"SELECT * FROM usersview WHERE username = @username OR email = @username AND password = @password";
+                    string query =
+                        @"SELECT * FROM usersview WHERE username = @username OR email = @username AND password = @password";
 
                     using (var cmd = new NpgsqlCommand(query, con))
                     {
@@ -133,40 +133,43 @@ namespace hotel_data
                 using (var con = new NpgsqlConnection(connectionUr))
                 {
                     con.Open();
-                    string query = @"SELECT * getUserPagination(pageNumber,limitNumber)";
+                    string query = @"select * from  getUserPagination(1,10)";
 
                     using (var cmd = new NpgsqlCommand(query, con))
                     {
-                        cmd.Parameters.AddWithValue("pageNumber", pageNumber);
-                        cmd.Parameters.AddWithValue("limitNumber", numberOfUser);
+                        cmd.Parameters.AddWithValue("@pagenumber", pageNumber <=1 ? 1 : pageNumber - 1);
+                        cmd.Parameters.AddWithValue("@limitnumber", numberOfUser);
 
                         using (var reader = cmd.ExecuteReader())
                         {
                             if (reader.HasRows)
                             {
-                                if ((bool)reader["ispersondeleted"] == true) return null;
+                                while (reader.Read())
+                                {
+                                    if ((bool)reader["isdeleted"] == true) continue;
 
-                                var personData = new PersonDto(
-                                    (Guid)reader["personid"],
-                                    email: (string)reader["email"],
-                                    name: (string)reader["name"],
-                                    phone: (string)reader["phone"],
-                                    createdAt: (DateTime)reader["dateofbrith"],
+                                    var personData = new PersonDto(
+                                        (Guid)reader["personid"],
+                                        email: (string)reader["email"],
+                                        name: (string)reader["name"],
+                                        phone: (string)reader["phone"],
+                                        createdAt: (DateTime)reader["createdat"],
+                                        address: reader["address"] == DBNull.Value ? "" : (string)reader["address"]
+                                    );
 
-                                    address: reader["address"] == DBNull.Value ? "" : (string)reader["address"]
-                                );
+                                    var userHolder = new UserDto(
+                                        userId: (Guid)reader["userid"],
+                                        personID: (Guid)reader["personid"],
+                                        brithDay: (DateTime)reader["dateofbirth"],
+                                        isVip: (bool)reader["isvip"],
+                                        personData: personData,
+                                        userName: (string)reader["UserName"],
+                                        password: ""
+                                    );
 
-                                var userHolder = new UserDto(
-                                    userId: (Guid)reader["userid"],
-                                    personID: (Guid)reader["personid"],
-                                    brithDay: (DateTime)reader["dateofbirth"],
-                                    isVip: (bool)reader["isvip"],
-                                    personData: personData,
-                                    userName: (string)reader["UserName"],
-                                    password: ""
-                                );
+                                    users.Add(userHolder);
+                                }
 
-                                users.Add(userHolder);
                             }
                         }
                     }
@@ -174,7 +177,7 @@ namespace hotel_data
             }
             catch (Exception ex)
             {
-                Console.WriteLine("this from getting user by id error {0}", ex);
+                Console.WriteLine("this from getting user by id error {0}", ex.Message);
                 return null;
             }
 
