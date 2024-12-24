@@ -13,6 +13,9 @@
       <change beforePath="$PROJECT_DIR$/.idea/.idea.hotel_api/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.hotel_api/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_api/controller/UserController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/controller/UserController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_data/UserData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/UserData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/components/navLink/navLink.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/components/navLink/navLink.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/components/tables/usersTable.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/components/tables/usersTable.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/pages/user/user.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/pages/user/user.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,7 +29,11 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/1c3f7d5c03bf77051eb8a758fb3549c4e2d4cb3dc6f6d567a94a315044961e/List.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/4adb5b691829c26d83fa849c65de669c2b38704fa6a8e6216dafbcb24e24d4f/NpgsqlDataReader.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/5ef9e37e2f99ef2688a1586afed1cff6eef912a11aa9b20a56943a255a6e6b/RuntimeHelpers.CoreCLR.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/b93677e7bc427676ed5eae846f2dbe4e1095f5ba135155b96527ce5e11e871/Component.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d2111b753d9c981f6ce76ee8efd9915ad46ff28e7b67bd7865a1661f9b64c43/NpgsqlConnection.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="Toolset" />
@@ -45,7 +52,7 @@
     ".NET Launch Settings Profile.hotel_api: http.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "XThreadsFramesViewSplitterKey": "0.2857143",
+    "XThreadsFramesViewSplitterKey": "0.073446326",
     "git-widget-placeholder": "dashboard__complate__save__jwt__to__redux__after__singup",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -106,6 +113,8 @@
       <workItem from="1734884511988" duration="6187000" />
       <workItem from="1734941611988" duration="890000" />
       <workItem from="1734944079392" duration="2934000" />
+      <workItem from="1735021063873" duration="25000" />
+      <workItem from="1735026171454" duration="8776000" />
     </task>
     <servers />
   </component>
@@ -132,29 +141,42 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/hotel_api/controller/UserController.cs</url>
-          <line>30</line>
+          <line>31</line>
           <properties documentPath="$PROJECT_DIR$/hotel_api/controller/UserController.cs" containingFunctionPresentation="Method 'adminSignUp'">
             <startOffsets>
-              <option value="788" />
+              <option value="830" />
             </startOffsets>
             <endOffsets>
-              <option value="951" />
+              <option value="993" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/hotel_api/controller/UserController.cs</url>
-          <line>99</line>
+          <line>100</line>
           <properties documentPath="$PROJECT_DIR$/hotel_api/controller/UserController.cs" containingFunctionPresentation="Method 'adminSignIn'">
             <startOffsets>
-              <option value="3270" />
+              <option value="3312" />
             </startOffsets>
             <endOffsets>
-              <option value="3391" />
+              <option value="3433" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/hotel_api/controller/UserController.cs</url>
+          <line>124</line>
+          <properties documentPath="$PROJECT_DIR$/hotel_api/controller/UserController.cs" containingFunctionPresentation="Method 'getUserByPage'">
+            <startOffsets>
+              <option value="4308" />
+            </startOffsets>
+            <endOffsets>
+              <option value="4351" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="3" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -163,5 +185,10 @@
         <PinnedItemInfo parentTag="Type#System.ArgumentException" memberName="Message" />
       </pinned-members>
     </pin-to-top-manager>
+    <watches-manager>
+      <configuration name="LaunchSettings">
+        <watch expression="pageNumber&lt;0?0 : pageNumber-1" />
+      </configuration>
+    </watches-manager>
   </component>
 </project>

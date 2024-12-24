@@ -563,39 +563,44 @@ ON use.personid = per.personid;
 --
 CREATE OR REPLACE FUNCTION getUserPagination(pageNumber INT, limitNumber INT)
 RETURNS TABLE (
+    PersonId UUID,
     Name VARCHAR(50),
     Phone VARCHAR(13),
     Email VARCHAR(100),
     Address TEXT,
+    UserId UUID,
     IsDeleted BOOL,
     UserName VARCHAR(50),
     DateOfBirth DATE,
-    IsVIP BOOL
+    IsVIP BOOL,
+    CreatedAt TIMESTAMP
 )
 AS $$
 BEGIN
     RETURN QUERY
     SELECT 
-        per.Name,
-        per.Phone,
-        per.Email,
-        per.Address,
-        us.IsDeleted,
-        us.UserName,
-        us.DateOfBirth,
-        us.IsVIP
+        per.PersonId,           -- PersonId from Persons table
+        per.Name,               -- Name from Persons table
+        per.Phone,              -- Phone from Persons table
+        per.Email,              -- Email from Persons table
+        per.Address,            -- Address from Persons table
+        us.UserId,              -- UserId from Users table
+        us.IsDeleted,           -- IsDeleted from Users table
+        us.UserName,            -- UserName from Users table
+        us.DateOfBirth,         -- DateOfBirth from Users table
+        us.IsVIP,               -- IsVIP from Users table
+        us.CreatedAt            -- CreatedAt from Users table
     FROM Persons per
     INNER JOIN Users us ON per.PersonID = us.PersonID
-    ORDER BY us.UserID DESC
-    LIMIT limitNumber OFFSET limitNumber * pageNumber;
-    
-EXCEPTION
+    ORDER BY us.CreatedAt DESC
+    LIMIT limitNumber OFFSET limitNumber * (pageNumber - 1);  -- Correct OFFSET calculation
+   EXCEPTION
     WHEN OTHERS THEN
         RAISE EXCEPTION 'Something went wrong: %', SQLERRM;
-        RETURN QUERY SELECT NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL;  -- Return an empty row in case of error
-END;
+        RETURN QUERY SELECT Null,NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL ,NULL;  -- Return an empty row in case of error
+ 
+	END;
 $$ LANGUAGE plpgsql;
-
 
 
 --  
