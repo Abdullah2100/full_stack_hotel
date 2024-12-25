@@ -15,16 +15,19 @@ const SubmitButton = (
         buttonStatus = enStatus.none,
         style = undefined
     }: submitButtonProps) => {
-    return (<button
+    return (<Button
         onClick={buttonStatus !== enStatus.loading ? onSubmit : undefined}
-        className={style}
+        color="primary"
+        //className={style}
+//        className={}
+ //sx={{backgroundColor:'blue'}}
     >
         {
             buttonStatus === enStatus.loading ?
                 <CircularProgress sx={{ color: 'white' }} size={10} className="mt-1" />
                 : placeHolder
         }
-    </button>)
+    </Button>)
 
 }
 export default SubmitButton;

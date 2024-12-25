@@ -2,13 +2,11 @@ import { createContext, useEffect, useState } from "react";
 import { enMessage } from "../module/enMessageType";
 import { ExclamationTriangleIcon, ExclamationCircleIcon } from "@heroicons/react/16/solid";
 interface iToastifyCustom {
-    showToastiFy: (message: string, messageType: enMessage) => void;
+    showToastiFy: (message: string, messageType: enMessage,isUp?:boolean) => void;
 }
 
 const toastifyCustomHolder: iToastifyCustom = {
-    showToastiFy(message, messageType) {
-
-    },
+   showToastiFy: (message: string, messageType: enMessage,isUp:boolean=false) => { },
 }
 export const useToastifiContext = createContext<iToastifyCustom>(toastifyCustomHolder)
 
@@ -16,15 +14,17 @@ const ToastifyCustom = ({ children }) => {
     const [message, setMessage] = useState<string | undefined>(undefined)
     const [messageType, setMessageType] = useState<enMessage | undefined>(enMessage.ERROR)
     const [isShownMessage, setShownMessage] = useState<boolean>(false)
+    const [isUp,setDirection] = useState<boolean>(false)
 
     useEffect(() => {
 
     }, [message])
 
-    const showNotify = (message: string, messageType: enMessage) => {
+    const showNotify = (message: string, messageType: enMessage,isUp=false) => {
         setMessageType(messageType)
         setMessage(message)
         setShownMessage(true)
+        setDirection(isUp)
     }
 
     const notifyIcon = () => {
@@ -50,9 +50,9 @@ const ToastifyCustom = ({ children }) => {
 
     return (<useToastifiContext.Provider value={{ showToastiFy: showNotify }}>
         <div className="overflow-hidden relative ">
-            <div className={`z-10 absolute transition-all duration-300 ease-in-out
+            <div className={`z-10   transition-all duration-300 ease-in-out fixed
                 ${isShownMessage === true ?
-                    'bottom-1 opacity-100'
+                    `${isUp?'top-1':'bottom-1'} opacity-100`
                     : 'bottom-0 opacity-0'
                 } end-5 px-8 py-2 
                  rounded-sm

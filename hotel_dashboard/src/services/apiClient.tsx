@@ -22,7 +22,7 @@ export default async function apiClient(
     }: ApiClientProps
 ) {
     const full_url = import.meta.env.VITE_BASE_URL + endPoint
-    const header = handleHeader(isFormData, isRquireAuth, jwtValue)
+    const header = handleHeader( isRquireAuth,isFormData, jwtValue)
     try {
 
         const repsonse = await axios({
@@ -34,7 +34,7 @@ export default async function apiClient(
         return repsonse;
     } catch (error) {
         throw {
-            message: error?.message,
+            message:error?.response?.statusText|| error?.message,
             response: error?.response?.data,
             status: error?.response?.status,
         };

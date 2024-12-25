@@ -1,36 +1,54 @@
 import React from 'react'
+import { UserModule } from '../../module/userModule';
+import { Switch } from '@mui/material';
 
-const UersTable = () => {
-  const data = [
-  {
-    userId: "de8bf700-7359-4a80-aa68-724fa24eceea",
-    personID: "fe485fb5-6ea9-46e4-9727-92011a9f9411",
-    brithDay: "2024-12-05T00:00:00",
-    isVip: false,
-    personData: {
-      personID: "fe485fb5-6ea9-46e4-9727-92011a9f9411",
-      name: "asdf",
-      email: "asda@gmail.com",
-      phone: "7755012257",
-      address: "sadf",
-      createdAt: "2024-12-22T21:10:21.404375",
-    },
-    userName: "asdf",
-    password: "",
-  },
-];
+interface UserTableProps{
+  data:UserModule[]
+}
+const UersTable = ({data}:UserTableProps) => {
+   
 
   return (
-    <div className="">
-      <table>
-       <thead>
-        <td
-       </thead>
-
-      </table>
-    
-    
-    </div>
+    <div className="overflow-x-auto ">
+    <table className="min-w-full table-auto border-collapse">
+      <thead className="bg-gray-200 text-gray-600">
+        <tr>
+          <th className="px-4 py-2 border-b text-left whitespace-nowrap">User ID</th>
+          <th className="px-4 py-2 border-b text-left whitespace-nowrap">Person ID</th>
+          <th className="px-4 py-2 border-b text-left whitespace-nowrap">Name</th>
+          <th className="px-4 py-2 border-b text-left whitespace-nowrap">Email</th>
+          <th className="px-4 py-2 border-b text-left whitespace-nowrap">Phone</th>
+          <th className="px-4 py-2 border-b text-left whitespace-nowrap">Address</th>
+          <th className="px-4 py-2 border-b text-left whitespace-nowrap">Created At</th>
+          <th className="px-4 py-2 border-b text-left whitespace-nowrap">VIP Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {data.length>0&&data.map((user, index) => (
+          <tr
+            key={index}
+            className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
+          >
+            <td className="px-4 py-2 border-b text-left whitespace-nowrap">{user?.userId||""}</td>
+            <td className="px-4 py-2 border-b text-left whitespace-nowrap">{user?.personID||""}</td>
+            <td className="px-4 py-2 border-b text-left whitespace-nowrap">{user?.personData?.name||""}</td>
+            <td className="px-4 py-2 border-b text-left whitespace-nowrap">{user?.personData?.email||""}</td>
+            <td className="px-4 py-2 border-b text-left whitespace-nowrap">{user?.personData?.phone||""}</td>
+            <td className="px-4 py-2 border-b text-left whitespace-nowrap">{user?.personData?.address||""}</td>
+            <td className="px-4 py-2 border-b text-left whitespace-nowrap">
+              {user?.personData?.createdAt===undefined?"":new Date(user.personData.createdAt).toLocaleString()}
+            </td>
+            <td className="px-4 py-2 border-b text-left whitespace-nowrap">
+              <Switch
+              value={user.isVip}
+              
+              />
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
   )
 }
 

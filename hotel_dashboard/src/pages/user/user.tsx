@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Header from '../../components/header/header'
 import { UsersIcon } from '@heroicons/react/16/solid'
 import { userAuthModule } from '../../module/userAuthModule';
@@ -7,9 +7,26 @@ import { PasswordInput } from '../../components/input/passwordInput';
 import SubmitButton from '../../components/button/submitButton';
 import { enStatus } from '../../module/enState';
 import UersTable from '../../components/tables/usersTable';
+import { notifyManager, useQuery } from '@tanstack/react-query';
+import apiClient from '../../services/apiClient';
+import { enApiType } from '../../module/enApiType';
+import NotFoundPage from '../NotFound/notfound';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../controller/rootReducer';
+import { generalMessage } from '../../util/generalPrint';
+import { useToastifiContext } from '../../context/toastifyCustom';
+import { enMessage } from '../../module/enMessageType';
+import NotFoundComponent from '../../components/notFoundContent';
+import { UserModule } from '../../module/userModule';
 
 const User = () => {
+  const { showToastiFy } = useContext(useToastifiContext)
+
+  const refreshToken = useSelector((state: RootState) => state.auth.refreshToken)
+
   const [status, setState] = useState<enStatus>(enStatus.none)
+  const [page, setPage] = useState<number>(1)
+  const [isNoData, setNoData] = useState<boolean>(false)
 
   const [userAuth, setUser] = useState<userAuthModule>({
     name: 'asdf',
@@ -28,11 +45,39 @@ const User = () => {
     }));
   };
 
+  const { data, error } = useQuery({
+
+    queryKey: ['users'],
+    queryFn: async () => apiClient({
+      enType: enApiType.GET,
+      endPoint: import.meta.env.VITE_USERS + `${page}`,
+      prameters: undefined,
+      isRquireAuth: true,
+      jwtValue: refreshToken || ""
+    }),
+    // refetchInterval:10000
+
+  }
+  );
+
+  useEffect(() => {
+    generalMessage(error)
+
+    if (error) {
+      setNoData(true)
+      showToastiFy(error.message, enMessage.ERROR);
+    }
+    if (data) {
+      generalMessage(JSON.stringify(data.data))
+      setNoData(false)
+    }
+  }, [error, data])
+
   return (
     <div className='flex flex-row'>
-
-        <Header index={1} />
-
+      {/* nav */}
+      <Header index={1} />
+      {/* main */}
       <div className='min-h-screen w-[calc(100%-192px)] ms-[192px] flex flex-col px-2 items-start  overflow-scroll '>
         <div className='flex flex-row items-center mt-2'>
           <UsersIcon className='h-8 fill-black group-hover:fill-gray-200 -ms-1' />
@@ -122,10 +167,13 @@ const User = () => {
             style="text-[10px] bg-mainBg w-[120px] text-white rounded-[2px] mt-2 h-6"
           />}
         </div>
-
-        <UersTable />
-        {/* <div className='h-[500px] w-full bg-green-950'></div> */}
-
+        <h3 className='text-2xl font-bold mt-2'>users Data : </h3>
+        {isNoData ? <div className='w-full mt-4 h-40 flex flex-col items-center justify-center'>
+          <NotFoundComponent />
+        </div> :
+          <div className="overflow-x-auto   w-full mt-4">
+            <UersTable data={data !== undefined ? (data.data as UserModule[]) : []} />
+          </div>}
       </div>
 
 
