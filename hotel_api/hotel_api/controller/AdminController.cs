@@ -6,6 +6,7 @@ using hotel_business;
 using hotel_api.util;
 using hotel_api.Services;
 using hotel_data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace hotel_api.controller
 {
@@ -34,11 +35,15 @@ namespace hotel_api.controller
                 email: adminRequestData.email, password: adminRequestData.password);
             if (validateRequeset != null)
                 return BadRequest($"{validateRequeset}");
-            bool isExistEmail = PersonBuisness.isPersonExistByEmail(adminRequestData.email);
+            bool isExistEmail = false;
+            isExistEmail = PersonBuisness.isPersonExistByEmailAndPhone(adminRequestData.email, adminRequestData.phone);
 
             if (isExistEmail)
-                return BadRequest("email is already in use");
+                return BadRequest("email or phone  is already in use");
+            isExistEmail = AdminBuissnes.isAdminExist(adminRequestData.userName);
 
+            if (isExistEmail)
+                return BadRequest("username is already in use");
 
             var data = AdminBuissnes.getAdmin(adminRequestData.userName,
                 clsUtil.hashingText(adminRequestData.password));
@@ -46,16 +51,18 @@ namespace hotel_api.controller
                 return StatusCode(409, "amdin already exist");
             var adminId = Guid.NewGuid();
             var adminData = new AdminDto(
-                adminId,
-                adminRequestData.userName,
-                password: clsUtil.hashingText(adminRequestData.password)
-                ,
-                new PersonDto(
+                adminID: adminId,
+                userName: adminRequestData.userName,
+                password: clsUtil.hashingText(adminRequestData.password),
+                personsId: null,
+                personData: new PersonDto(
                     personID: null,
-                    email:adminRequestData.email,
-                    name:adminRequestData.name,
-                    adminRequestData.phone,
-                    adminRequestData.address));
+                    email: adminRequestData.email,
+                    name: adminRequestData.name,
+                    phone: adminRequestData.phone,
+                    address: adminRequestData.address
+                )
+            );
 
             var adminHolder = new AdminBuissnes(adminData);
             var result = adminHolder.save();
@@ -78,15 +85,14 @@ namespace hotel_api.controller
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult adminSignIn(
-            LoginRequestDto loginData 
-            )
+            LoginRequestDto loginData
+        )
         {
-            
             var data = AdminBuissnes.getAdmin(loginData.userNameOrEmail, clsUtil.hashingText(loginData.password));
             if (data == null)
                 return StatusCode(409, "amdin not exist");
             string accesstoken = "", refreshToken = "";
-            
+
             accesstoken = AuthinticationServices.generateToken(data.adminID, data?.personData?.email ?? "", _config,
                 AuthinticationServices.enTokenMode.AccessToken);
             refreshToken = AuthinticationServices.generateToken(data?.adminID, data?.personData?.email ?? "", _config,
@@ -94,6 +100,100 @@ namespace hotel_api.controller
 
 
             return StatusCode(201, new { accessToken = $"{accesstoken}", refreshToken = $"{refreshToken}" });
+        }
+
+        [Authorize]
+        [HttpPost("createUser")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult createNewUser(
+            UserRequestDto userRequestData
+        )
+        {
+            var authorizationHeader = HttpContext.Request.Headers["Authorization"];
+            var id = AuthinticationServices.GetPayloadFromToken("id",
+                authorizationHeader.ToString().Replace("Bearer ", ""));
+            Guid? adminid = null;
+            if (Guid.TryParse(id.Value.ToString(), out Guid outID))
+            {
+                adminid = outID;
+            }
+
+            if (adminid == null)
+            {
+                return StatusCode(401, "you not have Permission");
+            }
+
+            var isHasPermissionToCreateUser = AdminBuissnes.isAdminExist(adminid ?? Guid.Empty);
+
+
+            if (!isHasPermissionToCreateUser)
+            {
+                return StatusCode(401, "you not have Permission");
+            }
+
+            string? validateRequeset = clsValidation.validateInput(phone: userRequestData.phone,
+                email: userRequestData.email, password: userRequestData.password);
+
+            if (validateRequeset != null)
+                return StatusCode(400, validateRequeset);
+
+
+            bool isExistEmail =
+                PersonBuisness.isPersonExistByEmailAndPhone(userRequestData.email, userRequestData.phone);
+
+            if (isExistEmail)
+                return StatusCode(400, "email or phone is already in use");
+
+
+            var data = UserBuissnes.getUserByUserNameAndPassword(userRequestData.userName,
+                clsUtil.hashingText(userRequestData.password));
+            if (data != null)
+                return StatusCode(409, "user already exist");
+
+
+            var userId = Guid.NewGuid();
+
+            var personDataHolder = new PersonDto(
+                personID: null,
+                email: userRequestData.email,
+                name: userRequestData.name,
+                phone: userRequestData.phone,
+                address: userRequestData.address
+            );
+
+            data = new UserDto(
+                userId: userId,
+                personID: null,
+                brithDay: userRequestData.brithDay,
+                isVip: userRequestData.isVip,
+                personData: personDataHolder,
+                userName: userRequestData.userName,
+                password: clsUtil.hashingText(userRequestData.password),
+                addBy: adminid
+            );
+
+
+            var userHolder = new UserBuissnes(data);
+            var result = userHolder.save();
+            string accesstoken = "", refreshToken = "";
+            if (result == false)
+                return StatusCode(500, "some thing wrong");
+
+            accesstoken = AuthinticationServices.generateToken(
+                userID: userId,
+                email: data.personData.email,
+                config: _config,
+                enTokenMode: AuthinticationServices.enTokenMode.AccessToken);
+            refreshToken = AuthinticationServices.generateToken(
+                userID: userId,
+                email: data.personData.email,
+                config: _config,
+                enTokenMode: AuthinticationServices.enTokenMode.RefreshToken);
+
+            return StatusCode(201, new { message="created seccessfully" });
         }
     }
 }

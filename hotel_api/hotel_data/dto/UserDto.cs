@@ -7,6 +7,7 @@ public class UserDto
     public Guid userId  { get; set; }
 
     public Guid? personID  { get; set; }
+    public Guid? addBy  { get; set; }
 
     public DateTime brithDay   { get; set; }
 
@@ -25,7 +26,8 @@ public class UserDto
         bool isVip,
         PersonDto personData, 
         string userName,
-        string password)
+        string password,
+        Guid? addBy=null)
     {
         this.userId = userId;
         this.personID = personID;
@@ -34,5 +36,6 @@ public class UserDto
         this.personData = personData;
         this.userName = userName;
         this.password = password;
+        this.addBy = addBy;
     }
 }

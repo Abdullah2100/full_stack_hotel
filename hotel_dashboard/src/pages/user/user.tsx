@@ -7,7 +7,7 @@ import { PasswordInput } from '../../components/input/passwordInput';
 import SubmitButton from '../../components/button/submitButton';
 import { enStatus } from '../../module/enState';
 import UersTable from '../../components/tables/usersTable';
-import { notifyManager, useQuery } from '@tanstack/react-query';
+import { notifyManager, useMutation, useQuery } from '@tanstack/react-query';
 import apiClient from '../../services/apiClient';
 import { enApiType } from '../../module/enApiType';
 import NotFoundPage from '../NotFound/notfound';
@@ -18,6 +18,7 @@ import { useToastifiContext } from '../../context/toastifyCustom';
 import { enMessage } from '../../module/enMessageType';
 import NotFoundComponent from '../../components/notFoundContent';
 import { UserModule } from '../../module/userModule';
+import { isHasCapitalLetter, isHasNumber, isHasSmallLetter, isHasSpicalCharacter, isValidEmail } from '../../util/regexValidation';
 
 const User = () => {
   const { showToastiFy } = useContext(useToastifiContext)
@@ -45,7 +46,7 @@ const User = () => {
     }));
   };
 
-  const { data, error } = useQuery({
+  const { data, error, refetch } = useQuery({
 
     queryKey: ['users'],
     queryFn: async () => apiClient({
@@ -60,8 +61,111 @@ const User = () => {
   }
   );
 
+  const singup = useMutation({
+    mutationFn: (userData: any) =>
+      apiClient({
+        enType: enApiType.POST,
+        endPoint: import.meta.env.VITE_CreateUSERS,
+        prameters: userData,
+        isRquireAuth: true,
+        jwtValue: refreshToken || ""
+      }),
+    onSuccess: (data) => {
+      setState(enStatus.complate)
+      showToastiFy("user created Sueccessfuly", enMessage.SECCESSFUL);
+      refetch();
+    },
+    onError: (error) => {
+      setState(enStatus.complate);
+
+      if (error.response) {
+        // Extract error message from the server response
+        const errorMessage = error?.response || "An error occurred";
+        showToastiFy(errorMessage, enMessage.ERROR);
+      } else if (error.request) {
+        // Handle network errors or no response received
+        const requestError = "No response received from server";
+        showToastiFy(requestError, enMessage.ERROR);
+      } else {
+        // Handle other unknown errors
+        const unknownError = error.message || "An unknown error occurred";
+        showToastiFy(unknownError, enMessage.ERROR);
+      }
+    }
+
+  })
+
+  const validationInput = () => {
+
+    let validationMessage = "";
+    if (userAuth.name.trim().length < 1) {
+      validationMessage = "name mustn't be empty"
+    }
+    else if (userAuth.email.trim().length < 1) {
+      validationMessage = "email must not be empty"
+    }
+    else if (userAuth.brithDay === undefined) {
+      validationMessage = "brithday must not be empty"
+    }
+    else if (userAuth.phone.length < 1) {
+      validationMessage = "phone must not be empty"
+    }
+    else if (userAuth.username.length < 1) {
+      validationMessage = "username must not be empty"
+    }
+    else if (userAuth.password.length < 1) {
+      validationMessage = "password must not be empty"
+    }
+    else if (!isValidEmail(userAuth.email)) {
+      validationMessage = "write valide email"
+    }
+    else if (userAuth.phone.length < 10) {
+      validationMessage = "phone must atleast 10 numbers";
+    }
+    else if (!isHasCapitalLetter(userAuth.password)) {
+      validationMessage = " password must contain 2 capital character"
+    }
+    else if (!isHasSmallLetter(userAuth.password)) {
+
+      validationMessage = "password must contain 2 small character"
+    }
+    else if (!isHasSpicalCharacter(userAuth.password)) {
+      validationMessage = "password must contain 2 special character";
+    }
+    else if (!isHasNumber(userAuth.password)) {
+      validationMessage = " password must contain 2 number"
+    }
+
+    if (validationMessage.length > 0)
+      showToastiFy(validationMessage, enMessage.ATTENSTION)
+
+    return validationMessage.length > 0;
+  }
+
+
+  const createNewUser = async () => {
+    if (validationInput()) {
+      return;
+    }
+    setState(enStatus.loading)
+    const data = {
+      "name": userAuth.name,
+      "email": userAuth.email,
+      "phone": userAuth.phone,
+      "address": userAuth.address,
+      "userName": userAuth.username,
+      "password": userAuth.password,
+      "brithDay": userAuth.brithDay,
+      "isVip": false
+    }
+    await singup.mutate(data)
+
+  };
+
+
+
+
   useEffect(() => {
-    generalMessage(error)
 
     if (error) {
       setNoData(true)
@@ -158,22 +262,20 @@ const User = () => {
               isMultipleLine={true}
             />
           </div>
-          {<SubmitButton
-            //onSubmit={() => onSubmit()}
-            onSubmit={async () => { }}
+
+          <SubmitButton
+            onSubmit={() => createNewUser()}
             buttonStatus={status}
             placeHolder={'create'}
-            // onSubmit={() => { }}
             style="text-[10px] bg-mainBg w-[120px] text-white rounded-[2px] mt-2 h-6"
-          />}
+          />
+
         </div>
         <h3 className='text-2xl font-bold mt-2'>users Data : </h3>
-        {isNoData ? <div className='w-full mt-4 h-40 flex flex-col items-center justify-center'>
-          <NotFoundComponent />
-        </div> :
-          <div className="overflow-x-auto   w-full mt-4">
-            <UersTable data={data !== undefined ? (data.data as UserModule[]) : []} />
-          </div>}
+
+        <div className="overflow-x-auto   w-full mt-4">
+          <UersTable data={data !== undefined ? (data.data as UserModule[]) : undefined} />
+        </div>
       </div>
 
 
