@@ -23,8 +23,8 @@ const Login = () => {
         const [status, setState] = useState<enStatus>(enStatus.none)
 
     const [authLoginModule, setUser] = useState<userAuthLoginModule>({
-        eamilOrUserName: '',
-        password: ''
+        eamilOrUserName: 'asdadd@gmail.com',
+        password: 'asAS12#$'
     });
 
     const [enState,changeStatus] = useState<enStatus>(enStatus.none)
@@ -42,10 +42,8 @@ const Login = () => {
         mutationFn: (userData: any) =>
             apiClient({
                 enType: enApiType.POST,
-                endPoint: import.meta.env.VITE_USER_SIGNIN,
+                endPoint: import.meta.env.VITE_SINGIN,
                 prameters: userData
-
-
             }),
         onSuccess: (data) => {
             setState(enStatus.complate)

@@ -16,6 +16,7 @@ import { PasswordInput } from '../../components/input/passwordInput';
 import { useDispatch } from 'react-redux';
 import { setTokens } from '../../controller/redux/jwtSlice';
 import { AuthResult } from '../../module/userAuthResult';
+import { ISingupModle } from '../../module/singupModle';
 
 const SignUp = () => {
     const dispatcher = useDispatch()
@@ -23,14 +24,13 @@ const SignUp = () => {
     const [isPasswordFocuse, setPasswordFocuse] = useState<boolean | undefined>(undefined)
     const [status, setState] = useState<enStatus>(enStatus.none)
     const { handleSubmit } = useForm();
-    const [userAuth, setUser] = useState<userAuthModule>({
+    const [userAuth, setUser] = useState<ISingupModle>({
         name: 'asdf',
         email: 'asda@gmail.com',
         phone: '7755012257',
         address: 'sadf',
         username: 'asdf',
         password: 'asAS12#$',
-        brithDay: undefined,
     });
 
     // Update input field in the userAuth state by key
@@ -45,7 +45,7 @@ const SignUp = () => {
         mutationFn: (userData: any) =>
             apiClient({
                 enType: enApiType.POST,
-                endPoint: import.meta.env.VITE_USER_SIGNUP,
+                endPoint: import.meta.env.VITE_SINGUP,
                 prameters: userData
 
 
@@ -84,9 +84,6 @@ const SignUp = () => {
         }
         else if (userAuth.email.trim().length < 1) {
             validationMessage = "email must not be empty"
-        }
-        else if (userAuth.brithDay === undefined) {
-            validationMessage = "brithday must not be empty"
         }
         else if (userAuth.phone.length < 1) {
             validationMessage = "phone must not be empty"
@@ -134,8 +131,6 @@ const SignUp = () => {
             "address": userAuth.address,
             "userName": userAuth.username,
             "password": userAuth.password,
-            "brithDay": userAuth.brithDay,
-            "isVip": false
         }
         await singup.mutate(data)
 
@@ -168,16 +163,7 @@ const SignUp = () => {
 
             />
 
-            <TextInput
-                keyType='brithDay'
-                value={userAuth.brithDay}
-                onInput={updateInput}
-                placeHolder="2020/01/20"
-                type="date"
-                style="mb-1"
-                isRequire={true}
-
-            />
+            
             <TextInput
                 keyType='address'
                 value={userAuth.address}

@@ -34,7 +34,7 @@ namespace hotel_business
 
         public AdminDto amdinData
         {
-            get { return new AdminDto(ID, userName, password, personData); }
+            get { return new AdminDto(ID, userName, password, personID,personData); }
         }
 
         private bool _createAdmin()
@@ -88,6 +88,10 @@ namespace hotel_business
         public static bool isAdminExist(Guid id)
         {
             return AdminData.isExist(id);
+        }
+        public static bool isAdminExist(string username)
+        {
+            return AdminData.isExist(username);
         }
 
        

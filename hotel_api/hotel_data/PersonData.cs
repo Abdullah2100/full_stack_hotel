@@ -212,7 +212,8 @@ namespace hotel_data
 
 
         public static bool isExist(
-               string email
+               string email,
+               string phone
                )
         {
             bool isExist = false;
@@ -223,11 +224,12 @@ namespace hotel_data
 
                     connection.Open();
 
-                    string query = @" SELECT * FROM  persons WHERE email =@email;";
+                    string query = @" SELECT * FROM  persons WHERE email =@email OR phone = @phone;";
 
                     using (var cmd = new NpgsqlCommand(query, connection))
                     {
                         cmd.Parameters.AddWithValue("@email", email);
+                        cmd.Parameters.AddWithValue("@phone", phone);
 
                         using (var result = cmd.ExecuteReader())
                         {

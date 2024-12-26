@@ -36,7 +36,8 @@ public class UserController : Controller
             return StatusCode(400, validateRequeset);
 
 
-        bool isExistEmail = PersonBuisness.isPersonExistByEmail(userRequestData.email);
+        bool isExistEmail = PersonBuisness.
+            isPersonExistByEmailAndPhone(userRequestData.email,userRequestData.phone);
 
         if (isExistEmail)
             return StatusCode(400, "email is already in use");

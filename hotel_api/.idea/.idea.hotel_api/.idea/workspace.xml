@@ -9,8 +9,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a5d946be-ded5-4850-9962-9f8d801bf9de" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../SQLQuery_2.sql" beforeDir="false" afterPath="$PROJECT_DIR$/../SQLQuery_2.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.hotel_api/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.hotel_api/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_api/RequestDto/UserRequestDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/RequestDto/UserRequestDto.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_api/controller/UserController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/controller/UserController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_business/AdminBuissnes.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/AdminBuissnes.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_business/GeneralBuisness.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/GeneralBuisness.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_business/PersonBuisness.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/PersonBuisness.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_business/UserBuissnes.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/UserBuissnes.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_data/AdminData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/AdminData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_data/PersonData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/PersonData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_data/UserData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/UserData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_data/dto/AdminDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/dto/AdminDto.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_data/dto/UserDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/dto/UserDto.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/components/tables/usersTable.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/components/tables/usersTable.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/pages/user/user.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/pages/user/user.tsx" afterDir="false" />
     </list>
@@ -29,8 +41,12 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/1c3f7d5c03bf77051eb8a758fb3549c4e2d4cb3dc6f6d567a94a315044961e/List.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/4adb5b691829c26d83fa849c65de669c2b38704fa6a8e6216dafbcb24e24d4f/NpgsqlDataReader.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/5ef9e37e2f99ef2688a1586afed1cff6eef912a11aa9b20a56943a255a6e6b/RuntimeHelpers.CoreCLR.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/71ea5c4edeff4385acb72ebe8dd9eb825939c97d1f1cb41dc463babd91cf34/ControllerActionInvoker.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/a984a133191d26625f45e85cc27e20cad64f4a6ecb6263b4c17bc55965a5/String.Manipulation.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/b93677e7bc427676ed5eae846f2dbe4e1095f5ba135155b96527ce5e11e871/Component.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d2111b753d9c981f6ce76ee8efd9915ad46ff28e7b67bd7865a1661f9b64c43/NpgsqlConnection.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/db7395f4add94e6d10e515b3e55373f2821f8323de7dc8e314d78feefacf5584/ActionMethodExecutor.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f77be22079eb1bdddcd5dbcd5df7fecbed559688b86a491da2be84d9f269191/StringValues.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="Toolset" />
@@ -49,8 +65,8 @@
     ".NET Launch Settings Profile.hotel_api: http.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "XThreadsFramesViewSplitterKey": "0.073446326",
-    "git-widget-placeholder": "enable__scroll__in__user__page",
+    "XThreadsFramesViewSplitterKey": "0.08227848",
+    "git-widget-placeholder": "display__user__data",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -113,6 +129,9 @@
       <workItem from="1735021063873" duration="25000" />
       <workItem from="1735026171454" duration="8776000" />
       <workItem from="1735121200998" duration="7173000" />
+      <workItem from="1735197751343" duration="12000" />
+      <workItem from="1735198577484" duration="3316000" />
+      <workItem from="1735212295503" duration="13961000" />
     </task>
     <servers />
   </component>
@@ -152,34 +171,74 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/hotel_api/controller/UserController.cs</url>
-          <line>100</line>
+          <line>101</line>
           <properties documentPath="$PROJECT_DIR$/hotel_api/controller/UserController.cs" containingFunctionPresentation="Method 'adminSignIn'">
             <startOffsets>
-              <option value="3312" />
+              <option value="3355" />
             </startOffsets>
             <endOffsets>
-              <option value="3433" />
+              <option value="3476" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/hotel_api/controller/UserController.cs</url>
-          <line>124</line>
+          <line>125</line>
           <properties documentPath="$PROJECT_DIR$/hotel_api/controller/UserController.cs" containingFunctionPresentation="Method 'getUserByPage'">
             <startOffsets>
-              <option value="4307" />
+              <option value="4350" />
             </startOffsets>
             <endOffsets>
-              <option value="4350" />
+              <option value="4393" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/hotel_api/controller/AdminController.cs</url>
+          <line>33</line>
+          <properties documentPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" containingFunctionPresentation="Method 'adminSignUp'">
+            <startOffsets>
+              <option value="978" />
+            </startOffsets>
+            <endOffsets>
+              <option value="1148" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/hotel_api/controller/AdminController.cs</url>
+          <line>90</line>
+          <properties documentPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" containingFunctionPresentation="Method 'adminSignIn'">
+            <startOffsets>
+              <option value="3661" />
+            </startOffsets>
+            <endOffsets>
+              <option value="3763" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/hotel_api/controller/AdminController.cs</url>
+          <line>179</line>
+          <properties documentPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" containingFunctionPresentation="Method 'createNewUser'">
+            <startOffsets>
+              <option value="7167" />
+            </startOffsets>
+            <endOffsets>
+              <option value="7198" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="7" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <pin-to-top-manager>
       <pinned-members>
+        <PinnedItemInfo parentTag="Type#Microsoft.Extensions.Primitives.StringValues" memberName="_values" />
         <PinnedItemInfo parentTag="Type#System.ArgumentException" memberName="Message" />
       </pinned-members>
     </pin-to-top-manager>

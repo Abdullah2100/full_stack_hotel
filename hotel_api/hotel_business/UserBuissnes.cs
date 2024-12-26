@@ -9,6 +9,7 @@ public class UserBuissnes
     enMode mode = enMode.add; 
     public Guid ID { get; set; }
     public Guid? personID { get; set; }
+    public Guid? addBy { get; set; }
     public DateTime brithDay { get; set; }
     public bool isVip { get; set; }
     public PersonDto personData { get; set; }
@@ -27,6 +28,7 @@ public class UserBuissnes
                 userName: userName,
                 password: password,
                 personData: personData
+                ,addBy:addBy
             );
         }
     }
@@ -40,6 +42,7 @@ public class UserBuissnes
         this.personData = userData.personData;
         this.userName = userData.userName;
         this.password = userData.password;
+        this.addBy = userData.addBy;
         this.mode = mode;
     }
 

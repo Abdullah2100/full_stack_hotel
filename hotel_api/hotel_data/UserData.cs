@@ -192,30 +192,41 @@ namespace hotel_data
                 using (var con = new NpgsqlConnection(connectionUr))
                 {
                     con.Open();
-                    string query = @"SELECT fn_user_insert ( 
-                                  @userId_u::UUID , 
-                                  @name::VARCHAR(50) ,
-                                  @phone::VARCHAR(13) ,
-                                  @email::VARCHAR(100) ,
-                                  @address::TEXT ,
-                                  @username::VARCHAR(50) ,
-                                  @password::TEXT ,
-                                  @IsVIP , 
-                                  @DateOfBirth::DATE  ) ";
+                    string query = @"SELECT fn_user_insert_in ( 
+                                  userId_u::UUID , 
+                                  name::VARCHAR(50) ,
+                                  phone::VARCHAR(13) ,
+                                  email::VARCHAR(100) ,
+                                  address::TEXT ,
+                                  username::VARCHAR(50) ,
+                                  password::TEXT ,
+                                  IsVIP , 
+                                  DateOfBirth::DATE,
+                                  addBy_u::UUID); ";
                     using (var cmd = new NpgsqlCommand(query, con))
                     {
-                        cmd.Parameters.AddWithValue("@userId_u", userData.userId);
-                        cmd.Parameters.AddWithValue("@name", userData.personData.name);
-                        cmd.Parameters.AddWithValue("@phone", userData.personData.phone);
-                        cmd.Parameters.AddWithValue("@email", userData.personData.email);
-                        cmd.Parameters.AddWithValue("@address", userData.personData.address);
-                        cmd.Parameters.AddWithValue("@username", userData.userName);
-                        cmd.Parameters.AddWithValue("@password", userData.password);
-                        cmd.Parameters.AddWithValue("@IsVIP", userData.isVip);
-                        cmd.Parameters.AddWithValue("@DateOfBirth", userData.brithDay);
-                        cmd.ExecuteNonQuery();
+                        cmd.Parameters.AddWithValue("userId_u", userData.userId);
+                        cmd.Parameters.AddWithValue("name", userData.personData.name);
+                        cmd.Parameters.AddWithValue("phone", userData.personData.phone);
+                        cmd.Parameters.AddWithValue("email", userData.personData.email);
+                        cmd.Parameters.AddWithValue("address", userData.personData.address);
+                        cmd.Parameters.AddWithValue("username", userData.userName);
+                        cmd.Parameters.AddWithValue("password", userData.password);
+                        cmd.Parameters.AddWithValue("IsVIP", userData.isVip);
+                        cmd.Parameters.AddWithValue("DateOfBirth", userData.brithDay);
+                        if(userData.addBy==null)
+                            cmd.Parameters.AddWithValue("addBy_u", DBNull.Value);
+                        else
+                            cmd.Parameters.AddWithValue("addBy_u", userData.addBy);
+                        
+                        
+                       var result =  cmd.ExecuteScalar();
 
-                        isCreated = true;
+                       if (result != null && int.TryParse(result?.ToString(), out int userId))
+                       {
+                        isCreated = userId > 0;
+                           
+                       }
                     }
                 }
             }

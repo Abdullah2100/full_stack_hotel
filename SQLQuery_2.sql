@@ -120,6 +120,7 @@ $$ LANGUAGE plpgsql;
 
 
 --
+
 CREATE OR REPLACE FUNCTION fn_admin_get_username_password(username_a VARCHAR(50), password_a TEXT)
 RETURNS TABLE(
         adminid UUID,
@@ -141,7 +142,7 @@ RETURN QUERY
             per.phone,
             per.address ,
             ad.username ,
-            per.email
+            per.email 
         FROM 
             admins ad
             INNER JOIN 
@@ -152,7 +153,8 @@ RETURN QUERY
         EXCEPTION
 WHEN OTHERS THEN RAISE EXCEPTION 'Something went wrong: %',
 SQLERRM;
- 
+
+RETURN QUERY SELECT NULL,NULL, NULL, NULL, NULL, NULL, NULL, NULL;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -369,10 +371,40 @@ CREATE  TABLE Users (
     IsVIP bool DEFAULT FALSE,
     PersonID UUID NOT NULL REFERENCES Persons (personid),
     CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    IsDeleted bool DEFAULT FALSE
-    -- ModifyBy UUID NULL,
+    IsDeleted bool DEFAULT FALSE,
+    addBy UUID DEFAULT NULL,
 );
 --
+
+
+
+
+CREATE OR REPLACE FUNCTION fn_user_insert()
+RETURNS TRIGGER
+AS $$
+DECLARE
+isCanAdd BOOLEAN :=FALSE;
+BEGIN
+
+  IF New.addby IS  NULL THEN
+   DELETE FROM persons WHERE  personid = NEW.personid;
+   RETURN NULL;
+  END IF;
+    isCanAdd :=isAdminOrSomeOneHasPersmission(addBy);
+
+    IF New.addby IS NOT NULL THEN
+   DELETE FROM persons WHERE  personid = NEW.personid;
+   RETURN NULL;
+  END IF;
+  
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE TRIGGER tr_user_insrt
+BEFORE INSERT ON Users FOR EACH ROW EXECUTE FUNCTION fn_user_insert();
+
 
 CREATE VIEW usersview AS 
 SELECT
@@ -604,7 +636,7 @@ $$ LANGUAGE plpgsql;
 
 
 --  
-CREATE OR REPLACE FUNCTION fn_user_insert (
+CREATE OR REPLACE FUNCTION fn_user_insert_in (
         userId_u UUID,
         name VARCHAR(50),
         phone VARCHAR(13),
@@ -613,7 +645,8 @@ CREATE OR REPLACE FUNCTION fn_user_insert (
         username varchar(50),
         password TEXT,
         IsVIP bool,
-        DateOfBirth DATE
+        DateOfBirth DATE,
+        addBy_u UUID
     ) 
 RETURNS INT 
 AS $$
@@ -629,8 +662,10 @@ INSERT INTO Users (
         UserName,
         Password,
         IsVIP,
-        personid
-    ) VALUES( userId_u,DateOfBirth, UserName, Password, IsVIP, person_id); RETURN 1;
+        personid,
+        addby
+    ) 
+    VALUES( userId_u,DateOfBirth, UserName, Password, IsVIP, person_id,addBy_u); RETURN 1;
 EXCEPTION
 WHEN OTHERS THEN RAISE EXCEPTION 'Something went wrong: %',
 SQLERRM;

@@ -29,4 +29,6 @@ public class UserRequestDto
     public DateTime brithDay   { get; set; }
     
     public bool isVip   { get; set; } = false;
+    
+    
 }

@@ -77,6 +77,7 @@ namespace hotel_data
                             cmd.Parameters.AddWithValue("@address", adminData.personData.address);
                             cmd.Parameters.AddWithValue("@personid", adminData.personData.personID!);
                         }
+
                         cmd.Parameters.AddWithValue("@username", adminData.userName);
                         cmd.Parameters.AddWithValue("@password", adminData.password);
 
@@ -151,17 +152,17 @@ namespace hotel_data
                                     (string)result["name"],
                                     (string)result["email"],
                                     result["address"] == DBNull.Value ? "" : (string)result["address"],
-                                    (string)result["phone"] ,
+                                    (string)result["phone"],
                                     createdAt: (DateTime)result["CreatedAt"]
-
                                 );
 
                                 var admin = new AdminDto
                                 (
-                                    ID,
-                                    (string)result["username"],
-                                    "",
-                                    person
+                                    adminID: ID,
+                                    userName: (string)result["username"],
+                                    password: "",
+                                    personsId: (Guid)result["personid"],
+                                    personData: person
                                 );
 
                                 return admin;
@@ -192,7 +193,8 @@ namespace hotel_data
                 using (var connection = new NpgsqlConnection(connectionUrl))
                 {
                     connection.Open();
-                    string query = " SELECT * from fn_admin_get_username_password(@username_a::VARCHAR(50), @password_a::TEXT) ";
+                    string query =
+                        " SELECT * from fn_admin_get_username_password(@username_a::VARCHAR(50), @password_a::TEXT) ";
 
                     using (var cmd = new NpgsqlCommand(query, connection))
                     {
@@ -201,26 +203,27 @@ namespace hotel_data
 
                         using (NpgsqlDataReader? result = cmd.ExecuteReader())
                         {
-                            if (result.Read())
+                            if (result.HasRows)
                             {
-
-                                adminData = new AdminDto
-                               (
-                                  adminID: (Guid)result["adminid"],
-                                   userName: username,
-                                   password: password,
-                                   personData: new PersonDto
-                                   (
-                                       (Guid)result["personid"],
-                                       (string)result["name"],
-                                       (string)result["email"],
-                                       result["address"] == DBNull.Value ? "" : (string)result["address"],
-                                       (string)result["phone"],
-                                       createdAt: (DateTime)result["CreatedAt"]
-
-                                   )
-                               );
-
+                                if (result.Read())
+                                {
+                                    adminData = new AdminDto
+                                    (
+                                        adminID: (Guid)result["adminid"],
+                                        userName: username,
+                                        password: password,
+                                        personsId: (Guid)result["personid"],
+                                        personData: new PersonDto
+                                        (
+                                            (Guid)result["personid"],
+                                            (string)result["name"],
+                                            (string)result["email"],
+                                            result["address"] == DBNull.Value ? "" : (string)result["address"],
+                                            (string)result["phone"],
+                                            createdAt: null
+                                        )
+                                    );
+                                }
                             }
                         }
                     }
@@ -233,7 +236,6 @@ namespace hotel_data
                 Console.WriteLine("\nthis error from person deleted {0} \n", ex.Message);
                 return adminData;
             }
-
         }
 
 
@@ -253,6 +255,41 @@ namespace hotel_data
                     using (var cmd = new NpgsqlCommand(query, connection))
                     {
                         cmd.Parameters.AddWithValue("@ID", ID);
+
+                        using (var result = cmd.ExecuteReader())
+                        {
+                            if (result.Read())
+                                isExist = true;
+                        }
+                    }
+                }
+
+                return isExist;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("\nthis error from person deleted {0} \n", ex.Message);
+            }
+
+            return isExist;
+        }
+
+        public static bool isExist(
+            string username
+        )
+        {
+            bool isExist = false;
+            try
+            {
+                using (var connection = new NpgsqlConnection(connectionUrl))
+                {
+                    connection.Open();
+
+                    string query = @" SELECT * FROM  admins WHERE username =@username;";
+
+                    using (var cmd = new NpgsqlCommand(query, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@username", username);
 
                         using (var result = cmd.ExecuteReader())
                         {
