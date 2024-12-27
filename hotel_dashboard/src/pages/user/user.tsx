@@ -56,8 +56,6 @@ const User = () => {
       isRquireAuth: true,
       jwtValue: refreshToken || ""
     }),
-    // refetchInterval:10000
-
   }
   );
 
@@ -73,6 +71,15 @@ const User = () => {
     onSuccess: (data) => {
       setState(enStatus.complate)
       showToastiFy("user created Sueccessfuly", enMessage.SECCESSFUL);
+      setUser({
+        address: '',
+        password: '',
+        email: '',
+        name: '',
+        phone: '',
+        username: '',
+        brithDay: undefined
+      })
       refetch();
     },
     onError: (error) => {

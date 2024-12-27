@@ -182,17 +182,6 @@ namespace hotel_api.controller
             if (result == false)
                 return StatusCode(500, "some thing wrong");
 
-            accesstoken = AuthinticationServices.generateToken(
-                userID: userId,
-                email: data.personData.email,
-                config: _config,
-                enTokenMode: AuthinticationServices.enTokenMode.AccessToken);
-            refreshToken = AuthinticationServices.generateToken(
-                userID: userId,
-                email: data.personData.email,
-                config: _config,
-                enTokenMode: AuthinticationServices.enTokenMode.RefreshToken);
-
             return StatusCode(201, new { message="created seccessfully" });
         }
     }
