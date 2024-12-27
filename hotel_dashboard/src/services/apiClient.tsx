@@ -1,6 +1,7 @@
 import axios from "axios";
 import { enApiType } from "../module/enApiType";
 import { enStatus } from "../module/enState";
+import { generalMessage } from "../util/generalPrint";
 
 interface ApiClientProps {
     enType: enApiType;
@@ -22,7 +23,8 @@ export default async function apiClient(
     }: ApiClientProps
 ) {
     const full_url = import.meta.env.VITE_BASE_URL + endPoint
-    const header = handleHeader( isRquireAuth,isFormData, jwtValue)
+    const header = handleHeader(isRquireAuth, isFormData, jwtValue)
+    generalMessage(full_url)
     try {
 
         const repsonse = await axios({
@@ -34,7 +36,7 @@ export default async function apiClient(
         return repsonse;
     } catch (error) {
         throw {
-            message:error?.response?.statusText|| error?.message,
+            message: error?.response?.statusText || error?.message,
             response: error?.response?.data,
             status: error?.response?.status,
         };

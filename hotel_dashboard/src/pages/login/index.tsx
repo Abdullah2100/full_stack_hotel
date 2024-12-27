@@ -17,17 +17,17 @@ import { AuthResult } from '../../module/userAuthResult';
 import { enMessage } from '../../module/enMessageType';
 import { PasswordInput } from '../../components/input/passwordInput';
 const Login = () => {
-     const dispatcher = useDispatch()
+    const dispatcher = useDispatch()
     const { showToastiFy } = useContext(useToastifiContext)
 
-        const [status, setState] = useState<enStatus>(enStatus.none)
+    const [status, setState] = useState<enStatus>(enStatus.none)
 
     const [authLoginModule, setUser] = useState<userAuthLoginModule>({
-        eamilOrUserName: 'asdadd@gmail.com',
+        eamilOrUserName: 'asda@gmail.com',
         password: 'asAS12#$'
     });
 
-    const [enState,changeStatus] = useState<enStatus>(enStatus.none)
+    const [enState, changeStatus] = useState<enStatus>(enStatus.none)
 
     const updateInput = (value: any, key: string) => {
         setUser((prev) => ({
@@ -36,8 +36,8 @@ const Login = () => {
         }));
     };
 
-  
- 
+
+
     const singup = useMutation({
         mutationFn: (userData: any) =>
             apiClient({
@@ -71,13 +71,13 @@ const Login = () => {
 
     })
 
-  const validationInput = () => {
+    const validationInput = () => {
 
         let validationMessage = "";
-         if (authLoginModule.eamilOrUserName.trim().length < 1) {
+        if (authLoginModule.eamilOrUserName.trim().length < 1) {
             validationMessage = "email must not be empty"
         }
-        else if (authLoginModule.password.trim().length<1) {
+        else if (authLoginModule.password.trim().length < 1) {
             validationMessage = "password must not be empty"
         }
 
@@ -113,26 +113,26 @@ const Login = () => {
                     onInput={updateInput}
                     placeHolder="email"
                     style="w-[150px] mb-2"
-                />       
-                 <PasswordInput
-                                keyType='password'
-                                value={authLoginModule.password}
-                                onInput={updateInput}
-                                placeHolder="*****"
-                
-                                isRequire={true}
-                                canShowOrHidePassowrd={true}
-                                maxLength={8}
-                            />
-                
-                
-                 <SubmitButton
+                />
+                <PasswordInput
+                    keyType='password'
+                    value={authLoginModule.password}
+                    onInput={updateInput}
+                    placeHolder="*****"
+
+                    isRequire={true}
+                    canShowOrHidePassowrd={true}
+                    maxLength={8}
+                />
+
+
+                <SubmitButton
                     //buttonStatus={enStatus.loading}
                     placeHolder={'تسجيل الدخول'}
-                    onSubmit={async() => {onSubmit() }}
+                    onSubmit={async () => { onSubmit() }}
                     style={'text-[10px] bg-mainBg w-[200px] text-white rounded-[4px]   mt-2  h-6 '} />
                 <div className='w-[200px] justify-end '>
-                  
+
                     <Link to={'/signup'} className='text-[8px] text-black hover:text-blue-600'>
                         create new account
                     </Link>

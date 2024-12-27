@@ -372,7 +372,7 @@ CREATE  TABLE Users (
     PersonID UUID NOT NULL REFERENCES Persons (personid),
     CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     IsDeleted bool DEFAULT FALSE,
-    addBy UUID DEFAULT NULL,
+    addBy UUID DEFAULT NULL
 );
 --
 
@@ -385,24 +385,22 @@ AS $$
 DECLARE
 isCanAdd BOOLEAN :=FALSE;
 BEGIN
-
-  IF New.addby IS  NULL THEN
-   DELETE FROM persons WHERE  personid = NEW.personid;
-   RETURN NULL;
-  END IF;
-    isCanAdd :=isAdminOrSomeOneHasPersmission(addBy);
-
     IF New.addby IS NOT NULL THEN
-   DELETE FROM persons WHERE  personid = NEW.personid;
-   RETURN NULL;
-  END IF;
-  
+          isCanAdd :=isAdminOrSomeOneHasPersmission(NEW.addBy);
+          IF isCanAdd = false THEN
+             DELETE FROM persons WHERE  personid = NEW.personid;
+             RETURN NULL;
+          ELSE 
+           RETURN NEW;
+          END IF;
+     END IF;
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
 
-CREATE OR REPLACE TRIGGER tr_user_insrt
+
+CREATE  TRIGGER tr_user_insrt
 BEFORE INSERT ON Users FOR EACH ROW EXECUTE FUNCTION fn_user_insert();
 
 
@@ -419,7 +417,7 @@ SELECT
     use.IsVIP, 
     use.CreatedAt, 
     use.password,
-    user.IsDeleted as ispersondeleted  
+    use.IsDeleted as ispersondeleted  
 FROM users use
 INNER JOIN persons per
 ON use.personid = per.personid;
@@ -646,7 +644,7 @@ CREATE OR REPLACE FUNCTION fn_user_insert_in (
         password TEXT,
         IsVIP bool,
         DateOfBirth DATE,
-        addBy_u UUID
+        addby UUID
     ) 
 RETURNS INT 
 AS $$
@@ -657,15 +655,15 @@ INSERT INTO persons(name, email, phone, address)
 VALUES (name, email, phone, address)
 RETURNING personid INTO person_id;
 INSERT INTO Users (
-        userId,
-        DateOfBirth,
-        UserName,
-        Password,
-        IsVIP,
+        userid,
+        dateofbirth,
+        username,
+        password,
+        isvip,
         personid,
         addby
     ) 
-    VALUES( userId_u,DateOfBirth, UserName, Password, IsVIP, person_id,addBy_u); RETURN 1;
+    VALUES( userId_u,DateOfBirth, UserName, Password, IsVIP, person_id,addby); RETURN 1;
 EXCEPTION
 WHEN OTHERS THEN RAISE EXCEPTION 'Something went wrong: %',
 SQLERRM;
@@ -739,7 +737,7 @@ $$LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION fn_user_deleted(
     personid UUID,
     modifiBy UUID
-) RETURN INT
+) RETURNs INT
 AS $$
 DECLARE
 is_deleted BOOLEAN :=false;
@@ -757,8 +755,9 @@ BEGIN
     VALUES (OLD.ModifyBy,OLD.userid);
     RETURN 1;
   ELSE
-    EXCEPTION
-        WHEN OTHERS THEN RAISE EXCEPTION  'only user or someone had permission can delete this user ';
+    -- EXCEPTION
+        -- WHEN OTHERS THEN 
+        RAISE EXCEPTION  'only user or someone had permission can delete this user ';
         RETURN 0;
   END IF;
   EXCEPTION
