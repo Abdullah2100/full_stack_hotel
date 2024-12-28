@@ -674,48 +674,48 @@ $$ LANGUAGE plpgsql;
 
 
 --
-CREATE OR REPLACE FUNCTION  fn_user_update(
+CREATE OR REPLACE FUNCTION fn_user_update(
     userid_u UUID,
     name_u VARCHAR(50),
     phone_u VARCHAR(13),
     address_u TEXT,
-    username_u varchar(50),
+    username_u VARCHAR(50),
     password_u TEXT,
-    IsVIP_u bool,
-    personid_u UUID ,
-    is_canModifi BOOLEAN,
-    modifiBy_u UUID
-) RETURNS INT
-AS $$   
+    IsVIP_u BOOLEAN,
+    personid_u UUID,
+    brithday_u DATE
+    -- is_canModifi BOOLEAN,
+    -- modifiBy_u UUID
+) RETURNS INT AS $$   
+DECLARE
 BEGIN
-    is_canModifi :=isAdminOrSomeOneHasPersmission(modifiBy_u);
-    IF modifiBy_u <> userid_u.userId OR is_canModifi= FAIL THEN
-       RETURN 0;
-    END IF;
+    -- Update 'persons' table
+    UPDATE persons 
+    SET 
+        name = CASE WHEN name <> name_u THEN name_u ELSE name END,
+        phone = CASE WHEN phone <> phone_u THEN phone_u ELSE phone END,
+        address = CASE WHEN address <> address_u THEN address_u ELSE address END
+    WHERE personid = personid_u;
 
-    UPDATE persons SET 
-    name = CASE WHEN name <> name_u THEN name_u ELSE name END, 
-    phone = CASE WHEN phone <> phone_u THEN phone_u ELSE phone END, 
-    address = CASE WHEN address <> address_u THEN address_u ELSE address END
-    WHERE personid = person_id;
+    -- Update 'users' table
+    UPDATE users 
+    SET 
+        username = CASE WHEN username_u <> username THEN username_u ELSE username END,
+        password = CASE WHEN password_u <> password THEN password_u ELSE password END,
+        isvip = CASE WHEN IsVIP_u <> isvip THEN IsVIP_u ELSE isvip END,
+        dateofbirth = CASE WHEN dateofbirth <> brithday_u THEN brithday_u ELSE dateofbirth END
+    WHERE userid = userid_u;
 
-    UPDATE  users  SET 
-    username = CASE WHEN username_u <> username THEN username_u ELSE username END,
-    password = CASE WHEN password_u <> password THEN passowrd_u ELSE password END,
-    username = CASE WHEN IsVIP_u <> isvip THEN IsVIP_u ELSE isvip END
-    -- ModifyBy = modifiBy_u
-     WHERE userid=userid_u;
 
-    -- INSERT INTO UserUpdate(userId ,currentUsername , currentpassword , currentIsVIP, username , password , IsVIP,modifiBy_u ) 
-    -- VALUES ( userid_u,OLD.username,OLD.password,OLD.isvip,NEW.username,NEW.password,NEW.svip,NEW.modifyBy);
-    -- RETURN NEW;
     RETURN 1;
 
-   EXCEPTION
-      WHEN OTHERS THEN RAISE EXCEPTION  'Something went wrong: %', SQLERRM;
-    RETURN NULL;
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE EXCEPTION 'Something went wrong: %', SQLERRM;
+        RETURN NULL;
 END;
-$$LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql;
+
 --
 -- CREATE OR REPLACE FUNCTION fn_user_update_()
 -- RETURNS TRIGGER AS $$

@@ -1,3 +1,5 @@
+import { Guid } from "guid-typescript";
+
 export interface userAuthModule {
     name: string
     email: string;
@@ -5,5 +7,5 @@ export interface userAuthModule {
     address: string;
     username: string;
     password: string;
-    brithDay: Date | undefined;
+    brithDay: string ;
 }

@@ -1,17 +1,37 @@
-import React from 'react'
+import { Dispatch, SetStateAction } from 'react'
 import { UserModule } from '../../module/userModule';
 import { Switch } from '@mui/material';
 import NotFoundComponent from '../notFoundContent';
 import { PencilIcon, TrashIcon } from '@heroicons/react/16/solid';
+import { userAuthModule } from '../../module/userAuthModule';
+import { generalMessage } from '../../util/generalPrint';
+import { Guid } from 'guid-typescript';
 
 interface UserTableProps {
-  data?: UserModule[] | undefined
+  data?: UserModule[] | undefined,
+  setUser: Dispatch<SetStateAction<userAuthModule>>
+  seUpdate: Dispatch<SetStateAction<boolean>>
+  seUserID: Dispatch<SetStateAction<Guid|undefined>>
 }
-const UersTable = ({ data }: UserTableProps) => {
 
+const UersTable = ({ data, setUser,seUpdate,seUserID }: UserTableProps) => {
 
+  const setUserData = (user: UserModule) => {
+    
+    setUser({
+      address: user.personData?.address,
+      brithDay:user.brithDay.split('T')[0], //dateHolder.toISOString().split('T')[0],
+      email: user.personData?.email,
+      name: user.personData?.name,
+      password: '',
+      phone: user.personData?.phone,
+      username: user.userName,
+    })
+    seUpdate(true)
+    seUserID(user.userId)
+  }
   return (
-    <div className={`overflow-x-auto justify-center ${data===undefined&&'h-48'} `}>
+    <div className={`overflow-x-auto justify-center ${data === undefined && 'h-48'} `}>
       <table className="min-w-full table-auto border-collapse">
         <thead className="bg-gray-200 text-gray-600">
           <tr>
@@ -22,6 +42,7 @@ const UersTable = ({ data }: UserTableProps) => {
             <th className="px-4 py-2 border-b text-left whitespace-nowrap">Phone</th>
             <th className="px-4 py-2 border-b text-left whitespace-nowrap">Address</th>
             <th className="px-4 py-2 border-b text-left whitespace-nowrap">Created At</th>
+            <th className="px-4 py-2 border-b text-left whitespace-nowrap">Brithday</th>
             <th className="px-4 py-2 border-b text-left whitespace-nowrap">VIP Status</th>
             <th className="px-4 py-2 border-b text-left whitespace-nowrap">Operation</th>
           </tr>
@@ -39,7 +60,10 @@ const UersTable = ({ data }: UserTableProps) => {
               <td className="px-4 py-2 border-b text-left whitespace-nowrap">{user?.personData?.phone || ""}</td>
               <td className="px-4 py-2 border-b text-left whitespace-nowrap">{user?.personData?.address || ""}</td>
               <td className="px-4 py-2 border-b text-left whitespace-nowrap">
-                {user?.personData?.createdAt === undefined ? "" : new Date(user.personData.createdAt).toLocaleString()}
+                {user?.personData?.createdAt === undefined ? "" : new Date(user.personData.createdAt).toISOString().split('T')[0]}
+              </td>
+               <td className="px-4 py-2 border-b text-left whitespace-nowrap">
+                {user?.personData?.createdAt === undefined ? "" : user.brithDay.split('T')[0]}
               </td>
               <td className="px-4 py-2 border-b text-left whitespace-nowrap">
                 <Switch
@@ -50,11 +74,12 @@ const UersTable = ({ data }: UserTableProps) => {
 
               <td className="px-4 py-2 border-b text-left flex flex-row justify-between">
                 <button 
-                className='border-[2px] rounded-[3px] border-red-600 h-7 w-7 flex justify-center items-center'
-                ><TrashIcon className='h-4 w-4 text-red-600 '/></button>
-                  <button 
-                className='border-[2px] rounded-[3px] border-green-800 h-7 w-7 flex justify-center items-center bg-gray-200'
-              ><PencilIcon className='h-6 w-6 text-green-800'/></button>
+                  className='border-[2px] rounded-[3px] border-red-600 h-7 w-7 flex justify-center items-center'
+                ><TrashIcon className='h-4 w-4 text-red-600 ' /></button>
+                <button
+                onClick={() => setUserData(user)}
+                  className='border-[2px] rounded-[3px] border-green-800 h-7 w-7 flex justify-center items-center bg-gray-200'
+                ><PencilIcon className='h-6 w-6 text-green-800' /></button>
               </td>
             </tr>
           ))}
@@ -62,10 +87,10 @@ const UersTable = ({ data }: UserTableProps) => {
       </table>
 
       {data === undefined &&
-      <div className='h-20 w-full flex flex-col justify-center items-center  mt-10' >
+        <div className='h-20 w-full flex flex-col justify-center items-center  mt-10' >
 
-        <NotFoundComponent />
-      </div> 
+          <NotFoundComponent />
+        </div>
       }
 
     </div>

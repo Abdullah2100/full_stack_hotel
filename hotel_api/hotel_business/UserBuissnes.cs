@@ -80,14 +80,24 @@ public class UserBuissnes
         return UserData.isExist(username,password);
     }
 
-    public static UserDto? getUserByID(Guid id)
+    public static UserBuissnes? getUserByID(Guid id)
     {
-        return UserData.getUser(id);
+        var user = UserData.getUser(id);
+        
+        return user == null ? null : new UserBuissnes(user,enMode.update);
     }
-    public static UserDto? getUserByUserNameAndPassword(string userNme,string password)
+    public static UserBuissnes? getUserByUserNameAndPassword(string userNme,string password)
     {
-        return UserData.getUser(userNme,password);
+        var user = UserData.getUser(userNme, password);
+        return user == null ? null : new UserBuissnes(user,enMode.update);
     }
+
+    public static UserBuissnes? getUserByUserName(string userNme)
+    {
+        var user = UserData.getUser(userNme);
+        return user == null ? null : new UserBuissnes(user,enMode.update);
+    }
+
 
     public static bool deleteUser(Guid id)
     {

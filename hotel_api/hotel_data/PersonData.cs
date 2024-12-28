@@ -210,6 +210,41 @@ namespace hotel_data
             return isExist;
         }
 
+        public static bool isExist(
+            string phone 
+        )
+        {
+            bool isExist = false;
+            try
+            {
+                using (var connection = new NpgsqlConnection(connectionUrl))
+                {
+
+                    connection.Open();
+
+                    string query = @" SELECT * FROM  persons WHERE phone =@phone;";
+
+                    using (var cmd = new NpgsqlCommand(query, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@phone", phone);
+
+                        using (var result = cmd.ExecuteReader())
+                        {
+                            if (result.Read())
+                                isExist = true;
+                        }
+                    }
+                }
+                return isExist;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("\nthis error from person deleted {0} \n", ex.Message);
+
+            }
+            return isExist;
+        }
+
 
         public static bool isExist(
                string email,

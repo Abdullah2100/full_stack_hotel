@@ -10,8 +10,8 @@ interface ApiClientProps {
     jwtValue?: string | undefined;
     isFormData?: boolean | undefined;
     isRquireAuth?: boolean | undefined;
-
 }
+
 export default async function apiClient(
     {
         enType,
@@ -35,6 +35,7 @@ export default async function apiClient(
         });
         return repsonse;
     } catch (error) {
+        generalMessage(JSON.stringify(error),true)
         throw {
             message: error?.response?.statusText || error?.message,
             response: error?.response?.data,

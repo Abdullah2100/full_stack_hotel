@@ -4,7 +4,7 @@ import { PersonModule } from "./personModule";
 export interface UserModule {
     userId: Guid,
     personID: Guid,
-    brithDay: Date,
+    brithDay: string
     isVip: boolean,
     userName: string,
     personData: PersonModule
