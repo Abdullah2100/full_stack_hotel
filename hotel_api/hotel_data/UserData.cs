@@ -29,30 +29,33 @@ namespace hotel_data
 
                         using (var reader = cmd.ExecuteReader())
                         {
-                            if (reader.Read())
+                            if (reader.HasRows)
                             {
-                                if (((bool)reader["ispersondeleted"] == true)) return null;
+                                if (reader.Read())
+                                {
+                                    // if (((bool)reader["ispersondeleted"] == true)) return null;
 
-                                var personData = new PersonDto(
-                                    personID: (Guid)reader["personid"],
-                                    email: (string)reader["email"],
-                                    name: (string)reader["name"],
-                                    phone: (string)reader["phone"],
-                                    createdAt: (DateTime)reader["dateofbrith"],
-                                    address: reader["address"] == DBNull.Value ? "" : (string)reader["address"]
-                                );
+                                    var personData = new PersonDto(
+                                        personID: (Guid)reader["personid"],
+                                        email: (string)reader["email"],
+                                        name: (string)reader["name"],
+                                        phone: (string)reader["phone"],
+                                        createdAt: (DateTime)reader["createdat"],
+                                        address: reader["address"] == DBNull.Value ? "" : (string)reader["address"]
+                                    );
 
-                                var userData = new UserDto(
-                                    userId: id,
-                                    personID: (Guid)reader["personid"],
-                                    brithDay: (DateTime)reader["dateofbrith"],
-                                    isVip: (bool)reader["isvip"],
-                                    personData: personData,
-                                    userName: (string)reader["username"],
-                                    password: (string)(reader["password"])
-                                );
+                                    var userData = new UserDto(
+                                        userId: id,
+                                        personID: (Guid)reader["personid"],
+                                        brithDay: (DateTime)reader["dateofbirth"],
+                                        isVip: (bool)reader["isvip"],
+                                        personData: personData,
+                                        userName: (string)reader["username"],
+                                        password: (string)(reader["password"])
+                                    );
 
-                                return userData;
+                                    return userData;
+                                }
                             }
                         }
                     }
@@ -65,6 +68,65 @@ namespace hotel_data
 
             return null;
         }
+
+        public static UserDto? getUser
+        (
+            string username
+        )
+        {
+            try
+            {
+                using (var con = new NpgsqlConnection(connectionUr))
+                {
+                    con.Open();
+                    string query = @"SELECT * FROM usersview WHERE username = @username";
+
+                    using (var cmd = new NpgsqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@username", username);
+
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            if (reader.HasRows)
+                            {
+                                if (reader.Read())
+                                {
+                                    if (((bool)reader["ispersondeleted"] == true)) return null;
+
+                                    var personData = new PersonDto(
+                                        personID: (Guid)reader["personid"],
+                                        email: (string)reader["email"],
+                                        name: (string)reader["name"],
+                                        phone: (string)reader["phone"],
+                                        createdAt: (DateTime)reader["dateofbrith"],
+                                        address: reader["address"] == DBNull.Value ? "" : (string)reader["address"]
+                                    );
+
+                                    var userData = new UserDto(
+                                        userId: (Guid)reader["userid"],
+                                        personID: (Guid)reader["personid"],
+                                        brithDay: (DateTime)reader["dateofbrith"],
+                                        isVip: (bool)reader["isvip"],
+                                        personData: personData,
+                                        userName: (string)reader["username"],
+                                        password: (string)(reader["password"])
+                                    );
+
+                                    return userData;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("this from getting user by id error {0}", ex);
+            }
+
+            return null;
+        }
+
 
         public static UserDto? getUser
         (
@@ -137,7 +199,7 @@ namespace hotel_data
 
                     using (var cmd = new NpgsqlCommand(query, con))
                     {
-                        cmd.Parameters.AddWithValue("@pagenumber", pageNumber <=1 ? 1 : pageNumber - 1);
+                        cmd.Parameters.AddWithValue("@pagenumber", pageNumber <= 1 ? 1 : pageNumber - 1);
                         cmd.Parameters.AddWithValue("@limitnumber", numberOfUser);
 
                         using (var reader = cmd.ExecuteReader())
@@ -169,7 +231,6 @@ namespace hotel_data
 
                                     users.Add(userHolder);
                                 }
-
                             }
                         }
                     }
@@ -205,7 +266,7 @@ namespace hotel_data
                                       @addBy_u)";
 
                     using (var cmd = new NpgsqlCommand(query, con))
-                   {
+                    {
                         cmd.Parameters.AddWithValue("@userId_u", userData.userId);
                         cmd.Parameters.AddWithValue("@name", userData.personData.name);
                         cmd.Parameters.AddWithValue("@phone", userData.personData.phone);
@@ -215,19 +276,18 @@ namespace hotel_data
                         cmd.Parameters.AddWithValue("@password", userData.password);
                         cmd.Parameters.AddWithValue("@IsVIP", userData.isVip);
                         cmd.Parameters.AddWithValue("@DateOfBirth", userData.brithDay);
-                        if(userData.addBy==null)
+                        if (userData.addBy == null)
                             cmd.Parameters.AddWithValue(@"addBy_u", DBNull.Value);
                         else
                             cmd.Parameters.AddWithValue("@addBy_u", userData.addBy);
-                        
-                        
-                       var result =  cmd.ExecuteScalar();
 
-                       if (result != null && int.TryParse(result?.ToString(), out int userId))
-                       {
-                        isCreated = userId > 0;
-                           
-                       }
+
+                        var result = cmd.ExecuteScalar();
+
+                        if (result != null && int.TryParse(result?.ToString(), out int userId))
+                        {
+                            isCreated = userId > 0;
+                        }
                     }
                 }
             }
@@ -247,29 +307,35 @@ namespace hotel_data
                 using (var con = new NpgsqlConnection(connectionUr))
                 {
                     con.Open();
-                    string query = @"SELECT fn_user_update ( 
+                    string query = @"SELECT * FROM fn_user_update ( 
                                   @userId_u , 
-                                  @name ,
-                                  @phone ,
-                                  @email ,
-                                  @address ,
-                                  @username ,
-                                  @password ,
-                                  @IsVIP 
+                                  @name::VARCHAR, 
+                                  @phone::VARCHAR ,
+                                  @address::TEXT, 
+                                  @username::VARCHAR, 
+                                  @password::TEXT, 
+                                  @IsVIP::BOOLEAN, 
+                                   @personid_u,
+                                   @brithday_u::DATE
                                     ) ";
                     using (var cmd = new NpgsqlCommand(query, con))
                     {
                         cmd.Parameters.AddWithValue("@userId_u", userData.userId);
                         cmd.Parameters.AddWithValue("@name", userData.personData.name);
                         cmd.Parameters.AddWithValue("@phone", userData.personData.phone);
-                        cmd.Parameters.AddWithValue("@email", userData.personData.email);
                         cmd.Parameters.AddWithValue("@address", userData.personData.address);
                         cmd.Parameters.AddWithValue("@username", userData.userName);
                         cmd.Parameters.AddWithValue("@password", userData.password);
                         cmd.Parameters.AddWithValue("@IsVIP", userData.isVip);
-                    }
+                        cmd.Parameters.AddWithValue("@personid_u", userData.personID);
+                        cmd.Parameters.AddWithValue("@brithday_u", userData.brithDay);
 
-                    isCreated = true;
+                        var result = cmd.ExecuteScalar();
+                        if (result != null && int.TryParse(result?.ToString(), out int userId))
+                        {
+                            isCreated = userId > 0;
+                        }
+                    }
                 }
             }
             catch (Exception ex)

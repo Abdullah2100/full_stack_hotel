@@ -148,7 +148,8 @@ namespace hotel_api.controller
                 return StatusCode(400, "email or phone is already in use");
 
 
-            var data = UserBuissnes.getUserByUserNameAndPassword(userRequestData.userName,
+            var data = UserBuissnes.
+                getUserByUserNameAndPassword(userRequestData.userName,
                 clsUtil.hashingText(userRequestData.password));
             if (data != null)
                 return StatusCode(409, "user already exist");
@@ -164,7 +165,8 @@ namespace hotel_api.controller
                 address: userRequestData.address
             );
 
-            data = new UserDto(
+            
+            data = new UserBuissnes(new UserDto(
                 userId: userId,
                 personID: null,
                 brithDay: userRequestData.brithDay,
@@ -173,16 +175,109 @@ namespace hotel_api.controller
                 userName: userRequestData.userName,
                 password: clsUtil.hashingText(userRequestData.password),
                 addBy: adminid
-            );
+            ));
 
-
-            var userHolder = new UserBuissnes(data);
-            var result = userHolder.save();
+            var result = data.save();
             string accesstoken = "", refreshToken = "";
             if (result == false)
                 return StatusCode(500, "some thing wrong");
 
             return StatusCode(201, new { message="created seccessfully" });
         }
+        
+        [Authorize]
+        [HttpPost("updateUser")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult updateUser(
+            UserUpdateDto userRequestData
+        )
+        {
+            var authorizationHeader = HttpContext.Request.Headers["Authorization"];
+            var id = AuthinticationServices.GetPayloadFromToken("id",
+                authorizationHeader.ToString().Replace("Bearer ", ""));
+            Guid? adminid = null;
+            if (Guid.TryParse(id.Value.ToString(), out Guid outID))
+            {
+                adminid = outID;
+            }
+
+            if (adminid == null)
+            {
+                return StatusCode(401, "you not have Permission");
+            }
+
+            var isHasPermissionToCreateUser = AdminBuissnes.isAdminExist(adminid ?? Guid.Empty);
+
+
+            if (!isHasPermissionToCreateUser)
+            {
+                return StatusCode(401, "you not have Permission");
+            }
+
+            string? validateRequeset = clsValidation.validateInput(phone: userRequestData.phone,
+                email: userRequestData.email, password: userRequestData.password);
+
+            if (validateRequeset != null)
+                return StatusCode(400, validateRequeset);
+
+
+            bool isExistPhone =   PersonBuisness.
+                isPersonExistByPhone(userRequestData.phone);
+
+         var  data = UserBuissnes.getUserByID(userRequestData.Id);
+            
+   
+            if(isExistPhone&&userRequestData.phone!= data.personData.phone)
+                return StatusCode(400, "phone is already in use");
+                
+
+            if (data == null)
+                return StatusCode(409, "user notFound exist");
+            
+            updateUserData(ref data, userRequestData);
+
+            var result = data.save();
+            if (result == false)
+                return StatusCode(500, "some thing wrong");
+
+            return StatusCode(201, new { message="created seccessfully" });
+        }
+
+     
+        private void updateUserData(
+           
+            ref UserBuissnes user,
+            UserUpdateDto userRequestData
+            )
+             {
+                 if (userRequestData.name.Length > 0 && user.personData.name!= userRequestData.name)
+                 {
+                     user.personData.name = userRequestData.name;
+                 }
+
+                 if (userRequestData.address.Length > 0&&user.personData.address!= userRequestData.address)
+                 {
+                     user.personData.address = userRequestData.address;
+                 }
+                 if (userRequestData.brithDay != null &&user.brithDay!= userRequestData.brithDay)
+                 {
+                     user.brithDay = (DateTime)userRequestData.brithDay;
+                 }
+                 if (userRequestData.isVip == true)
+                     user.isVip = true;
+                 if (userRequestData.userName.Length > 0 &&user.userName!= userRequestData.userName)
+                     user.userName = userRequestData.userName;
+                 if (userRequestData.password.Length > 0)
+                     user.password = clsUtil.hashingText(userRequestData.password);
+                 if(userRequestData.brithDay != null)
+                     user.brithDay =(DateTime) userRequestData!.brithDay;
+             }
+     
+              
     }
+    
+    
 }

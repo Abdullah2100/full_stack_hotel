@@ -19,6 +19,7 @@ import { enMessage } from '../../module/enMessageType';
 import NotFoundComponent from '../../components/notFoundContent';
 import { UserModule } from '../../module/userModule';
 import { isHasCapitalLetter, isHasNumber, isHasSmallLetter, isHasSpicalCharacter, isValidEmail } from '../../util/regexValidation';
+import { Guid } from 'guid-typescript';
 
 const User = () => {
   const { showToastiFy } = useContext(useToastifiContext)
@@ -28,16 +29,19 @@ const User = () => {
   const [status, setState] = useState<enStatus>(enStatus.none)
   const [page, setPage] = useState<number>(1)
   const [isNoData, setNoData] = useState<boolean>(false)
+  const [userId, setUserId] = useState<Guid|undefined>(undefined)
 
   const [userAuth, setUser] = useState<userAuthModule>({
-    name: 'asdf',
-    email: 'asda@gmail.com',
-    phone: '7755012257',
-    address: 'sadf',
-    username: 'asdf',
-    password: 'asAS12#$',
-    brithDay: undefined,
+    name: '',
+    email: '',
+    phone: '',
+    address: '',
+    username: '',
+    password: '',
+    brithDay: (new Date()).toISOString().split('T')[0],
   });
+
+  const [isUpdate, setUpdate] = useState<boolean>(false)
 
   const updateInput = (value: any, key: string) => {
     setUser((prev) => ({
@@ -63,14 +67,15 @@ const User = () => {
     mutationFn: (userData: any) =>
       apiClient({
         enType: enApiType.POST,
-        endPoint: import.meta.env.VITE_CreateUSERS,
-        prameters: userData,
+        endPoint: isUpdate ? 
+        import.meta.env.VITE_UPDATEUSERS : import.meta.env.VITE_CreateUSERS
+        ,prameters: userData,
         isRquireAuth: true,
         jwtValue: refreshToken || ""
       }),
     onSuccess: (data) => {
       setState(enStatus.complate)
-      showToastiFy("user created Sueccessfuly", enMessage.SECCESSFUL);
+      showToastiFy(`user ${isUpdate?"updated":"created"} Sueccessfuly`, enMessage.SECCESSFUL);
       setUser({
         address: '',
         password: '',
@@ -78,7 +83,7 @@ const User = () => {
         name: '',
         phone: '',
         username: '',
-        brithDay: undefined
+        brithDay: (new Date()).toISOString().split('T')[0]
       })
       refetch();
     },
@@ -151,20 +156,26 @@ const User = () => {
 
 
   const createNewUser = async () => {
-    if (validationInput()) {
-      return;
-    }
+    if (!isUpdate)
+      if (validationInput()) {
+        return;
+      }
     setState(enStatus.loading)
     const data = {
+    
       "name": userAuth.name,
       "email": userAuth.email,
       "phone": userAuth.phone,
       "address": userAuth.address,
       "userName": userAuth.username,
       "password": userAuth.password,
-      "brithDay": userAuth.brithDay,
+      "brithDay":new Date(userAuth.brithDay)||null,
       "isVip": false
     }
+    if(isUpdate)
+      data.Id = userId;
+
+    if(isUpdate)data
     await singup.mutate(data)
 
   };
@@ -179,10 +190,15 @@ const User = () => {
       showToastiFy(error.message, enMessage.ERROR);
     }
     if (data) {
-      generalMessage(JSON.stringify(data.data))
+      //generalMessage(JSON.stringify(data.data))
       setNoData(false)
     }
   }, [error, data])
+
+
+  useEffect(() => {
+    generalMessage(JSON.stringify(userAuth))
+  }, [userAuth])
 
   return (
     <div className='flex flex-row'>
@@ -201,16 +217,17 @@ const User = () => {
             value={userAuth.name}
             onInput={updateInput}
             placeHolder="name"
-            style={"mb-1 me-2 w-32 w-full md:w-32"}
+            style={`mb-1 me-2 w-32 w-full md:w-32 `}
             maxLength={50}
             isRequire={true}
           />
           <TextInput
+            isDisabled={isUpdate}
             keyType='email'
             value={userAuth.email}
             onInput={updateInput}
             placeHolder="email"
-            style="mb-1 me-2 w-[139px]"
+            style={`mb-1  w-[139px] me-2 ${isUpdate&&'text-gray-400'}`}
             maxLength={100}
             isRequire={true}
 
@@ -273,15 +290,20 @@ const User = () => {
           <SubmitButton
             onSubmit={() => createNewUser()}
             buttonStatus={status}
-            placeHolder={'create'}
+            placeHolder={isUpdate ? 'update' : 'create'}
             style="text-[10px] bg-mainBg w-[120px] text-white rounded-[2px] mt-2 h-6"
           />
 
         </div>
         <h3 className='text-2xl font-bold mt-2'>users Data : </h3>
 
-        <div className="overflow-x-auto   w-full mt-4">
-          <UersTable data={data !== undefined ? (data.data as UserModule[]) : undefined} />
+        <div className="overflow-x-auto   w-full mt-4 mb-5">
+          <UersTable
+            data={data !== undefined ? (data.data as UserModule[]) : undefined}
+            setUser={setUser}
+            seUpdate={setUpdate}
+            seUserID={setUserId}
+          />
         </div>
       </div>
 

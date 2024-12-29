@@ -92,7 +92,10 @@ namespace hotel_business
         {
             return PersonData.isExist(ID);
         }
-
+        public static bool isPersonExistByPhone(string phone)
+        {
+            return PersonData.isExist(phone);
+        }
         public static bool isPersonExistByEmailAndPhone(string email,string phone)
         {
             return PersonData.isExist(email,phone);

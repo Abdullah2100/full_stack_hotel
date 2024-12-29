@@ -9,11 +9,11 @@ sealed class clsValidation
         string phone,string email,string password
            )
     {
-        if(!isValidPhone(phone))
+        if(phone.Length>0&&!isValidPhone(phone))
             return "write valide phone";
-        if (!isValidEmail(email))
+        if (email.Length>0&&!isValidEmail(email))
             return "write valide email";
-       if(!isValidPassword(password)) 
+       if(password.Length>0&&!isValidPassword(password)) 
            return "write valide password";
          return null;
     }

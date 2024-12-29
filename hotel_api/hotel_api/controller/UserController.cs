@@ -59,7 +59,8 @@ public class UserController : Controller
             address: userRequestData.address
             );
 
-        data = new UserDto(
+   
+        var userHolder = new UserBuissnes(new UserDto(
             userId: userId,
             personID: null,
             brithDay: userRequestData.brithDay,
@@ -67,10 +68,7 @@ public class UserController : Controller
             personData: personDataHolder,
             userName: userRequestData.userName,
             password: clsUtil.hashingText(userRequestData.password)
-        );
-
-
-        var userHolder = new UserBuissnes(data);
+        ));
         var result = userHolder.save();
         string accesstoken = "", refreshToken = "";
         if (result == false)
@@ -106,9 +104,10 @@ public class UserController : Controller
 
         string accesstoken = "", refreshToken = "";
 
-        accesstoken = AuthinticationServices.generateToken(data.userId, data.personData.email, _config,
+        accesstoken = AuthinticationServices.
+            generateToken(data.ID, data.personData.email, _config,
             AuthinticationServices.enTokenMode.AccessToken);
-        refreshToken = AuthinticationServices.generateToken(data.userId, data.personData.email, _config,
+        refreshToken = AuthinticationServices.generateToken(data.ID, data.personData.email, _config,
             AuthinticationServices.enTokenMode.RefreshToken);
 
 
