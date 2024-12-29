@@ -12,22 +12,8 @@
       <change beforePath="$PROJECT_DIR$/../SQLQuery_2.sql" beforeDir="false" afterPath="$PROJECT_DIR$/../SQLQuery_2.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.hotel_api/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.hotel_api/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/controller/UserController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/controller/UserController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/obj/hotel_api.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/obj/hotel_api.csproj.nuget.dgspec.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/obj/hotel_api.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/obj/hotel_api.csproj.nuget.g.props" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/obj/project.assets.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/obj/project.nuget.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/util/clsValidation.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/util/clsValidation.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_business/PersonBuisness.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/PersonBuisness.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_business/UserBuissnes.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/UserBuissnes.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_business/obj/hotel_business.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/obj/hotel_business.csproj.nuget.dgspec.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_business/obj/hotel_business.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/obj/hotel_business.csproj.nuget.g.props" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_business/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/obj/project.assets.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_business/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/obj/project.nuget.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_data/PersonData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/PersonData.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_data/UserData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/UserData.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/components/tables/usersTable.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/components/tables/usersTable.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/pages/user/user.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/pages/user/user.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_data/dto/UserDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/dto/UserDto.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -64,7 +50,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "XThreadsFramesViewSplitterKey": "0.077380955",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "user__update__functionality",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -132,6 +118,7 @@
       <workItem from="1735212295503" duration="13961000" />
       <workItem from="1735283238240" duration="8933000" />
       <workItem from="1735380430359" duration="14767000" />
+      <workItem from="1735466544057" duration="4280000" />
     </task>
     <servers />
   </component>
@@ -236,13 +223,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/hotel_data/UserData.cs</url>
-          <line>295</line>
+          <line>297</line>
           <properties documentPath="$PROJECT_DIR$/hotel_data/UserData.cs" containingFunctionPresentation="Method 'createUser'">
             <startOffsets>
-              <option value="12542" />
+              <option value="12682" />
             </startOffsets>
             <endOffsets>
-              <option value="12599" />
+              <option value="12739" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="15" />
@@ -262,16 +249,42 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/hotel_data/UserData.cs</url>
-          <line>323</line>
+          <line>325</line>
           <properties documentPath="$PROJECT_DIR$/hotel_data/UserData.cs" containingFunctionPresentation="Method 'updateUser'">
             <startOffsets>
-              <option value="13675" />
+              <option value="13815" />
             </startOffsets>
             <endOffsets>
-              <option value="13738" />
+              <option value="13878" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="18" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/hotel_api/controller/AdminController.cs</url>
+          <line>288</line>
+          <properties documentPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" containingFunctionPresentation="Method 'deleteUser'">
+            <startOffsets>
+              <option value="11398" />
+            </startOffsets>
+            <endOffsets>
+              <option value="11469" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="19" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/hotel_api/controller/UserController.cs</url>
+          <line>124</line>
+          <properties documentPath="$PROJECT_DIR$/hotel_api/controller/UserController.cs" containingFunctionPresentation="Method 'getUserByPage'">
+            <startOffsets>
+              <option value="4336" />
+            </startOffsets>
+            <endOffsets>
+              <option value="4379" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="20" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
