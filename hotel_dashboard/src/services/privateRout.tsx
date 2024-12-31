@@ -8,7 +8,6 @@ import { RootState } from "../controller/rootReducer";
 const PrivateRout = ({ Page }) => {
    const userAuth =   useSelector((state:RootState) => state.auth.refreshToken)
 
-   generalMessage(`this from  not have validation ${userAuth}`)
     if (userAuth===null) {
         return <Login />
     }

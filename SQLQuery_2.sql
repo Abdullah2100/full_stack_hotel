@@ -404,6 +404,19 @@ CREATE  TRIGGER tr_user_insrt
 BEFORE INSERT ON Users FOR EACH ROW EXECUTE FUNCTION fn_user_insert();
 
 
+CREATE OR REPLACE FUNCTION fn_user_deleted()
+RETURNS TRIGGER 
+AS $$
+BEGIN
+UPDATE users SET IsDeleted = TRUE WHERE userid = OLD.userid;
+RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER tr_user_deletet 
+BEFORE DELETE ON users FOR EACH ROW EXECUTE FUNCTION fn_user_deleted();
+
+
 CREATE VIEW usersview AS 
 SELECT
  per.PersonID,

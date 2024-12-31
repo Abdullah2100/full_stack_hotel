@@ -18,6 +18,7 @@ public class UserDto
     public string userName { get; set; }
 
     public string password { get; set; }
+    public bool isDeleted { get; set; }
 
     public UserDto(
         Guid userId,
@@ -27,7 +28,8 @@ public class UserDto
         PersonDto personData, 
         string userName,
         string password,
-        Guid? addBy=null)
+        Guid? addBy=null,
+        bool isDeleted=false)
     {
         this.userId = userId;
         this.personID = personID;
@@ -37,5 +39,6 @@ public class UserDto
         this.userName = userName;
         this.password = password;
         this.addBy = addBy;
+        this.isDeleted = isDeleted;
     }
 }

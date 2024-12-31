@@ -195,7 +195,7 @@ namespace hotel_data
                 using (var con = new NpgsqlConnection(connectionUr))
                 {
                     con.Open();
-                    string query = @"select * from  getUserPagination(1,10)";
+                    string query = @"select * from  getUserPagination(@pagenumber,@limitnumber)";
 
                     using (var cmd = new NpgsqlCommand(query, con))
                     {
@@ -208,7 +208,7 @@ namespace hotel_data
                             {
                                 while (reader.Read())
                                 {
-                                    if ((bool)reader["isdeleted"] == true) continue;
+                                    //if ((bool)reader["isdeleted"] == true) continue;
 
                                     var personData = new PersonDto(
                                         (Guid)reader["personid"],
@@ -226,7 +226,9 @@ namespace hotel_data
                                         isVip: (bool)reader["isvip"],
                                         personData: personData,
                                         userName: (string)reader["UserName"],
-                                        password: ""
+                                        password: "",
+                                        isDeleted:(bool)reader["isdeleted"]
+                                        
                                     );
 
                                     users.Add(userHolder);
@@ -430,17 +432,73 @@ namespace hotel_data
                 using (var connection = new NpgsqlConnection(connectionUr))
                 {
                     connection.Open();
-
                     string query = @"DELETE FROM  users WHERE userid =@id;";
+                    
                     using (var cmd = new NpgsqlCommand(query, connection))
                     {
                         cmd.Parameters.AddWithValue("@id", id);
+                        cmd.ExecuteNonQuery();
+                        isDeleted = true;
+                    }
+                }
 
-                        using (var result = cmd.ExecuteReader())
-                        {
-                            if (result.Read())
-                                isDeleted = true;
-                        }
+                return isDeleted;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("\nthis error from person deleted {0} \n", ex.Message);
+            }
+
+            return isDeleted;
+        }
+        
+        
+        public static bool unDelete(
+            Guid id
+        )
+        {
+            bool isDeleted = false;
+            try
+            {
+                using (var connection = new NpgsqlConnection(connectionUr))
+                {
+                    connection.Open();
+                    string query = @"UPDATE  users  SET IsDeleted = FALSE  WHERE userid =@id;";
+                    
+                    using (var cmd = new NpgsqlCommand(query, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@id", id);
+                        cmd.ExecuteNonQuery();
+                        isDeleted = true;
+                    }
+                }
+
+                return isDeleted;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("\nthis error from person deleted {0} \n", ex.Message);
+            }
+
+            return isDeleted;
+        }
+        public static bool vipUser(
+            Guid id
+        )
+        {
+            bool isDeleted = false;
+            try
+            {
+                using (var connection = new NpgsqlConnection(connectionUr))
+                {
+                    connection.Open();
+                    string query = @"UPDATE  users  SET isvip  =  CASE WHEN  isvip = TRUE THEN FALSE ELSE TRUE END  WHERE userid =@id;";
+                    
+                    using (var cmd = new NpgsqlCommand(query, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@id", id);
+                        cmd.ExecuteNonQuery();
+                        isDeleted = true;
                     }
                 }
 

@@ -10,7 +10,6 @@ import { setTokens } from "../controller/redux/jwtSlice";
 const AuthRoute = ({ Page }) => {
     const userAuth =   useSelector((state:RootState) => state.auth.refreshToken)
     
-    generalMessage(`this from  not have validation ${userAuth}`)
 
     if (userAuth!==null)
         return <Navigate to={'/'} />

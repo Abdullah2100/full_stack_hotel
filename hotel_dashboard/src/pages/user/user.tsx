@@ -20,6 +20,7 @@ import NotFoundComponent from '../../components/notFoundContent';
 import { UserModule } from '../../module/userModule';
 import { isHasCapitalLetter, isHasNumber, isHasSmallLetter, isHasSpicalCharacter, isValidEmail } from '../../util/regexValidation';
 import { Guid } from 'guid-typescript';
+import { Switch } from '@mui/material';
 
 const User = () => {
   const { showToastiFy } = useContext(useToastifiContext)
@@ -29,7 +30,8 @@ const User = () => {
   const [status, setState] = useState<enStatus>(enStatus.none)
   const [page, setPage] = useState<number>(1)
   const [isNoData, setNoData] = useState<boolean>(false)
-  const [userId, setUserId] = useState<Guid|undefined>(undefined)
+  const [isShowingDeleted, setShowingDeleted] = useState<boolean>(false)
+  const [userId, setUserId] = useState<Guid | undefined>(undefined)
 
   const [userAuth, setUser] = useState<userAuthModule>({
     name: '',
@@ -63,19 +65,69 @@ const User = () => {
   }
   );
 
-  const singup = useMutation({
-    mutationFn: (userData: any) =>
+  const userChangeStatus = useMutation({
+    mutationFn: ({userId,isDeleation =false,endpoint}:{userId: Guid,isDeleation:boolean|undefined,endpoint:string}) =>
       apiClient({
-        enType: enApiType.POST,
-        endPoint: isUpdate ? 
-        import.meta.env.VITE_UPDATEUSERS : import.meta.env.VITE_CreateUSERS
-        ,prameters: userData,
+        enType:isDeleation? enApiType.DELETE :enApiType.POST,
+        endPoint:endpoint + '/' + userId
+        ,
         isRquireAuth: true,
         jwtValue: refreshToken || ""
       }),
     onSuccess: (data) => {
       setState(enStatus.complate)
-      showToastiFy(`user ${isUpdate?"updated":"created"} Sueccessfuly`, enMessage.SECCESSFUL);
+      showToastiFy(`user    Sueccessfuly`, enMessage.SECCESSFUL);
+
+      refetch();
+    },
+    onError: (error) => {
+      setState(enStatus.complate);
+
+      if (error.response) {
+        // Extract error message from the server response
+        const errorMessage = error?.response || "An error occurred";
+        showToastiFy(errorMessage, enMessage.ERROR);
+      } else if (error.request) {
+        // Handle network errors or no response received
+        const requestError = "No response received from server";
+        showToastiFy(requestError, enMessage.ERROR);
+      } else {
+        // Handle other unknown errors
+        const unknownError = error.message || "An unknown error occurred";
+        showToastiFy(unknownError, enMessage.ERROR);
+      }
+    }
+
+  })
+
+
+  const deleteUserFun = async (userId: Guid,isDeletion?:boolean|undefined) => {
+    let endpoint = '';
+    if(isDeletion!==undefined){
+      endpoint = (isDeletion? import.meta.env.VITE_DELETEDTEUSERS:import.meta.env.VITE_UNDELETE_USER)
+    }
+    else{
+      endpoint = import.meta.env.VITE_MAKEUSERVIP
+    }
+
+    await userChangeStatus.mutate({userId,isDeleation:isDeletion,endpoint})
+
+  };
+
+
+  const singup = useMutation({
+    mutationFn: (userData: any) =>
+      apiClient({
+        enType: enApiType.POST,
+        endPoint: isUpdate ?
+          import.meta.env.VITE_UPDATEUSERS : import.meta.env.VITE_CreateUSERS
+        , prameters: userData,
+        isRquireAuth: true,
+        jwtValue: refreshToken || ""
+      }),
+    onSuccess: (data) => {
+      setState(enStatus.complate)
+      showToastiFy(`user ${isUpdate ? "updated" : "created"} Sueccessfuly`, enMessage.SECCESSFUL);
       setUser({
         address: '',
         password: '',
@@ -162,20 +214,20 @@ const User = () => {
       }
     setState(enStatus.loading)
     const data = {
-    
+
       "name": userAuth.name,
       "email": userAuth.email,
       "phone": userAuth.phone,
       "address": userAuth.address,
       "userName": userAuth.username,
       "password": userAuth.password,
-      "brithDay":new Date(userAuth.brithDay)||null,
+      "brithDay": new Date(userAuth.brithDay) || null,
       "isVip": false
     }
-    if(isUpdate)
+    if (isUpdate)
       data.Id = userId;
 
-    if(isUpdate)data
+    if (isUpdate) data
     await singup.mutate(data)
 
   };
@@ -190,15 +242,20 @@ const User = () => {
       showToastiFy(error.message, enMessage.ERROR);
     }
     if (data) {
-      //generalMessage(JSON.stringify(data.data))
+      generalMessage("this the data from user " +JSON.stringify(data.data[0]))
       setNoData(false)
     }
   }, [error, data])
 
 
   useEffect(() => {
-    generalMessage(JSON.stringify(userAuth))
   }, [userAuth])
+
+
+  useEffect(()=>{
+  },[isShowingDeleted])
+
+
 
   return (
     <div className='flex flex-row'>
@@ -227,7 +284,7 @@ const User = () => {
             value={userAuth.email}
             onInput={updateInput}
             placeHolder="email"
-            style={`mb-1  w-[139px] me-2 ${isUpdate&&'text-gray-400'}`}
+            style={`mb-1  w-[139px] me-2 ${isUpdate && 'text-gray-400'}`}
             maxLength={100}
             isRequire={true}
 
@@ -303,7 +360,13 @@ const User = () => {
             setUser={setUser}
             seUpdate={setUpdate}
             seUserID={setUserId}
+            deleteFunc={deleteUserFun}
+            isShwoingDeleted={isShowingDeleted}
           />
+        </div>
+        <div>
+          <h3>showing the deleted user</h3>
+          <Switch onChange={()=>setShowingDeleted(prev=>!prev)} />
         </div>
       </div>
 

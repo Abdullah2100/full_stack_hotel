@@ -7,5 +7,6 @@ export interface UserModule {
     brithDay: string
     isVip: boolean,
     userName: string,
+    isDeleted:boolean,
     personData: PersonModule
 }

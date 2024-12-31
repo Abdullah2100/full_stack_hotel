@@ -128,5 +128,17 @@ public class UserController : Controller
         return StatusCode(500, "Something went wrong");
     }
     
+    [Authorize]
+    [HttpPost("unDelete/{id:guid}")]
     
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public IActionResult getUserByPage(Guid id)
+    {
+        var result = UserBuissnes.unnDeleteUser(id);
+        if (result == true)
+            return Ok("user is undeleted");
+        return StatusCode(500, "Something went wrong");
+    } 
 }

@@ -103,7 +103,14 @@ public class UserBuissnes
     {
         return UserData.delete(id);
     }
-
+    public static bool makeVipUser(Guid id)
+    {
+        return UserData.vipUser(id);
+    }
+    public static bool unnDeleteUser(Guid id)
+    {
+        return UserData.unDelete(id);
+    }
     public static List<UserDto> getAllUsers(int pageNumber)
     {
         return UserData.getUsersByPage(pageNumber:pageNumber);

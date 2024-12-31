@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction } from 'react'
 import { UserModule } from '../../module/userModule';
 import { Switch } from '@mui/material';
 import NotFoundComponent from '../notFoundContent';
-import { PencilIcon, TrashIcon } from '@heroicons/react/16/solid';
+import { ArrowUturnLeftIcon, PencilIcon, TrashIcon } from '@heroicons/react/16/solid';
 import { userAuthModule } from '../../module/userAuthModule';
 import { generalMessage } from '../../util/generalPrint';
 import { Guid } from 'guid-typescript';
@@ -12,9 +12,11 @@ interface UserTableProps {
   setUser: Dispatch<SetStateAction<userAuthModule>>
   seUpdate: Dispatch<SetStateAction<boolean>>
   seUserID: Dispatch<SetStateAction<Guid|undefined>>
+  deleteFunc:(userId: Guid,isDeletion:boolean|undefined) => Promise<void>
+  isShwoingDeleted: boolean
 }
 
-const UersTable = ({ data, setUser,seUpdate,seUserID }: UserTableProps) => {
+const UersTable = ({ data, setUser,seUpdate,seUserID ,deleteFunc,isShwoingDeleted=false}: UserTableProps) => {
 
   const setUserData = (user: UserModule) => {
     
@@ -30,6 +32,7 @@ const UersTable = ({ data, setUser,seUpdate,seUserID }: UserTableProps) => {
     seUpdate(true)
     seUserID(user.userId)
   }
+
   return (
     <div className={`overflow-x-auto justify-center ${data === undefined && 'h-48'} `}>
       <table className="min-w-full table-auto border-collapse">
@@ -48,10 +51,10 @@ const UersTable = ({ data, setUser,seUpdate,seUserID }: UserTableProps) => {
           </tr>
         </thead>
         <tbody>
-          {data !== undefined && data.length > 0 && data.map((user, index) => (
-            <tr
+          {data !== undefined && data.length > 0 && data.map(( user, index) => (
+           user.isDeleted&&isShwoingDeleted===false?undefined: <tr
               key={index}
-              className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
+              className={ ` ${user.isDeleted?'bg-red-500':'bg-white'}`}
             >
               <td className="px-4 py-2 border-b text-left whitespace-nowrap">{user?.userId || ""}</td>
               <td className="px-4 py-2 border-b text-left whitespace-nowrap">{user?.personID || ""}</td>
@@ -68,18 +71,30 @@ const UersTable = ({ data, setUser,seUpdate,seUserID }: UserTableProps) => {
               <td className="px-4 py-2 border-b text-left whitespace-nowrap">
                 <Switch
                   value={user.isVip}
-                  disabled={true}
+                  // disabled={true}
+                  onChange={()=>deleteFunc(user.userId,undefined)}
                 />
               </td>
 
-              <td className="px-4 py-2 border-b text-left flex flex-row justify-between">
+              <td className="px-4 py-1 pt-4  text-left ">
+                {user.isDeleted===false?
+                <div className='flex flex-row justify-between'>
+
                 <button 
-                  className='border-[2px] rounded-[3px] border-red-600 h-7 w-7 flex justify-center items-center'
-                ><TrashIcon className='h-4 w-4 text-red-600 ' /></button>
+                   onClick={()=>deleteFunc(user.userId,true)}
+                   className='border-[2px] rounded-[3px] border-red-600 h-7 w-7 flex justify-center items-center'
+                   ><TrashIcon className='h-4 w-4 text-red-600 ' /></button>
                 <button
                 onClick={() => setUserData(user)}
-                  className='border-[2px] rounded-[3px] border-green-800 h-7 w-7 flex justify-center items-center bg-gray-200'
+                className='border-[2px] rounded-[3px] border-green-800 h-7 w-7 flex justify-center items-center bg-gray-200'
                 ><PencilIcon className='h-6 w-6 text-green-800' /></button>
+                </div>:
+                <button onClick={()=>deleteFunc(user.userId,false)}>
+
+                <ArrowUturnLeftIcon 
+                 className='h-6 w-6 text-white'/>
+                 </button>
+                }
               </td>
             </tr>
           ))}
