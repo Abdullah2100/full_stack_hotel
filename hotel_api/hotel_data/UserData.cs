@@ -451,5 +451,65 @@ namespace hotel_data
 
             return isDeleted;
         }
+        
+        
+        public static bool unDelete(
+            Guid id
+        )
+        {
+            bool isDeleted = false;
+            try
+            {
+                using (var connection = new NpgsqlConnection(connectionUr))
+                {
+                    connection.Open();
+                    string query = @"UPDATE  users  SET IsDeleted = FALSE  WHERE userid =@id;";
+                    
+                    using (var cmd = new NpgsqlCommand(query, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@id", id);
+                        cmd.ExecuteNonQuery();
+                        isDeleted = true;
+                    }
+                }
+
+                return isDeleted;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("\nthis error from person deleted {0} \n", ex.Message);
+            }
+
+            return isDeleted;
+        }
+        public static bool vipUser(
+            Guid id
+        )
+        {
+            bool isDeleted = false;
+            try
+            {
+                using (var connection = new NpgsqlConnection(connectionUr))
+                {
+                    connection.Open();
+                    string query = @"UPDATE  users  SET isvip  =  CASE WHEN  isvip = TRUE THEN FALSE ELSE TRUE END  WHERE userid =@id;";
+                    
+                    using (var cmd = new NpgsqlCommand(query, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@id", id);
+                        cmd.ExecuteNonQuery();
+                        isDeleted = true;
+                    }
+                }
+
+                return isDeleted;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("\nthis error from person deleted {0} \n", ex.Message);
+            }
+
+            return isDeleted;
+        }
     }
 }

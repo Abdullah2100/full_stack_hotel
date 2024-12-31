@@ -65,18 +65,18 @@ const User = () => {
   }
   );
 
-  const deleteUser = useMutation({
-    mutationFn: (userId: Guid) =>
+  const userChangeStatus = useMutation({
+    mutationFn: ({userId,isDeleation =false,endpoint}:{userId: Guid,isDeleation:boolean|undefined,endpoint:string}) =>
       apiClient({
-        enType: enApiType.DELETE,
-        endPoint: import.meta.env.VITE_DELETEDTEUSERS + '/' + userId
+        enType:isDeleation? enApiType.DELETE :enApiType.POST,
+        endPoint:endpoint + '/' + userId
         ,
         isRquireAuth: true,
         jwtValue: refreshToken || ""
       }),
     onSuccess: (data) => {
       setState(enStatus.complate)
-      showToastiFy(`user  deleted  Sueccessfuly`, enMessage.SECCESSFUL);
+      showToastiFy(`user    Sueccessfuly`, enMessage.SECCESSFUL);
 
       refetch();
     },
@@ -101,9 +101,16 @@ const User = () => {
   })
 
 
-  const deleteUserFun = async (userId: Guid) => {
-    generalMessage(userId.toString())
-    await deleteUser.mutate(userId)
+  const deleteUserFun = async (userId: Guid,isDeletion?:boolean|undefined) => {
+    let endpoint = '';
+    if(isDeletion!==undefined){
+      endpoint = (isDeletion? import.meta.env.VITE_DELETEDTEUSERS:import.meta.env.VITE_UNDELETE_USER)
+    }
+    else{
+      endpoint = import.meta.env.VITE_MAKEUSERVIP
+    }
+
+    await userChangeStatus.mutate({userId,isDeleation:isDeletion,endpoint})
 
   };
 
@@ -235,19 +242,17 @@ const User = () => {
       showToastiFy(error.message, enMessage.ERROR);
     }
     if (data) {
-      //generalMessage(JSON.stringify(data.data))
+      generalMessage("this the data from user " +JSON.stringify(data.data[0]))
       setNoData(false)
     }
   }, [error, data])
 
 
   useEffect(() => {
-    generalMessage(JSON.stringify(userAuth))
   }, [userAuth])
 
 
   useEffect(()=>{
-    generalMessage("this showing the is showing deleted "+isShowingDeleted)
   },[isShowingDeleted])
 
 

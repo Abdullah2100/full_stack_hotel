@@ -52,7 +52,6 @@ const SignUp = () => {
             }),
         onSuccess: (data) => {
             setState(enStatus.complate)
-            generalMessage(data.data)
             const result = data.data as unknown as AuthResult;
             dispatcher(setTokens({ accessToken: result.accessToken, refreshToken: result.refreshToken }))
         },

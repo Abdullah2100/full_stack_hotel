@@ -13,7 +13,6 @@ export const isValidToken = async (token: string) => {
     })
         .catch((error) => {
 
-            generalMessage(error, true)
         })
     return isValid;
 }
@@ -37,15 +36,12 @@ export const signUpNewUser = async (userData: userAuthModule, changeState: (stat
 
             if (data !== undefined) {
                 var result = data as unknown as AuthResult;
-                generalMessage(result.accessToken)
-                generalMessage(result.refreshToken)
 
             }
         })
         .catch((error) => {
             
             changeState(enStatus.complate)
-            generalMessage(error, true)
 
         });
 

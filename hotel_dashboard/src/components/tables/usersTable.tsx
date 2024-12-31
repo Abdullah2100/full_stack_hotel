@@ -12,7 +12,7 @@ interface UserTableProps {
   setUser: Dispatch<SetStateAction<userAuthModule>>
   seUpdate: Dispatch<SetStateAction<boolean>>
   seUserID: Dispatch<SetStateAction<Guid|undefined>>
-  deleteFunc:(userId: Guid) => Promise<void>
+  deleteFunc:(userId: Guid,isDeletion:boolean|undefined) => Promise<void>
   isShwoingDeleted: boolean
 }
 
@@ -33,7 +33,6 @@ const UersTable = ({ data, setUser,seUpdate,seUserID ,deleteFunc,isShwoingDelete
     seUserID(user.userId)
   }
 
-  generalMessage(data!==undefined?JSON.stringify(data[0].isDeleted)+' '+isShwoingDeleted:'')
   return (
     <div className={`overflow-x-auto justify-center ${data === undefined && 'h-48'} `}>
       <table className="min-w-full table-auto border-collapse">
@@ -55,7 +54,7 @@ const UersTable = ({ data, setUser,seUpdate,seUserID ,deleteFunc,isShwoingDelete
           {data !== undefined && data.length > 0 && data.map(( user, index) => (
            user.isDeleted&&isShwoingDeleted===false?undefined: <tr
               key={index}
-              className={ `bg-white ${isShwoingDeleted&&'bg-red-500'}`}
+              className={ ` ${user.isDeleted?'bg-red-500':'bg-white'}`}
             >
               <td className="px-4 py-2 border-b text-left whitespace-nowrap">{user?.userId || ""}</td>
               <td className="px-4 py-2 border-b text-left whitespace-nowrap">{user?.personID || ""}</td>
@@ -72,24 +71,29 @@ const UersTable = ({ data, setUser,seUpdate,seUserID ,deleteFunc,isShwoingDelete
               <td className="px-4 py-2 border-b text-left whitespace-nowrap">
                 <Switch
                   value={user.isVip}
-                  disabled={true}
+                  // disabled={true}
+                  onChange={()=>deleteFunc(user.userId,undefined)}
                 />
               </td>
 
-              <td className="px-4 py-1 pt-4  text-left flex flex-row justify-between">
+              <td className="px-4 py-1 pt-4  text-left ">
                 {user.isDeleted===false?
-                <div>
+                <div className='flex flex-row justify-between'>
 
                 <button 
-                   onClick={()=>deleteFunc(user.userId)}
+                   onClick={()=>deleteFunc(user.userId,true)}
                    className='border-[2px] rounded-[3px] border-red-600 h-7 w-7 flex justify-center items-center'
                    ><TrashIcon className='h-4 w-4 text-red-600 ' /></button>
                 <button
                 onClick={() => setUserData(user)}
                 className='border-[2px] rounded-[3px] border-green-800 h-7 w-7 flex justify-center items-center bg-gray-200'
                 ><PencilIcon className='h-6 w-6 text-green-800' /></button>
-                </div>:<ArrowUturnLeftIcon
+                </div>:
+                <button onClick={()=>deleteFunc(user.userId,false)}>
+
+                <ArrowUturnLeftIcon 
                  className='h-6 w-6 text-white'/>
+                 </button>
                 }
               </td>
             </tr>

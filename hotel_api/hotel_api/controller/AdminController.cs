@@ -322,6 +322,51 @@ namespace hotel_api.controller
             return StatusCode(201, new { message="created seccessfully" });
         } 
               
+        [Authorize]
+        [HttpPost("makeUserVip/{userId:guid}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult makeUserVip(
+            Guid userId 
+        )
+        {
+            var authorizationHeader = HttpContext.Request.Headers["Authorization"];
+            var id = AuthinticationServices.GetPayloadFromToken("id",
+                authorizationHeader.ToString().Replace("Bearer ", ""));
+            Guid? adminid = null;
+            if (Guid.TryParse(id.Value.ToString(), out Guid outID))
+            {
+                adminid = outID;
+            }
+
+            if (adminid == null)
+            {
+                return StatusCode(401, "you not have Permission");
+            }
+
+            var isHasPermissionToCreateUser = AdminBuissnes.isAdminExist(adminid ?? Guid.Empty);
+
+
+            if (!isHasPermissionToCreateUser)
+            {
+                return StatusCode(401, "you not have Permission");
+            }
+
+
+            var  data = UserBuissnes.getUserByID(userId);
+            
+            if (data == null)
+                return StatusCode(409, "user notFound exist");
+            
+
+            var result = UserBuissnes.makeVipUser(userId);
+            if (result == false)
+                return StatusCode(500, "some thing wrong");
+
+            return StatusCode(201, new { message="user now is vip" });
+        }  
     }
     
     
