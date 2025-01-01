@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import Header from '../../components/header/header'
-import { UsersIcon } from '@heroicons/react/16/solid'
+import { CameraIcon, UsersIcon } from '@heroicons/react/16/solid'
 import { userAuthModule } from '../../module/userAuthModule';
 import { TextInput } from '../../components/input/textInput';
 import { PasswordInput } from '../../components/input/passwordInput';
@@ -24,7 +24,8 @@ import { Switch } from '@mui/material';
 
 const User = () => {
   const { showToastiFy } = useContext(useToastifiContext)
-
+  const imageRef = useRef<HTMLInputElement>(null)
+  const [image, setImage] = useState<string>("")
   const refreshToken = useSelector((state: RootState) => state.auth.refreshToken)
 
   const [status, setState] = useState<enStatus>(enStatus.none)
@@ -41,6 +42,7 @@ const User = () => {
     username: '',
     password: '',
     brithDay: (new Date()).toISOString().split('T')[0],
+    imagePath: undefined
   });
 
   const [isUpdate, setUpdate] = useState<boolean>(false)
@@ -66,10 +68,10 @@ const User = () => {
   );
 
   const userChangeStatus = useMutation({
-    mutationFn: ({userId,isDeleation =false,endpoint}:{userId: Guid,isDeleation:boolean|undefined,endpoint:string}) =>
+    mutationFn: ({ userId, isDeleation = false, endpoint }: { userId: Guid, isDeleation: boolean | undefined, endpoint: string }) =>
       apiClient({
-        enType:isDeleation? enApiType.DELETE :enApiType.POST,
-        endPoint:endpoint + '/' + userId
+        enType: isDeleation ? enApiType.DELETE : enApiType.POST,
+        endPoint: endpoint + '/' + userId
         ,
         isRquireAuth: true,
         jwtValue: refreshToken || ""
@@ -101,16 +103,16 @@ const User = () => {
   })
 
 
-  const deleteUserFun = async (userId: Guid,isDeletion?:boolean|undefined) => {
+  const deleteUserFun = async (userId: Guid, isDeletion?: boolean | undefined) => {
     let endpoint = '';
-    if(isDeletion!==undefined){
-      endpoint = (isDeletion? import.meta.env.VITE_DELETEDTEUSERS:import.meta.env.VITE_UNDELETE_USER)
+    if (isDeletion !== undefined) {
+      endpoint = (isDeletion ? import.meta.env.VITE_DELETEDTEUSERS : import.meta.env.VITE_UNDELETE_USER)
     }
-    else{
+    else {
       endpoint = import.meta.env.VITE_MAKEUSERVIP
     }
 
-    await userChangeStatus.mutate({userId,isDeleation:isDeletion,endpoint})
+    await userChangeStatus.mutate({ userId, isDeleation: isDeletion, endpoint })
 
   };
 
@@ -123,7 +125,8 @@ const User = () => {
           import.meta.env.VITE_UPDATEUSERS : import.meta.env.VITE_CreateUSERS
         , prameters: userData,
         isRquireAuth: true,
-        jwtValue: refreshToken || ""
+        jwtValue: refreshToken || "",
+        isFormData:true
       }),
     onSuccess: (data) => {
       setState(enStatus.complate)
@@ -213,19 +216,20 @@ const User = () => {
         return;
       }
     setState(enStatus.loading)
-    const data = {
+    const formData = new FormData();
+    formData.append("name", userAuth.name);
+    formData.append("email", userAuth.email);
+    formData.append("phone", userAuth.phone);
+    formData.append("address", userAuth.address);
+    formData.append("userName", userAuth.username);
+    formData.append("password", userAuth.password);
+    formData.append("brithDay", new Date(userAuth.brithDay).toISOString());
+    formData.append("isVip", "false");
+    if (userAuth.imagePath !== undefined)
+      formData.append("imagePath", userAuth.imagePath);
 
-      "name": userAuth.name,
-      "email": userAuth.email,
-      "phone": userAuth.phone,
-      "address": userAuth.address,
-      "userName": userAuth.username,
-      "password": userAuth.password,
-      "brithDay": new Date(userAuth.brithDay) || null,
-      "isVip": false
-    }
     if (isUpdate)
-      data.Id = userId;
+       formData.append("id", userId?.toString() || "");       
 
     if (isUpdate) data
     await singup.mutate(data)
@@ -234,6 +238,29 @@ const User = () => {
 
 
 
+  const selectImage = (e) => {
+    e.preventDefault();
+    imageRef.current?.click();
+  }
+
+  const uploadImageDisplay = async () => {
+    if (imageRef.current && imageRef.current.files && imageRef.current.files[0]) {
+
+      const uploadedFile = imageRef.current.files[0];
+      const fileExtension = uploadedFile.name.split('.').pop()?.toLowerCase();
+      if (!['png', 'jpg', 'jpeg'].includes(fileExtension || '')) {
+        showToastiFy("you must select valide image ", enMessage.ERROR)
+        return;
+      }
+      const cachedURL = URL.createObjectURL(uploadedFile);
+      ///generalMessage("this the image url " + cachedURL)
+      setImage(cachedURL);
+      setUser((prev) => ({
+        ...prev,
+        ['imagePath']: uploadedFile,
+      }));
+    }
+  }
 
   useEffect(() => {
 
@@ -242,7 +269,7 @@ const User = () => {
       showToastiFy(error.message, enMessage.ERROR);
     }
     if (data) {
-      generalMessage("this the data from user " +JSON.stringify(data.data[0]))
+      generalMessage("this the data from user " + JSON.stringify(data.data[0]))
       setNoData(false)
     }
   }, [error, data])
@@ -252,8 +279,8 @@ const User = () => {
   }, [userAuth])
 
 
-  useEffect(()=>{
-  },[isShowingDeleted])
+  useEffect(() => {
+  }, [isShowingDeleted])
 
 
 
@@ -267,7 +294,26 @@ const User = () => {
           <UsersIcon className='h-8 fill-black group-hover:fill-gray-200 -ms-1' />
           <h3 className='text-2xl ms-1'>Users</h3>
         </div>
+        <div className='relative'>
+          <div className='h-20 w-20 bg-green-400 rounded-full mt-4 flex items-center justify-center p-2 overflow-hidden'>
+            {userAuth.imagePath !== undefined && <img src={image} />}
+
+          </div>
+          <button
+            onClick={selectImage}
+            className='absolute bg-gray-300 rounded-full p-1 end-1 -bottom-1'>
+            <CameraIcon className='h-4 w-4' />
+          </button>
+        </div>
         <div className='mt-4 flex flex-row flex-wrap'>
+
+          <input
+            type="file"
+            id="file"
+            ref={imageRef}
+            onChange={uploadImageDisplay}
+            hidden />
+
           <TextInput
 
             keyType='name'
@@ -366,7 +412,7 @@ const User = () => {
         </div>
         <div>
           <h3>showing the deleted user</h3>
-          <Switch onChange={()=>setShowingDeleted(prev=>!prev)} />
+          <Switch onChange={() => setShowingDeleted(prev => !prev)} />
         </div>
       </div>
 

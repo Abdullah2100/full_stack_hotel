@@ -147,6 +147,10 @@ namespace hotel_api.controller
             if (isExistEmail)
                 return StatusCode(400, "email or phone is already in use");
 
+            if (userRequestData.imagePath != null)
+            {
+                MinIoServices.uploadFile(_config,userRequestData.imagePath,MinIoServices.enBucketName.USER);
+            }
 
             var data = UserBuissnes.
                 getUserByUserNameAndPassword(userRequestData.userName,

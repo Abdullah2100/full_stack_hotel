@@ -4,8 +4,8 @@ import { Switch } from '@mui/material';
 import NotFoundComponent from '../notFoundContent';
 import { ArrowUturnLeftIcon, PencilIcon, TrashIcon } from '@heroicons/react/16/solid';
 import { userAuthModule } from '../../module/userAuthModule';
-import { generalMessage } from '../../util/generalPrint';
 import { Guid } from 'guid-typescript';
+import { generalMessage } from '../../util/generalPrint';
 
 interface UserTableProps {
   data?: UserModule[] | undefined,
@@ -17,6 +17,9 @@ interface UserTableProps {
 }
 
 const UersTable = ({ data, setUser,seUpdate,seUserID ,deleteFunc,isShwoingDeleted=false}: UserTableProps) => {
+  data?.forEach((x)=>{
+    generalMessage("this the user data "+x.isVip)
+  })
 
   const setUserData = (user: UserModule) => {
     
@@ -70,7 +73,7 @@ const UersTable = ({ data, setUser,seUpdate,seUserID ,deleteFunc,isShwoingDelete
               </td>
               <td className="px-4 py-2 border-b text-left whitespace-nowrap">
                 <Switch
-                  value={user.isVip}
+                  defaultChecked={user.isVip}
                   // disabled={true}
                   onChange={()=>deleteFunc(user.userId,undefined)}
                 />

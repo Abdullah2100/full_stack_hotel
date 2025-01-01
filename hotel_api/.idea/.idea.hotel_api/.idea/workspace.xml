@@ -10,17 +10,13 @@
   <component name="ChangeListManager">
     <list default="true" id="a5d946be-ded5-4850-9962-9f8d801bf9de" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.hotel_api/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.hotel_api/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_api/RequestDto/UserRequestDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/RequestDto/UserRequestDto.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_api/Services/MinIoServices.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/Services/MinIoServices.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_api/appsettings.Development.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/appsettings.Development.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_api/appsettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/appsettings.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/controller/UserController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/controller/UserController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_business/UserBuissnes.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/UserBuissnes.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_data/UserData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/UserData.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/components/tables/usersTable.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/components/tables/usersTable.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/pages/login/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/pages/login/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/pages/signUp/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/pages/signUp/index.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/pages/user/user.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/pages/user/user.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/services/AuthRoute.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/services/AuthRoute.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/services/authServices.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/services/authServices.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/services/privateRout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/services/privateRout.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,21 +49,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    ".NET Launch Settings Profile.hotel_api: http.executor": "Debug",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "XThreadsFramesViewSplitterKey": "0.084690556",
-    "git-widget-placeholder": "user__delete__funcitonality",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;.NET Launch Settings Profile.hotel_api: http.executor&quot;: &quot;Debug&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;XThreadsFramesViewSplitterKey&quot;: &quot;0.084690556&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;delete__and__undelete__or__make__user__vip&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected=".NET Launch Settings Profile.hotel_api: http">
     <configuration name="hotel_api: http" type="LaunchSettings" factoryName=".NET Launch Settings Profile">
       <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/hotel_api/hotel_api.csproj" />
@@ -129,6 +125,8 @@
       <workItem from="1735380430359" duration="14767000" />
       <workItem from="1735466544057" duration="4575000" />
       <workItem from="1735558857745" duration="4429000" />
+      <workItem from="1735639963089" duration="702000" />
+      <workItem from="1735725971313" duration="3127000" />
     </task>
     <servers />
   </component>
@@ -220,13 +218,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/hotel_api/controller/AdminController.cs</url>
-          <line>179</line>
+          <line>183</line>
           <properties documentPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" containingFunctionPresentation="Method 'createNewUser'">
             <startOffsets>
-              <option value="7161" />
+              <option value="7349" />
             </startOffsets>
             <endOffsets>
-              <option value="7186" />
+              <option value="7374" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="14" />
@@ -246,13 +244,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/hotel_api/controller/AdminController.cs</url>
-          <line>197</line>
+          <line>201</line>
           <properties documentPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" containingFunctionPresentation="Method 'updateUser'">
             <startOffsets>
-              <option value="7859" />
+              <option value="8047" />
             </startOffsets>
             <endOffsets>
-              <option value="7930" />
+              <option value="8118" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="17" />
@@ -272,13 +270,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/hotel_api/controller/AdminController.cs</url>
-          <line>288</line>
+          <line>292</line>
           <properties documentPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" containingFunctionPresentation="Method 'deleteUser'">
             <startOffsets>
-              <option value="11398" />
+              <option value="11586" />
             </startOffsets>
             <endOffsets>
-              <option value="11469" />
+              <option value="11657" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="19" />
@@ -298,13 +296,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/hotel_api/controller/AdminController.cs</url>
-          <line>334</line>
+          <line>338</line>
           <properties documentPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" containingFunctionPresentation="Method 'makeUserVip'">
             <startOffsets>
-              <option value="13005" />
+              <option value="13193" />
             </startOffsets>
             <endOffsets>
-              <option value="13076" />
+              <option value="13264" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="21" />

@@ -5,7 +5,7 @@ namespace hotel_api.Services;
 
 public class MinIoServices{
 
-    public enum enBucketName{RoomType}
+    public enum enBucketName{USER,RoomType}
 
 
     private static IMinioClient? _client(IConfigurationServices _config)
@@ -25,12 +25,12 @@ public class MinIoServices{
         }
     }
 
-    private static async Task<bool> _isExistBouket(IConfigurationServices _config, IMinioClient client)
+    private static async Task<bool> _isExistBouket(IConfigurationServices _config, IMinioClient client,string bucketName)
 
 
     {
         var beArgs = new BucketExistsArgs()
-            .WithBucket(_config.getKey("bucket_name"));
+            .WithBucket(bucketName);
         return await client.BucketExistsAsync(beArgs).ConfigureAwait(false);
 
     }
@@ -57,9 +57,10 @@ public class MinIoServices{
     {
         try
         {
+            var butketName = bukentName.ToString();
             using (var minioClient = _client(_config))
             {
-                var isExistBuket = await _isExistBouket(_config, minioClient);
+                var isExistBuket = await _isExistBouket(_config, minioClient,butketName);
                 if (!isExistBuket)
                 {
                     _createNewBuket(minioClient,bukentName);
@@ -69,7 +70,7 @@ public class MinIoServices{
                 using (var fileStream = file.OpenReadStream())
                 {
                     var putObject= new PutObjectArgs()
-                        .WithBucket(_config.getKey("bucket_name"))
+                        .WithBucket(butketName)
                         .WithFileName(file.FileName)
                         .WithStreamData(fileStream)
                         .WithContentType(file.ContentType);
@@ -85,13 +86,13 @@ public class MinIoServices{
         }
     }
     
-    private static async Task<bool> deleteFile(IConfigurationServices _config,string fileName)
+    private static async Task<bool> deleteFile(IConfigurationServices _config,string fileName,string bucketName)
     {
         try
         {
             using (var minioClient = _client(_config))
             {
-                var isExistBuket = await _isExistBouket(_config, minioClient);
+                var isExistBuket = await _isExistBouket(_config, minioClient, bucketName);
 
                 if (!isExistBuket) return false;
                  
