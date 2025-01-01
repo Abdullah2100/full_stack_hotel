@@ -8,4 +8,5 @@ export interface userAuthModule {
     username: string;
     password: string;
     brithDay: string ;
+    imagePath?:File|undefined;
 }
