@@ -109,7 +109,7 @@ namespace hotel_api.controller
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult createNewUser(
-            UserRequestDto userRequestData
+            [FromForm]  UserRequestDto userRequestData
         )
         {
             var authorizationHeader = HttpContext.Request.Headers["Authorization"];
@@ -195,8 +195,8 @@ namespace hotel_api.controller
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult updateUser(
-            UserUpdateDto userRequestData
+        public async Task<IActionResult> updateUser(
+            [FromForm]    UserUpdateDto userRequestData
         )
         {
             var authorizationHeader = HttpContext.Request.Headers["Authorization"];
@@ -242,6 +242,11 @@ namespace hotel_api.controller
                 return StatusCode(409, "user notFound exist");
             
             updateUserData(ref data, userRequestData);
+            if (userRequestData.imagePath != null)
+            {
+             await   MinIoServices.uploadFile(_config,userRequestData.imagePath,MinIoServices.enBucketName.USER);
+            }
+
 
             var result = data.save();
             if (result == false)
@@ -257,26 +262,26 @@ namespace hotel_api.controller
             UserUpdateDto userRequestData
             )
              {
-                 if (userRequestData.name.Length > 0 && user.personData.name!= userRequestData.name)
+                 if (userRequestData?.name?.Length > 0 && user.personData.name!= userRequestData.name)
                  {
                      user.personData.name = userRequestData.name;
                  }
 
-                 if (userRequestData.address.Length > 0&&user.personData.address!= userRequestData.address)
+                 if (userRequestData?.address?.Length > 0&&user.personData.address!= userRequestData.address)
                  {
                      user.personData.address = userRequestData.address;
                  }
-                 if (userRequestData.brithDay != null &&user.brithDay!= userRequestData.brithDay)
+                 if (userRequestData?.brithDay != null &&user.brithDay!= userRequestData?.brithDay)
                  {
                      user.brithDay = (DateTime)userRequestData.brithDay;
                  }
-                 if (userRequestData.isVip == true)
+                 if (userRequestData?.isVip == true)
                      user.isVip = true;
-                 if (userRequestData.userName.Length > 0 &&user.userName!= userRequestData.userName)
+                 if (userRequestData?.userName?.Length > 0 &&user.userName!= userRequestData.userName)
                      user.userName = userRequestData.userName;
-                 if (userRequestData.password.Length > 0)
+                 if (userRequestData?.password?.Length > 0)
                      user.password = clsUtil.hashingText(userRequestData.password);
-                 if(userRequestData.brithDay != null)
+                 if(userRequestData?.brithDay != null)
                      user.brithDay =(DateTime) userRequestData!.brithDay;
              }
         

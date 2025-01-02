@@ -23,13 +23,13 @@ public class UserRequestDto
     [Required]
     [MaxLength(16)]
     //[MinLength(8)]
-    public string password { get; set; } = "";
+    public string? password { get; set; } = "";
 
     [Required]
     public DateTime brithDay   { get; set; }
     
     public bool isVip   { get; set; } = false;
 
-    public IFormFile imagePath { get; set; } = null;
+    public IFormFile imagePath { get; set; } 
 
 }
