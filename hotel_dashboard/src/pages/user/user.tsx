@@ -145,19 +145,21 @@ const User = () => {
     onError: (error) => {
       setState(enStatus.complate);
 
-      if (error.response) {
-        // Extract error message from the server response
-        const errorMessage = error?.response || "An error occurred";
-        showToastiFy(errorMessage, enMessage.ERROR);
-      } else if (error.request) {
-        // Handle network errors or no response received
-        const requestError = "No response received from server";
-        showToastiFy(requestError, enMessage.ERROR);
-      } else {
-        // Handle other unknown errors
-        const unknownError = error.message || "An unknown error occurred";
-        showToastiFy(unknownError, enMessage.ERROR);
-      }
+      // if (error.response) {
+      //   // Extract error message from the server response
+      //   const errorMessage = error?.response || "An error occurred";
+      //   showToastiFy(errorMessage, enMessage.ERROR);
+      // } else if (error.request) {
+      //   // Handle network errors or no response received
+      //   const requestError = "No response received from server";
+      //   showToastiFy(requestError, enMessage.ERROR);
+      // } else {
+      //   // Handle other unknown errors
+      //   const unknownError = error.message || "An unknown error occurred";
+      //   showToastiFy(unknownError, enMessage.ERROR);
+      // }
+        showToastiFy(error.message, enMessage.ERROR);
+
     }
 
   })
@@ -225,14 +227,15 @@ const User = () => {
     formData.append("password", userAuth.password);
     formData.append("brithDay", new Date(userAuth.brithDay).toISOString());
     formData.append("isVip", "false");
+    
     if (userAuth.imagePath !== undefined)
       formData.append("imagePath", userAuth.imagePath);
 
     if (isUpdate)
        formData.append("id", userId?.toString() || "");       
 
-    if (isUpdate) data
-    await singup.mutate(data)
+    // if (isUpdate) data
+    await singup.mutate(formData)
 
   };
 

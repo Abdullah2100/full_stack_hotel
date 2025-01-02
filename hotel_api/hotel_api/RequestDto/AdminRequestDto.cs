@@ -10,7 +10,7 @@ public class AdminRequestDto
     [Required]
     [MaxLength(16)]
     [MinLength(8)]
-    public string password { get; set; } = "";
+    public string? password { get; set; } = "";
 
     [Required]
     [MaxLength(50)]

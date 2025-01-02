@@ -30,7 +30,7 @@ namespace hotel_api.util
         }
 
 
-        public static string hashingText(string text)
+        public static string hashingText(string? text)
         {
             using (SHA256 sha256 = SHA256.Create())
             {
