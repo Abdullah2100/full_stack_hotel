@@ -29,7 +29,8 @@ public class UserDto
         string userName,
         string password,
         Guid? addBy=null,
-        bool isDeleted=false)
+        bool isDeleted=false
+      )
     {
         this.userId = userId;
         this.personID = personID;

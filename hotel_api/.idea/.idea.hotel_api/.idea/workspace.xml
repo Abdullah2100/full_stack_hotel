@@ -10,16 +10,11 @@
   <component name="ChangeListManager">
     <list default="true" id="a5d946be-ded5-4850-9962-9f8d801bf9de" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.hotel_api/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.hotel_api/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/RequestDto/AdminRequestDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/RequestDto/AdminRequestDto.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/RequestDto/LoginRequestDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/RequestDto/LoginRequestDto.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/RequestDto/UserRequestDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/RequestDto/UserRequestDto.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/RequestDto/UserUpdateDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/RequestDto/UserUpdateDto.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_api/Services/MinIoServices.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/Services/MinIoServices.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/appsettings.Development.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/appsettings.Development.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/appsettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/appsettings.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/util/clsUtil.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/util/clsUtil.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/util/clsValidation.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/util/clsValidation.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_data/dto/UserDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/dto/UserDto.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/components/input/textInput.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/components/input/textInput.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/components/tables/usersTable.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/components/tables/usersTable.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/pages/user/user.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/pages/user/user.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -46,6 +41,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/db7395f4add94e6d10e515b3e55373f2821f8323de7dc8e314d78feefacf5584/ActionMethodExecutor.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/e81f11f4524b24a82a36f66b9cb15c6eecf1a69a2e5e78b869488765b243ae9/Array.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/e91a2750b979a5265711aaa020b980ebe7c5168bdf221ad2e32d16e3f74b8382/AsyncVoidMethodBuilder.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/ed2e2f6b6c4dfa81f4d445e4bb22b3b191b43fc073753331ffbb2b17f0e5d3a0/IObjectOperations.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="Toolset" />
@@ -59,21 +55,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    ".NET Launch Settings Profile.hotel_api: http.executor": "Debug",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "XThreadsFramesViewSplitterKey": "0.055793993",
-    "git-widget-placeholder": "adding__image__to__user",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;.NET Launch Settings Profile.hotel_api: http.executor&quot;: &quot;Debug&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;XThreadsFramesViewSplitterKey&quot;: &quot;0.055793993&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;adding__image__to__user&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected=".NET Launch Settings Profile.hotel_api: http">
     <configuration name="hotel_api: http" type="LaunchSettings" factoryName=".NET Launch Settings Profile">
       <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/hotel_api/hotel_api.csproj" />
@@ -138,6 +134,8 @@
       <workItem from="1735639963089" duration="702000" />
       <workItem from="1735725971313" duration="3127000" />
       <workItem from="1735822172017" duration="8485000" />
+      <workItem from="1735983457768" duration="3153000" />
+      <workItem from="1736065483900" duration="1539000" />
     </task>
     <servers />
   </component>
@@ -229,13 +227,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/hotel_api/controller/AdminController.cs</url>
-          <line>183</line>
+          <line>185</line>
           <properties documentPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" containingFunctionPresentation="Method 'createNewUser'">
             <startOffsets>
-              <option value="7361" />
+              <option value="7405" />
             </startOffsets>
             <endOffsets>
-              <option value="7386" />
+              <option value="7430" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="14" />
@@ -255,13 +253,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/hotel_api/controller/AdminController.cs</url>
-          <line>201</line>
+          <line>203</line>
           <properties documentPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" containingFunctionPresentation="Method 'updateUser'">
             <startOffsets>
-              <option value="8085" />
+              <option value="8129" />
             </startOffsets>
             <endOffsets>
-              <option value="8156" />
+              <option value="8200" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="17" />
@@ -281,13 +279,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/hotel_api/controller/AdminController.cs</url>
-          <line>297</line>
+          <line>299</line>
           <properties documentPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" containingFunctionPresentation="Method 'deleteUser'">
             <startOffsets>
-              <option value="11830" />
+              <option value="11893" />
             </startOffsets>
             <endOffsets>
-              <option value="11901" />
+              <option value="11964" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="19" />
@@ -307,13 +305,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/hotel_api/controller/AdminController.cs</url>
-          <line>343</line>
+          <line>345</line>
           <properties documentPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" containingFunctionPresentation="Method 'makeUserVip'">
             <startOffsets>
-              <option value="13437" />
+              <option value="13500" />
             </startOffsets>
             <endOffsets>
-              <option value="13508" />
+              <option value="13571" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="21" />
@@ -323,10 +321,10 @@
           <line>62</line>
           <properties documentPath="$PROJECT_DIR$/hotel_api/Services/MinIoServices.cs" containingFunctionPresentation="Method 'uploadFile'">
             <startOffsets>
-              <option value="2115" />
+              <option value="2130" />
             </startOffsets>
             <endOffsets>
-              <option value="2139" />
+              <option value="2154" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="23" />
@@ -336,10 +334,10 @@
           <line>59</line>
           <properties documentPath="$PROJECT_DIR$/hotel_api/Services/MinIoServices.cs" containingFunctionPresentation="Method 'uploadFile'">
             <startOffsets>
-              <option value="1993" />
+              <option value="2008" />
             </startOffsets>
             <endOffsets>
-              <option value="2045" />
+              <option value="2060" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="24" />

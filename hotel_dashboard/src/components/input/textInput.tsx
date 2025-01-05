@@ -33,7 +33,7 @@ export const TextInput =
 
   }: TextInputProps
   ) => {
-    const generalStyle = `text-black px-2 border-gray border-2 border-r-2 rounded-[3px] text-[12px] focus:rounded-[2px] w-[200px] ${style}`;
+    const generalStyle = `text-black px-2 border-gray border-2 border-r-2 rounded-[3px] text-[12px] focus:rounded-[2px]  `+style;
 
     // Function to handle input change and call onInput with value and key
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -43,7 +43,7 @@ export const TextInput =
 
 
     return (
-      <div className="">
+      <div className={``}>
         {isHasTitle &&
           <h6 className="text-[10px] mb-[0.5px]">{keyType}</h6>}
         {
