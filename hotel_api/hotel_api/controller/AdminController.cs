@@ -147,10 +147,6 @@ namespace hotel_api.controller
             if (isExistEmail)
                 return StatusCode(400, "email or phone is already in use");
 
-            if (userRequestData.imagePath != null)
-            {
-                MinIoServices.uploadFile(_config,userRequestData.imagePath,MinIoServices.enBucketName.USER);
-            }
 
             var data = UserBuissnes.
                 getUserByUserNameAndPassword(userRequestData.userName,
@@ -160,6 +156,12 @@ namespace hotel_api.controller
 
 
             var userId = Guid.NewGuid();
+            
+            
+            if (userRequestData.imagePath != null)
+            {
+                MinIoServices.uploadFile(_config,userRequestData.imagePath,MinIoServices.enBucketName.USER,userId.ToString());
+            }
 
             var personDataHolder = new PersonDto(
                 personID: null,
@@ -244,7 +246,7 @@ namespace hotel_api.controller
             updateUserData(ref data, userRequestData);
             if (userRequestData.imagePath != null)
             {
-             await   MinIoServices.uploadFile(_config,userRequestData.imagePath,MinIoServices.enBucketName.USER);
+             await   MinIoServices.uploadFile(_config,userRequestData.imagePath,MinIoServices.enBucketName.USER,data.ID.ToString());
             }
 
 

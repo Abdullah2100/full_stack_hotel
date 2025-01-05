@@ -53,7 +53,7 @@ namespace hotel_api.Services
             }
         }
 
-        public static async Task<bool> uploadFile(IConfigurationServices _config, IFormFile file, enBucketName bucketName)
+        public static async Task<bool> uploadFile(IConfigurationServices _config, IFormFile file, enBucketName bucketName,string newName)
         {
             try
             {
@@ -76,9 +76,10 @@ namespace hotel_api.Services
                 // Upload the file
                 using (var fileStream = file.OpenReadStream())
                 {
+                    string fullName = newName + ".png";
                     var putObject = new PutObjectArgs()
                         .WithBucket(bucketNameStr)
-                        .WithObject(file.FileName)
+                        .WithObject(fullName)
                         .WithStreamData(fileStream)
                         .WithObjectSize(file.Length)
                         .WithContentType(file.ContentType);
@@ -128,6 +129,12 @@ namespace hotel_api.Services
                 Console.WriteLine("Error deleting file: {0}", error.Message);
                 return false;
             }
+        }
+        
+    
+        private static string fileExtention(IFormFile file)
+        {
+            return new FileInfo(file.FileName).Extension;
         }
     }
 }

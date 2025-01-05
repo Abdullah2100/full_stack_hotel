@@ -21,6 +21,7 @@ import { UserModule } from '../../module/userModule';
 import { isHasCapitalLetter, isHasNumber, isHasSmallLetter, isHasSpicalCharacter, isValidEmail } from '../../util/regexValidation';
 import { Guid } from 'guid-typescript';
 import { Switch } from '@mui/material';
+import ImageHolder from '../../components/imageHolder';
 
 const User = () => {
   const { showToastiFy } = useContext(useToastifiContext)
@@ -126,7 +127,7 @@ const User = () => {
         , prameters: userData,
         isRquireAuth: true,
         jwtValue: refreshToken || "",
-        isFormData:true
+        isFormData: true
       }),
     onSuccess: (data) => {
       setState(enStatus.complate)
@@ -158,7 +159,7 @@ const User = () => {
       //   const unknownError = error.message || "An unknown error occurred";
       //   showToastiFy(unknownError, enMessage.ERROR);
       // }
-        showToastiFy(error.message, enMessage.ERROR);
+      showToastiFy(error.message, enMessage.ERROR);
 
     }
 
@@ -227,12 +228,12 @@ const User = () => {
     formData.append("password", userAuth.password);
     formData.append("brithDay", new Date(userAuth.brithDay).toISOString());
     formData.append("isVip", "false");
-    
+
     if (userAuth.imagePath !== undefined)
       formData.append("imagePath", userAuth.imagePath);
 
     if (isUpdate)
-       formData.append("id", userId?.toString() || "");       
+      formData.append("id", userId?.toString() || "");
 
     // if (isUpdate) data
     await singup.mutate(formData)
@@ -298,8 +299,13 @@ const User = () => {
           <h3 className='text-2xl ms-1'>Users</h3>
         </div>
         <div className='relative'>
-          <div className='h-20 w-20 bg-green-400 rounded-full mt-4 flex items-center justify-center p-2 overflow-hidden'>
-            {userAuth.imagePath !== undefined && <img src={image} />}
+          <div className='h-20 w-20 bg-green-400 rounded-full mt-4 flex flex-row items-center justify-center  overflow-hidden
+          '>
+
+            <ImageHolder 
+            src={image.length>0 ? image : userId !== undefined ? `http://172.19.0.1:9000/user/${userId}.png` : undefined} 
+            style='h-20 w-20 flex flex-row ' />
+
 
           </div>
           <button
@@ -308,7 +314,7 @@ const User = () => {
             <CameraIcon className='h-4 w-4' />
           </button>
         </div>
-        <div className='mt-4 flex flex-row flex-wrap'>
+        <div className='mt-4 flex flex-row flex-wrap gap-1'>
 
           <input
             type="file"
@@ -323,7 +329,7 @@ const User = () => {
             value={userAuth.name}
             onInput={updateInput}
             placeHolder="name"
-            style={`mb-1 me-2 w-32 w-full md:w-32 `}
+            style={`mb-1 w-full md:w-[200px]`}
             maxLength={50}
             isRequire={true}
           />
@@ -333,7 +339,7 @@ const User = () => {
             value={userAuth.email}
             onInput={updateInput}
             placeHolder="email"
-            style={`mb-1  w-[139px] me-2 ${isUpdate && 'text-gray-400'}`}
+            style={`mb-1  ${isUpdate && 'text-gray-400'} w-full md:w-[200px]`}
             maxLength={100}
             isRequire={true}
 
@@ -345,7 +351,7 @@ const User = () => {
             onInput={updateInput}
             placeHolder="2020/01/20"
             type="date"
-            style="mb-1 me-2 w-[139px]"
+            style="mb-1 w-full md:w-[200px]"
             isRequire={true}
 
           />
@@ -355,7 +361,7 @@ const User = () => {
             value={userAuth.phone}
             onInput={updateInput}
             placeHolder="735501225"
-            style="mb-1 w-[119px] me-2"
+            style="mb-1 w-full md:w-[200px]"
             isRequire={true}
             maxLength={10}
             type='number'
@@ -365,7 +371,7 @@ const User = () => {
             value={userAuth.username}
             onInput={updateInput}
             placeHolder="username"
-            style="mb-1 w-[119px] me-2"
+            style="mb-1 w-full md:w-[200px]"
             isRequire={true}
             maxLength={50}
 
@@ -380,17 +386,19 @@ const User = () => {
             canShowOrHidePassowrd={true}
             maxLength={8}
           />
-          <div className='w-full '>
+
+          <div className='w-full'>
 
             <TextInput
               keyType='address'
               value={userAuth.address}
               onInput={updateInput}
               placeHolder="Yemen Sanaa"
-              style="mb-1 w-full h-16"
+              style="h-16 w-full"
               isRequire={true}
               isMultipleLine={true}
             />
+
           </div>
 
           <SubmitButton
