@@ -12,19 +12,23 @@ interface UserTableProps {
   data?: UserModule[] | undefined,
   setUser: Dispatch<SetStateAction<userAuthModule>>
   seUpdate: Dispatch<SetStateAction<boolean>>
-  seUserID: Dispatch<SetStateAction<Guid | undefined>>
   deleteFunc: (userId: Guid, isDeletion: boolean | undefined) => Promise<void>
   isShwoingDeleted: boolean
+
 }
 
-const UersTable = ({ data, setUser, seUpdate, seUserID, deleteFunc, isShwoingDeleted = false }: UserTableProps) => {
-  data?.forEach((x) => {
-    generalMessage("this the user data " + x.isVip)
-  })
+const UersTable = ({
+  data,
+  setUser,
+  seUpdate,
+  deleteFunc,
+  isShwoingDeleted = false
+}: UserTableProps) => {
 
+  
   const setUserData = (user: UserModule) => {
-
     setUser({
+      userId:user.userId,
       address: user.personData?.address,
       brithDay: user.brithDay.split('T')[0], //dateHolder.toISOString().split('T')[0],
       email: user.personData?.email,
@@ -32,9 +36,9 @@ const UersTable = ({ data, setUser, seUpdate, seUserID, deleteFunc, isShwoingDel
       password: '',
       phone: user.personData?.phone,
       username: user.userName,
+      imagePath:user.imagePath?.toString()
     })
     seUpdate(true)
-    seUserID(user.userId)
   }
 
   return (
@@ -62,11 +66,11 @@ const UersTable = ({ data, setUser, seUpdate, seUserID, deleteFunc, isShwoingDel
               key={index}
               className={` ${user.isDeleted ? 'bg-red-500' : 'bg-white'}`}
             >
-              <td className="px-4 py-2 border-b text-left whitespace-nowrap">{index+1}</td>
+              <td className="px-4 py-2 border-b text-left whitespace-nowrap">{index + 1}</td>
               <td className="px-4 py-2 border-b text-left whitespace-nowrap">{
 
-                <ImageHolder src={`http://172.19.0.1:9000/user/${user.userId}.png`} 
-                
+                <ImageHolder src={`http://172.19.0.1:9000/user/${user.imagePath}`}
+                  style='flex flex-row h-20 w-20'
                 />
               }</td>
               <td className="px-4 py-2 border-b text-left whitespace-nowrap">{user?.userId || ""}</td>
@@ -84,7 +88,7 @@ const UersTable = ({ data, setUser, seUpdate, seUserID, deleteFunc, isShwoingDel
               <td className="px-4 py-2 border-b text-left whitespace-nowrap">
                 <Switch
                   defaultChecked={user.isVip}
-                 disabled={user.isDeleted}
+                  disabled={user.isDeleted}
                   onChange={() => deleteFunc(user.userId, undefined)}
                 />
               </td>

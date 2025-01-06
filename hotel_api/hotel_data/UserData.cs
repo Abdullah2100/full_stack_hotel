@@ -51,7 +51,9 @@ namespace hotel_data
                                         isVip: (bool)reader["isvip"],
                                         personData: personData,
                                         userName: (string)reader["username"],
-                                        password: (string)(reader["password"])
+                                        password: (string)(reader["password"]),
+                                        imagePath:reader["imagepath"]==DBNull.Value ? null : (string)reader["imagepath"]
+
                                     );
 
                                     return userData;
@@ -109,7 +111,10 @@ namespace hotel_data
                                         isVip: (bool)reader["isvip"],
                                         personData: personData,
                                         userName: (string)reader["username"],
-                                        password: (string)(reader["password"])
+                                        password: (string)(reader["password"]),
+                                        imagePath:reader["imagepath"]==DBNull.Value ? null : (string)reader["imagepath"]
+
+                                            
                                     );
 
                                     return userData;
@@ -170,7 +175,9 @@ namespace hotel_data
                                     isVip: (bool)reader["isvip"],
                                     personData: personData,
                                     userName: userName,
-                                    password: password
+                                    password: password,
+                                    imagePath:reader["imagepath"]==DBNull.Value ? null : (string)reader["imagepath"]
+
                                 );
 
                                 return userHolder;
@@ -227,8 +234,8 @@ namespace hotel_data
                                         personData: personData,
                                         userName: (string)reader["UserName"],
                                         password: "",
-                                        isDeleted:(bool)reader["isdeleted"]
-                                        
+                                        isDeleted: (bool)reader["isdeleted"],
+                                        imagePath:reader["imagepath"]==DBNull.Value ? null : (string)reader["imagepath"]
                                     );
 
                                     users.Add(userHolder);
@@ -318,7 +325,8 @@ namespace hotel_data
                                   @password::TEXT, 
                                   @IsVIP::BOOLEAN, 
                                    @personid_u,
-                                   @brithday_u::DATE
+                                   @brithday_u::DATE,
+                                   @imagePath_u::varchar
                                     ) ";
                     using (var cmd = new NpgsqlCommand(query, con))
                     {
@@ -331,6 +339,10 @@ namespace hotel_data
                         cmd.Parameters.AddWithValue("@IsVIP", userData.isVip);
                         cmd.Parameters.AddWithValue("@personid_u", userData.personID);
                         cmd.Parameters.AddWithValue("@brithday_u", userData.brithDay);
+                        if (userData.imagePath == null)
+                            cmd.Parameters.AddWithValue("@imagePath_u", DBNull.Value);
+                        else
+                            cmd.Parameters.AddWithValue("@imagePath_u", userData.imagePath);
 
                         var result = cmd.ExecuteScalar();
                         if (result != null && int.TryParse(result?.ToString(), out int userId))
@@ -433,7 +445,7 @@ namespace hotel_data
                 {
                     connection.Open();
                     string query = @"DELETE FROM  users WHERE userid =@id;";
-                    
+
                     using (var cmd = new NpgsqlCommand(query, connection))
                     {
                         cmd.Parameters.AddWithValue("@id", id);
@@ -451,8 +463,8 @@ namespace hotel_data
 
             return isDeleted;
         }
-        
-        
+
+
         public static bool unDelete(
             Guid id
         )
@@ -464,7 +476,7 @@ namespace hotel_data
                 {
                     connection.Open();
                     string query = @"UPDATE  users  SET IsDeleted = FALSE  WHERE userid =@id;";
-                    
+
                     using (var cmd = new NpgsqlCommand(query, connection))
                     {
                         cmd.Parameters.AddWithValue("@id", id);
@@ -482,6 +494,7 @@ namespace hotel_data
 
             return isDeleted;
         }
+
         public static bool vipUser(
             Guid id
         )
@@ -492,8 +505,9 @@ namespace hotel_data
                 using (var connection = new NpgsqlConnection(connectionUr))
                 {
                     connection.Open();
-                    string query = @"UPDATE  users  SET isvip  =  CASE WHEN  isvip = TRUE THEN FALSE ELSE TRUE END  WHERE userid =@id;";
-                    
+                    string query =
+                        @"UPDATE  users  SET isvip  =  CASE WHEN  isvip = TRUE THEN FALSE ELSE TRUE END  WHERE userid =@id;";
+
                     using (var cmd = new NpgsqlCommand(query, connection))
                     {
                         cmd.Parameters.AddWithValue("@id", id);

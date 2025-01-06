@@ -1,6 +1,7 @@
 import { Guid } from "guid-typescript";
 
 export interface userAuthModule {
+    userId :Guid|undefined;
     name: string
     email: string;
     phone: string;
@@ -8,5 +9,5 @@ export interface userAuthModule {
     username: string;
     password: string;
     brithDay: string ;
-    imagePath?:File|undefined;
+    imagePath?:File|string|undefined;
 }

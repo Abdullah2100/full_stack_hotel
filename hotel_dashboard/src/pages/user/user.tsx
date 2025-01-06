@@ -26,16 +26,16 @@ import ImageHolder from '../../components/imageHolder';
 const User = () => {
   const { showToastiFy } = useContext(useToastifiContext)
   const imageRef = useRef<HTMLInputElement>(null)
-  const [image, setImage] = useState<string>("")
+  const [image, setImage] = useState<string | undefined>(undefined)
   const refreshToken = useSelector((state: RootState) => state.auth.refreshToken)
 
   const [status, setState] = useState<enStatus>(enStatus.none)
   const [page, setPage] = useState<number>(1)
   const [isNoData, setNoData] = useState<boolean>(false)
   const [isShowingDeleted, setShowingDeleted] = useState<boolean>(false)
-  const [userId, setUserId] = useState<Guid | undefined>(undefined)
 
   const [userAuth, setUser] = useState<userAuthModule>({
+    userId: undefined,
     name: '',
     email: '',
     phone: '',
@@ -68,71 +68,27 @@ const User = () => {
   }
   );
 
-  const userChangeStatus = useMutation({
-    mutationFn: ({ userId, isDeleation = false, endpoint }: { userId: Guid, isDeleation: boolean | undefined, endpoint: string }) =>
+
+  const userMutaion = useMutation({
+    mutationFn: ({data,endpoint,methodType,
+      jwtToken
+    }:{data?:FormData|undefined,
+      endpoint:string,
+      methodType:enApiType,
+    jwtToken?:string|null}) =>
       apiClient({
-        enType: isDeleation ? enApiType.DELETE : enApiType.POST,
-        endPoint: endpoint + '/' + userId
-        ,
+        enType: methodType,
+        endPoint: endpoint
+        , prameters: data,
         isRquireAuth: true,
-        jwtValue: refreshToken || ""
-      }),
-    onSuccess: (data) => {
-      setState(enStatus.complate)
-      showToastiFy(`user    Sueccessfuly`, enMessage.SECCESSFUL);
-
-      refetch();
-    },
-    onError: (error) => {
-      setState(enStatus.complate);
-
-      if (error.response) {
-        // Extract error message from the server response
-        const errorMessage = error?.response || "An error occurred";
-        showToastiFy(errorMessage, enMessage.ERROR);
-      } else if (error.request) {
-        // Handle network errors or no response received
-        const requestError = "No response received from server";
-        showToastiFy(requestError, enMessage.ERROR);
-      } else {
-        // Handle other unknown errors
-        const unknownError = error.message || "An unknown error occurred";
-        showToastiFy(unknownError, enMessage.ERROR);
-      }
-    }
-
-  })
-
-
-  const deleteUserFun = async (userId: Guid, isDeletion?: boolean | undefined) => {
-    let endpoint = '';
-    if (isDeletion !== undefined) {
-      endpoint = (isDeletion ? import.meta.env.VITE_DELETEDTEUSERS : import.meta.env.VITE_UNDELETE_USER)
-    }
-    else {
-      endpoint = import.meta.env.VITE_MAKEUSERVIP
-    }
-
-    await userChangeStatus.mutate({ userId, isDeleation: isDeletion, endpoint })
-
-  };
-
-
-  const singup = useMutation({
-    mutationFn: (userData: any) =>
-      apiClient({
-        enType: enApiType.POST,
-        endPoint: isUpdate ?
-          import.meta.env.VITE_UPDATEUSERS : import.meta.env.VITE_CreateUSERS
-        , prameters: userData,
-        isRquireAuth: true,
-        jwtValue: refreshToken || "",
-        isFormData: true
+        jwtValue: jwtToken??undefined,
+        isFormData: data!=undefined
       }),
     onSuccess: (data) => {
       setState(enStatus.complate)
       showToastiFy(`user ${isUpdate ? "updated" : "created"} Sueccessfuly`, enMessage.SECCESSFUL);
       setUser({
+        userId: undefined,
         address: '',
         password: '',
         email: '',
@@ -141,24 +97,12 @@ const User = () => {
         username: '',
         brithDay: (new Date()).toISOString().split('T')[0]
       })
+      setImage(undefined)
+      setUpdate(false)
       refetch();
     },
     onError: (error) => {
       setState(enStatus.complate);
-
-      // if (error.response) {
-      //   // Extract error message from the server response
-      //   const errorMessage = error?.response || "An error occurred";
-      //   showToastiFy(errorMessage, enMessage.ERROR);
-      // } else if (error.request) {
-      //   // Handle network errors or no response received
-      //   const requestError = "No response received from server";
-      //   showToastiFy(requestError, enMessage.ERROR);
-      // } else {
-      //   // Handle other unknown errors
-      //   const unknownError = error.message || "An unknown error occurred";
-      //   showToastiFy(unknownError, enMessage.ERROR);
-      // }
       showToastiFy(error.message, enMessage.ERROR);
 
     }
@@ -213,7 +157,7 @@ const User = () => {
   }
 
 
-  const createNewUser = async () => {
+  const createOrUpdateUser = async () => {
     if (!isUpdate)
       if (validationInput()) {
         return;
@@ -233,10 +177,31 @@ const User = () => {
       formData.append("imagePath", userAuth.imagePath);
 
     if (isUpdate)
-      formData.append("id", userId?.toString() || "");
+      formData.append("id", userAuth?.userId?.toString() || "");
 
     // if (isUpdate) data
-    await singup.mutate(formData)
+    generalMessage(`this shown the user id ${userAuth.userId}`)
+
+    let endPoint =isUpdate? import.meta.env.VITE_UPDATEUSERS : import.meta.env.VITE_CreateUSERS;
+
+    await userMutaion.mutate({ data:formData,endpoint:endPoint,methodType:enApiType.POST,jwtToken:refreshToken})
+
+  };
+
+ const deleteOrUndeleteUser = async (userId: Guid, isDeletion?: boolean | undefined) => {
+    let endpoint = '';
+    if (isDeletion !== undefined) {
+      endpoint = (isDeletion ? import.meta.env.VITE_DELETEDTEUSERS : import.meta.env.VITE_UNDELETE_USER)
+    }
+    else {
+      endpoint = import.meta.env.VITE_MAKEUSERVIP
+    }
+
+    await userMutaion.mutate({ 
+      data:undefined,
+      endpoint:endpoint+'/' + userId,
+      methodType:isDeletion ? enApiType.DELETE : enApiType.POST,
+      jwtToken:refreshToken})
 
   };
 
@@ -267,32 +232,23 @@ const User = () => {
   }
 
   useEffect(() => {
-
     if (error) {
       setNoData(true)
       showToastiFy(error.message, enMessage.ERROR);
     }
     if (data) {
-      generalMessage("this the data from user " + JSON.stringify(data.data[0]))
       setNoData(false)
     }
   }, [error, data])
 
 
-  useEffect(() => {
-  }, [userAuth])
-
-
-  useEffect(() => {
-  }, [isShowingDeleted])
-
 
 
   return (
     <div className='flex flex-row'>
-      {/* nav */}
+
       <Header index={1} />
-      {/* main */}
+
       <div className='min-h-screen w-[calc(100%-192px)] ms-[192px] flex flex-col px-2 items-start  overflow-scroll '>
         <div className='flex flex-row items-center mt-2'>
           <UsersIcon className='h-8 fill-black group-hover:fill-gray-200 -ms-1' />
@@ -302,9 +258,11 @@ const User = () => {
           <div className='h-20 w-20 bg-green-400 rounded-full mt-4 flex flex-row items-center justify-center  overflow-hidden
           '>
 
-            <ImageHolder 
-            src={image.length>0 ? image : userId !== undefined ? `http://172.19.0.1:9000/user/${userId}.png` : undefined} 
-            style='h-20 w-20 flex flex-row ' />
+            <ImageHolder
+              src={image ??userAuth?.imagePath?
+                `http://172.19.0.1:9000/user/` + userAuth.imagePath?.toString():undefined}
+              style='flex flex-row h-20 w-20 '
+              isFromTop={true} />
 
 
           </div>
@@ -402,7 +360,7 @@ const User = () => {
           </div>
 
           <SubmitButton
-            onSubmit={() => createNewUser()}
+            onSubmit={() => createOrUpdateUser()}
             buttonStatus={status}
             placeHolder={isUpdate ? 'update' : 'create'}
             style="text-[10px] bg-mainBg w-[120px] text-white rounded-[2px] mt-2 h-6"
@@ -416,8 +374,7 @@ const User = () => {
             data={data !== undefined ? (data.data as UserModule[]) : undefined}
             setUser={setUser}
             seUpdate={setUpdate}
-            seUserID={setUserId}
-            deleteFunc={deleteUserFun}
+            deleteFunc={deleteOrUndeleteUser}
             isShwoingDeleted={isShowingDeleted}
           />
         </div>
@@ -426,8 +383,6 @@ const User = () => {
           <Switch onChange={() => setShowingDeleted(prev => !prev)} />
         </div>
       </div>
-
-
     </div>
   )
 }
