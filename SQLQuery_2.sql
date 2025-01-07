@@ -811,27 +811,30 @@ CREATE TABLE RoomTypes (
     Name VARCHAR(50) NOT NULL,
     CreatedBy UUID NOT NULL,
     CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    -- ModifiBy UUID NULL,
-    IsDeleted bool DEFAULT FALSE,
+    IsDeleted bool DEFAULT FALSE
 );
-CREATE OR REPLACE FUNCTION fn_roomtype_insert(name_n VARCHAR(50), createdBy_n UUID) RETURNS BOOLEAN AS $$
-DECLARE is_hasPermission BOOLEAN := FALSE;
-is_exist BOOLEAN := FALSE;
-BEGIN is_hasPermission := isAdminOrSomeOneHasPersmission(CreatedBy);
-IF is_hasPermission = false THEN RAISE EXCEPTION 'you do not have permission to create roomtype';
-RETURN 0;
-END IF;
-SELECT COUT(*) > 0 INTO is_exist
-FROM roomtypes
-INSERT INTO roomtypes(name, createdby)
-VALUES (name_n, createdBy_n);
-RETURN TRUE;
+CREATE OR REPLACE FUNCTION fn_roomtype_insert() RETURNS TRIGGER AS $$
+DECLARE 
+    is_hasPermission BOOLEAN := FALSE;
+    is_exist BOOLEAN := FALSE;
+BEGIN 
+    is_hasPermission := isAdminOrSomeOneHasPersmission(NEW.createdby);
+    IF is_hasPermission = TRUE THEN 
+    RETURN NEW;
+    END IF;
 EXCEPTION
-WHEN OTHERS THEN RAISE EXCEPTION 'Something went wrong: %',
-SQLERRM;
-RETURN FALSE;
+WHEN OTHERS THEN  RAISE EXCEPTION 'you do not have permission to create roomtype';
+RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
+---
+CREATE OR REPLACE TRIGGER tr_roomtType_insert
+BEFORE INSERT
+ON RoomTypes FOR EACH ROW EXECUTE FUNCTION fn_roomType_insert();
+
+
+
+--
 CREATE OR REPLACE FUNCTION fn_roomtype_update(name_n VARCHAR(50), createdBy_n UUID) RETURNS BOOLEAN AS $$
 DECLARE is_hasPermission BOOLEAN := FALSE;
 is_exist BOOLEAN := FALSE;
@@ -851,6 +854,9 @@ SQLERRM;
 RETURN FALSE;
 END;
 $$ LANGUAGE plpgsql;
+
+--
+
 -- CREATE TABLE RoomTypeUpdate (
 --     RoomTypeUpdateID UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
 --     RoomTypeID UUID NOT NULL   REFERENCES RoomTypes (RoomTypeID),

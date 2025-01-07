@@ -4,6 +4,7 @@ import room from '../../assets/room.svg'
 import Room from '../../assets/users'
 import Users from '../../assets/users'
 import { UsersIcon,ArrowLeftEndOnRectangleIcon } from '@heroicons/react/16/solid'
+import { RectangleGroupIcon } from '@heroicons/react/24/solid'
 
 interface iNavLinkProps {
   navTo: string,
@@ -15,6 +16,7 @@ const NavLink = ({ navTo, name,navType ,isCurrentIndex=false }: iNavLinkProps) =
 
   const handleNavImage=()=>{
     switch(navType){
+      case enNavLinkType.ROOMTYPE:return (<RectangleGroupIcon className='h-8 fill-white group-hover:fill-gray-200'/>)
      default: return ( <UsersIcon className='h-8 fill-white group-hover:fill-gray-200'/>)
     }
   }

@@ -34,7 +34,7 @@ const User = () => {
   const [isNoData, setNoData] = useState<boolean>(false)
   const [isShowingDeleted, setShowingDeleted] = useState<boolean>(false)
 
-  const [userAuth, setUser] = useState<userAuthModule>({
+  const [userHolder, setUser] = useState<userAuthModule>({
     userId: undefined,
     name: '',
     email: '',
@@ -112,41 +112,41 @@ const User = () => {
   const validationInput = () => {
 
     let validationMessage = "";
-    if (userAuth.name.trim().length < 1) {
+    if (userHolder.name.trim().length < 1) {
       validationMessage = "name mustn't be empty"
     }
-    else if (userAuth.email.trim().length < 1) {
+    else if (userHolder.email.trim().length < 1) {
       validationMessage = "email must not be empty"
     }
-    else if (userAuth.brithDay === undefined) {
+    else if (userHolder.brithDay === undefined) {
       validationMessage = "brithday must not be empty"
     }
-    else if (userAuth.phone.length < 1) {
+    else if (userHolder.phone.length < 1) {
       validationMessage = "phone must not be empty"
     }
-    else if (userAuth.username.length < 1) {
+    else if (userHolder.username.length < 1) {
       validationMessage = "username must not be empty"
     }
-    else if (userAuth.password.length < 1) {
+    else if (userHolder.password.length < 1) {
       validationMessage = "password must not be empty"
     }
-    else if (!isValidEmail(userAuth.email)) {
+    else if (!isValidEmail(userHolder.email)) {
       validationMessage = "write valide email"
     }
-    else if (userAuth.phone.length < 10) {
+    else if (userHolder.phone.length < 10) {
       validationMessage = "phone must atleast 10 numbers";
     }
-    else if (!isHasCapitalLetter(userAuth.password)) {
+    else if (!isHasCapitalLetter(userHolder.password)) {
       validationMessage = " password must contain 2 capital character"
     }
-    else if (!isHasSmallLetter(userAuth.password)) {
+    else if (!isHasSmallLetter(userHolder.password)) {
 
       validationMessage = "password must contain 2 small character"
     }
-    else if (!isHasSpicalCharacter(userAuth.password)) {
+    else if (!isHasSpicalCharacter(userHolder.password)) {
       validationMessage = "password must contain 2 special character";
     }
-    else if (!isHasNumber(userAuth.password)) {
+    else if (!isHasNumber(userHolder.password)) {
       validationMessage = " password must contain 2 number"
     }
 
@@ -164,23 +164,23 @@ const User = () => {
       }
     setState(enStatus.loading)
     const formData = new FormData();
-    formData.append("name", userAuth.name);
-    formData.append("email", userAuth.email);
-    formData.append("phone", userAuth.phone);
-    formData.append("address", userAuth.address);
-    formData.append("userName", userAuth.username);
-    formData.append("password", userAuth.password);
-    formData.append("brithDay", new Date(userAuth.brithDay).toISOString());
+    formData.append("name", userHolder.name);
+    formData.append("email", userHolder.email);
+    formData.append("phone", userHolder.phone);
+    formData.append("address", userHolder.address);
+    formData.append("userName", userHolder.username);
+    formData.append("password", userHolder.password);
+    formData.append("brithDay", new Date(userHolder.brithDay).toISOString());
     formData.append("isVip", "false");
 
-    if (userAuth.imagePath !== undefined)
-      formData.append("imagePath", userAuth.imagePath);
+    if (userHolder.imagePath !== undefined)
+      formData.append("imagePath", userHolder.imagePath);
 
     if (isUpdate)
-      formData.append("id", userAuth?.userId?.toString() || "");
+      formData.append("id", userHolder?.userId?.toString() || "");
 
     // if (isUpdate) data
-    generalMessage(`this shown the user id ${userAuth.userId}`)
+    generalMessage(`this shown the user id ${userHolder.userId}`)
 
     let endPoint =isUpdate? import.meta.env.VITE_UPDATEUSERS : import.meta.env.VITE_CreateUSERS;
 
@@ -259,8 +259,8 @@ const User = () => {
           '>
 
             <ImageHolder
-              src={image ??userAuth?.imagePath?
-                `http://172.19.0.1:9000/user/` + userAuth.imagePath?.toString():undefined}
+              src={image ??userHolder?.imagePath?
+                `http://172.19.0.1:9000/user/` + userHolder.imagePath?.toString():undefined}
               style='flex flex-row h-20 w-20 '
               isFromTop={true} />
 
@@ -284,7 +284,7 @@ const User = () => {
           <TextInput
 
             keyType='name'
-            value={userAuth.name}
+            value={userHolder.name}
             onInput={updateInput}
             placeHolder="name"
             style={`mb-1 w-full md:w-[200px]`}
@@ -294,7 +294,7 @@ const User = () => {
           <TextInput
             isDisabled={isUpdate}
             keyType='email'
-            value={userAuth.email}
+            value={userHolder.email}
             onInput={updateInput}
             placeHolder="email"
             style={`mb-1  ${isUpdate && 'text-gray-400'} w-full md:w-[200px]`}
@@ -305,7 +305,7 @@ const User = () => {
 
           <TextInput
             keyType='brithDay'
-            value={userAuth.brithDay}
+            value={userHolder.brithDay}
             onInput={updateInput}
             placeHolder="2020/01/20"
             type="date"
@@ -316,7 +316,7 @@ const User = () => {
 
           <TextInput
             keyType='phone'
-            value={userAuth.phone}
+            value={userHolder.phone}
             onInput={updateInput}
             placeHolder="735501225"
             style="mb-1 w-full md:w-[200px]"
@@ -326,7 +326,7 @@ const User = () => {
           />
           <TextInput
             keyType='username'
-            value={userAuth.username}
+            value={userHolder.username}
             onInput={updateInput}
             placeHolder="username"
             style="mb-1 w-full md:w-[200px]"
@@ -336,7 +336,7 @@ const User = () => {
           />
           <PasswordInput
             keyType='password'
-            value={userAuth.password}
+            value={userHolder.password}
             onInput={updateInput}
             placeHolder="*****"
 
@@ -349,7 +349,7 @@ const User = () => {
 
             <TextInput
               keyType='address'
-              value={userAuth.address}
+              value={userHolder.address}
               onInput={updateInput}
               placeHolder="Yemen Sanaa"
               style="h-16 w-full"

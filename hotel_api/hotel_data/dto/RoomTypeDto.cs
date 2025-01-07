@@ -14,5 +14,4 @@ public class RoomTypeDto
     public string roomTypeName { get; set; }
     public Guid createdBy { get; set; }
     public DateTime createdAt { get; set; }
-    
 }

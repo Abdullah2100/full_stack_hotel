@@ -14,6 +14,7 @@ interface TextInputProps {
   isRequire?: boolean | undefined;
   onFoucseInpur?: FocusEventHandler<HTMLInputElement | HTMLTextAreaElement> | undefined
   isHasTitle?: boolean | undefined
+  handleWidth?:string|undefined
 }
 
 export const TextInput =
@@ -29,7 +30,8 @@ export const TextInput =
     value,
     isRequire = false,
     onFoucseInpur = undefined,
-    isHasTitle = true
+    isHasTitle = true,
+    handleWidth=undefined
 
   }: TextInputProps
   ) => {
@@ -43,7 +45,7 @@ export const TextInput =
 
 
     return (
-      <div className={``}>
+      <div  className={handleWidth}>
         {isHasTitle &&
           <h6 className="text-[10px] mb-[0.5px]">{keyType}</h6>}
         {

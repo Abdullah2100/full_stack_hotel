@@ -10,6 +10,7 @@ import {
 } from '@tanstack/react-query'
 import AuthRoute from "./services/AuthRoute";
 import User from "./pages/user/user";
+import RoomType from "./pages/roomType/roomType";
 
 
 const App = () => {
@@ -28,6 +29,9 @@ const App = () => {
                         <PrivateRout Page={User} />
                     } />
 
+                    <Route path="/roomType" element={
+                        <PrivateRout Page={RoomType} />
+                    } />
                     <Route path='/login' element={
                         <AuthRoute Page={Login}
                         />
