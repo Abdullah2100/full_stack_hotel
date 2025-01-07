@@ -15,6 +15,7 @@ public class UserBuissnes
     public PersonDto personData { get; set; }
     public string userName { get; set; }
     public string password { get; set; }
+    public string? imagePath { get; set; }
 
     public UserDto userDataHolder
     {
@@ -28,7 +29,8 @@ public class UserBuissnes
                 userName: userName,
                 password: password,
                 personData: personData
-                ,addBy:addBy
+                ,addBy:addBy,
+                imagePath: imagePath
             );
         }
     }
@@ -44,6 +46,7 @@ public class UserBuissnes
         this.password = userData.password;
         this.addBy = userData.addBy;
         this.mode = mode;
+        this.imagePath = userData.imagePath;
     }
 
     private bool _createUser()

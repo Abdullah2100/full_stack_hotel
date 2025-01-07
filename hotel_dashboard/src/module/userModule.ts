@@ -8,5 +8,6 @@ export interface UserModule {
     isVip: boolean,
     userName: string,
     isDeleted:boolean,
-    personData: PersonModule
+    personData: PersonModule,
+    imagePath:string|null
 }

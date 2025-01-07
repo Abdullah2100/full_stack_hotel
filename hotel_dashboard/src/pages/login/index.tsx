@@ -11,7 +11,6 @@ import { useToastifiContext } from '../../context/toastifyCustom';
 import apiClient from '../../services/apiClient';
 import { enApiType } from '../../module/enApiType';
 import { useMutation } from '@tanstack/react-query';
-import { generalMessage } from '../../util/generalPrint';
 import { setTokens } from '../../controller/redux/jwtSlice';
 import { AuthResult } from '../../module/userAuthResult';
 import { enMessage } from '../../module/enMessageType';
@@ -111,7 +110,7 @@ const Login = () => {
                     value={authLoginModule.eamilOrUserName}
                     onInput={updateInput}
                     placeHolder="email"
-                    style="w-[150px] mb-2"
+                    style=" mb-2"
                 />
                 <PasswordInput
                     keyType='password'

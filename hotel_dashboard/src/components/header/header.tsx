@@ -15,7 +15,7 @@ const Header = ({ index = 0 }: iHeaderProp) => {
     return (
         <div className="w-48 bg-mainBg flex flex-col items-center pe-7 fixed top-0 left-0 h-full overflow-hidden">
         {/* logo */}
-        <div className="mt-4">
+        <div className="mt-4 mb-10">
           <Link to={'/'}>
             {/* <img src={Logo} className='h-8 w-8 stroke-white'/> */}
             <Logo className="h-12 text-green-50" />
@@ -23,7 +23,8 @@ const Header = ({ index = 0 }: iHeaderProp) => {
         </div>
   
         {/* nav */}
-        <NavLink navTo={'/users'} name={' المستخدمين'} isCurrentIndex={index === 1}  navType={enNavLinkType.ROOM}/>
+        <NavLink navTo={'/users'} name={' المستخدمين'} isCurrentIndex={index === 1}  navType={enNavLinkType.USERS}/>
+        <NavLink navTo={'/roomType'} name={' انواع الغرف'} isCurrentIndex={index === 2}  navType={enNavLinkType.ROOMTYPE}/>
         <Logout   />
       </div>
     )

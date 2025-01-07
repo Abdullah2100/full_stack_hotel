@@ -108,8 +108,8 @@ namespace hotel_api.controller
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult createNewUser(
-            [FromForm]  UserRequestDto userRequestData
+        public async Task<IActionResult> createNewUser(
+            [FromForm] UserRequestDto userRequestData
         )
         {
             var authorizationHeader = HttpContext.Request.Headers["Authorization"];
@@ -148,19 +148,20 @@ namespace hotel_api.controller
                 return StatusCode(400, "email or phone is already in use");
 
 
-            var data = UserBuissnes.
-                getUserByUserNameAndPassword(userRequestData.userName,
+            var data = UserBuissnes.getUserByUserNameAndPassword(userRequestData.userName,
                 clsUtil.hashingText(userRequestData.password));
             if (data != null)
                 return StatusCode(409, "user already exist");
 
 
             var userId = Guid.NewGuid();
-            
-            
+
+
+            string? imagePath = null;
             if (userRequestData.imagePath != null)
             {
-                MinIoServices.uploadFile(_config,userRequestData.imagePath,MinIoServices.enBucketName.USER,userId.ToString());
+                imagePath = await MinIoServices.uploadFile(_config, userRequestData.imagePath,
+                    MinIoServices.enBucketName.USER);
             }
 
             var personDataHolder = new PersonDto(
@@ -171,7 +172,7 @@ namespace hotel_api.controller
                 address: userRequestData.address
             );
 
-            
+
             data = new UserBuissnes(new UserDto(
                 userId: userId,
                 personID: null,
@@ -180,7 +181,8 @@ namespace hotel_api.controller
                 personData: personDataHolder,
                 userName: userRequestData.userName,
                 password: clsUtil.hashingText(userRequestData.password),
-                addBy: adminid
+                addBy: adminid,
+                imagePath:imagePath
             ));
 
             var result = data.save();
@@ -188,9 +190,9 @@ namespace hotel_api.controller
             if (result == false)
                 return StatusCode(500, "some thing wrong");
 
-            return StatusCode(201, new { message="created seccessfully" });
+            return StatusCode(201, new { message = "created seccessfully" });
         }
-        
+
         [Authorize]
         [HttpPost("updateUser")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -198,7 +200,7 @@ namespace hotel_api.controller
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> updateUser(
-            [FromForm]    UserUpdateDto userRequestData
+            [FromForm] UserUpdateDto userRequestData
         )
         {
             var authorizationHeader = HttpContext.Request.Headers["Authorization"];
@@ -230,63 +232,68 @@ namespace hotel_api.controller
                 return StatusCode(400, validateRequeset);
 
 
-            bool isExistPhone =   PersonBuisness.
-                isPersonExistByPhone(userRequestData.phone);
+            bool isExistPhone = PersonBuisness.isPersonExistByPhone(userRequestData.phone);
 
-         var  data = UserBuissnes.getUserByID(userRequestData.Id);
-            
-   
-            if(isExistPhone&&userRequestData.phone!= data.personData.phone)
+            var data = UserBuissnes.getUserByID(userRequestData.Id);
+
+
+            if (isExistPhone && userRequestData.phone != data.personData.phone)
                 return StatusCode(400, "phone is already in use");
-                
+
 
             if (data == null)
                 return StatusCode(409, "user notFound exist");
-            
-            updateUserData(ref data, userRequestData);
+
+            string? imagePath = null;
             if (userRequestData.imagePath != null)
             {
-             await   MinIoServices.uploadFile(_config,userRequestData.imagePath,MinIoServices.enBucketName.USER,data.ID.ToString());
+                imagePath = await MinIoServices.uploadFile(_config, userRequestData.imagePath,
+                    MinIoServices.enBucketName.USER,data.imagePath);
             }
+
+            data.imagePath = imagePath;
+
+            updateUserData(ref data, userRequestData);
 
 
             var result = data.save();
             if (result == false)
                 return StatusCode(500, "some thing wrong");
 
-            return StatusCode(201, new { message="created seccessfully" });
+            return StatusCode(201, new { message = "created seccessfully" });
         }
 
-     
+
         private void updateUserData(
-           
             ref UserBuissnes user,
             UserUpdateDto userRequestData
-            )
-             {
-                 if (userRequestData?.name?.Length > 0 && user.personData.name!= userRequestData.name)
-                 {
-                     user.personData.name = userRequestData.name;
-                 }
+        )
+        {
+            if (userRequestData?.name?.Length > 0 && user.personData.name != userRequestData.name)
+            {
+                user.personData.name = userRequestData.name;
+            }
 
-                 if (userRequestData?.address?.Length > 0&&user.personData.address!= userRequestData.address)
-                 {
-                     user.personData.address = userRequestData.address;
-                 }
-                 if (userRequestData?.brithDay != null &&user.brithDay!= userRequestData?.brithDay)
-                 {
-                     user.brithDay = (DateTime)userRequestData.brithDay;
-                 }
-                 if (userRequestData?.isVip == true)
-                     user.isVip = true;
-                 if (userRequestData?.userName?.Length > 0 &&user.userName!= userRequestData.userName)
-                     user.userName = userRequestData.userName;
-                 if (userRequestData?.password?.Length > 0)
-                     user.password = clsUtil.hashingText(userRequestData.password);
-                 if(userRequestData?.brithDay != null)
-                     user.brithDay =(DateTime) userRequestData!.brithDay;
-             }
-        
+            if (userRequestData?.address?.Length > 0 && user.personData.address != userRequestData.address)
+            {
+                user.personData.address = userRequestData.address;
+            }
+
+            if (userRequestData?.brithDay != null && user.brithDay != userRequestData?.brithDay)
+            {
+                user.brithDay = (DateTime)userRequestData.brithDay;
+            }
+
+            if (userRequestData?.isVip == true)
+                user.isVip = true;
+            if (userRequestData?.userName?.Length > 0 && user.userName != userRequestData.userName)
+                user.userName = userRequestData.userName;
+            if (userRequestData?.password?.Length > 0)
+                user.password = clsUtil.hashingText(userRequestData.password);
+            if (userRequestData?.brithDay != null)
+                user.brithDay = (DateTime)userRequestData!.brithDay;
+        }
+
         [Authorize]
         [HttpDelete("deleteUser/{userId:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -294,7 +301,7 @@ namespace hotel_api.controller
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult deleteUser(
-            Guid userId 
+            Guid userId
         )
         {
             var authorizationHeader = HttpContext.Request.Headers["Authorization"];
@@ -320,19 +327,19 @@ namespace hotel_api.controller
             }
 
 
-            var  data = UserBuissnes.getUserByID(userId);
-            
+            var data = UserBuissnes.getUserByID(userId);
+
             if (data == null)
                 return StatusCode(409, "user notFound exist");
-            
+
 
             var result = UserBuissnes.deleteUser(userId);
             if (result == false)
                 return StatusCode(500, "some thing wrong");
 
-            return StatusCode(201, new { message="created seccessfully" });
-        } 
-              
+            return StatusCode(201, new { message = "created seccessfully" });
+        }
+
         [Authorize]
         [HttpPost("makeUserVip/{userId:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -340,7 +347,7 @@ namespace hotel_api.controller
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult makeUserVip(
-            Guid userId 
+            Guid userId
         )
         {
             var authorizationHeader = HttpContext.Request.Headers["Authorization"];
@@ -366,19 +373,17 @@ namespace hotel_api.controller
             }
 
 
-            var  data = UserBuissnes.getUserByID(userId);
-            
+            var data = UserBuissnes.getUserByID(userId);
+
             if (data == null)
                 return StatusCode(409, "user notFound exist");
-            
+
 
             var result = UserBuissnes.makeVipUser(userId);
             if (result == false)
                 return StatusCode(500, "some thing wrong");
 
-            return StatusCode(201, new { message="user now is vip" });
-        }  
+            return StatusCode(201, new { message = "user now is vip" });
+        }
     }
-    
-    
 }

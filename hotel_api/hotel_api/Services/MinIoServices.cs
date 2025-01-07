@@ -1,3 +1,4 @@
+using hotel_api.util;
 using Minio;
 using Minio.DataModel.Args;
 
@@ -5,14 +6,18 @@ namespace hotel_api.Services
 {
     public class MinIoServices
     {
-        public enum enBucketName { USER, RoomType }
+        public enum enBucketName
+        {
+            USER,
+            RoomType
+        }
 
         private static IMinioClient? _client(IConfigurationServices _config)
         {
             try
             {
                 return new MinioClient()
-                   .WithEndpoint(_config.getKey("minio_end_point"))
+                    .WithEndpoint(_config.getKey("minio_end_point"))
                     .WithCredentials(_config.getKey("accessKy"), _config.getKey("secretKey"))
                     .WithSSL(false)
                     .Build();
@@ -30,7 +35,7 @@ namespace hotel_api.Services
             {
                 var buckets = await client.ListBucketsAsync().ConfigureAwait(false);
                 var result = buckets.Buckets.Any(b => b.Name == bucketName);
-                return result ;
+                return result;
             }
             catch (Exception ex)
             {
@@ -53,17 +58,20 @@ namespace hotel_api.Services
             }
         }
 
-        public static async Task<bool> uploadFile(IConfigurationServices _config, IFormFile file, enBucketName bucketName,string newName)
+        public static async Task<string?> uploadFile(IConfigurationServices _config, IFormFile file,
+            enBucketName bucketName,string? previuseFileName = null)
         {
             try
             {
                 var bucketNameStr = bucketName.ToString().ToLower();
                 var minioClient = _client(_config);
+                string fullName = clsUtil.generateGuid() + ".png";
+
 
                 if (minioClient == null)
                 {
                     Console.WriteLine("Failed to initialize MinIO client.");
-                    return false;
+                    return null;
                 }
 
                 // Check if bucket exists and create if necessary
@@ -73,10 +81,23 @@ namespace hotel_api.Services
                     await _createNewBucket(minioClient, bucketNameStr);
                 }
 
+                bool isHasPrevImage = false;
+                
+                if (previuseFileName != null)
+                {
+                    isHasPrevImage =  await isFileExist(minioClient, previuseFileName, bucketNameStr);
+                    
+                }
+
+                if (isHasPrevImage)
+                {
+                    await deleteFile(minioClient, previuseFileName, bucketNameStr);
+                }
+
+
                 // Upload the file
                 using (var fileStream = file.OpenReadStream())
                 {
-                    string fullName = newName + ".png";
                     var putObject = new PutObjectArgs()
                         .WithBucket(bucketNameStr)
                         .WithObject(fullName)
@@ -85,37 +106,23 @@ namespace hotel_api.Services
                         .WithContentType(file.ContentType);
 
                     await minioClient.PutObjectAsync(putObject).ConfigureAwait(false);
-                    Console.WriteLine("File '{0}' uploaded successfully to bucket '{1}'.", file.FileName, bucketNameStr);
-                    return true;
+                    Console.WriteLine("File '{0}' uploaded successfully to bucket '{1}'.", file.FileName,
+                        bucketNameStr);
+                    return fullName;
                 }
             }
             catch (Exception error)
             {
                 Console.WriteLine("Error uploading file: {0}", error.Message);
-                return false;
+                return null;
             }
         }
 
-        public static async Task<bool> deleteFile(IConfigurationServices _config, string fileName, string bucketName)
+        private static async Task<bool> deleteFile(IMinioClient client, string fileName, string bucketName)
         {
             try
             {
-                var minioClient = _client(_config);
-
-                if (minioClient == null)
-                {
-                    Console.WriteLine("Failed to initialize MinIO client.");
-                    return false;
-                }
-
-                var isExistBucket = await _isExistBucket(minioClient, bucketName);
-                if (!isExistBucket)
-                {
-                    Console.WriteLine("Bucket '{0}' does not exist.", bucketName);
-                    return false;
-                }
-
-                await minioClient.RemoveObjectAsync(
+                await client.RemoveObjectAsync(
                     new RemoveObjectArgs()
                         .WithBucket(bucketName)
                         .WithObject(fileName)
@@ -130,11 +137,24 @@ namespace hotel_api.Services
                 return false;
             }
         }
-        
-    
-        private static string fileExtention(IFormFile file)
+
+
+        private static async Task<bool> isFileExist(IMinioClient client, string fileName, string bucketName)
         {
-            return new FileInfo(file.FileName).Extension;
+            try
+            {
+                var args = new StatObjectArgs()
+                        .WithBucket(bucketName)
+                        .WithObject(fileName)
+                    ;
+                await client.StatObjectAsync(args).ConfigureAwait(false);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error checking file: {0}", ex.Message);
+                return false;
+            }
         }
     }
 }
