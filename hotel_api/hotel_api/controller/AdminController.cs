@@ -101,6 +101,8 @@ namespace hotel_api.controller
 
             return StatusCode(201, new { accessToken = $"{accesstoken}", refreshToken = $"{refreshToken}" });
         }
+        
+        //user
 
         [Authorize]
         [HttpPost("createUser")]
@@ -385,5 +387,86 @@ namespace hotel_api.controller
 
             return StatusCode(201, new { message = "user now is vip" });
         }
+        
+        
+        //roomType
+           [Authorize]
+        [HttpPost("roomtype")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> createNewRoomType(
+            [FromForm] RoomTypeRequest roomTypeData 
+        )
+        {
+            var authorizationHeader = HttpContext.Request.Headers["Authorization"];
+            var id = AuthinticationServices.GetPayloadFromToken("id",
+                authorizationHeader.ToString().Replace("Bearer ", ""));
+            Guid? adminid = null;
+            if (Guid.TryParse(id.Value.ToString(), out Guid outID))
+            {
+                adminid = outID;
+            }
+
+            if (adminid == null)
+            {
+                return StatusCode(401, "you not have Permission");
+            }
+
+            var isHasPermissionToCreateUser = AdminBuissnes.isAdminExist(adminid ?? Guid.Empty);
+
+
+            if (!isHasPermissionToCreateUser)
+            {
+                return StatusCode(401, "you not have Permission");
+            }
+
+            
+
+            if (roomTypeData.name.Length>50)
+                return StatusCode(400, "roomtype name must be under 50 characters");
+
+
+            bool isExistEmail =   RoomtTypeBuissnes.isExist(roomTypeData.name);
+
+            if (isExistEmail)
+                return StatusCode(400, "roomtype is already exist");
+
+
+
+
+
+            var roomId = Guid.NewGuid();
+
+
+          string? imageHolderPath = null;
+            if (roomTypeData.image != null)
+            {
+                imageHolderPath = await MinIoServices.uploadFile(_config,roomTypeData.image,
+                    MinIoServices.enBucketName.RoomType);
+            }
+
+
+
+            var roomTypeHolder = new RoomtTypeBuissnes(
+                new RoomTypeDto(
+                    roomTypeId:roomId,
+                    roomTypeName:roomTypeData.name,
+                    imagePath:imageHolderPath,
+                    createdBy:(Guid)adminid,
+                    createdAt:DateTime.Now
+                    
+                    )
+                );
+
+            var result = roomTypeHolder.save();
+            
+            if (result == false)
+                return StatusCode(500, "some thing wrong");
+
+            return StatusCode(201, new { message = "created seccessfully" });
+        }
+        
     }
 }

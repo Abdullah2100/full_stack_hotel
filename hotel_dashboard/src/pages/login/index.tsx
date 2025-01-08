@@ -109,11 +109,11 @@ const Login = () => {
                     keyType='eamilOrUserName'
                     value={authLoginModule.eamilOrUserName}
                     onInput={updateInput}
-                    placeHolder="email"
-                    style=" mb-2"
+                    placeHolder="Email"
+                    style=" mb-2 w-[200px]"
                 />
                 <PasswordInput
-                    keyType='password'
+                    keyType='Password'
                     value={authLoginModule.password}
                     onInput={updateInput}
                     placeHolder="*****"
@@ -125,7 +125,7 @@ const Login = () => {
 
 
                 <SubmitButton
-                    //buttonStatus={enStatus.loading}
+                    buttonStatus={status}
                     placeHolder={'تسجيل الدخول'}
                     onSubmit={async () => { onSubmit() }}
                     style={'text-[10px] bg-mainBg w-[200px] text-white rounded-[4px]   mt-2  h-6 '} />

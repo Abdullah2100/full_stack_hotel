@@ -11,10 +11,16 @@ public class RoomtTypeBuissnes
     public string name { get; set; }
     public Guid createdBy { get; set; }
     public DateTime createdAt { get; set; }
-   
-    public RoomTypeDto roomType{get{return new RoomTypeDto(roomTypeId:ID,roomTypeName:name,createdAt:createdAt,createdBy:createdBy);}}
-    
-    public RoomtTypeBuissnes(RoomTypeDto roomType,enMode mode)
+
+    public RoomTypeDto roomType
+    {
+        get
+        {
+            return new RoomTypeDto(roomTypeId: ID, roomTypeName: name, createdAt: createdAt, createdBy: createdBy);
+        }
+    }
+
+    public RoomtTypeBuissnes(RoomTypeDto roomType,enMode mode =enMode.add)
     {
         this.ID = roomType.roomTypeID;
         this.name = roomType.roomTypeName;
@@ -55,7 +61,14 @@ public class RoomtTypeBuissnes
             }
             default: return false;
         }
-    } 
-    
-    
+    }
+
+    public static bool isExist(Guid id)
+    {
+        return RoomTypeData.isExist(id);
+    }
+    public static bool isExist(string  name)
+    {
+        return RoomTypeData.isExist(name);
+    }
 }
