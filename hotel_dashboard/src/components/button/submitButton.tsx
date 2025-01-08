@@ -6,6 +6,7 @@ interface submitButtonProps {
     onSubmit: () => Promise<void>;
     buttonStatus?: enStatus | undefined;
     style?: string | undefined
+    textstyle?:string |undefined
 }
 
 const SubmitButton = (
@@ -13,7 +14,8 @@ const SubmitButton = (
         onSubmit,
         placeHolder,
         buttonStatus = enStatus.none,
-        style = undefined
+        style = undefined,
+        textstyle
     }: submitButtonProps) => {
     return (<button
         onClick={buttonStatus !== enStatus.loading ? onSubmit : undefined}
@@ -25,7 +27,11 @@ const SubmitButton = (
         {
             buttonStatus === enStatus.loading ?
                 <CircularProgress sx={{ color: 'white' }} size={10} className="mt-1" />
-                : placeHolder
+                : 
+               <h3 className={textstyle}>
+
+                   placeHolder
+               </h3>
         }
     </button>)
 

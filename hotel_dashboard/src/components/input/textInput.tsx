@@ -47,7 +47,7 @@ export const TextInput =
     return (
       <div  className={handleWidth}>
         {isHasTitle &&
-          <h6 className="text-[10px] mb-[0.5px]">{keyType}</h6>}
+          <h6 className="text-[10px] mb-[0.5px]">{placeHolder}</h6>}
         {
           isMultipleLine ?
             <textarea

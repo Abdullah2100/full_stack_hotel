@@ -811,13 +811,19 @@ CREATE TABLE RoomTypes (
     Name VARCHAR(50) NOT NULL,
     CreatedBy UUID NOT NULL,
     CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    IsDeleted bool DEFAULT FALSE
+    IsDeleted bool DEFAULT FALSE,
+    imagePath   VARCHAR(50) DEFAULT NULL
 );
+-----
+
+
+-----
 CREATE OR REPLACE FUNCTION fn_roomtype_insert() RETURNS TRIGGER AS $$
 DECLARE 
     is_hasPermission BOOLEAN := FALSE;
     is_exist BOOLEAN := FALSE;
 BEGIN 
+
     is_hasPermission := isAdminOrSomeOneHasPersmission(NEW.createdby);
     IF is_hasPermission = TRUE THEN 
     RETURN NEW;
@@ -827,6 +833,9 @@ WHEN OTHERS THEN  RAISE EXCEPTION 'you do not have permission to create roomtype
 RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
+---
+
+
 ---
 CREATE OR REPLACE TRIGGER tr_roomtType_insert
 BEFORE INSERT
