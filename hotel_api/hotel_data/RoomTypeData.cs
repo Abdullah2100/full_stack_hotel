@@ -15,11 +15,17 @@ public class RoomTypeData
             using (var con = new NpgsqlConnection(connectionUr))
             {
                 con.Open();
-                string query = "SELECT fn_roomtype_insert( name_n , createdBy_n )";
+                string query =
+                    "SELECT * FROM fn_roomtype_insert_new(@name_s::VARCHAR,@createdby_s,@imagepath::VARCHAR)";
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
-                    cmd.Parameters.AddWithValue("name_n", roomData.roomTypeName);
-                    cmd.Parameters.AddWithValue("createdBy_n", roomData.createdBy);
+                    cmd.Parameters.AddWithValue("@name_s", roomData.roomTypeName);
+                    cmd.Parameters.AddWithValue("@createdby_s", roomData.createdBy);
+                    if (roomData.imagePath == null)
+                        cmd.Parameters.AddWithValue("@imagepath", DBNull.Value);
+                    else
+                        cmd.Parameters.AddWithValue("@imagepath", roomData.imagePath);
+
                     var result = cmd.ExecuteScalar();
                     if (result != null && bool.TryParse(result.ToString(), out bool isComplate))
                     {
@@ -35,8 +41,8 @@ public class RoomTypeData
 
         return isCreated;
     }
-    
-   
+
+
     public static bool updateRoomType(RoomTypeDto roomData)
     {
         bool isCreated = false;
@@ -77,7 +83,7 @@ public class RoomTypeData
                 string query = "SELECT count(*)>0 FROM RoomTypes WHERE RoomTypeID = id";
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
-                    cmd.Parameters.AddWithValue("id",ID);
+                    cmd.Parameters.AddWithValue("id", ID);
                     var result = cmd.ExecuteScalar();
                     if (result != null && bool.TryParse(result.ToString(), out bool isComplate))
                     {
@@ -94,7 +100,7 @@ public class RoomTypeData
         return isExist;
     }
 
-    public static bool isExist(string name )
+    public static bool isExist(string name)
     {
         bool isExist = false;
         try
@@ -105,7 +111,7 @@ public class RoomTypeData
                 string query = "SELECT count(*)>0 FROM RoomTypes WHERE name = name";
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
-                    cmd.Parameters.AddWithValue("name",name);
+                    cmd.Parameters.AddWithValue("name", name);
                     var result = cmd.ExecuteScalar();
                     if (result != null && bool.TryParse(result.ToString(), out bool isComplate))
                     {
@@ -121,5 +127,4 @@ public class RoomTypeData
 
         return isExist;
     }
-    
 }

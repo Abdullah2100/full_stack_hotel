@@ -816,7 +816,36 @@ CREATE TABLE RoomTypes (
 );
 -----
 
+----
+CREATE OR REPLACE FUNCTION fn_roomtype_insert_new(
+    name_s VARCHAR,
+    createdby_s UUID,
+    imagepath VARCHAR
+) RETURNS BOOLEAN AS $$
+DECLARE
+    roomType_id UUID;
+BEGIN 
+    -- Insert the new room type and capture the RoomTypeID
+    INSERT INTO RoomTypes(name, createdby, imagepath) 
+    VALUES (name_s, createdby_s, imagepath)
+    RETURNING RoomTypeID INTO roomType_id;
 
+    -- Check if the RoomTypeID was successfully inserted
+    IF roomType_id IS NOT NULL THEN
+        RETURN TRUE;
+    ELSE
+        RETURN FALSE;
+    END IF;
+
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE EXCEPTION 'You do not have permission to create room type';
+        RETURN FALSE;
+END;
+$$ LANGUAGE plpgsql;
+
+
+----
 -----
 CREATE OR REPLACE FUNCTION fn_roomtype_insert() RETURNS TRIGGER AS $$
 DECLARE 
@@ -825,9 +854,10 @@ DECLARE
 BEGIN 
 
     is_hasPermission := isAdminOrSomeOneHasPersmission(NEW.createdby);
-    IF is_hasPermission = TRUE THEN 
-    RETURN NEW;
+    IF is_hasPermission = FALSE THEN 
+    RETURN NULL;
     END IF;
+    RETURN NEW;
 EXCEPTION
 WHEN OTHERS THEN  RAISE EXCEPTION 'you do not have permission to create roomtype';
 RETURN NULL;
