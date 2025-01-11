@@ -11,10 +11,10 @@
     <list default="true" id="a5d946be-ded5-4850-9962-9f8d801bf9de" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/../SQLQuery_2.sql" beforeDir="false" afterPath="$PROJECT_DIR$/../SQLQuery_2.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.hotel_api/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.hotel_api/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_api/RequestDto/RoomTypeRequest.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/RequestDto/RoomTypeRequest.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_business/RoomtTypeBuissnes.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/RoomtTypeBuissnes.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_data/dto/RoomTypeDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/dto/RoomTypeDto.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/pages/login/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/pages/login/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_data/RoomTypeData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/RoomTypeData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/pages/roomType/roomType.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/pages/roomType/roomType.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,6 +33,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/4adb5b691829c26d83fa849c65de669c2b38704fa6a8e6216dafbcb24e24d4f/NpgsqlDataReader.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/5ef9e37e2f99ef2688a1586afed1cff6eef912a11aa9b20a56943a255a6e6b/RuntimeHelpers.CoreCLR.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/6728f66657329080f0f419df519283a455cdca7d2617a05b18553b02da52fa/Nullable.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/6e4a93bac9604e62b337712264fe1af37f4cecf9191fc72878761b22e65f5675/NpgsqlCommand.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/71ea5c4edeff4385acb72ebe8dd9eb825939c97d1f1cb41dc463babd91cf34/ControllerActionInvoker.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/96a02871e82aa35b767cd0d5e689c95068abf2fbeecbc17aa3e78b9a2a2b5f/MakeBucketArgs.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/9791af8a6f1fd2d4426079f66fc5d3f23fc58597deb8a17878388a76d84013/Guid.cs" root0="FORCE_HIGHLIGHTING" />
@@ -62,7 +63,7 @@
     &quot;.NET Launch Settings Profile.hotel_api: http.executor&quot;: &quot;Debug&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;XThreadsFramesViewSplitterKey&quot;: &quot;0.084690556&quot;,
+    &quot;XThreadsFramesViewSplitterKey&quot;: &quot;0.075581394&quot;,
     &quot;git-widget-placeholder&quot;: &quot;start__roomtyp&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -141,6 +142,8 @@
       <workItem from="1736155846044" duration="2997000" />
       <workItem from="1736243555068" duration="4071000" />
       <workItem from="1736321481108" duration="2643000" />
+      <workItem from="1736588424383" duration="6501000" />
+      <workItem from="1736618923961" duration="1019000" />
     </task>
     <servers />
   </component>
@@ -257,45 +260,6 @@
           <option name="timeStamp" value="20" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/hotel_api/Services/MinIoServices.cs</url>
-          <line>70</line>
-          <properties documentPath="$PROJECT_DIR$/hotel_api/Services/MinIoServices.cs" containingFunctionPresentation="Method 'uploadFile'">
-            <startOffsets>
-              <option value="2292" />
-            </startOffsets>
-            <endOffsets>
-              <option value="2316" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="23" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/hotel_api/Services/MinIoServices.cs</url>
-          <line>65</line>
-          <properties documentPath="$PROJECT_DIR$/hotel_api/Services/MinIoServices.cs" containingFunctionPresentation="Method 'uploadFile'">
-            <startOffsets>
-              <option value="2102" />
-            </startOffsets>
-            <endOffsets>
-              <option value="2154" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="24" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/hotel_api/Services/MinIoServices.cs</url>
-          <line>83</line>
-          <properties documentPath="$PROJECT_DIR$/hotel_api/Services/MinIoServices.cs" containingFunctionPresentation="Method 'uploadFile'">
-            <startOffsets>
-              <option value="2777" />
-            </startOffsets>
-            <endOffsets>
-              <option value="2805" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="25" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/hotel_api/controller/AdminController.cs</url>
           <line>207</line>
           <properties documentPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" containingFunctionPresentation="Method 'updateUser'">
@@ -398,6 +362,32 @@
             </endOffsets>
           </properties>
           <option name="timeStamp" value="33" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/hotel_data/RoomTypeData.cs</url>
+          <line>16</line>
+          <properties documentPath="$PROJECT_DIR$/hotel_data/RoomTypeData.cs" containingFunctionPresentation="Method 'createRoomType'">
+            <startOffsets>
+              <option value="360" />
+            </startOffsets>
+            <endOffsets>
+              <option value="371" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="34" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/hotel_api/controller/AdminController.cs</url>
+          <line>451</line>
+          <properties documentPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" containingFunctionPresentation="Method 'createNewRoomType'">
+            <startOffsets>
+              <option value="16499" />
+            </startOffsets>
+            <endOffsets>
+              <option value="16863" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="35" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -9,6 +9,7 @@ public class RoomtTypeBuissnes
    public enMode mode { get; set; }  
     public Guid? ID { get; set; }
     public string name { get; set; }
+    public string image { get; set; }
     public Guid createdBy { get; set; }
     public DateTime createdAt { get; set; }
 
@@ -16,7 +17,7 @@ public class RoomtTypeBuissnes
     {
         get
         {
-            return new RoomTypeDto(roomTypeId: ID, roomTypeName: name, createdAt: createdAt, createdBy: createdBy);
+            return new RoomTypeDto(roomTypeId: ID, roomTypeName: name, createdAt: createdAt, createdBy: createdBy,imagePath:image);
         }
     }
 
@@ -26,6 +27,7 @@ public class RoomtTypeBuissnes
         this.name = roomType.roomTypeName;
         this.createdBy = roomType.createdBy;
         this.createdAt = roomType.createdAt;
+        this.image = roomType.imagePath;
         this.mode = mode;
     }
 

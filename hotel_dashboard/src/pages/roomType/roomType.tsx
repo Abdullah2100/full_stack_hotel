@@ -7,13 +7,22 @@ import SubmitButton from '../../components/button/submitButton';
 import { Button } from '@mui/material';
 import { enMessage } from '../../module/enMessageType';
 import { useToastifiContext } from '../../context/toastifyCustom';
+import { enStatus } from '../../module/enState';
+import apiClient from '../../services/apiClient';
+import { enApiType } from '../../module/enApiType';
+import { useMutation } from '@tanstack/react-query';
+import { RootState } from '../../controller/rootReducer';
+import { useSelector } from 'react-redux';
 
 const RoomType = () => {
+  const refreshToken = useSelector((state: RootState) => state.auth.refreshToken)
+
   const { showToastiFy } = useContext(useToastifiContext)
+  const [status, setState] = useState<enStatus>(enStatus.none)
 
   const [isUpdate, setUpdate] = useState<boolean>(false)
   const imageRef = useRef<HTMLInputElement>(null);
-  const imageImageRef = useRef<HTMLImageElement>(null);
+  const [imageHolder, setImageHolder] = useState<File | undefined>(undefined);
   const [image, setImage] = useState<string | undefined>(undefined)
 
   const [roomType, setRoomType] = useState<IRoomType>({
@@ -30,34 +39,126 @@ const RoomType = () => {
     }));
   };
 
-
-
   const selectImage = (e) => {
     e.preventDefault();
     imageRef.current?.click();
   }
 
+
   const uploadImageDisplay = async (e) => {
     if (imageRef.current && imageRef.current.files && imageRef.current.files[0]) {
-
       const uploadedFile = imageRef.current.files[0];
       const fileExtension = uploadedFile.name.split('.').pop()?.toLowerCase();
+
+      // Validate file type
       if (!['png', 'jpg', 'jpeg'].includes(fileExtension || '')) {
-        showToastiFy("you must select valide image ", enMessage.ERROR)
+        showToastiFy("You must select a valid image", enMessage.ERROR);
         return;
       }
-      showToastiFy(`this the image height ${e.height} \n
-  this the image width ${e.height}`, enMessage.ERROR)
-      if (e.height > 40 && e.width > 40) {
-        showToastiFy("you must select image with 40 height and width ", enMessage.ERROR)
-        return;
-      }
+
       const cachedURL = URL.createObjectURL(uploadedFile);
-      ///generalMessage("this the image url " + cachedURL)
-      setImage(cachedURL);
+
+      const img = new Image();
+      img.onload = () => {
+        const { naturalHeight, naturalWidth } = img;
+
+        showToastiFy(`Image height: ${naturalHeight}\nImage width: ${naturalWidth}`, enMessage.ERROR);
+
+     //   if (naturalHeight > 40 || naturalWidth > 40) {
+     //     showToastiFy("Image must have a minimum height and width of 40px", enMessage.ERROR);
+     //     return;
+     //   }
+
+        setImage(cachedURL);
+        setImageHolder(uploadedFile)
+      };
+
+      img.src = cachedURL;
+    }
+  };
+
+
+  const clearData = () => {
+    setRoomType({
+      roomTypeName: '',
+      createdAt: null,
+      createdBy: null,
+      roomTypeID: null
+    })
+    setImage(undefined)
+    setImageHolder(undefined)
+  }
+
+  const userMutaion = useMutation({
+    mutationFn: ({ data, endpoint, methodType,
+      jwtToken
+    }: {
+      data?: FormData | undefined,
+      endpoint: string,
+      methodType: enApiType,
+      jwtToken?: string | null
+    }) =>
+      apiClient({
+        enType: methodType,
+        endPoint: endpoint
+        , prameters: data,
+        isRquireAuth: true,
+        jwtValue: jwtToken ?? undefined,
+        isFormData: data != undefined
+      }),
+    onSuccess: (data) => {
+      setState(enStatus.complate)
+      showToastiFy(`user ${isUpdate ? "updated" : "created"} Sueccessfuly`, enMessage.SECCESSFUL);
+      clearData()
+      setImage(undefined)
+      setUpdate(false)
+      // refetch();
+    },
+    onError: (error) => {
+      setState(enStatus.complate);
+      showToastiFy(error.message, enMessage.ERROR);
 
     }
+
+  })
+
+  const validationInput = () => {
+    let message = "";
+    if (roomType.roomTypeName.length < 1) {
+      message = "name must not be empty";
+    }
+    else if (image === undefined) {
+      message = "image must not be null";
+    }
+    if (message.length > 0)
+      showToastiFy(message, enMessage.ATTENSTION)
+    return message.length > 0
   }
+
+  const createOrUpdateRoomType = () => {
+    if (isUpdate) {
+      if (validationInput()) {
+        return;
+      }
+    }
+    const roomtTypeData = new FormData();
+
+    if (roomType.roomTypeName.length > 0)
+      roomtTypeData.append("name", roomType.roomTypeName)
+
+    if (imageHolder !== undefined)
+      roomtTypeData.append("image", imageHolder)
+
+    let endPoint = !isUpdate ? import.meta.env.VITE_CREATEROOMTYPE : import.meta.env.VITE_UPDATEROOMTYPE;
+
+    userMutaion.mutate({
+      data: roomtTypeData,
+      endpoint: endPoint,
+      methodType: isUpdate ? enApiType.PUT : enApiType.POST,
+      jwtToken: refreshToken
+    })
+  }
+
 
   return (
     <div className='flex flex-row'>
@@ -77,6 +178,7 @@ const RoomType = () => {
               id="file"
               ref={imageRef}
               onChange={uploadImageDisplay}
+              // onLoad={uploadImageDisplay}
               hidden />
 
             <TextInput
@@ -98,7 +200,11 @@ const RoomType = () => {
                 className='group absolute end-1 top-2 hover:bg-gray-600 hover:rounded-sm '>
                 <PencilIcon className='h-6 w-6 border-[1px] border-blue-900 rounded-sm group-hover:fill-gray-200  ' />
               </button>
-              {image && <img ref={imageImageRef} src={image} />}
+              {image && <img
+                // ref={imageImageRef}
+                src={image}
+                className='mt-12'
+              />}
 
             </div>
 
@@ -108,13 +214,14 @@ const RoomType = () => {
         </div>
         <div className={'flex flex-row gap-3'}>
           <SubmitButton
-            onSubmit={async () => { }}
+            onSubmit={async () => createOrUpdateRoomType()}
             // buttonStatus={status}
             placeHolder={isUpdate ? 'update' : 'create'}
             style="text-[10px] bg-mainBg   w-[90px]  text-white rounded-[2px] mt-2 h-6"
           />
           <SubmitButton
-            onSubmit={async () => { }}
+            textstyle='text-black'
+            onSubmit={async () => clearData()}
             // buttonStatus={status}
             placeHolder={'reseat'}
             style="text-[10px] bg-white border-[1px]   w-[90px]  text-white rounded-[2px] mt-2 h-6"
