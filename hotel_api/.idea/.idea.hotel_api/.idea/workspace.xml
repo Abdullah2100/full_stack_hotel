@@ -9,11 +9,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a5d946be-ded5-4850-9962-9f8d801bf9de" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../SQLQuery_2.sql" beforeDir="false" afterPath="$PROJECT_DIR$/../SQLQuery_2.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.hotel_api/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.hotel_api/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/RequestDto/RoomTypeRequest.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/RequestDto/RoomTypeRequest.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_api/controller/UserController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/controller/UserController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_business/RoomtTypeBuissnes.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/RoomtTypeBuissnes.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_data/RoomTypeData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/RoomTypeData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_data/UserData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/UserData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/components/tables/usersTable.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/components/tables/usersTable.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/module/roomModule.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/module/roomModule.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/pages/roomType/roomType.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/pages/roomType/roomType.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -58,21 +61,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;.NET Launch Settings Profile.hotel_api: http.executor&quot;: &quot;Debug&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;XThreadsFramesViewSplitterKey&quot;: &quot;0.075581394&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;start__roomtyp&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    ".NET Launch Settings Profile.hotel_api: http.executor": "Debug",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "XThreadsFramesViewSplitterKey": "0.07536232",
+    "git-widget-placeholder": "start__roomtyp",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected=".NET Launch Settings Profile.hotel_api: http">
     <configuration name="hotel_api: http" type="LaunchSettings" factoryName=".NET Launch Settings Profile">
       <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/hotel_api/hotel_api.csproj" />
@@ -144,6 +147,8 @@
       <workItem from="1736321481108" duration="2643000" />
       <workItem from="1736588424383" duration="6501000" />
       <workItem from="1736618923961" duration="1019000" />
+      <workItem from="1736674521158" duration="2539000" />
+      <workItem from="1736680824623" duration="1773000" />
     </task>
     <servers />
   </component>
@@ -222,146 +227,29 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/hotel_data/UserData.cs</url>
-          <line>304</line>
+          <line>306</line>
           <properties documentPath="$PROJECT_DIR$/hotel_data/UserData.cs" containingFunctionPresentation="Method 'createUser'">
             <startOffsets>
-              <option value="13174" />
+              <option value="13192" />
             </startOffsets>
             <endOffsets>
-              <option value="13231" />
+              <option value="13249" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="15" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/hotel_data/UserData.cs</url>
-          <line>333</line>
+          <line>335</line>
           <properties documentPath="$PROJECT_DIR$/hotel_data/UserData.cs" containingFunctionPresentation="Method 'updateUser'">
             <startOffsets>
-              <option value="14365" />
+              <option value="14383" />
             </startOffsets>
             <endOffsets>
-              <option value="14428" />
+              <option value="14446" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="18" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/hotel_api/controller/UserController.cs</url>
-          <line>138</line>
-          <properties documentPath="$PROJECT_DIR$/hotel_api/controller/UserController.cs" containingFunctionPresentation="Method 'getUserByPage'">
-            <startOffsets>
-              <option value="4807" />
-            </startOffsets>
-            <endOffsets>
-              <option value="4851" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="20" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/hotel_api/controller/AdminController.cs</url>
-          <line>207</line>
-          <properties documentPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" containingFunctionPresentation="Method 'updateUser'">
-            <startOffsets>
-              <option value="8199" />
-            </startOffsets>
-            <endOffsets>
-              <option value="8270" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="26" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/hotel_api/controller/AdminController.cs</url>
-          <line>257</line>
-          <properties documentPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" containingFunctionPresentation="Method 'updateUser'">
-            <startOffsets>
-              <option value="9972" />
-            </startOffsets>
-            <endOffsets>
-              <option value="10014" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="27" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/hotel_api/controller/AdminController.cs</url>
-          <line>221</line>
-          <properties documentPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" containingFunctionPresentation="Method 'updateUser'">
-            <startOffsets>
-              <option value="8718" />
-            </startOffsets>
-            <endOffsets>
-              <option value="8802" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="28" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/hotel_api/controller/AdminController.cs</url>
-          <line>236</line>
-          <properties documentPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" containingFunctionPresentation="Method 'updateUser'">
-            <startOffsets>
-              <option value="9242" />
-            </startOffsets>
-            <endOffsets>
-              <option value="9321" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="29" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/hotel_api/controller/AdminController.cs</url>
-          <line>249</line>
-          <properties documentPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" containingFunctionPresentation="Method 'updateUser'">
-            <startOffsets>
-              <option value="9687" />
-            </startOffsets>
-            <endOffsets>
-              <option value="9725" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="30" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/hotel_api/controller/AdminController.cs</url>
-          <line>308</line>
-          <properties documentPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" containingFunctionPresentation="Method 'deleteUser'">
-            <startOffsets>
-              <option value="11891" />
-            </startOffsets>
-            <endOffsets>
-              <option value="11962" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="31" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/hotel_api/controller/AdminController.cs</url>
-          <line>115</line>
-          <properties documentPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" containingFunctionPresentation="Method 'createNewUser'">
-            <startOffsets>
-              <option value="4869" />
-            </startOffsets>
-            <endOffsets>
-              <option value="4870" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="32" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/hotel_api/controller/AdminController.cs</url>
-          <line>402</line>
-          <properties documentPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" containingFunctionPresentation="Method 'createNewRoomType'">
-            <startOffsets>
-              <option value="15097" />
-            </startOffsets>
-            <endOffsets>
-              <option value="15168" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="33" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/hotel_data/RoomTypeData.cs</url>
@@ -378,16 +266,29 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/hotel_api/controller/AdminController.cs</url>
-          <line>451</line>
-          <properties documentPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" containingFunctionPresentation="Method 'createNewRoomType'">
+          <line>474</line>
+          <properties documentPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" containingFunctionPresentation="Method 'getRoomTypes'">
             <startOffsets>
-              <option value="16499" />
+              <option value="17445" />
             </startOffsets>
             <endOffsets>
-              <option value="16863" />
+              <option value="17516" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="35" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/hotel_api/controller/AdminController.cs</url>
+          <line>498</line>
+          <properties documentPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" containingFunctionPresentation="Method 'getRoomTypes'">
+            <startOffsets>
+              <option value="18316" />
+            </startOffsets>
+            <endOffsets>
+              <option value="18337" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="36" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
