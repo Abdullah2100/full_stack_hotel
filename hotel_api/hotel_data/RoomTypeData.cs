@@ -127,4 +127,51 @@ public class RoomTypeData
 
         return isExist;
     }
+    
+         public static List<RoomTypeDto> getAll()
+        {
+            List<RoomTypeDto> roomtypes = new List<RoomTypeDto>();
+            try
+            {
+                using (var con = new NpgsqlConnection(connectionUr))
+                {
+                    con.Open();
+                    string query = @"select * from roomtypes";
+
+                    using (var cmd = new NpgsqlCommand(query, con))
+                    {
+                       
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            if (reader.HasRows)
+                            {
+                                while (reader.Read())
+                                {
+                                    //if ((bool)reader["isdeleted"] == true) continue;
+
+                                    var roomtypeHolder = new RoomTypeDto(
+                                        roomTypeId: (Guid)reader["roomtypeid"],
+                                        roomTypeName: (string)reader["name"],
+                                        createdBy: (Guid)reader["createdby"],
+                                        createdAt: (DateTime)reader["createdat"],
+                                        imagePath: reader["imagepath"] == DBNull.Value
+                                            ? null
+                                            : (string)reader["imagepath"]
+                                    );
+                                    roomtypes.Add(roomtypeHolder);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("this from getting user by id error {0}", ex.Message);
+                return null;
+            }
+
+            return roomtypes;
+        }
+
 }

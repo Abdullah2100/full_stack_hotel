@@ -1,18 +1,18 @@
-import { useContext, useRef, useState } from 'react';
+import {  useContext, useEffect, useRef, useState } from 'react';
 import Header from '../../components/header/header'
 import { TextInput } from '../../components/input/textInput'
 import { IRoomType } from '../../module/roomModule';
 import { PencilIcon, RectangleGroupIcon } from '@heroicons/react/16/solid';
 import SubmitButton from '../../components/button/submitButton';
-import { Button } from '@mui/material';
 import { enMessage } from '../../module/enMessageType';
 import { useToastifiContext } from '../../context/toastifyCustom';
 import { enStatus } from '../../module/enState';
 import apiClient from '../../services/apiClient';
 import { enApiType } from '../../module/enApiType';
-import { useMutation } from '@tanstack/react-query';
+import { notifyManager, useMutation, useQuery } from '@tanstack/react-query';
 import { RootState } from '../../controller/rootReducer';
 import { useSelector } from 'react-redux';
+import RoomTypeTable from '../../components/tables/roomTypeTable';
 
 const RoomType = () => {
   const refreshToken = useSelector((state: RootState) => state.auth.refreshToken)
@@ -89,6 +89,20 @@ const RoomType = () => {
     setImageHolder(undefined)
   }
 
+
+    const { data, error, refetch } = useQuery({
+
+    queryKey: ['users'],
+    queryFn: async () => apiClient({
+      enType: enApiType.GET,
+      endPoint: import.meta.env.VITE_ROOMTYPES ,
+      prameters: undefined,
+      isRquireAuth: true,
+      jwtValue: refreshToken || ""
+    }),
+  }
+  );
+ 
   const userMutaion = useMutation({
     mutationFn: ({ data, endpoint, methodType,
       jwtToken
@@ -159,7 +173,15 @@ const RoomType = () => {
     })
   }
 
+  
+  useEffect(()=>{
+    if(error!=undefined)
+    {
+      showToastiFy(error?.message?.toString() || "An unknown error occurred", enMessage.ERROR)
+    }
+  },[error])
 
+   
   return (
     <div className='flex flex-row'>
 
@@ -227,6 +249,11 @@ const RoomType = () => {
             style="text-[10px] bg-white border-[1px]   w-[90px]  text-white rounded-[2px] mt-2 h-6"
           />
         </div>
+        <RoomTypeTable 
+        data={data!==undefined?data.data as unknown as IRoomType[]:undefined}
+        // setUser={()=>{}} seUpdate={()=>{} } 
+       // deleteFunc={()=>{} } 
+        isShwoingDeleted={false}/>
       </div>
     </div>
   )

@@ -73,4 +73,9 @@ public class RoomtTypeBuissnes
     {
         return RoomTypeData.isExist(name);
     }
+
+    public static List<RoomTypeDto> getRoomTypes()
+    {
+        return RoomTypeData.getAll();
+    }
 }

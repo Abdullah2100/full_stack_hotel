@@ -101,7 +101,7 @@ namespace hotel_api.controller
 
             return StatusCode(201, new { accessToken = $"{accesstoken}", refreshToken = $"{refreshToken}" });
         }
-        
+
         //user
 
         [Authorize]
@@ -184,7 +184,7 @@ namespace hotel_api.controller
                 userName: userRequestData.userName,
                 password: clsUtil.hashingText(userRequestData.password),
                 addBy: adminid,
-                imagePath:imagePath
+                imagePath: imagePath
             ));
 
             var result = data.save();
@@ -250,7 +250,7 @@ namespace hotel_api.controller
             if (userRequestData.imagePath != null)
             {
                 imagePath = await MinIoServices.uploadFile(_config, userRequestData.imagePath,
-                    MinIoServices.enBucketName.USER,data.imagePath);
+                    MinIoServices.enBucketName.USER, data.imagePath);
             }
 
             data.imagePath = imagePath;
@@ -387,17 +387,17 @@ namespace hotel_api.controller
 
             return StatusCode(201, new { message = "user now is vip" });
         }
-        
-        
+
+
         //roomType
-           [Authorize]
+        [Authorize]
         [HttpPost("roomtype")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> createNewRoomType(
-            [FromForm] RoomTypeRequest roomTypeData 
+            [FromForm] RoomTypeRequest roomTypeData
         )
         {
             var authorizationHeader = HttpContext.Request.Headers["Authorization"];
@@ -422,51 +422,87 @@ namespace hotel_api.controller
                 return StatusCode(401, "you not have Permission");
             }
 
-            
 
-            if (roomTypeData.name.Length>50)
+            if (roomTypeData.name.Length > 50)
                 return StatusCode(400, "roomtype name must be under 50 characters");
 
 
-            bool isExistEmail =   RoomtTypeBuissnes.isExist(roomTypeData.name);
+            bool isExistEmail = RoomtTypeBuissnes.isExist(roomTypeData.name);
 
             if (isExistEmail)
                 return StatusCode(400, "roomtype is already exist");
 
 
-
-
-
             var roomId = Guid.NewGuid();
 
 
-          string? imageHolderPath = null;
+            string? imageHolderPath = null;
             if (roomTypeData.image != null)
             {
-                imageHolderPath = await MinIoServices.uploadFile(_config,roomTypeData.image,
+                imageHolderPath = await MinIoServices.uploadFile(_config, roomTypeData.image,
                     MinIoServices.enBucketName.RoomType);
             }
 
 
-
             var roomTypeHolder = new RoomtTypeBuissnes(
                 new RoomTypeDto(
-                    roomTypeId:roomId,
-                    roomTypeName:roomTypeData.name,
-                    imagePath:imageHolderPath,
-                    createdBy:(Guid)adminid,
-                    createdAt:DateTime.Now
-                    
-                    )
-                );
+                    roomTypeId: roomId,
+                    roomTypeName: roomTypeData.name,
+                    imagePath: imageHolderPath,
+                    createdBy: (Guid)adminid,
+                    createdAt: DateTime.Now
+                )
+            );
 
             var result = roomTypeHolder.save();
-            
+
             if (result == false)
                 return StatusCode(500, "some thing wrong");
 
             return StatusCode(201, new { message = "created seccessfully" });
         }
-        
+
+
+        [Authorize]
+        [HttpGet("roomtypes")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> getRoomTypes()
+        {
+            try
+            { var authorizationHeader = HttpContext.Request.Headers["Authorization"];
+                var id = AuthinticationServices.GetPayloadFromToken("id",
+                    authorizationHeader.ToString().Replace("Bearer ", ""));
+                Guid? adminid = null;
+                if (Guid.TryParse(id.Value.ToString(), out Guid outID))
+                {
+                    adminid = outID;
+                }
+
+                if (adminid == null)
+                {
+                    return StatusCode(401, "you not have Permission");
+                }
+
+                var isHasPermission = AdminBuissnes.isAdminExist(adminid ?? Guid.Empty);
+
+
+                if (!isHasPermission)
+                {
+                    return StatusCode(401, "you not have Permission");
+                }
+
+                var roomtypes = RoomtTypeBuissnes.getRoomTypes();
+
+                return Ok(roomtypes);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return StatusCode(500, "some thing wrong");
+            }
+        }
     }
 }

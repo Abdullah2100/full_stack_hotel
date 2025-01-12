@@ -48,8 +48,6 @@ const UersTable = ({
           <tr>
             <th className="px-4 py-2 border-b text-left whitespace-nowrap"></th>
             <th className="px-4 py-2 border-b text-left whitespace-nowrap">profileImage</th>
-            <th className="px-4 py-2 border-b text-left whitespace-nowrap">User ID</th>
-            <th className="px-4 py-2 border-b text-left whitespace-nowrap">Person ID</th>
             <th className="px-4 py-2 border-b text-left whitespace-nowrap">Name</th>
             <th className="px-4 py-2 border-b text-left whitespace-nowrap">Email</th>
             <th className="px-4 py-2 border-b text-left whitespace-nowrap">Phone</th>
@@ -73,8 +71,7 @@ const UersTable = ({
                   style='flex flex-row h-20 w-20'
                 />
               }</td>
-              <td className="px-4 py-2 border-b text-left whitespace-nowrap">{user?.userId || ""}</td>
-              <td className="px-4 py-2 border-b text-left whitespace-nowrap">{user?.personID || ""}</td>
+             
               <td className="px-4 py-2 border-b text-left whitespace-nowrap">{user?.personData?.name || ""}</td>
               <td className="px-4 py-2 border-b text-left whitespace-nowrap">{user?.personData?.email || ""}</td>
               <td className="px-4 py-2 border-b text-left whitespace-nowrap">{user?.personData?.phone || ""}</td>
