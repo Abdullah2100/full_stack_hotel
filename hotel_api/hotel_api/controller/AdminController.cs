@@ -504,5 +504,80 @@ namespace hotel_api.controller
                 return StatusCode(500, "some thing wrong");
             }
         }
+        
+        [Authorize]
+        [HttpPut("roomtypes")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> updateRoomTypes(  [FromForm] RoomTypeRequest roomTypeData)
+        {
+            var authorizationHeader = HttpContext.Request.Headers["Authorization"];
+            var id = AuthinticationServices.GetPayloadFromToken("id",
+                authorizationHeader.ToString().Replace("Bearer ", ""));
+            Guid? adminid = null;
+            if (Guid.TryParse(id.Value.ToString(), out Guid outID))
+            {
+                adminid = outID;
+            }
+
+            if (adminid == null)
+            {
+                return StatusCode(401, "you not have Permission");
+            }
+
+            var isHasPermissionToCreateUser = AdminBuissnes.isAdminExist(adminid ?? Guid.Empty);
+
+
+            if (!isHasPermissionToCreateUser)
+            {
+                return StatusCode(401, "you not have Permission");
+            }
+
+
+            if (roomTypeData.name.Length > 50||roomTypeData.id==null)
+                return StatusCode(400, "roomtype name must be under 50 characters");
+
+
+            var  roomtypeHolder = RoomtTypeBuissnes.getRoomType((Guid)roomTypeData.id);
+
+            if (roomtypeHolder==null)
+                return StatusCode(400, "roomtype is already exist");
+            
+         
+            string? imageHolderPath = null;
+            if (roomTypeData.image != null)
+            {
+                imageHolderPath = await MinIoServices.uploadFile(_config, roomTypeData.image,
+                    MinIoServices.enBucketName.RoomType);
+            }
+
+            if(imageHolderPath!=null)
+                roomtypeHolder.image = imageHolderPath;
+            
+            
+            updateRoomTypeData(ref roomtypeHolder, roomTypeData,(Guid)adminid);
+            var result = roomtypeHolder.save();
+
+            if (result == false)
+                return StatusCode(500, "some thing wrong");
+
+            return StatusCode(201, new { message = "created seccessfully" });
+        }
+
+        private void updateRoomTypeData(ref RoomtTypeBuissnes data, RoomTypeRequest holder,Guid createdBy)
+        {
+            if (data.name != holder.name)
+            {
+                data.name = holder.name;
+            }
+
+            if (createdBy != null && data.createdBy != createdBy)
+            {
+                data.createdBy = createdBy;
+            }
+        }
+        
     }
 }

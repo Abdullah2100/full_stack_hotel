@@ -31,6 +31,17 @@ public class RoomtTypeBuissnes
         this.mode = mode;
     }
 
+    public static RoomtTypeBuissnes? getRoomType(string name)
+    {
+        var roomType = RoomTypeData.getRoomType(name);
+        return roomType!=null ? new RoomtTypeBuissnes(roomType,enMode.update) : null;
+    }
+
+    public static RoomtTypeBuissnes? getRoomType(Guid id)
+    {
+        var roomType = RoomTypeData.getRoomType(id);
+        return roomType!=null ? new RoomtTypeBuissnes(roomType,enMode.update) : null;
+    }
     private bool _createRoomType()
     {
         return RoomTypeData.createRoomType(roomType);

@@ -9,7 +9,7 @@ import { IRoomType } from '../../module/roomModule';
 
 interface RoomTypeTableProps {
   data?: IRoomType[],
-  // setUser: Dispatch<SetStateAction<IRoomType>>
+  setRoomType: Dispatch<SetStateAction<IRoomType>>
   // seUpdate: Dispatch<SetStateAction<boolean>>
   //deleteFunc: (userId: Guid, isDeletion: boolean | undefined) => Promise<void>
   isShwoingDeleted: boolean
@@ -18,7 +18,7 @@ interface RoomTypeTableProps {
 
 const RoomTypeTable = ({
   data,
-  // setUser,
+  setRoomType,
   // seUpdate,
   isShwoingDeleted = false
 }: RoomTypeTableProps) => {
@@ -26,9 +26,15 @@ const RoomTypeTable = ({
   if (data !== undefined)
     console.log(`\n\nthis the roomtypes ${JSON.stringify(data)}\n\n`)
 
-  const setUserData = (user: IRoomType) => {
+  const setUserData = (roomtype: IRoomType) => {
 
-    //seUpdate(true)
+   setRoomType({
+    roomTypeName: roomtype.roomTypeName,
+    createdAt: null,
+    createdBy: null,
+    roomTypeID: roomtype.roomTypeID,
+    imagePath:roomtype.imagePath
+  })
   }
 
   return (
@@ -73,7 +79,7 @@ const RoomTypeTable = ({
                       className='border-[2px] rounded-[3px] border-red-600 h-7 w-7 flex justify-center items-center'
                     ><TrashIcon className='h-4 w-4 text-red-600 ' /></button>
                     <button
-                      // onClick={() => setUserData(user)}
+                      onClick={() => setUserData(roomtype)}
                       className='border-[2px] rounded-[3px] border-green-800 h-7 w-7 flex justify-center items-center bg-gray-200'
                     ><PencilIcon className='h-6 w-6 text-green-800' /></button>
                   </div>
