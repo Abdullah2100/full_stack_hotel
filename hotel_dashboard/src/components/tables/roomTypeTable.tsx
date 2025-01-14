@@ -10,7 +10,7 @@ import { IRoomType } from '../../module/roomModule';
 interface RoomTypeTableProps {
   data?: IRoomType[],
   setRoomType: Dispatch<SetStateAction<IRoomType>>
-  // seUpdate: Dispatch<SetStateAction<boolean>>
+  setUpdate: Dispatch<SetStateAction<boolean>>
   //deleteFunc: (userId: Guid, isDeletion: boolean | undefined) => Promise<void>
   isShwoingDeleted: boolean
 
@@ -19,7 +19,7 @@ interface RoomTypeTableProps {
 const RoomTypeTable = ({
   data,
   setRoomType,
-  // seUpdate,
+  setUpdate,
   isShwoingDeleted = false
 }: RoomTypeTableProps) => {
 
@@ -27,14 +27,14 @@ const RoomTypeTable = ({
     console.log(`\n\nthis the roomtypes ${JSON.stringify(data)}\n\n`)
 
   const setUserData = (roomtype: IRoomType) => {
-
-   setRoomType({
-    roomTypeName: roomtype.roomTypeName,
-    createdAt: null,
-    createdBy: null,
-    roomTypeID: roomtype.roomTypeID,
-    imagePath:roomtype.imagePath
-  })
+    setUpdate(true)
+    setRoomType({
+      roomTypeName: roomtype.roomTypeName,
+      createdAt: null,
+      createdBy: null,
+      roomTypeID: roomtype.roomTypeID,
+      imagePath: roomtype.imagePath
+    })
   }
 
   return (

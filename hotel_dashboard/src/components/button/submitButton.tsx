@@ -30,7 +30,7 @@ const SubmitButton = (
                 : 
                <h3 className={textstyle}>
 
-                   placeHolder
+                  {placeHolder} 
                </h3>
         }
     </button>)
