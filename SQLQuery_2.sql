@@ -843,8 +843,42 @@ EXCEPTION
         RETURN FALSE;
 END;
 $$ LANGUAGE plpgsql;
+---
+---
 
 
+CREATE OR REPLACE FUNCTION fn_roomtype_update_new(
+    name_s VARCHAR,
+    roomtypeid_s UUID,
+    createdby_s UUID,
+    imagepath VARCHAR
+) RETURNS BOOLEAN AS $$
+DECLARE 
+    is_hasPermission BOOLEAN := FALSE;
+    is_creation BOOLEAN := FALSE;
+    name_compare VARCHAR;
+BEGIN 
+        is_hasPermission := isAdminOrSomeOneHasPersmission(NEW.createdby);
+    if is_hasPermission = FALSE THEN 
+      RETURN FALSE;
+    END IF;
+
+    UPDATE  RoomTypes SET
+    name = CASE WHEN Name<>name_s THEN name_s ELSE name END, 
+    createdby = CASE WHEN createdby_s<>imagepath THEN createdby_s ELSE createdby END, 
+    imagepath = CASE WHEN imagepath<>createdby_s THEN createdby_s ELSE imagepath END 
+    WHERE roomtypeid = roomtypeid_s;
+   
+    SELECT name INTO name_compare FROM RoomTypes WHERE roomtypeid = roomtypeid_s;
+
+    is_creation = (name_compare = name_s);
+    RETURN is_creation;
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE EXCEPTION 'You do not have permission to create room type';
+        RETURN FALSE;
+END;
+$$ LANGUAGE plpgsql;
 ----
 -----
 CREATE OR REPLACE FUNCTION fn_roomtype_insert() RETURNS TRIGGER AS $$
@@ -870,6 +904,11 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE TRIGGER tr_roomtType_insert
 BEFORE INSERT
 ON RoomTypes FOR EACH ROW EXECUTE FUNCTION fn_roomType_insert();
+
+CREATE OR REPLACE TRIGGER tr_roomtType_update
+BEFORE update
+ON RoomTypes FOR EACH ROW EXECUTE FUNCTION fn_roomType_insert();
+
 
 
 

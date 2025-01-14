@@ -7,6 +7,99 @@ public class RoomTypeData
 {
     static string connectionUr = clsConnnectionUrl.url;
 
+    public static RoomTypeDto? getRoomType(Guid roomTypeId)
+    {
+        RoomTypeDto? roomType = null;
+        try
+        {
+            using (var con = new NpgsqlConnection(connectionUr))
+            {
+                con.Open();
+                string query = @"select * from roomtypes where roomtypeid = @roomtypeid";
+
+                using (var cmd = new NpgsqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@roomtypeid", roomTypeId);
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                        {
+                            while (reader.Read())
+                            {
+                                //if ((bool)reader["isdeleted"] == true) continue;
+
+                                roomType = new RoomTypeDto(
+                                    roomTypeId:roomTypeId,
+                                    roomTypeName: (string)reader["name"],
+                                    createdBy: (Guid)reader["createdby"],
+                                    createdAt: (DateTime)reader["createdat"],
+                                    imagePath: reader["imagepath"] == DBNull.Value
+                                        ? null
+                                        : (string)reader["imagepath"]
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("this from getting user by id error {0}", ex.Message);
+            return null;
+        }
+
+        return roomType;
+    }
+
+    public static RoomTypeDto? getRoomType(string name)
+    {
+        RoomTypeDto? roomType = null;
+        try
+        {
+            using (var con = new NpgsqlConnection(connectionUr))
+            {
+                con.Open();
+                string query = @"select * from roomtypes where name = @name";
+
+                using (var cmd = new NpgsqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@name", name);
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                        {
+                            while (reader.Read())
+                            {
+                                //if ((bool)reader["isdeleted"] == true) continue;
+
+                                roomType = new RoomTypeDto(
+                                    roomTypeId:(Guid)reader["roomtypeid"],
+                                    roomTypeName:name, 
+                                    createdBy: (Guid)reader["createdby"],
+                                    createdAt: (DateTime)reader["createdat"],
+                                    imagePath: reader["imagepath"] == DBNull.Value
+                                        ? null
+                                        : (string)reader["imagepath"]
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("this from getting user by id error {0}", ex.Message);
+            return null;
+        }
+
+        return roomType;
+    }
+
+
     public static bool createRoomType(RoomTypeDto roomData)
     {
         bool isCreated = false;
@@ -51,11 +144,20 @@ public class RoomTypeData
             using (var con = new NpgsqlConnection(connectionUr))
             {
                 con.Open();
-                string query = "SELECT fn_roomtype_update( name_n , createdBy_n )";
+                string query = "SELECT fn_roomtype_update_new( " +
+                               "name_s::VARCHAR ," +
+                               "  roomtypeid_s::UUID," +
+                               " createdby_s::UUID, " +
+                               "imagepath::VARCHAR)";
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
-                    cmd.Parameters.AddWithValue("name_n", roomData.roomTypeName);
-                    cmd.Parameters.AddWithValue("createdBy_n", roomData.createdBy);
+                    cmd.Parameters.AddWithValue("name_s", roomData.roomTypeName);
+                    cmd.Parameters.AddWithValue("roomtypeid_s", roomData.roomTypeID);
+                    cmd.Parameters.AddWithValue("createdby_s", roomData.createdBy);
+                    if (roomData.imagePath == null)
+                    cmd.Parameters.AddWithValue("imagepath", DBNull.Value);
+                    else
+                    cmd.Parameters.AddWithValue("imagepath", roomData.imagePath);
                     var result = cmd.ExecuteScalar();
                     if (result != null && bool.TryParse(result.ToString(), out bool isComplate))
                     {
@@ -127,51 +229,49 @@ public class RoomTypeData
 
         return isExist;
     }
-    
-         public static List<RoomTypeDto> getAll()
+
+    public static List<RoomTypeDto> getAll()
+    {
+        List<RoomTypeDto> roomtypes = new List<RoomTypeDto>();
+        try
         {
-            List<RoomTypeDto> roomtypes = new List<RoomTypeDto>();
-            try
+            using (var con = new NpgsqlConnection(connectionUr))
             {
-                using (var con = new NpgsqlConnection(connectionUr))
+                con.Open();
+                string query = @"select * from roomtypes";
+
+                using (var cmd = new NpgsqlCommand(query, con))
                 {
-                    con.Open();
-                    string query = @"select * from roomtypes";
-
-                    using (var cmd = new NpgsqlCommand(query, con))
+                    using (var reader = cmd.ExecuteReader())
                     {
-                       
-                        using (var reader = cmd.ExecuteReader())
+                        if (reader.HasRows)
                         {
-                            if (reader.HasRows)
+                            while (reader.Read())
                             {
-                                while (reader.Read())
-                                {
-                                    //if ((bool)reader["isdeleted"] == true) continue;
+                                //if ((bool)reader["isdeleted"] == true) continue;
 
-                                    var roomtypeHolder = new RoomTypeDto(
-                                        roomTypeId: (Guid)reader["roomtypeid"],
-                                        roomTypeName: (string)reader["name"],
-                                        createdBy: (Guid)reader["createdby"],
-                                        createdAt: (DateTime)reader["createdat"],
-                                        imagePath: reader["imagepath"] == DBNull.Value
-                                            ? null
-                                            : (string)reader["imagepath"]
-                                    );
-                                    roomtypes.Add(roomtypeHolder);
-                                }
+                                var roomtypeHolder = new RoomTypeDto(
+                                    roomTypeId: (Guid)reader["roomtypeid"],
+                                    roomTypeName: (string)reader["name"],
+                                    createdBy: (Guid)reader["createdby"],
+                                    createdAt: (DateTime)reader["createdat"],
+                                    imagePath: reader["imagepath"] == DBNull.Value
+                                        ? null
+                                        : (string)reader["imagepath"]
+                                );
+                                roomtypes.Add(roomtypeHolder);
                             }
                         }
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine("this from getting user by id error {0}", ex.Message);
-                return null;
-            }
-
-            return roomtypes;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("this from getting user by id error {0}", ex.Message);
+            return null;
         }
 
+        return roomtypes;
+    }
 }

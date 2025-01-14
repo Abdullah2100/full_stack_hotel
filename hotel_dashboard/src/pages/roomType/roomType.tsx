@@ -13,6 +13,7 @@ import { notifyManager, useMutation, useQuery } from '@tanstack/react-query';
 import { RootState } from '../../controller/rootReducer';
 import { useSelector } from 'react-redux';
 import RoomTypeTable from '../../components/tables/roomTypeTable';
+import ImageHolder from '../../components/imageHolder';
 
 const RoomType = () => {
   const refreshToken = useSelector((state: RootState) => state.auth.refreshToken)
@@ -163,7 +164,7 @@ const RoomType = () => {
     if (imageHolder !== undefined)
       roomtTypeData.append("image", imageHolder)
 
-    let endPoint = !isUpdate ? import.meta.env.VITE_CREATEROOMTYPE : import.meta.env.VITE_UPDATEROOMTYPE;
+    let endPoint = import.meta.env.VITE_CREATEROOMTYPE ;
 
     userMutaion.mutate({
       data: roomtTypeData,
@@ -222,11 +223,11 @@ const RoomType = () => {
                 className='group absolute end-1 top-2 hover:bg-gray-600 hover:rounded-sm '>
                 <PencilIcon className='h-6 w-6 border-[1px] border-blue-900 rounded-sm group-hover:fill-gray-200  ' />
               </button>
-              {image && <img
-                // ref={imageImageRef}
-                src={image}
-                className='mt-12'
-              />}
+              <ImageHolder
+              src={image ??roomType?.imagePath?
+                `http://172.19.0.1:9000/user/` + roomType.imagePath?.toString():undefined}
+              style='flex flex-row h-20 w-20 '
+              isFromTop={true} />
 
             </div>
 
@@ -251,7 +252,7 @@ const RoomType = () => {
         </div>
         <RoomTypeTable 
         data={data!==undefined?data.data as unknown as IRoomType[]:undefined}
-        // setUser={()=>{}} seUpdate={()=>{} } 
+        setRoomType={setRoomType} 
        // deleteFunc={()=>{} } 
         isShwoingDeleted={false}/>
       </div>
