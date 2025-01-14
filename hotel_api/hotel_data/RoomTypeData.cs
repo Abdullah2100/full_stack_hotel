@@ -144,20 +144,20 @@ public class RoomTypeData
             using (var con = new NpgsqlConnection(connectionUr))
             {
                 con.Open();
-                string query = "SELECT fn_roomtype_update_new( " +
-                               "name_s::VARCHAR ," +
-                               "  roomtypeid_s::UUID," +
-                               " createdby_s::UUID, " +
-                               "imagepath::VARCHAR)";
+                string query = "SELECT * FROM fn_roomtype_update_new( " +
+                               "@name_s::VARCHAR ," +
+                               "@roomtypeid_s::UUID," +
+                               "@createdby_s::UUID, " +
+                               "@imagepath::VARCHAR)";
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
-                    cmd.Parameters.AddWithValue("name_s", roomData.roomTypeName);
-                    cmd.Parameters.AddWithValue("roomtypeid_s", roomData.roomTypeID);
-                    cmd.Parameters.AddWithValue("createdby_s", roomData.createdBy);
+                    cmd.Parameters.AddWithValue("@name_s", roomData.roomTypeName);
+                    cmd.Parameters.AddWithValue("@roomtypeid_s", roomData.roomTypeID);
+                    cmd.Parameters.AddWithValue("@createdby_s", roomData.createdBy);
                     if (roomData.imagePath == null)
-                    cmd.Parameters.AddWithValue("imagepath", DBNull.Value);
+                    cmd.Parameters.AddWithValue("@imagepath", DBNull.Value);
                     else
-                    cmd.Parameters.AddWithValue("imagepath", roomData.imagePath);
+                    cmd.Parameters.AddWithValue("@imagepath", roomData.imagePath);
                     var result = cmd.ExecuteScalar();
                     if (result != null && bool.TryParse(result.ToString(), out bool isComplate))
                     {

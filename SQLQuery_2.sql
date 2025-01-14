@@ -851,22 +851,22 @@ CREATE OR REPLACE FUNCTION fn_roomtype_update_new(
     name_s VARCHAR,
     roomtypeid_s UUID,
     createdby_s UUID,
-    imagepath VARCHAR
+    imagepath_s VARCHAR
 ) RETURNS BOOLEAN AS $$
 DECLARE 
     is_hasPermission BOOLEAN := FALSE;
     is_creation BOOLEAN := FALSE;
     name_compare VARCHAR;
 BEGIN 
-        is_hasPermission := isAdminOrSomeOneHasPersmission(NEW.createdby);
+        is_hasPermission := isAdminOrSomeOneHasPersmission(createdby_s);
     if is_hasPermission = FALSE THEN 
       RETURN FALSE;
     END IF;
 
     UPDATE  RoomTypes SET
     name = CASE WHEN Name<>name_s THEN name_s ELSE name END, 
-    createdby = CASE WHEN createdby_s<>imagepath THEN createdby_s ELSE createdby END, 
-    imagepath = CASE WHEN imagepath<>createdby_s THEN createdby_s ELSE imagepath END 
+    createdby = CASE WHEN createdby_s<>createdby_s THEN createdby_s ELSE createdby END, 
+    imagepath = CASE WHEN imagepath<>imagepath_s and imagepath_s IS NOT NULL THEN imagepath_s ELSE imagepath END 
     WHERE roomtypeid = roomtypeid_s;
    
     SELECT name INTO name_compare FROM RoomTypes WHERE roomtypeid = roomtypeid_s;
@@ -874,8 +874,8 @@ BEGIN
     is_creation = (name_compare = name_s);
     RETURN is_creation;
 EXCEPTION
-    WHEN OTHERS THEN
-        RAISE EXCEPTION 'You do not have permission to create room type';
+    WHEN OTHERS THEN RAISE EXCEPTION 'Something went wrong: %',
+SQLERRM;
         RETURN FALSE;
 END;
 $$ LANGUAGE plpgsql;

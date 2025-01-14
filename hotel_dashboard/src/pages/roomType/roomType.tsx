@@ -1,4 +1,4 @@
-import {  useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import Header from '../../components/header/header'
 import { TextInput } from '../../components/input/textInput'
 import { IRoomType } from '../../module/roomModule';
@@ -14,6 +14,7 @@ import { RootState } from '../../controller/rootReducer';
 import { useSelector } from 'react-redux';
 import RoomTypeTable from '../../components/tables/roomTypeTable';
 import ImageHolder from '../../components/imageHolder';
+import { generalMessage } from '../../util/generalPrint';
 
 const RoomType = () => {
   const refreshToken = useSelector((state: RootState) => state.auth.refreshToken)
@@ -65,10 +66,10 @@ const RoomType = () => {
 
         showToastiFy(`Image height: ${naturalHeight}\nImage width: ${naturalWidth}`, enMessage.ERROR);
 
-     //   if (naturalHeight > 40 || naturalWidth > 40) {
-     //     showToastiFy("Image must have a minimum height and width of 40px", enMessage.ERROR);
-     //     return;
-     //   }
+        //   if (naturalHeight > 40 || naturalWidth > 40) {
+        //     showToastiFy("Image must have a minimum height and width of 40px", enMessage.ERROR);
+        //     return;
+        //   }
 
         setImage(cachedURL);
         setImageHolder(uploadedFile)
@@ -91,19 +92,19 @@ const RoomType = () => {
   }
 
 
-    const { data, error, refetch } = useQuery({
+  const { data, error, refetch } = useQuery({
 
     queryKey: ['users'],
     queryFn: async () => apiClient({
       enType: enApiType.GET,
-      endPoint: import.meta.env.VITE_ROOMTYPES ,
+      endPoint: import.meta.env.VITE_ROOMTYPES,
       prameters: undefined,
       isRquireAuth: true,
       jwtValue: refreshToken || ""
     }),
   }
   );
- 
+
   const userMutaion = useMutation({
     mutationFn: ({ data, endpoint, methodType,
       jwtToken
@@ -126,8 +127,9 @@ const RoomType = () => {
       showToastiFy(`user ${isUpdate ? "updated" : "created"} Sueccessfuly`, enMessage.SECCESSFUL);
       clearData()
       setImage(undefined)
-      setUpdate(false)
-      // refetch();
+      if (isUpdate)
+        setUpdate(false)
+      refetch();
     },
     onError: (error) => {
       setState(enStatus.complate);
@@ -151,7 +153,7 @@ const RoomType = () => {
   }
 
   const createOrUpdateRoomType = () => {
-    if (isUpdate) {
+    if (!isUpdate) {
       if (validationInput()) {
         return;
       }
@@ -163,26 +165,29 @@ const RoomType = () => {
 
     if (imageHolder !== undefined)
       roomtTypeData.append("image", imageHolder)
+    if(isUpdate)
+      roomtTypeData.append("id",roomType.roomTypeID) 
 
-    let endPoint = import.meta.env.VITE_CREATEROOMTYPE ;
+    let endPoint = import.meta.env.VITE_CREATEROOMTYPE;
+    const method= isUpdate ? enApiType.PUT : enApiType.POST;
+    generalMessage(`this the method  from ${method}`)
 
     userMutaion.mutate({
       data: roomtTypeData,
       endpoint: endPoint,
-      methodType: isUpdate ? enApiType.PUT : enApiType.POST,
+      methodType: method,
       jwtToken: refreshToken
     })
   }
 
-  
-  useEffect(()=>{
-    if(error!=undefined)
-    {
+
+  useEffect(() => {
+    if (error != undefined) {
       showToastiFy(error?.message?.toString() || "An unknown error occurred", enMessage.ERROR)
     }
-  },[error])
+  }, [error])
 
-   
+
   return (
     <div className='flex flex-row'>
 
@@ -223,11 +228,14 @@ const RoomType = () => {
                 className='group absolute end-1 top-2 hover:bg-gray-600 hover:rounded-sm '>
                 <PencilIcon className='h-6 w-6 border-[1px] border-blue-900 rounded-sm group-hover:fill-gray-200  ' />
               </button>
-              <ImageHolder
-              src={image ??roomType?.imagePath?
-                `http://172.19.0.1:9000/user/` + roomType.imagePath?.toString():undefined}
-              style='flex flex-row h-20 w-20 '
-              isFromTop={true} />
+              <div className='absolute h-full w-full  flex flex-row justify-center items-center '
+              >
+                <ImageHolder
+                  src={image ?? roomType?.imagePath ?
+                    `http://172.19.0.1:9000/roomtype/` + roomType.imagePath?.toString() : undefined}
+                  style='flex flex-row h-20 w-20 '
+                  isFromTop={true} />
+              </div>
 
             </div>
 
@@ -235,7 +243,7 @@ const RoomType = () => {
 
 
         </div>
-        <div className={'flex flex-row gap-3'}>
+        <div className={'flex flex-row gap-3 mb-2'}>
           <SubmitButton
             onSubmit={async () => createOrUpdateRoomType()}
             // buttonStatus={status}
@@ -250,11 +258,12 @@ const RoomType = () => {
             style="text-[10px] bg-white border-[1px]   w-[90px]  text-white rounded-[2px] mt-2 h-6"
           />
         </div>
-        <RoomTypeTable 
-        data={data!==undefined?data.data as unknown as IRoomType[]:undefined}
-        setRoomType={setRoomType} 
-       // deleteFunc={()=>{} } 
-        isShwoingDeleted={false}/>
+        <RoomTypeTable
+          data={data !== undefined ? data.data as unknown as IRoomType[] : undefined}
+          setRoomType={setRoomType}
+          setUpdate={setUpdate}
+          // deleteFunc={()=>{} } 
+          isShwoingDeleted={false} />
       </div>
     </div>
   )

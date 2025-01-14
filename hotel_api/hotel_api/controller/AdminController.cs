@@ -472,7 +472,8 @@ namespace hotel_api.controller
         public async Task<IActionResult> getRoomTypes()
         {
             try
-            { var authorizationHeader = HttpContext.Request.Headers["Authorization"];
+            {
+                var authorizationHeader = HttpContext.Request.Headers["Authorization"];
                 var id = AuthinticationServices.GetPayloadFromToken("id",
                     authorizationHeader.ToString().Replace("Bearer ", ""));
                 Guid? adminid = null;
@@ -504,14 +505,14 @@ namespace hotel_api.controller
                 return StatusCode(500, "some thing wrong");
             }
         }
-        
+
         [Authorize]
-        [HttpPut("roomtypes")]
+        [HttpPut("roomtype")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> updateRoomTypes(  [FromForm] RoomTypeRequest roomTypeData)
+        public async Task<IActionResult> updateRoomTypes([FromForm] RoomTypeRequest roomTypeData)
         {
             var authorizationHeader = HttpContext.Request.Headers["Authorization"];
             var id = AuthinticationServices.GetPayloadFromToken("id",
@@ -536,16 +537,16 @@ namespace hotel_api.controller
             }
 
 
-            if (roomTypeData.name.Length > 50||roomTypeData.id==null)
+            if (roomTypeData.name.Length > 50 || roomTypeData.id == null)
                 return StatusCode(400, "roomtype name must be under 50 characters");
 
 
-            var  roomtypeHolder = RoomtTypeBuissnes.getRoomType((Guid)roomTypeData.id);
+            var roomtypeHolder = RoomtTypeBuissnes.getRoomType((Guid)roomTypeData.id);
 
-            if (roomtypeHolder==null)
+            if (roomtypeHolder == null)
                 return StatusCode(400, "roomtype is already exist");
-            
-         
+
+
             string? imageHolderPath = null;
             if (roomTypeData.image != null)
             {
@@ -553,11 +554,10 @@ namespace hotel_api.controller
                     MinIoServices.enBucketName.RoomType);
             }
 
-            if(imageHolderPath!=null)
-                roomtypeHolder.image = imageHolderPath;
-            
-            
-            updateRoomTypeData(ref roomtypeHolder, roomTypeData,(Guid)adminid);
+            roomtypeHolder.image = imageHolderPath;
+
+
+            updateRoomTypeData(ref roomtypeHolder, roomTypeData, (Guid)adminid);
             var result = roomtypeHolder.save();
 
             if (result == false)
@@ -566,7 +566,7 @@ namespace hotel_api.controller
             return StatusCode(201, new { message = "created seccessfully" });
         }
 
-        private void updateRoomTypeData(ref RoomtTypeBuissnes data, RoomTypeRequest holder,Guid createdBy)
+        private void updateRoomTypeData(ref RoomtTypeBuissnes data, RoomTypeRequest holder, Guid createdBy)
         {
             if (data.name != holder.name)
             {
@@ -578,6 +578,5 @@ namespace hotel_api.controller
                 data.createdBy = createdBy;
             }
         }
-        
     }
 }
