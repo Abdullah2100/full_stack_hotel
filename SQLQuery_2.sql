@@ -898,7 +898,27 @@ RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
 ---
+---
+CREATE OR REPLACE FUNCTION fn_roomtype_delete()
+RETURNS TRIGGER
+AS $$
+BEGIN
 
+UPDATE roomtypes  SET IsDeleted = CASE WHEN OLD.isdeleted = TRUE THEN FALSE ELSE TRUE END WHERE roomtypeid = OLD.roomtypeid;
+RETURN NULL;
+EXCEPTION
+WHEN OTHERS THEN  RAISE EXCEPTION 'you do not have permission to create roomtype';
+RETURN NULL;
+
+END
+
+$$ Language plpgsql;
+
+---
+
+CREATE TRIGGER tr_roomtype_delete
+BEFORE DELETE ON roomtypes FOR EACH 
+ROW EXECUTE FUNCTION fn_roomtype_delete();
 
 ---
 CREATE OR REPLACE TRIGGER tr_roomtType_insert

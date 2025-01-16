@@ -506,6 +506,7 @@ namespace hotel_api.controller
             }
         }
 
+        
         [Authorize]
         [HttpPut("roomtype")]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -578,5 +579,54 @@ namespace hotel_api.controller
                 data.createdBy = createdBy;
             }
         }
+
+        
+        [Authorize]
+        [HttpDelete("roomtype/{roomtypeid:guid}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult deleteRoomtype(
+            Guid roomtypeid
+        )
+        {
+            var authorizationHeader = HttpContext.Request.Headers["Authorization"];
+            var id = AuthinticationServices.GetPayloadFromToken("id",
+                authorizationHeader.ToString().Replace("Bearer ", ""));
+            Guid? adminid = null;
+            if (Guid.TryParse(id.Value.ToString(), out Guid outID))
+            {
+                adminid = outID;
+            }
+
+            if (adminid == null)
+            {
+                return StatusCode(401, "you not have Permission");
+            }
+
+            var isHasPermissionToCreateUser = AdminBuissnes.isAdminExist(adminid ?? Guid.Empty);
+
+
+            if (!isHasPermissionToCreateUser)
+            {
+                return StatusCode(401, "you not have Permission");
+            }
+
+
+            var data = RoomtTypeBuissnes.getRoomType(roomtypeid);
+
+            if (data == null)
+                return StatusCode(409, "user notFound exist");
+
+
+            var result = RoomtTypeBuissnes.deleteOrUnDeleteRoomType(roomtypeid);
+            if (result == false)
+                return StatusCode(500, "some thing wrong");
+
+            return StatusCode(201, new { message = "created seccessfully" });
+        }
+        
+        
     }
 }

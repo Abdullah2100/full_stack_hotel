@@ -11,7 +11,7 @@ interface RoomTypeTableProps {
   data?: IRoomType[],
   setRoomType: Dispatch<SetStateAction<IRoomType>>
   setUpdate: Dispatch<SetStateAction<boolean>>
-  //deleteFunc: (userId: Guid, isDeletion: boolean | undefined) => Promise<void>
+  deleteFunc: (roomtypeid: Guid, isDeleted: boolean) => Promise<void>
   isShwoingDeleted: boolean
 
 }
@@ -20,6 +20,7 @@ const RoomTypeTable = ({
   data,
   setRoomType,
   setUpdate,
+  deleteFunc,
   isShwoingDeleted = false
 }: RoomTypeTableProps) => {
 
@@ -54,7 +55,7 @@ const RoomTypeTable = ({
 
             <tr
               key={index}
-              className={` bg-white`}
+              className={`${roomtype.isDeleted?'bg-red-800':'bg-white'} `}
             >
               <td className="px-4 py-2 border-b text-left whitespace-nowrap">{index + 1}</td>
               <td className="px-4 py-2 border-b text-left whitespace-nowrap">{
@@ -71,11 +72,11 @@ const RoomTypeTable = ({
               </td>
 
               <td className="px-4 py-1   text-left ">
-                {//user.isDeleted === false ?
+                {roomtype.isDeleted === false ?
                   <div className='flex flex-row justify-between'>
 
                     <button
-                      // onClick={() => deleteFunc(user.userId, true)}
+                      onClick={() => deleteFunc(roomtype.roomTypeID as Guid,roomtype.isDeleted??false)}
                       className='border-[2px] rounded-[3px] border-red-600 h-7 w-7 flex justify-center items-center'
                     ><TrashIcon className='h-4 w-4 text-red-600 ' /></button>
                     <button
@@ -83,12 +84,12 @@ const RoomTypeTable = ({
                       className='border-[2px] rounded-[3px] border-green-800 h-7 w-7 flex justify-center items-center bg-gray-200'
                     ><PencilIcon className='h-6 w-6 text-green-800' /></button>
                   </div>
-                  // :
-                  // <button onClick={() => deleteFunc(user.userId, false)}>
+                  :
+                  <button onClick={() => {deleteFunc(roomtype.roomTypeID as Guid,roomtype.isDeleted??true)}}>
 
-                  //   <ArrowUturnLeftIcon
-                  //     className='h-6 w-6 text-white' />
-                  // </button>
+                    <ArrowUturnLeftIcon
+                      className='h-6 w-6 text-white' />
+                  </button>
                 }
               </td>
             </tr>

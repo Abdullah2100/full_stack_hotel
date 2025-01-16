@@ -89,4 +89,10 @@ public class RoomtTypeBuissnes
     {
         return RoomTypeData.getAll();
     }
+
+
+    public static bool deleteOrUnDeleteRoomType(Guid id)
+    {
+        return      RoomTypeData.deleteOrUnDelete(id);
+    }
 }

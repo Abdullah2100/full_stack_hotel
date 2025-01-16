@@ -6,4 +6,5 @@ export interface IRoomType {
     createdBy?:Guid|null,
     createdAt?:Date |null;
     imagePath?:string |null;
+    isDeleted?:boolean |null;
 }
