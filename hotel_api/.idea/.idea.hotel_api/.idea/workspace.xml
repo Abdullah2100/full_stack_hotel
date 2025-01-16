@@ -12,7 +12,11 @@
       <change beforePath="$PROJECT_DIR$/../SQLQuery_2.sql" beforeDir="false" afterPath="$PROJECT_DIR$/../SQLQuery_2.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.hotel_api/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.hotel_api/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_business/RoomtTypeBuissnes.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/RoomtTypeBuissnes.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_data/RoomTypeData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/RoomTypeData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_data/dto/RoomTypeDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/dto/RoomTypeDto.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/components/tables/roomTypeTable.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/components/tables/roomTypeTable.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/module/roomModule.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/module/roomModule.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,6 +31,7 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/d62eb286436a45a6a9ba2df86a4c8444e28400/ac/9b12a14f/RuntimeHelpers.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/1c3f7d5c03bf77051eb8a758fb3549c4e2d4cb3dc6f6d567a94a315044961e/List.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/47c5b075d224daf3dd991dbdde5597e170483a5c76d48550a760962b93d5a2/DefaultHttpContext.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/4adb5b691829c26d83fa849c65de669c2b38704fa6a8e6216dafbcb24e24d4f/NpgsqlDataReader.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/5ef9e37e2f99ef2688a1586afed1cff6eef912a11aa9b20a56943a255a6e6b/RuntimeHelpers.CoreCLR.cs" root0="FORCE_HIGHLIGHTING" />
@@ -61,7 +66,7 @@
     ".NET Launch Settings Profile.hotel_api: http.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "XThreadsFramesViewSplitterKey": "0.12440191",
+    "XThreadsFramesViewSplitterKey": "0.07788945",
     "git-widget-placeholder": "start__roomtyp",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -148,6 +153,8 @@
       <workItem from="1736770451399" duration="16000" />
       <workItem from="1736840769457" duration="47000" />
       <workItem from="1736847526318" duration="3873000" />
+      <workItem from="1736937051477" duration="3307000" />
+      <workItem from="1737013505787" duration="4734000" />
     </task>
     <servers />
   </component>
@@ -265,26 +272,26 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/hotel_api/controller/AdminController.cs</url>
-          <line>516</line>
+          <line>517</line>
           <properties documentPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" containingFunctionPresentation="Method 'updateRoomTypes'">
             <startOffsets>
-              <option value="18971" />
+              <option value="18980" />
             </startOffsets>
             <endOffsets>
-              <option value="19042" />
+              <option value="19051" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="37" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/hotel_api/controller/AdminController.cs</url>
-          <line>559</line>
+          <line>560</line>
           <properties documentPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" containingFunctionPresentation="Method 'updateRoomTypes'">
             <startOffsets>
-              <option value="20415" />
+              <option value="20424" />
             </startOffsets>
             <endOffsets>
-              <option value="20483" />
+              <option value="20492" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="38" />
@@ -301,6 +308,32 @@
             </endOffsets>
           </properties>
           <option name="timeStamp" value="39" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/hotel_api/controller/AdminController.cs</url>
+          <line>593</line>
+          <properties documentPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" containingFunctionPresentation="Method 'deleteRoomtype'">
+            <startOffsets>
+              <option value="21548" />
+            </startOffsets>
+            <endOffsets>
+              <option value="21619" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="40" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/hotel_data/RoomTypeData.cs</url>
+          <line>288</line>
+          <properties documentPath="$PROJECT_DIR$/hotel_data/RoomTypeData.cs" containingFunctionPresentation="Method 'deleteOrUnDelete'">
+            <startOffsets>
+              <option value="10166" />
+            </startOffsets>
+            <endOffsets>
+              <option value="10230" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="41" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

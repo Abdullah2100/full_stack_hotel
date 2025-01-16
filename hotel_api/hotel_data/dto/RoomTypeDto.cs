@@ -7,6 +7,7 @@ public class RoomTypeDto
         string roomTypeName,
         Guid createdBy,
         DateTime createdAt,
+        bool isDeleted = false,
         string? imagePath = null
         )
     {
@@ -15,6 +16,7 @@ public class RoomTypeDto
         this.createdBy = createdBy;
         this.createdAt = createdAt;
         this.imagePath = imagePath;
+        this.isDeleted = isDeleted;
     }
 
     public Guid? roomTypeID { get; set; }
@@ -22,4 +24,5 @@ public class RoomTypeDto
     public string? imagePath { get; set; }
     public Guid createdBy { get; set; }
     public DateTime createdAt { get; set; }
+    public bool isDeleted { get; set; }
 }

@@ -257,7 +257,8 @@ public class RoomTypeData
                                     createdAt: (DateTime)reader["createdat"],
                                     imagePath: reader["imagepath"] == DBNull.Value
                                         ? null
-                                        : (string)reader["imagepath"]
+                                        : (string)reader["imagepath"],
+                                    isDeleted:(bool)reader["isdeleted"]
                                 );
                                 roomtypes.Add(roomtypeHolder);
                             }
@@ -274,4 +275,36 @@ public class RoomTypeData
 
         return roomtypes;
     }
+    
+    public static bool deleteOrUnDelete(
+        Guid id
+    )
+    {
+        bool isDeleted = false;
+        try
+        {
+            using (var connection = new NpgsqlConnection(connectionUr))
+            {
+                connection.Open();
+                string query = @"DELETE FROM  roomtypes WHERE roomtypeid =@id;";
+
+                using (var cmd = new NpgsqlCommand(query, connection))
+                {
+                    cmd.Parameters.AddWithValue("@id", id);
+                    cmd.ExecuteNonQuery();
+                    isDeleted = true;
+                }
+            }
+
+            return isDeleted;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("\nthis error from roomtype deleted {0} \n", ex.Message);
+        }
+
+        return isDeleted;
+    }
+ 
+    
 }

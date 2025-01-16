@@ -15,6 +15,7 @@ import { useSelector } from 'react-redux';
 import RoomTypeTable from '../../components/tables/roomTypeTable';
 import ImageHolder from '../../components/imageHolder';
 import { generalMessage } from '../../util/generalPrint';
+import { Guid } from 'guid-typescript';
 
 const RoomType = () => {
   const refreshToken = useSelector((state: RootState) => state.auth.refreshToken)
@@ -105,7 +106,7 @@ const RoomType = () => {
   }
   );
 
-  const userMutaion = useMutation({
+  const roomtypeMutaion = useMutation({
     mutationFn: ({ data, endpoint, methodType,
       jwtToken
     }: {
@@ -165,20 +166,44 @@ const RoomType = () => {
 
     if (imageHolder !== undefined)
       roomtTypeData.append("image", imageHolder)
-    if(isUpdate)
-      roomtTypeData.append("id",roomType.roomTypeID) 
+    if (isUpdate)
+      roomtTypeData.append("id", roomType.roomTypeID)
 
     let endPoint = import.meta.env.VITE_CREATEROOMTYPE;
-    const method= isUpdate ? enApiType.PUT : enApiType.POST;
+    const method = isUpdate ? enApiType.PUT : enApiType.POST;
     generalMessage(`this the method  from ${method}`)
 
-    userMutaion.mutate({
+    roomtypeMutaion.mutate({
       data: roomtTypeData,
       endpoint: endPoint,
       methodType: method,
       jwtToken: refreshToken
     })
   }
+
+
+  const deleteOrUndeleteUser = async (roomtypeid: Guid, isDeleted: boolean) => {
+    const endpoint = import.meta.env.VITE_DELETEORUNDELETEROOMTYPE
+    
+    generalMessage(`this show from delete function ${endpoint} `)
+
+    try {
+
+      await roomtypeMutaion.mutate({
+        data: undefined,
+        endpoint: endpoint + '/' + roomtypeid,
+        methodType: enApiType.DELETE,
+        jwtToken: refreshToken
+      })
+
+      refetch()
+      showToastiFy(isDeleted ? "roomtypeDelete Seccessfuly" : "roomtype unDeleted Seccessfuly", enMessage.SECCESSFUL)
+    }
+    catch (error) {
+      showToastiFy(isDeleted ? "could not delete roomtype" : "could not undelete roomtype", enMessage.ERROR)
+
+    }
+  };
 
 
   useEffect(() => {
@@ -262,7 +287,7 @@ const RoomType = () => {
           data={data !== undefined ? data.data as unknown as IRoomType[] : undefined}
           setRoomType={setRoomType}
           setUpdate={setUpdate}
-          // deleteFunc={()=>{} } 
+          deleteFunc={deleteOrUndeleteUser}
           isShwoingDeleted={false} />
       </div>
     </div>
