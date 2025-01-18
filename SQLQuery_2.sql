@@ -349,8 +349,6 @@ RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
 CREATE TRIGGER tr_user_deletet BEFORE DELETE ON users FOR EACH ROW EXECUTE FUNCTION fn_user_deleted();
-
-
 CREATE VIEW usersview AS
 SELECT per.PersonID,
     per.Name,
@@ -646,7 +644,6 @@ SET name = CASE
         ELSE address
     END
 WHERE personid = personid_u;
-
 UPDATE users
 SET username = CASE
         WHEN username_u <> username THEN username_u
@@ -664,8 +661,10 @@ SET username = CASE
         WHEN dateofbirth <> brithday_u THEN brithday_u
         ELSE dateofbirth
     END,
-    imagepath = CASE WHEN imagePath_u IS NOT  NULL THEN imagePath_u  
-    ELSE  imagepath   END
+    imagepath = CASE
+        WHEN imagePath_u IS NOT NULL THEN imagePath_u
+        ELSE imagepath
+    END
 WHERE userid = userid_u;
 RETURN 1;
 EXCEPTION
@@ -812,126 +811,104 @@ CREATE TABLE RoomTypes (
     CreatedBy UUID NOT NULL,
     CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     IsDeleted bool DEFAULT FALSE,
-    imagePath   VARCHAR(50) DEFAULT NULL
+    imagePath VARCHAR(50) DEFAULT NULL
 );
 -----
-
 ----
 CREATE OR REPLACE FUNCTION fn_roomtype_insert_new(
-    name_s VARCHAR,
-    createdby_s UUID,
-    imagepath VARCHAR
-) RETURNS BOOLEAN AS $$
-DECLARE
-    roomType_id UUID;
-BEGIN 
-    -- Insert the new room type and capture the RoomTypeID
-    INSERT INTO RoomTypes(name, createdby, imagepath) 
-    VALUES (name_s, createdby_s, imagepath)
-    RETURNING RoomTypeID INTO roomType_id;
-
-    -- Check if the RoomTypeID was successfully inserted
-    IF roomType_id IS NOT NULL THEN
-        RETURN TRUE;
-    ELSE
-        RETURN FALSE;
-    END IF;
-
+        name_s VARCHAR,
+        createdby_s UUID,
+        imagepath VARCHAR
+    ) RETURNS BOOLEAN AS $$
+DECLARE roomType_id UUID;
+BEGIN -- Insert the new room type and capture the RoomTypeID
+INSERT INTO RoomTypes(name, createdby, imagepath)
+VALUES (name_s, createdby_s, imagepath)
+RETURNING RoomTypeID INTO roomType_id;
+-- Check if the RoomTypeID was successfully inserted
+IF roomType_id IS NOT NULL THEN RETURN TRUE;
+ELSE RETURN FALSE;
+END IF;
 EXCEPTION
-    WHEN OTHERS THEN
-        RAISE EXCEPTION 'You do not have permission to create room type';
-        RETURN FALSE;
+WHEN OTHERS THEN RAISE EXCEPTION 'You do not have permission to create room type';
+RETURN FALSE;
 END;
 $$ LANGUAGE plpgsql;
 ---
 ---
-
-
 CREATE OR REPLACE FUNCTION fn_roomtype_update_new(
-    name_s VARCHAR,
-    roomtypeid_s UUID,
-    createdby_s UUID,
-    imagepath_s VARCHAR
-) RETURNS BOOLEAN AS $$
-DECLARE 
-    is_hasPermission BOOLEAN := FALSE;
-    is_creation BOOLEAN := FALSE;
-    name_compare VARCHAR;
-BEGIN 
-        is_hasPermission := isAdminOrSomeOneHasPersmission(createdby_s);
-    if is_hasPermission = FALSE THEN 
-      RETURN FALSE;
-    END IF;
-
-    UPDATE  RoomTypes SET
-    name = CASE WHEN Name<>name_s THEN name_s ELSE name END, 
-    createdby = CASE WHEN createdby_s<>createdby_s THEN createdby_s ELSE createdby END, 
-    imagepath = CASE WHEN imagepath<>imagepath_s and imagepath_s IS NOT NULL THEN imagepath_s ELSE imagepath END 
-    WHERE roomtypeid = roomtypeid_s;
-   
-    SELECT name INTO name_compare FROM RoomTypes WHERE roomtypeid = roomtypeid_s;
-
-    is_creation = (name_compare = name_s);
-    RETURN is_creation;
+        name_s VARCHAR,
+        roomtypeid_s UUID,
+        createdby_s UUID,
+        imagepath_s VARCHAR
+    ) RETURNS BOOLEAN AS $$
+DECLARE is_hasPermission BOOLEAN := FALSE;
+is_creation BOOLEAN := FALSE;
+name_compare VARCHAR;
+BEGIN is_hasPermission := isAdminOrSomeOneHasPersmission(createdby_s);
+if is_hasPermission = FALSE THEN RETURN FALSE;
+END IF;
+UPDATE RoomTypes
+SET name = CASE
+        WHEN Name <> name_s THEN name_s
+        ELSE name
+    END,
+    createdby = CASE
+        WHEN createdby_s <> createdby_s THEN createdby_s
+        ELSE createdby
+    END,
+    imagepath = CASE
+        WHEN imagepath <> imagepath_s
+        and imagepath_s IS NOT NULL THEN imagepath_s
+        ELSE imagepath
+    END
+WHERE roomtypeid = roomtypeid_s;
+SELECT name INTO name_compare
+FROM RoomTypes
+WHERE roomtypeid = roomtypeid_s;
+is_creation = (name_compare = name_s);
+RETURN is_creation;
 EXCEPTION
-    WHEN OTHERS THEN RAISE EXCEPTION 'Something went wrong: %',
+WHEN OTHERS THEN RAISE EXCEPTION 'Something went wrong: %',
 SQLERRM;
-        RETURN FALSE;
+RETURN FALSE;
 END;
 $$ LANGUAGE plpgsql;
 ----
 -----
 CREATE OR REPLACE FUNCTION fn_roomtype_insert() RETURNS TRIGGER AS $$
-DECLARE 
-    is_hasPermission BOOLEAN := FALSE;
-    is_exist BOOLEAN := FALSE;
-BEGIN 
-
-    is_hasPermission := isAdminOrSomeOneHasPersmission(NEW.createdby);
-    IF is_hasPermission = FALSE THEN 
-    RETURN NULL;
-    END IF;
-    RETURN NEW;
+DECLARE is_hasPermission BOOLEAN := FALSE;
+is_exist BOOLEAN := FALSE;
+BEGIN is_hasPermission := isAdminOrSomeOneHasPersmission(NEW.createdby);
+IF is_hasPermission = FALSE THEN RETURN NULL;
+END IF;
+RETURN NEW;
 EXCEPTION
-WHEN OTHERS THEN  RAISE EXCEPTION 'you do not have permission to create roomtype';
+WHEN OTHERS THEN RAISE EXCEPTION 'you do not have permission to create roomtype';
 RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
 ---
 ---
-CREATE OR REPLACE FUNCTION fn_roomtype_delete()
-RETURNS TRIGGER
-AS $$
-BEGIN
-
-UPDATE roomtypes  SET IsDeleted = CASE WHEN OLD.isdeleted = TRUE THEN FALSE ELSE TRUE END WHERE roomtypeid = OLD.roomtypeid;
+CREATE OR REPLACE FUNCTION fn_roomtype_delete() RETURNS TRIGGER AS $$ BEGIN
+UPDATE roomtypes
+SET IsDeleted = CASE
+        WHEN OLD.isdeleted = TRUE THEN FALSE
+        ELSE TRUE
+    END
+WHERE roomtypeid = OLD.roomtypeid;
 RETURN NULL;
 EXCEPTION
-WHEN OTHERS THEN  RAISE EXCEPTION 'you do not have permission to create roomtype';
+WHEN OTHERS THEN RAISE EXCEPTION 'you do not have permission to create roomtype';
 RETURN NULL;
-
-END
-
-$$ Language plpgsql;
-
+END $$ Language plpgsql;
 ---
-
-CREATE TRIGGER tr_roomtype_delete
-BEFORE DELETE ON roomtypes FOR EACH 
-ROW EXECUTE FUNCTION fn_roomtype_delete();
-
+CREATE TRIGGER tr_roomtype_delete BEFORE DELETE ON roomtypes FOR EACH ROW EXECUTE FUNCTION fn_roomtype_delete();
 ---
-CREATE OR REPLACE TRIGGER tr_roomtType_insert
-BEFORE INSERT
-ON RoomTypes FOR EACH ROW EXECUTE FUNCTION fn_roomType_insert();
-
-CREATE OR REPLACE TRIGGER tr_roomtType_update
-BEFORE update
-ON RoomTypes FOR EACH ROW EXECUTE FUNCTION fn_roomType_insert();
-
-
-
-
+CREATE OR REPLACE TRIGGER tr_roomtType_insert BEFORE
+INSERT ON RoomTypes FOR EACH ROW EXECUTE FUNCTION fn_roomType_insert();
+CREATE OR REPLACE TRIGGER tr_roomtType_update BEFORE
+update ON RoomTypes FOR EACH ROW EXECUTE FUNCTION fn_roomType_insert();
 --
 CREATE OR REPLACE FUNCTION fn_roomtype_update(name_n VARCHAR(50), createdBy_n UUID) RETURNS BOOLEAN AS $$
 DECLARE is_hasPermission BOOLEAN := FALSE;
@@ -952,7 +929,6 @@ SQLERRM;
 RETURN FALSE;
 END;
 $$ LANGUAGE plpgsql;
-
 --
 
 -- CREATE TABLE RoomTypeUpdate (
@@ -1046,10 +1022,101 @@ $$ LANGUAGE plpgsql;
 -- CREATE OR REPLACE TRIGGER tr_roomtype_deleted()
 -- BEFORE DELETE ON RoomTypes FOR EACH EXECUTE FUNCTION fn_roomType_deleted();
 --
-CREATE TABLE Departments (
-DepartmentID BIGSERIAL PRIMARY KEY,
-Name VARCHAR(50) NOT NULL
+
+CREATE TABLE Rooms (
+    RoomID UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    Status VARCHAR(10) CHECK (
+        Status IN ('Available', 'Booked', 'Under Maintenance')
+    ) DEFAULT 'Available',
+    pricePerNight NUMERIC(10, 2),
+    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    roomtypeid UUID NOT NULL REFERENCES RoomTypes (roomtypeid),
+    capacity INT NOT NULL,
+    bedNumber INT NOT NULL,
+    belongTo UUID REFERENCES users(userid)
 );
+--
+
+---
+CREATE OR REPLACE FUNCTION fn_room_insert_new (
+        status VARCHAR(10),
+        pricePerNight_ NUMERIC(10, 2),
+        CreatedAt_ TIMESTAMP,
+        roomtypeid_ UUID,
+        capacity_ INT,
+        bedNumber_ INT,
+        belongTo_ UUID
+    ) RETURNS INT AS $$
+DECLARE roomid_holder UUID;
+BEGIN
+INSERT INTO rooms(
+        Status,
+        pricePerNight,
+        CreatedAt,
+        roomtypeid,
+        capacity,
+        bedNumber,
+        belongTo
+    )
+VALUES(
+        status,
+        pricePerNight_,
+        CreatedAt_,
+        roomtypeid_,
+        capacity_,
+        bedNumber_,
+        belongTo_
+    )
+RETURNING roomid INTO roomid_holder;
+RETURN roomid_holder is NOT NULL;
+EXCEPTION
+WHEN OTHERS THEN RAISE EXCEPTION 'Something went wrong: %',
+SQLERRM;
+RETURN 0;
+END;
+$$ LANGUAGE PLPGSQL;
+---
+
+
+
+
+
+
+
+---
+CREATE OR REPLACE FUNCTION fn_room_insert()
+RETURNS TRIGGER
+AS $$
+DECLARE
+isUserDeleted BOOLEAN;
+BEGIN
+
+SELECT isdeleted INTO  isUserDeleted FROM users WHERE userid = NEW.userid;
+IF isUserDeleted IS NOT NULL AND isUserDeleted = TRUE THEN
+RETURN NEW;
+END IF;
+RETURN NULL;
+EXCEPTION
+WHEN OTHERS THEN RAISE EXCEPTION 'Something went wrong: %',
+SQLERRM;
+RETURN NULL;
+END;
+$$ LANGUAGE plpgsql ;
+
+CREATE TRIGGER tr_roomt_insert
+BEFORE INSERT ON rooms FOR EACH ROW EXECUTE FUNCTION fn_room_insert();
+
+---
+
+
+
+---
+CREATE TABLE Departments (
+    DepartmentID BIGSERIAL PRIMARY KEY,
+    Name VARCHAR(50) NOT NULL
+);
+
+
 --
 
 --
@@ -1121,38 +1188,6 @@ $$LANGUAGE plpgsql;
 
 --
 CREATE TRIGGER tr_employee_deleted BEFORE DELETE ON Employees FOR EACH ROW EXECUTE FUNCTION handle_employee_deleted ();
---
-
---
-RoomTypes (
-RoomTypeID BIGSERIAL PRIMARY KEY,
-TypeName VARCHAR(50) NOT NULL,
-Description TEXT,
-CreatedBy INT NOT NULL REFERENCES Employees (EmployeeID),
-DeletedBy INT NULL REFERENCES Employees (EmployeeID),
-CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-DeletedAt TIMESTAMP NULL,
-IsDeleted bool DEFAULT FALSE,
-);
---
-
---
-CREATE TABLE Rooms (
-RoomID BIGSERIAL PRIMARY KEY,
-RoomNumber VARCHAR(10) UNIQUE NOT NULL,
-Status VARCHAR(10) CHECK (
-    Status IN ('Available', 'Booked', 'Under Maintenance')
-) DEFAULT 'Available',
-PricePerOneDay NUMERIC(10, 2),
-CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-RoomTypeID INT NOT NULL REFERENCES RoomTypes (RoomTypeID),
-ExpectedBy BIGINT NOT NULL REFERENCES Employees (EmployeeID),
-CreatedBy BIGINT NOT NULL REFERENCES Users (UserID),
-DeletedBy BIGINT NULL REFERENCES Employees (EmployeeID),
-CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-DeletedAt TIMESTAMP NULL,
-ExcptedAt TIMESTAMP NULL,
-);
 --
 
 --
