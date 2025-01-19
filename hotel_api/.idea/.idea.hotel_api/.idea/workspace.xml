@@ -10,7 +10,6 @@
   <component name="ChangeListManager">
     <list default="true" id="a5d946be-ded5-4850-9962-9f8d801bf9de" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.hotel_api/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.hotel_api/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/Services/MinIoServices.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/Services/MinIoServices.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,7 +60,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "XThreadsFramesViewSplitterKey": "0.07788945",
-    "git-widget-placeholder": "room",
+    "git-widget-placeholder": "main",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -271,10 +270,10 @@
           <line>517</line>
           <properties documentPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" containingFunctionPresentation="Method 'updateRoomTypes'">
             <startOffsets>
-              <option value="18980" />
+              <option value="18972" />
             </startOffsets>
             <endOffsets>
-              <option value="19051" />
+              <option value="19043" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="37" />
@@ -284,10 +283,10 @@
           <line>560</line>
           <properties documentPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" containingFunctionPresentation="Method 'updateRoomTypes'">
             <startOffsets>
-              <option value="20424" />
+              <option value="20416" />
             </startOffsets>
             <endOffsets>
-              <option value="20492" />
+              <option value="20484" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="38" />
@@ -310,10 +309,10 @@
           <line>593</line>
           <properties documentPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" containingFunctionPresentation="Method 'deleteRoomtype'">
             <startOffsets>
-              <option value="21548" />
+              <option value="21532" />
             </startOffsets>
             <endOffsets>
-              <option value="21619" />
+              <option value="21603" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="40" />

@@ -27,6 +27,7 @@ const RoomType = () => {
   const imageRef = useRef<HTMLInputElement>(null);
   const [imageHolder, setImageHolder] = useState<File | undefined>(undefined);
   const [image, setImage] = useState<string | undefined>(undefined)
+  const [isDraggable, changeDraggableStatus] = useState(false)
 
   const [roomType, setRoomType] = useState<IRoomType>({
     roomTypeName: '',
@@ -48,7 +49,7 @@ const RoomType = () => {
   }
 
 
-  const uploadImageDisplay = async (e) => {
+  const uploadImageDisplayFromSelectInput = async (e) => {
     if (imageRef.current && imageRef.current.files && imageRef.current.files[0]) {
       const uploadedFile = imageRef.current.files[0];
       const fileExtension = uploadedFile.name.split('.').pop()?.toLowerCase();
@@ -184,7 +185,7 @@ const RoomType = () => {
 
   const deleteOrUndeleteUser = async (roomtypeid: Guid, isDeleted: boolean) => {
     const endpoint = import.meta.env.VITE_DELETEORUNDELETEROOMTYPE
-    
+
     generalMessage(`this show from delete function ${endpoint} `)
 
     try {
@@ -206,6 +207,52 @@ const RoomType = () => {
   };
 
 
+
+  const draggbleFun = (e) => {
+    e.preventDefault();
+    changeDraggableStatus(true)
+  }
+
+  const draggableOver = (e) => {
+    e.preventDefault();
+    changeDraggableStatus(true)
+  }
+  const handleDragLeave = () => {
+    changeDraggableStatus(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    changeDraggableStatus(false)
+    const file = e.dataTransfer.files[0];
+    const fileExtension = file.name.split('.').pop()?.toLowerCase();
+
+    if (!['png', 'jpg', 'jpeg'].includes(fileExtension || '')) {
+      showToastiFy("You must select a valid image", enMessage.ERROR);
+      return;
+    }
+
+    const cachedURL = URL.createObjectURL(file);
+
+    const img = new Image();
+    img.onload = () => {
+      const { naturalHeight, naturalWidth } = img;
+
+      showToastiFy(`Image height: ${naturalHeight}\nImage width: ${naturalWidth}`, enMessage.ERROR);
+
+      //   if (naturalHeight > 40 || naturalWidth > 40) {
+      //     showToastiFy("Image must have a minimum height and width of 40px", enMessage.ERROR);
+      //     return;
+      //   }
+
+      setImage(cachedURL);
+      setImageHolder(file)
+    };
+
+    img.src = cachedURL;
+
+  }
+
   useEffect(() => {
     if (error != undefined) {
       showToastiFy(error?.message?.toString() || "An unknown error occurred", enMessage.ERROR)
@@ -226,13 +273,7 @@ const RoomType = () => {
 
         <div className='mt-4 flex flex-row flex-wrap gap-1 w-full'>
           <div className='w-full flex flex-col-reverse md:flex-row md:justify-between mb-4'>
-            <input
-              type="file"
-              id="file"
-              ref={imageRef}
-              onChange={uploadImageDisplay}
-              // onLoad={uploadImageDisplay}
-              hidden />
+
 
             <TextInput
               keyType='roomTypeName'
@@ -247,7 +288,11 @@ const RoomType = () => {
             />
 
             <div
-              className=' h-40 w-40 mb-2 md:mb-0 border-[2px] border-dashed border-gray-200 rounded-sm relative'>
+              onDrag={draggbleFun}
+              onDragOver={draggableOver}
+              onDrop={handleDrop}
+              onDragLeave={handleDragLeave}
+              className={` h-40 w-40 mb-2 md:mb-0 border-[2px] border-dashed border-gray-200 rounded-sm relative ${isDraggable ? 'bg-gray-500' : 'bg-white'}`}>
               <button
                 onClick={selectImage}
                 className='group absolute end-1 top-2 hover:bg-gray-600 hover:rounded-sm '>
@@ -256,12 +301,18 @@ const RoomType = () => {
               <div className='absolute h-full w-full  flex flex-row justify-center items-center '
               >
                 <ImageHolder
-                  src={image ?? roomType?.imagePath ?
+                  src={image != undefined ? image : roomType?.imagePath ?
                     `http://172.19.0.1:9000/roomtype/` + roomType.imagePath?.toString() : undefined}
                   style='flex flex-row h-20 w-20 '
                   isFromTop={true} />
               </div>
 
+              <input
+                type="file"
+                id="file"
+                ref={imageRef}
+                onChange={uploadImageDisplayFromSelectInput}
+                hidden />
             </div>
 
           </div>
