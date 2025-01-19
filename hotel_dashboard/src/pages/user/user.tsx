@@ -33,6 +33,7 @@ const User = () => {
   const [page, setPage] = useState<number>(1)
   const [isNoData, setNoData] = useState<boolean>(false)
   const [isShowingDeleted, setShowingDeleted] = useState<boolean>(false)
+  const [isDraggable, changeDraggableStatus] = useState(false)
 
   const [userHolder, setUser] = useState<userAuthModule>({
     userId: undefined,
@@ -70,19 +71,21 @@ const User = () => {
 
 
   const userMutaion = useMutation({
-    mutationFn: ({data,endpoint,methodType,
+    mutationFn: ({ data, endpoint, methodType,
       jwtToken
-    }:{data?:FormData|undefined,
-      endpoint:string,
-      methodType:enApiType,
-    jwtToken?:string|null}) =>
+    }: {
+      data?: FormData | undefined,
+      endpoint: string,
+      methodType: enApiType,
+      jwtToken?: string | null
+    }) =>
       apiClient({
         enType: methodType,
         endPoint: endpoint
         , prameters: data,
         isRquireAuth: true,
-        jwtValue: jwtToken??undefined,
-        isFormData: data!=undefined
+        jwtValue: jwtToken ?? undefined,
+        isFormData: data != undefined
       }),
     onSuccess: (data) => {
       setState(enStatus.complate)
@@ -182,13 +185,14 @@ const User = () => {
     // if (isUpdate) data
     generalMessage(`this shown the user id ${userHolder.userId}`)
 
-    let endPoint =isUpdate? import.meta.env.VITE_UPDATEUSERS : import.meta.env.VITE_CreateUSERS;
+    let endPoint = isUpdate ? import.meta.env.VITE_UPDATEUSERS : import.meta.env.VITE_CreateUSERS;
 
-    await userMutaion.mutate({ data:formData,endpoint:endPoint,methodType:enApiType.POST,jwtToken:refreshToken})
+    await userMutaion.mutate({ data: formData, endpoint: endPoint, methodType: enApiType.POST, jwtToken: refreshToken })
 
   };
 
- const deleteOrUndeleteUser = async (userId: Guid, isDeletion?: boolean | undefined) => {
+
+  const deleteOrUndeleteUser = async (userId: Guid, isDeletion?: boolean | undefined) => {
     let endpoint = '';
     if (isDeletion !== undefined) {
       endpoint = (isDeletion ? import.meta.env.VITE_DELETEDTEUSERS : import.meta.env.VITE_UNDELETE_USER)
@@ -197,11 +201,12 @@ const User = () => {
       endpoint = import.meta.env.VITE_MAKEUSERVIP
     }
 
-    await userMutaion.mutate({ 
-      data:undefined,
-      endpoint:endpoint+'/' + userId,
-      methodType:isDeletion ? enApiType.DELETE : enApiType.POST,
-      jwtToken:refreshToken})
+    await userMutaion.mutate({
+      data: undefined,
+      endpoint: endpoint + '/' + userId,
+      methodType: isDeletion ? enApiType.DELETE : enApiType.POST,
+      jwtToken: refreshToken
+    })
 
   };
 
@@ -231,6 +236,42 @@ const User = () => {
     }
   }
 
+
+  const draggbleFun = (e) => {
+    e.preventDefault();
+    changeDraggableStatus(true)
+  }
+
+  const draggableOver = (e) => {
+    e.preventDefault();
+    changeDraggableStatus(true)
+  }
+  const handleDragLeave = () => {
+    changeDraggableStatus(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    changeDraggableStatus(false)
+    const file = e.dataTransfer.files[0];
+    const fileExtension = file.name.split('.').pop()?.toLowerCase();
+    if (!['png', 'jpg', 'jpeg'].includes(fileExtension || '')) {
+      showToastiFy("you must select valide image ", enMessage.ERROR)
+      return;
+    }
+    const cachedURL = URL.createObjectURL(file);
+    generalMessage("this the image url " + cachedURL)
+    setImage(cachedURL);
+    setUser((prev) => ({
+      ...prev,
+      ['imagePath']: file,
+    }));
+
+  }
+
+
+
+
   useEffect(() => {
     if (error) {
       setNoData(true)
@@ -255,12 +296,18 @@ const User = () => {
           <h3 className='text-2xl ms-1'>Users</h3>
         </div>
         <div className='relative'>
-          <div className='h-20 w-20 bg-green-400 rounded-full mt-4 flex flex-row items-center justify-center  overflow-hidden
-          '>
+          <div
+            onDrag={draggbleFun}
+            onDragOver={draggableOver}
+            onDrop={handleDrop}
+            onDragLeave={handleDragLeave}
+
+            className={`h-20 w-20 ${isDraggable ? 'bg-gray-500' : 'bg-green-400'} rounded-full mt-4 flex flex-row items-center justify-center  overflow-hidden
+          `}>
 
             <ImageHolder
-              src={image ??userHolder?.imagePath?
-                `http://172.19.0.1:9000/user/` + userHolder.imagePath?.toString():undefined}
+              src={image != undefined ? image : userHolder?.imagePath ?
+                `http://172.19.0.1:9000/user/` + userHolder.imagePath?.toString() : undefined}
               style='flex flex-row h-20 w-20 '
               isFromTop={true} />
 
@@ -271,8 +318,6 @@ const User = () => {
             className='absolute bg-gray-300 rounded-full p-1 end-1 -bottom-1'>
             <CameraIcon className='h-4 w-4' />
           </button>
-        </div>
-        <div className='mt-4 flex flex-row flex-wrap gap-1'>
 
           <input
             type="file"
@@ -280,6 +325,12 @@ const User = () => {
             ref={imageRef}
             onChange={uploadImageDisplay}
             hidden />
+        </div>
+
+
+        <div className='mt-4 flex flex-row flex-wrap gap-1'>
+
+
 
           <TextInput
 
