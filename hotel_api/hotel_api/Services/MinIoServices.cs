@@ -58,14 +58,22 @@ namespace hotel_api.Services
             }
         }
 
-        public static async Task<string?> uploadFile(IConfigurationServices _config, IFormFile file,
-            enBucketName bucketName,string? previuseFileName = null)
+        public static async Task<string?> uploadFile(
+            IConfigurationServices _config, 
+            IFormFile file,
+            enBucketName bucketName,
+            string? previuseFileName = null,
+            string? filePath = null
+            )
         {
             try
             {
                 var bucketNameStr = bucketName.ToString().ToLower();
                 var minioClient = _client(_config);
                 string fullName = clsUtil.generateGuid() + ".png";
+                string fileFullPath = filePath != null ? $"{filePath}/{fullName}" : fullName;
+                string? fileFullPreviusePath = filePath != null ? $"{filePath}/{previuseFileName}" : previuseFileName;
+
 
 
                 if (minioClient == null)
@@ -83,24 +91,28 @@ namespace hotel_api.Services
 
                 bool isHasPrevImage = false;
                 
-                if (previuseFileName != null)
+                if (fileFullPreviusePath != null)
                 {
-                    isHasPrevImage =  await isFileExist(minioClient, previuseFileName, bucketNameStr);
+                    isHasPrevImage =  await isFileExist(
+                        minioClient,
+                        fileFullPreviusePath,
+                        bucketNameStr);
                     
                 }
 
                 if (isHasPrevImage)
                 {
-                    await deleteFile(minioClient, previuseFileName, bucketNameStr);
+                    await deleteFile(minioClient, fileFullPreviusePath, bucketNameStr);
                 }
 
 
                 // Upload the file
                 using (var fileStream = file.OpenReadStream())
                 {
+                    
                     var putObject = new PutObjectArgs()
                         .WithBucket(bucketNameStr)
-                        .WithObject(fullName)
+                        .WithObject(fileFullPath)
                         .WithStreamData(fileStream)
                         .WithObjectSize(file.Length)
                         .WithContentType(file.ContentType);
