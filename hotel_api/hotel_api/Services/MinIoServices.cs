@@ -58,15 +58,18 @@ namespace hotel_api.Services
             }
         }
 
-        public static async Task<string?> uploadFile(IConfigurationServices _config, IFormFile file,
-            enBucketName bucketName,string? previuseFileName = null)
+        public static async Task<string?> uploadFile(
+            IConfigurationServices _config, 
+            IFormFile file,
+            enBucketName bucketName, 
+            string? previuseFileName = null
+            )
         {
             try
             {
                 var bucketNameStr = bucketName.ToString().ToLower();
                 var minioClient = _client(_config);
                 string fullName = clsUtil.generateGuid() + ".png";
-
 
                 if (minioClient == null)
                 {
@@ -81,19 +84,12 @@ namespace hotel_api.Services
                     await _createNewBucket(minioClient, bucketNameStr);
                 }
 
-                bool isHasPrevImage = false;
-                
                 if (previuseFileName != null)
                 {
-                    isHasPrevImage =  await isFileExist(minioClient, previuseFileName, bucketNameStr);
-                    
+                    bool isHasPrevImage = await isFileExist(minioClient, previuseFileName, bucketNameStr);
+                    if (!isHasPrevImage)
+                        await deleteFile(minioClient, previuseFileName, bucketNameStr);
                 }
-
-                if (isHasPrevImage)
-                {
-                    await deleteFile(minioClient, previuseFileName, bucketNameStr);
-                }
-
 
                 // Upload the file
                 using (var fileStream = file.OpenReadStream())
@@ -118,6 +114,75 @@ namespace hotel_api.Services
             }
         }
 
+        public static async Task<List<string>?> uploadFile(
+                IConfigurationServices _config,
+                List<IFormFile> file,
+                enBucketName bucketName, 
+                string? filePath = null,
+                List<string>? previuseFileName = null
+                )
+        {
+            List<string> result = new List<string>();
+            try
+            {
+                var bucketNameStr = bucketName.ToString().ToLower();
+                var minioClient = _client(_config);
+                if (minioClient == null)
+                {
+                    Console.WriteLine("Failed to initialize MinIO client.");
+                    return null;
+                }
+
+                foreach (var formFile in file)
+                {
+                    string fullName = clsUtil.generateGuid() + ".png";
+                    string fileFullPath = filePath != null ? $"{filePath}/{fullName}" : fullName;
+
+                    // Check if bucket exists and create if necessary
+                    var isExistBucket = await _isExistBucket(minioClient, bucketNameStr);
+
+                    if (!isExistBucket)
+                    {
+                        await _createNewBucket(minioClient, bucketNameStr);
+                    }
+
+                    if (previuseFileName != null)
+                    {
+                        foreach (var se in previuseFileName)
+                        {
+                            bool isExist = await isFileExist(minioClient, se, bucketNameStr);
+                            if (!isExist)
+                            {
+                                await deleteFile(minioClient, se, bucketNameStr);
+                            }
+                        }
+                    }
+
+                    // Upload the file
+                    using (var fileStream = formFile.OpenReadStream())
+                    {
+                        var putObject = new PutObjectArgs()
+                            .WithBucket(bucketNameStr)
+                            .WithObject(fullName)
+                            .WithStreamData(fileStream)
+                            .WithObjectSize(formFile.Length)
+                            .WithContentType(formFile.ContentType);
+
+                        await minioClient.PutObjectAsync(putObject).ConfigureAwait(false);
+
+                        result.Append(fileFullPath);
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                Console.WriteLine("Error uploading files: {0}", error.Message);
+            }
+
+            return result.Count > 0 ? result : null;
+        }
+
+        
         private static async Task<bool> deleteFile(IMinioClient client, string fileName, string bucketName)
         {
             try

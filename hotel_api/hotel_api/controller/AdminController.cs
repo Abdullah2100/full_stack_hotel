@@ -506,7 +506,7 @@ namespace hotel_api.controller
             }
         }
 
-        
+
         [Authorize]
         [HttpPut("roomtype")]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -580,7 +580,7 @@ namespace hotel_api.controller
             }
         }
 
-        
+
         [Authorize]
         [HttpDelete("roomtype/{roomtypeid:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -626,7 +626,76 @@ namespace hotel_api.controller
 
             return StatusCode(201, new { message = "created seccessfully" });
         }
-        
-        
+
+
+        //room
+        [Authorize]
+        [HttpPost("roomtype")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> createRoom
+        (
+            [FromForm] RoomRequestDto roomData
+        )
+        {
+            var authorizationHeader = HttpContext.Request.Headers["Authorization"];
+            var id = AuthinticationServices.GetPayloadFromToken("id",
+                authorizationHeader.ToString().Replace("Bearer ", ""));
+            Guid? adminid = null;
+            if (Guid.TryParse(id.Value.ToString(), out Guid outID))
+            {
+                adminid = outID;
+            }
+
+            if (adminid == null)
+            {
+                return StatusCode(401, "you not have Permission");
+            }
+
+            var isHasPermissionToCreateUser = AdminBuissnes.isAdminExist(adminid ?? Guid.Empty);
+
+
+            if (!isHasPermissionToCreateUser)
+            {
+                return StatusCode(401, "you not have Permission");
+            }
+
+
+            var roomId = Guid.NewGuid();
+
+
+            List<string>? imageHolderPath = null;
+            if (roomData.images != null)
+            {
+                await MinIoServices.uploadFile(
+                     _config,
+                   roomData.images,
+                   MinIoServices.enBucketName.RoomType,
+                  roomId.ToString()
+                );
+            }
+            
+            var roomHolder = new RoomBuisness(
+                new RoomDto(
+                    roomId: roomData.roomtypeid,
+                    status: roomData.status,
+                    pricePerNight: roomData.pricePerNight,
+                    roomtypeid: roomData.roomtypeid, 
+                    capacity:roomData.capacity,
+                    bedNumber:roomData.bedNumber,
+                    beglongTo:(Guid)adminid,
+                    createdAt: DateTime.Now
+                )
+            );
+
+            var result = roomHolder.save();
+
+            if (result == false)
+                return StatusCode(500, "some thing wrong");
+
+            return StatusCode(201, new { message = "created seccessfully" });
+        }
     }
 }

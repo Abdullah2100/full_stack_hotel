@@ -1033,7 +1033,8 @@ CREATE TABLE Rooms (
     roomtypeid UUID NOT NULL REFERENCES RoomTypes (roomtypeid),
     capacity INT NOT NULL,
     bedNumber INT NOT NULL,
-    belongTo UUID REFERENCES users(userid)
+    belongTo UUID REFERENCES users(userid),
+    updateAt TIMESTAMP NULL
 );
 --
 
@@ -1041,7 +1042,6 @@ CREATE TABLE Rooms (
 CREATE OR REPLACE FUNCTION fn_room_insert_new (
         status VARCHAR(10),
         pricePerNight_ NUMERIC(10, 2),
-        CreatedAt_ TIMESTAMP,
         roomtypeid_ UUID,
         capacity_ INT,
         bedNumber_ INT,
@@ -1052,7 +1052,6 @@ BEGIN
 INSERT INTO rooms(
         Status,
         pricePerNight,
-        CreatedAt,
         roomtypeid,
         capacity,
         bedNumber,
@@ -1061,7 +1060,6 @@ INSERT INTO rooms(
 VALUES(
         status,
         pricePerNight_,
-        CreatedAt_,
         roomtypeid_,
         capacity_,
         bedNumber_,
@@ -1077,23 +1075,15 @@ END;
 $$ LANGUAGE PLPGSQL;
 ---
 
-
-
-
-
-
-
 ---
-CREATE OR REPLACE FUNCTION fn_room_insert()
-RETURNS TRIGGER
-AS $$
-DECLARE
-isUserDeleted BOOLEAN;
+CREATE OR REPLACE FUNCTION fn_room_insert() RETURNS TRIGGER AS $$
+DECLARE isUserDeleted BOOLEAN;
 BEGIN
-
-SELECT isdeleted INTO  isUserDeleted FROM users WHERE userid = NEW.userid;
-IF isUserDeleted IS NOT NULL AND isUserDeleted = TRUE THEN
-RETURN NEW;
+SELECT isdeleted INTO isUserDeleted
+FROM users
+WHERE userid = NEW.userid;
+IF isUserDeleted IS NOT NULL
+AND isUserDeleted = TRUE THEN RETURN NEW;
 END IF;
 RETURN NULL;
 EXCEPTION
@@ -1101,12 +1091,94 @@ WHEN OTHERS THEN RAISE EXCEPTION 'Something went wrong: %',
 SQLERRM;
 RETURN NULL;
 END;
-$$ LANGUAGE plpgsql ;
+$$ LANGUAGE plpgsql;
+CREATE TRIGGER tr_roomt_insert BEFORE
+INSERT ON rooms FOR EACH ROW EXECUTE FUNCTION fn_room_insert();
+---
 
-CREATE TRIGGER tr_roomt_insert
-BEFORE INSERT ON rooms FOR EACH ROW EXECUTE FUNCTION fn_room_insert();
+----
+CREATE OR REPLACE FUNCTION fn_room_update_new (
+        roomid_ UUID,
+        status VARCHAR(10),
+        pricePerNight_ NUMERIC(10, 2),
+        roomtypeid_ UUID,
+        capacity_ INT,
+        bedNumber_ INT
+    ) RETURNS INT AS $$ 
+DECLARE
+  updateAt_holder  TIMESTAMP;   
+BEGIN
+UPDATE rooms
+SET Status = CASE
+        WHEN status <> NEW.Status
+        AND status IS NOT NULL THEN status
+        ELSE NEW.Status
+    END,
+    pricePerNight = CASE
+        WHEN pricePerNight_ <> NEW.pricePerNight
+        AND pricePerNight_ IS NOT NULL THEN pricePerNight_
+        ELSE NEW.pricePerNight
+    END,
+    roomtypeid = CASE
+        WHEN roomtypeid_ <> NEW.roomtypeid
+        AND roomtypeid_ IS NOT NULL THEN roomtypeid_
+        ELSE NEW.roomtypeid
+    END,
+    capacity = CASE
+        WHEN capacity_ <> NEW.capacity
+        AND capacity_ IS NOT NULL THEN capacity_
+        ELSE NEW.capacity
+    END,
+    bedNumber = CASE
+        WHEN bedNumber_ <> NEW.bedNumber
+        AND bedNumber_ IS NOT NULL THEN bedNumber_
+        ELSE NEW.bedNumber
+    END,
+    updateAt = CURRENT_TIMESTAMP
+    WHERE roomid = roomid_ ;
+    
+
+SELECT updateAt INTO updateAt_holder FROM rooms WHERE  roomid = roomid_ ;
+
+
+RETURN updateAt_holder is NOT NULL;
+EXCEPTION
+WHEN OTHERS THEN RAISE EXCEPTION 'Something went wrong: %',
+SQLERRM;
+RETURN 0;
+END;
+$$ LANGUAGE PLPGSQL;
+---
+
 
 ---
+CREATE OR REPLACE FUNCTION fn_room_update() RETURNS TRIGGER AS $$
+DECLARE 
+isUserDeleted BOOLEAN;
+
+BEGIN
+SELECT isdeleted INTO isUserDeleted
+FROM users
+WHERE userid = NEW.userid;
+IF isUserDeleted IS NOT NULL
+AND isUserDeleted = TRUE THEN RETURN NEW;
+END IF;
+RETURN NULL;
+EXCEPTION
+WHEN OTHERS THEN RAISE EXCEPTION 'Something went wrong: %',
+SQLERRM;
+RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+--
+
+--
+CREATE TRIGGER tr_roomt_update BEFORE
+INSERT ON rooms FOR EACH ROW EXECUTE FUNCTION fn_room_update();
+----
+
+
+
 
 
 
@@ -1115,8 +1187,6 @@ CREATE TABLE Departments (
     DepartmentID BIGSERIAL PRIMARY KEY,
     Name VARCHAR(50) NOT NULL
 );
-
-
 --
 
 --
