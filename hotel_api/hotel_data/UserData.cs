@@ -52,7 +52,7 @@ namespace hotel_data
                                         personData: personData,
                                         userName: (string)reader["username"],
                                         password: (string)(reader["password"]),
-                                        imagePath:reader["imagepath"]==DBNull.Value ? null : (string)reader["imagepath"]
+                                        imagePath:ImagesData.image(id)
 
                                     );
 
@@ -112,7 +112,7 @@ namespace hotel_data
                                         personData: personData,
                                         userName: (string)reader["username"],
                                         password: (string)(reader["password"]),
-                                        imagePath:reader["imagepath"]==DBNull.Value ? null : (string)reader["imagepath"]
+                                        imagePath:ImagesData.image( (Guid)reader["userid"])
 
                                             
                                     );
@@ -176,7 +176,7 @@ namespace hotel_data
                                     personData: personData,
                                     userName: userName,
                                     password: password,
-                                    imagePath:reader["imagepath"]==DBNull.Value ? null : (string)reader["imagepath"]
+                                    imagePath:ImagesData.image( (Guid)reader["userid"])
 
                                 );
 
@@ -235,7 +235,7 @@ namespace hotel_data
                                         userName: (string)reader["UserName"],
                                         password: "",
                                         isDeleted: (bool)reader["isdeleted"],
-                                        imagePath:reader["imagepath"]==DBNull.Value ? null : (string)reader["imagepath"]
+                                        imagePath:ImagesData.image( (Guid)reader["userid"])
                                     );
 
                                     users.Add(userHolder);

@@ -11,6 +11,7 @@ import {
 import AuthRoute from "./services/AuthRoute";
 import User from "./pages/user/user";
 import RoomType from "./pages/roomType/roomType";
+import Room from "./pages/room";
 
 
 const App = () => {
@@ -32,6 +33,11 @@ const App = () => {
                     <Route path="/roomType" element={
                         <PrivateRout Page={RoomType} />
                     } />
+
+                    <Route path="/room" element={
+                        <PrivateRout Page={Room} />
+                    } />
+
                     <Route path='/login' element={
                         <AuthRoute Page={Login}
                         />
