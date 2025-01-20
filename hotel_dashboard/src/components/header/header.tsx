@@ -23,8 +23,9 @@ const Header = ({ index = 0 }: iHeaderProp) => {
         </div>
   
         {/* nav */}
-        <NavLink navTo={'/users'} name={' المستخدمين'} isCurrentIndex={index === 1}  navType={enNavLinkType.USERS}/>
-        <NavLink navTo={'/roomType'} name={' انواع الغرف'} isCurrentIndex={index === 2}  navType={enNavLinkType.ROOMTYPE}/>
+        <NavLink navTo={'/users'} name={'المستخدمين'} isCurrentIndex={index === 1}  navType={enNavLinkType.USERS}/>
+        <NavLink navTo={'/roomType'} name={'انواع الغرف'} isCurrentIndex={index === 2}  navType={enNavLinkType.ROOMTYPE}/>
+        <NavLink navTo={'/room'} name={'الغرف'} isCurrentIndex={index === 3}  navType={enNavLinkType.ROOMS}/>
         <Logout   />
       </div>
     )

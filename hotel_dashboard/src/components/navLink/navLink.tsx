@@ -1,10 +1,8 @@
 import { Link } from 'react-router-dom'
 import { enNavLinkType } from '../../module/enNavLinkType'
-import room from '../../assets/room.svg'
-import Room from '../../assets/users'
-import Users from '../../assets/users'
-import { UsersIcon,ArrowLeftEndOnRectangleIcon } from '@heroicons/react/16/solid'
-import { RectangleGroupIcon } from '@heroicons/react/24/solid'
+import { UsersIcon, } from '@heroicons/react/24/outline'
+import { RectangleGroupIcon } from '@heroicons/react/24/outline'
+import RoomsIcon from '../../assets/rooms_icon'
 
 interface iNavLinkProps {
   navTo: string,
@@ -16,8 +14,9 @@ const NavLink = ({ navTo, name,navType ,isCurrentIndex=false }: iNavLinkProps) =
 
   const handleNavImage=()=>{
     switch(navType){
-      case enNavLinkType.ROOMTYPE:return (<RectangleGroupIcon className='h-8 fill-white group-hover:fill-gray-200'/>)
-     default: return ( <UsersIcon className='h-8 fill-white group-hover:fill-gray-200'/>)
+      case enNavLinkType.ROOMS:return (<RoomsIcon className='h-8 group-hover:text-gray-200  text-white' />)
+      case enNavLinkType.ROOMTYPE:return (<RectangleGroupIcon className='h-8 group-hover:text-gray-200  text-white'/>)
+     default: return ( <UsersIcon className='h-8 group-hover:text-gray-200  text-white'/>)
     }
   }
   return (

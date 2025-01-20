@@ -10,14 +10,12 @@ public class ImageBuissness
     public Guid? ID  { get; set; }
     public string path { get; set; }
     public Guid belongTo   { get; set; }    
-    public DateTime createdAt { get; set; }
-    public ImagesTbDto imageHolder{get{return new ImagesTbDto(imagePathId:ID,imagePath:path,belongTo:belongTo,createdAt:createdAt);}}
-    public ImageBuissness(ImagesTbDto image,enMode mode)
+    public ImagesTbDto imageHolder{get{return new ImagesTbDto(imagePathId:ID,imagePath:path,belongTo:belongTo);}}
+    public ImageBuissness(ImagesTbDto image,enMode mode = enMode.add)
     {
-        this.ID = image.imagePathId;
-        this.path = image.imagePath;
+        this.ID = image.id;
+        this.path = image.path;
         this.belongTo = image.belongTo;
-        this.createdAt = image.createdAt;
         this.mode = mode;   
     }
 
