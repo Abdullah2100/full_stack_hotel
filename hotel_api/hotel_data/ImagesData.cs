@@ -45,9 +45,9 @@ public class ImagesData
             using (var con = new NpgsqlConnection(connectionUr))
             {
                 con.Open();
-                string query = "UPDATE images SET name =@name WHERE imageid = @ID";
+                string query = "UPDATE images SET name =@image_path WHERE imageid = @ID";
                 using (var cmd = new NpgsqlCommand(query, con))
-                {
+        {
                     cmd.Parameters.AddWithValue("@image_path", image.path);
                     cmd.Parameters.AddWithValue("@ID", image.id);
                     var result = cmd.ExecuteScalar();
@@ -66,16 +66,16 @@ public class ImagesData
         return isCreated;
     }
 
-    public static string? image(Guid? belongto)
+    public static ImagesTbDto? image(Guid? belongto)
     {
         if (belongto == null) return null;
-        string? image = null;
+        ImagesTbDto? image = null;
         try
         {
             using (var con = new NpgsqlConnection(connectionUr))
             {
                 con.Open();
-                string query = "SELECT * FROM images where belongto = @belongto";
+                string query = "SELECT  * FROM images where belongto = @belongto LIMIT 1";
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
                     cmd.Parameters.AddWithValue("belongto", belongto);
@@ -85,7 +85,49 @@ public class ImagesData
                         {
                             if (reader.Read())
                             {
-                                image = (string)reader["name"];
+                                image = new ImagesTbDto(
+                                    imagePathId:(Guid)reader["name"],
+                                    imagePath:(string)reader["name"],
+                                    belongTo:(Guid)reader["belongto"]
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("this the error from get image by path {0}", ex.Message);
+        }
+
+        return image;
+    }
+    public static ImagesTbDto? image(Guid id)
+    {
+        if (id == null) return null;
+        ImagesTbDto? image = null;
+        try
+        {
+            
+            using (var con = new NpgsqlConnection(connectionUr))
+            {
+                con.Open();
+                string query = "SELECT * FROM images where imageid = @id";
+                using (var cmd = new NpgsqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("id", id);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                        {
+                            if (reader.Read())
+                            {
+                                image = new ImagesTbDto(
+                                                        imagePathId:(Guid)reader["name"],
+                                                        imagePath:(string)reader["name"],
+                                                        belongTo:(Guid)reader["belongto"]
+                                );
                             }
                         }
                     }
@@ -100,10 +142,10 @@ public class ImagesData
         return image;
     }
 
-    public static List<string> images(Guid? belongto)
+    public static List<ImagesTbDto> images(Guid? belongto)
     {
         if (belongto == null) return null;
-        List<string>? images = new List<string>();
+        List<ImagesTbDto>? images = new List<ImagesTbDto>();
         try
         {
             using (var con = new NpgsqlConnection(connectionUr))
@@ -119,7 +161,11 @@ public class ImagesData
                         {
                             while (reader.Read())
                             {
-                                images.Append((string)reader["name"]);
+                                images.Append(new ImagesTbDto(
+                                    imagePathId:(Guid)reader["name"],
+                                    imagePath:(string)reader["name"],
+                                    belongTo:(Guid)reader["belongto"]
+                                ));
                             }
                         }
                     }
