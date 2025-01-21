@@ -40,6 +40,40 @@ public class ImageBuissness
             
             default: return false;
         }
-    } 
+    }
 
+    public static ImageBuissness? getImageById(Guid id)
+    { 
+        ImagesTbDto? result =ImagesData.image(id:id);
+        if (result != null)
+        {
+            return new ImageBuissness(result, enMode.update);
+        }
+
+        return null;
+    }
+    public static ImageBuissness? getImageByBelongTo(Guid belongTo)
+    { 
+        ImagesTbDto? result =ImagesData.image(belongto:belongTo);
+        if (result != null)
+        {
+            return new ImageBuissness(result, enMode.update);
+        }
+
+        return null;
+    }
+
+
+    public static List<ImageBuissness> getImages(Guid belongTo)
+    {
+        var  result = ImagesData.images(belongto:belongTo);
+        List<ImageBuissness> images = new List<ImageBuissness>();
+        foreach (var image in result)
+        {
+            images.Append(new ImageBuissness(image, enMode.update));
+        }
+
+        return images;
+    }
+    
 }

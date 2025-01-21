@@ -21,8 +21,6 @@ const SubmitButton = (
         onClick={buttonStatus !== enStatus.loading ? onSubmit : undefined}
         color="primary"
         className={style}
-//        className={}
- //sx={{backgroundColor:'blue'}}
     >
         {
             buttonStatus === enStatus.loading ?

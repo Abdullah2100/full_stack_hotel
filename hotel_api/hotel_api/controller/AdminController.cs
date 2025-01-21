@@ -165,7 +165,8 @@ namespace hotel_api.controller
                 imagePath = await MinIoServices.uploadFile(_config, userRequestData.imagePath,
                     MinIoServices.enBucketName.USER);
             }
-            saveImage(imagePath, userId);
+            
+            saveImage(null,imagePath, userId);
             var personDataHolder = new PersonDto(
                 personID: null,
                 email: userRequestData.email,
@@ -252,8 +253,8 @@ namespace hotel_api.controller
                 imagePath = await MinIoServices.uploadFile(_config, userRequestData.imagePath,
                     MinIoServices.enBucketName.USER, data.imagePath);
             }
-
-            saveImage(imagePath, data.ID, ImageBuissness.enMode.update);
+            var  imageHolder = ImageBuissness.getImageByBelongTo(data.ID);
+            saveImage(imageHolder,imagePath,data.ID );
 
             data.imagePath = imagePath;
 
@@ -445,7 +446,7 @@ namespace hotel_api.controller
                     MinIoServices.enBucketName.RoomType);
             }
 
-            saveImage(imageHolderPath, roomId);
+            saveImage(null,imageHolderPath,roomId );
             var roomTypeHolder = new RoomtTypeBuissnes(
                 new RoomTypeDto(
                     roomTypeId: roomId,
@@ -556,8 +557,9 @@ namespace hotel_api.controller
                 imageHolderPath = await MinIoServices.uploadFile(_config, roomTypeData.image,
                     MinIoServices.enBucketName.RoomType);
             }
-            saveImage(imageHolderPath,(Guid) roomtypeHolder.ID, ImageBuissness.enMode.update);
             
+            var  imageHolder = ImageBuissness.getImageByBelongTo((Guid)roomtypeHolder.ID);
+            saveImage(imageHolder,imageHolderPath,roomtypeHolder.ID );
 
 
             updateRoomTypeData(ref roomtypeHolder, roomTypeData, (Guid)adminid);
@@ -708,34 +710,32 @@ namespace hotel_api.controller
         }
 
 
-        private void saveImage(string? imagePath,Guid id,ImageBuissness.enMode mode = ImageBuissness.enMode.add)
+        private void saveImage(ImageBuissness? imageHolder,string? imagePath,Guid? belongTo)
         {
-            if (imagePath != null)
+            if (imagePath == null) return;
+           
+            if (imageHolder != null)
             {
-                var imageHolder = new ImageBuissness(
-                    new ImagesTbDto(imagePath:imagePath,belongTo:id,imagePathId:null)
-                    ,mode
-                    
-                    );
+                imageHolder.path = imagePath;
                 imageHolder.save();
+            }
+            else
+            {
+                imageHolder = new ImageBuissness(new ImagesTbDto(null,imagePath,(Guid)belongTo));
             }
         }
         
-        private void saveImage(List<string>? imagePath,Guid id,ImageBuissness.enMode mode = ImageBuissness.enMode.add)
+        private void saveImage(
+            List<string>? imagePath,
+            Guid id,
+            ImageBuissness.enMode mode = ImageBuissness.enMode.add
+            )
         {
-            if (imagePath != null)
+            foreach (var path in imagePath)
             {
-                foreach (var path in imagePath)
-                {
-                    var imageHolder = new ImageBuissness(
-                        new ImagesTbDto(imagePath:path,belongTo:id,imagePathId:null)
-                        ,
-                        mode
-                    );
-                    
-                    imageHolder.save(); 
-                }
-            }
+                var imageHolder = new ImageBuissness(new ImagesTbDto(null,path,id));
+                imageHolder.save();
+            } 
         }
 
         
