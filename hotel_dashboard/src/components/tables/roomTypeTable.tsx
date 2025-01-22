@@ -39,15 +39,15 @@ const RoomTypeTable = ({
   }
 
   return (
-    <div className={`overflow-x-auto justify-center ${data === undefined && 'h-48'} `}>
-      <table className="min-w-full table-auto border-collapse">
-        <thead className="bg-gray-200 text-gray-600">
-          <tr>
-            <th className="px-4 py-2 border-b text-left whitespace-nowrap"></th>
-            <th className="px-4 py-2 border-b text-left whitespace-nowrap">Image</th>
-            <th className="px-4 py-2 border-b text-left whitespace-nowrap">Name</th>
-            <th className="px-4 py-2 border-b text-left whitespace-nowrap">Created At</th>
-            <th className="px-4 py-2 border-b text-left whitespace-nowrap">Operation</th>
+    <div className={`overflow-x-auto justify-center ${data === undefined && 'h-48'} w-full `}>
+      <table className="w-full table-auto border-collapse">
+        <thead className="bg-gray-200 text-gray-600 w-screen">
+          <tr className=''>
+            <th className="px-4 py-2 border-b text-left whitespace-nowrap "></th>
+            <th className={`px-4 py-2 border-b text-left whitespace-nowrap `}>Image</th>
+            <th className="px-4 py-2 border-b text-left whitespace-nowrap ">Name</th>
+            <th className="px-4 py-2 border-b text-left whitespace-nowrap ">Created At</th>
+            <th className="px-4 py-2 border-b text-left whitespace-nowrap ">Operation</th>
           </tr>
         </thead>
         <tbody>
@@ -55,7 +55,7 @@ const RoomTypeTable = ({
 
             <tr
               key={index}
-              className={`${roomtype.isDeleted?'bg-red-800':'bg-white'} `}
+              className={`${roomtype.isDeleted ? 'bg-red-800' : 'bg-white'} `}
             >
               <td className="px-4 py-2 border-b text-left whitespace-nowrap">{index + 1}</td>
               <td className="px-4 py-2 border-b text-left whitespace-nowrap">{
@@ -76,7 +76,7 @@ const RoomTypeTable = ({
                   <div className='flex flex-row justify-between'>
 
                     <button
-                      onClick={() => deleteFunc(roomtype.roomTypeID as Guid,roomtype.isDeleted??false)}
+                      onClick={() => deleteFunc(roomtype.roomTypeID as Guid, roomtype.isDeleted ?? false)}
                       className='border-[2px] rounded-[3px] border-red-600 h-7 w-7 flex justify-center items-center'
                     ><TrashIcon className='h-4 w-4 text-red-600 ' /></button>
                     <button
@@ -85,7 +85,7 @@ const RoomTypeTable = ({
                     ><PencilIcon className='h-6 w-6 text-green-800' /></button>
                   </div>
                   :
-                  <button onClick={() => {deleteFunc(roomtype.roomTypeID as Guid,roomtype.isDeleted??true)}}>
+                  <button onClick={() => { deleteFunc(roomtype.roomTypeID as Guid, roomtype.isDeleted ?? true) }}>
 
                     <ArrowUturnLeftIcon
                       className='h-6 w-6 text-white' />
