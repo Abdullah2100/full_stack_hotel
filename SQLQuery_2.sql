@@ -14,7 +14,8 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE images(
     imageid UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(200) NOT NULL,
-    belongTo UUID NOT NULL
+    belongTo UUID NOT NULL,
+    isThumnail  BOOLEAN DEFAULT FALSE
 );
 
 

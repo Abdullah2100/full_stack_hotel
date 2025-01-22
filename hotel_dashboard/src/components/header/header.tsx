@@ -13,7 +13,7 @@ interface iHeaderProp {
 }
 const Header = ({ index = 0 }: iHeaderProp) => {
     return (
-        <div className="w-48 bg-mainBg flex flex-col items-center pe-7 fixed top-0 left-0 h-full overflow-hidden">
+        <div className="w-48 bg-mainBg flex flex-col items-center pe-7 fixed top-0 left-0 h-full  overflow-scroll no-scrollbar">
         {/* logo */}
         <div className="mt-4 mb-10">
           <Link to={'/'}>
