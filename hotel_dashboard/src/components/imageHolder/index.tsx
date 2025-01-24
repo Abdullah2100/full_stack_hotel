@@ -39,7 +39,7 @@ const ImageHolder = ({
   const imageHandler = () => {
 
     return (src === undefined || isHasError) ? handleNotFoundIconHolder() : <img
-      className=''
+      
       src={src} onError={handleError} />;
   };
 
@@ -47,8 +47,8 @@ const ImageHolder = ({
     <div className={`${style} relative`}>
       {
         deleteFun &&
-        <button onClick={()=>{deleteFun}}>
-          <XMarkIcon className='absolute -top-4 -end-3 h-6 w-6 text-gray-400' />
+        <button onClick={deleteFun}>
+          <XMarkIcon className='absolute -top-1 -end-1 h-6 w-6 text-gray-400' />
         </button>
       }
       {imageHandler()}

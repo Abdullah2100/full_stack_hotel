@@ -3,9 +3,6 @@ import { Link } from 'react-router-dom'
 import NavLink from '../navLink/navLink'
 import Logo from '../../assets/logo'
 import { enNavLinkType } from '../../module/enNavLinkType'
-import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from '../../controller/rootReducer'
-import { logout } from '../../controller/redux/jwtSlice'
 import Logout from '../button/logoutButton'
 
 interface iHeaderProp {

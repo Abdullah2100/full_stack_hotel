@@ -35,7 +35,7 @@ export const TextInput =
 
   }: TextInputProps
   ) => {
-    const generalStyle = `text-black px-2 border-gray border-2 border-r-2 rounded-[3px] text-[12px] focus:rounded-[2px]  `+style;
+    const generalStyle = `px-2 ${isDisabled?'':'border-gray-300 border-[1px] '}  rounded-[3px] text-[12px] focus:rounded-[2px] ${isDisabled?'bg-gray-500 placeholder-gray-400 text-gray-400':'text-black '} `+style;
 
     // Function to handle input change and call onInput with value and key
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -47,7 +47,11 @@ export const TextInput =
     return (
       <div  className={handleWidth}>
         {isHasTitle &&
-          <h6 className="text-[10px] mb-[0.5px]">{placeHolder}</h6>}
+        <div>
+            <h6 className="text-[10px] mb-[0.5px] ">{placeHolder}</h6>
+        </div>
+        
+          }
         {
           isMultipleLine ?
             <textarea
@@ -67,7 +71,7 @@ export const TextInput =
               <input
                 name={placeHolder} // Assign the key based on placeholder
                 value={value}
-                className={`h-7 ${generalStyle}`}
+                className={`h-7  ${generalStyle}`}
                 placeholder={placeHolder}
                 maxLength={maxLength}
                 disabled={isDisabled}
