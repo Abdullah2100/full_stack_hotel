@@ -1,0 +1,343 @@
+import Header from '../../components/header/header'
+
+import { PencilIcon } from '@heroicons/react/16/solid';
+
+import ImageHolder from '../../components/imageHolder';
+import RoomsIcon from '../../assets/rooms_icon';
+import { enNavLinkType } from '../../module/enNavLinkType';
+import { useContext, useEffect, useRef, useState } from 'react';
+import { useToastifiContext } from '../../context/toastifyCustom';
+import { enMessage } from '../../module/enMessageType';
+import { TextInput } from '../../components/input/textInput';
+import SubmitButton from '../../components/button/submitButton';
+import { enStatus } from '../../module/enState';
+
+const Room = () => {
+
+  const { showToastiFy } = useContext(useToastifiContext)
+
+  const [status, setState] = useState<enStatus>(enStatus.none)
+  const [isUpdate, setUpdate] = useState<boolean>(false)
+  const [isSingle, setSingle] = useState(false)
+  const [isDraggable, changeDraggableStatus] = useState(false)
+
+
+  const [pricePerDay, setPricePerDay] = useState("")
+  const [thumnailImage, setThumnail] = useState<File>()
+  const [images, setImages] = useState<File[]>()
+
+
+  const imageRef = useRef<HTMLInputElement>(null);
+
+
+
+
+
+  const changeIsSingleStatus = async (isSingle: boolean) => {
+    setSingle(isSingle)
+  }
+
+  const selectImage = async (isSingle: boolean) => {
+    await changeIsSingleStatus(isSingle).then(() => {
+      imageRef.current?.click();
+    })
+  }
+
+  const uploadImageDisplayFromSelectInput = async (e) => {
+    if (imageRef.current && imageRef.current.files && imageRef.current.files[0]) {
+      switch (isSingle) {
+        case false: {
+          const uploadedFile = imageRef.current.files[0];
+
+          const fileExtension = uploadedFile.name.split('.').pop()?.toLowerCase();
+
+          if (!['png', 'jpg', 'jpeg'].includes(fileExtension || '')) {
+            showToastiFy("You must select a valid image", enMessage.ERROR);
+            return;
+          }
+          setThumnail(uploadedFile)
+
+        } break;
+
+        default: {
+
+          for (let i = 0; i < imageRef.current.files.length; i++) {
+            const uploadedFile = imageRef.current.files[i];
+
+            const fileExtension = uploadedFile.name.split('.').pop()?.toLowerCase();
+
+            if (!['png', 'jpg', 'jpeg'].includes(fileExtension || '')) {
+              showToastiFy("You must select a valid image", enMessage.ERROR);
+              return;
+            }
+
+            if (images === undefined)
+              setImages([uploadedFile])
+            else setImages(prev => [...prev, uploadedFile]);
+          }
+
+
+        } break;
+      }
+
+
+    }
+  };
+
+  const draggbleFun = (e) => {
+    e.preventDefault();
+    changeDraggableStatus(true)
+  }
+
+  const draggableOver = (e) => {
+    e.preventDefault();
+    changeDraggableStatus(true)
+  }
+
+  const handleDragLeave = () => {
+    changeDraggableStatus(false);
+  };
+
+  const handleDropImage = (e) => {
+    e.preventDefault();
+    changeDraggableStatus(false)
+    if (e.dataTransfer.files) {
+
+
+      const file = e.dataTransfer.files[0];
+      const fileExtension = file.name.split('.').pop()?.toLowerCase();
+
+      if (!['png', 'jpg', 'jpeg'].includes(fileExtension || '')) {
+        showToastiFy("You must select a valid image", enMessage.ERROR);
+        return;
+      }
+      setThumnail(file)
+    }
+
+  }
+
+  const handleDropImages = (e) => {
+    e.preventDefault();
+    changeDraggableStatus(false)
+    if (e.dataTransfer.files) {
+
+      for (let i = 0; i < e.dataTransfer.files.length; i++) {
+        const uploadedFile = e.dataTransfer.files[i];
+
+        const fileExtension = uploadedFile.name.split('.').pop()?.toLowerCase();
+
+        if (!['png', 'jpg', 'jpeg'].includes(fileExtension || '')) {
+          showToastiFy("You must select a valid image", enMessage.ERROR);
+          return;
+        }
+        if (images === undefined)
+          setImages(prev => prev = [uploadedFile])
+        else setImages(prev => [...prev, uploadedFile]);  // Correct state update
+      }
+
+    }
+  }
+
+  const deleteImage = (index: number) => {
+    if (!(images === undefined)) {
+      setImages(images.filter((_, i) => i !== index))
+    }
+  }
+
+
+  return (
+    <div className='flex flex-row'>
+
+      <Header index={3} />
+
+      <div className='min-h-screen w-[calc(100%-192px)] ms-[192px] flex flex-col px-2 items-start  overflow-scroll '>
+        <div className='flex flex-row items-center mt-2'>
+          <RoomsIcon className='h-8 fill-black group-hover:fill-gray-200 -ms-1' />
+          <h3 className='text-2xl ms-1'>Room</h3>
+        </div>
+
+        <div className='w-full h-full mt-4 flex flex-col'>
+
+          <div
+            onDrag={draggbleFun}
+            onDragOver={draggableOver}
+            onDrop={handleDropImage}
+            onDragLeave={handleDragLeave}
+
+            className='relative mb-3 md:mb-0 '>
+            <input
+              multiple={isSingle}
+              type="file"
+              id="file"
+              ref={imageRef}
+              onChange={uploadImageDisplayFromSelectInput}
+              hidden />
+            <button
+              onClick={() => { selectImage(false) }}
+              className='group absolute start-2 top-11 hover:bg-gray-600 hover:rounded-sm '>
+              <PencilIcon className='h-6 w-6 border-[1px] border-blue-900 rounded-sm group-hover:fill-gray-200  ' />
+            </button>
+            <h3 className='text-lg'>
+              Thumail
+            </h3>
+            <div className=' h-44 w-44  flex flex-row justify-center items-center border-[2px] rounded-lg mt-2'
+            >
+              <ImageHolder
+                src={thumnailImage === undefined ? undefined : URL.createObjectURL(thumnailImage)}
+                style='flex flex-row h-24 w-24 '
+                isFromTop={true} />
+            </div>
+          </div>
+
+          <div className='md:w-3' />
+
+
+          <div
+            onDrag={draggbleFun}
+            onDragOver={draggableOver}
+            onDrop={handleDropImages}
+            onDragLeave={handleDragLeave}
+
+            className=' w-full relative'>
+            <button
+              onClick={() => { selectImage(true) }}
+              className='group absolute start-2 top-11 hover:bg-gray-600 hover:rounded-sm '>
+              <PencilIcon className='h-6 w-6 border-[1px] border-blue-900 rounded-sm group-hover:fill-gray-200  ' />
+            </button>
+
+            <h3 className='text-lg'>
+              Images
+            </h3>
+            <div className={`min-h-44 w-full flex flex-col md:flex-row  border-[2px] rounded-lg mt-2  md:gap-2 px-2 ${images!==undefined&&images.length>0&&'pt-9'}  justify-center items-center overflow-scroll`}
+            >
+              {
+                (images != undefined && images.length > 0) ? images.map((data, index) => {
+                  return <div className={`w-full lg:w-20 ${index === 0 ? 'mb-1' : index === images.length - 1 ? '' : 'mb-1'} `}>
+                    <ImageHolder
+                      deleteFun={() => { deleteImage(index) }}
+                      key={index}
+                      typeHolder={enNavLinkType.ROOMS}
+                      src={URL.createObjectURL(data)}
+                      style='flex  w-full lg:w-20 '
+                      isFromTop={true} />
+                  </div>
+                }) : <ImageHolder
+                  typeHolder={enNavLinkType.ROOMS}
+                  src={undefined}
+                  style='flex flex-row h-20 w-20'
+                  isFromTop={true} />
+              }
+            </div>
+          </div>
+
+        </div>
+
+        <div className='w-full  md:flex md:row md:flex-row md:flex-wrap md:items-center md:gap-[5px] mt-[10px]'>
+      
+          {isUpdate&&
+          <div className='w-full md:w-[150px] mb-2'>
+            <h3 className='text-[10px]'>Room Status</h3>
+            <select name="cars" id="cars" className="w-full md:w-[150px] px-2 py-[4px] rounded-sm border border-gray-300 bg-transparent text-[12px]">
+              <option className="bg-transparent hover:bg-transparent" value="Available">Available</option>
+              <option className="bg-transparent hover:bg-transparent" value="Booked">Booked</option>
+              <option className="bg-transparent hover:bg-transparent" value="Under Maintenance">Under Maintenance</option>
+            </select>
+
+          </div>
+          }
+
+          <div className='w-full md:w-[150px] mb-2'>
+            <TextInput
+              keyType='eamilOrUserName'
+              value={pricePerDay}
+              onInput={(value, key) => setPricePerDay(value)}
+              placeHolder="Price Per Night"
+              style=" w-full md:w-[150px]"
+            />
+          </div>
+
+
+          {isUpdate &&
+            <div className='w-full md:w-[150px] mb-2'>
+              <TextInput
+                isDisabled={true}
+                type='datetime-local'
+                keyType='eamilOrUserName'
+                value={pricePerDay}
+                onInput={(value, key) => setPricePerDay(value)}
+                placeHolder="Created At"
+                style="w-full md:w-[150px]"
+              />
+            </div>
+          }
+
+
+          <div className='w-full md:w-[150px] '>
+            <h3 className=' text-[10px]'>RoomType</h3>
+            <select name="cars" id="cars" className="w-full md:w-[150px]  px-2 py-1 mb-2 rounded-sm border border-gray-300 bg-transparent  text-[12px]">
+              <option className="bg-transparent hover:bg-transparent " value="Available">Available</option>
+              <option className="bg-transparent hover:bg-transparent " value="Booked">Booked</option>
+              <option className="bg-transparent hover:bg-transparent " value="Under Maintenance">Under Maintenance</option>
+            </select>
+          </div>
+
+
+          <div className='w-full md:w-[100px] mb-2'>   <TextInput
+            keyType='eamilOrUserName'
+            value={pricePerDay}
+            onInput={(value, key) => setPricePerDay(value)}
+            placeHolder="Capacity"
+            style=" w-full md:w-[100px]"
+          />
+          </div>
+
+
+          <div className='w-full md:w-[100px] mb-2'>   <TextInput
+            keyType='eamilOrUserName'
+            value={pricePerDay}
+            onInput={(value, key) => setPricePerDay(value)}
+            placeHolder="BedNumber"
+            style="  w-full md:w-[100px]"
+          /></div>
+
+          {isUpdate && 
+          <div className='w-full md:w-[150px] mb-2'>  
+           <TextInput
+            isDisabled={true}
+            keyType='eamilOrUserName'
+            value={pricePerDay}
+            onInput={(value, key) => setPricePerDay(value)}
+            placeHolder="BelongTo"
+            style=" w-full md:w-[150px]"
+          />
+          </div>
+          }
+        </div>
+        
+        <div className='w-full'>
+
+          <SubmitButton
+            //onSubmit={async () => createOrUpdateRoomType()}
+            onSubmit={async () => { }}
+            buttonStatus={status}
+            placeHolder={isUpdate ? 'update' : 'create'}
+            style="text-[10px] bg-mainBg   w-full md:w-44 text-white rounded-[4px] my-2 h-8  hover:opacity-90"
+            textstyle='text-[14px]'
+          />
+          <SubmitButton
+            // textstyle='text-black'
+            // onSubmit={async () => clearData()}
+            onSubmit={async () => { }}
+            // buttonStatus={status}
+            placeHolder={'reseat'}
+
+            style="text-[10px] bg-white border-[1px]  w-full md:w-44 text-white rounded-[4px] my-2 h-8  hover:opacity-90 md:ms-2"
+            textstyle='text-[14px] text-black'
+          />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default Room
