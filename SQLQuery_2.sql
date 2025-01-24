@@ -3,65 +3,41 @@ DROP DATABASE hotel_db;
 CREATE DATABASE hotel_db;
 \ c hotel_db;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+---
+
+
+
+
+
+---
+CREATE TABLE images(
+    imageid UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    name VARCHAR(200) NOT NULL,
+    belongTo UUID NOT NULL,
+    isThumnail  BOOLEAN DEFAULT FALSE
+);
+
+
+---
+
+
+
+---
 CREATE TABLE Persons (
     PersonID UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     Name VARCHAR(50) NOT NULL,
     Phone VARCHAR(13) NOT NULL UNIQUE,
     Email VARCHAR(100) NOT NULL UNIQUE,
-    Address TEXT NULL -- modifyBy UUID,
+    Address TEXT NULL
 );
---dumy insert
-INSERT INTO Persons(name, email, phone, address)
-values('ahmed', 'fack@gmail.com', '735501225', 'fack');
---
+---
 
--- CREATE TABLE PersonUpdated (
---     PersonUpdateID BIGSERIAL PRIMARY KEY,
---     PreviusName VARCHAR(50) NULL,
---     PreviusPhone VARCHAR(13) NOT NULL,
---     PreviusAddress TEXT NULL,
---     CurrentName VARCHAR(50) NULL,
---     CurrentPhone VARCHAR(13) NULL,
---     CurrentAddress TEXT NULL,
---     CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
---     PersonID UUID NOT NULL REFERENCES Persons (PersonID),
---     modifyBy UUID,
--- );
---
 
---
--- CREATE OR REPLACE FUNCTION fn_personUpdate_modi() RETURNS TRIGGER AS $$ BEGIN RETURN NULL;
--- END $$ LANGUAGE plpgsql;
--- --
--- --
--- CREATE TRIGGER tr_personUpdate_update BEFORE
--- UPDATE ON PersonUpdated FOR EACH ROW EXECUTE FUNCTION fn_personUpdate_modi();
--- --
--- --
--- CREATE TRIGGER tr_personUpdate_delete 
--- BEFORE DELETE ON PersonUpdated 
--- FOR EACH ROW EXECUTE FUNCTION fn_personUpdate_modi();
--- --
--- CREATE OR REPLACE FUNCTION fn_person_delete() RETURNS TRIGGER AS $$ 
--- BEGIN
--- RETURN NULL;
--- END;
--- $$ LANGUAGE plpgsql;
--- --
--- --
--- CREATE TRIGGER tr_person_deleted BEFORE DELETE ON Persons FOR EACH ROW EXECUTE FUNCTION fn_person_delete ();
---
 
---
 
---
---dumy update
-UPDATE Persons
-SET name = 'fackkdddd'
-WHERE personid = '62597b4d-838d-4455-86f9-bd97b525b567';
---
-CREATE TABLE Admins 
-(
+---
+CREATE TABLE Admins (
     AdminID UUID PRIMARY KEY,
     PersonID UUID NOT NULL REFERENCES Persons (PersonID),
     UserName VARCHAR(50) NOT NULL,
@@ -87,7 +63,6 @@ SELECT ad.adminid as adminid,
 FROM Admins ad
     INNER JOIN Persons per ON ad.personid = per.personid
 WHERE ad.adminid = id;
--- Assuming you want to filter by adminId
 END;
 $$ LANGUAGE plpgsql;
 --
@@ -129,25 +104,7 @@ SELECT NULL,
     NULL;
 END;
 $$ LANGUAGE plpgsql;
--- SELECT ad.adminid as adminid,
---     ad.personid as personid,
---     per.name as name,
---     per.phone as phone,
---     per.address as address,
---     ad.username as userName,
---     per.email
--- FROM Admins ad
---     INNER JOIN Persons per ON ad.personid = per.personid
--- WHERE (ad.username = 'sdaf' OR per.email = 'sdaf')
---     AND ad.password = '71620152A16EBE4E23FB4C550510C41113E41E4E58352718527BF859A91603B5';
--- {
---  "userName": "asdfasdfsdaf",
---  "password": "ASdf!@12",
---  "name": "ffffff",
---  "email": "gakkkkk@gmail.com",
---  "phone": "7894561234",
---  "address": "sdafasdfdasf"
--- }
+-- 
 --
 CREATE OR REPLACE FUNCTION fn_admin_insert (
 adminid_n UUID,
@@ -207,91 +164,6 @@ $$ LANGUAGE plpgsql;
 --
 
 ---
--- CREATE OR REPLACE FUNCTION fn_admin_delete() RETURNS TRIGGER AS $$ 
--- BEGIN 
--- RETURN null;
--- END;
--- $$ LANGUAGE plpgsql;
---
-
--- CREATE TRIGGER tr_admin_insert 
--- BEFORE INSERT ON Admins 
--- FOR EACH ROW EXECUTE FUNCTION fn_admin_insert();
--- CREATE TRIGGER tr_admin_update BEFORE
--- UPDATE ON Admins FOR EACH ROW EXECUTE FUNCTION fn_admin_update();
--- --
--- --
--- CREATE TRIGGER tr_admin_delete BEFORE DELETE ON Admins FOR EACH ROW EXECUTE FUNCTION fn_admin_delete ();
---
-
---dumy insert 
--- INSERT INTO Admins(adminid, personid, username, password)
--- values (
---         uuid_generate_v4(),
---         '62597b4d-838d-4455-86f9-bd97b525b567 ',
---         'facknice',
---         '771ali@..'
---     );
---
-
---
--- CREATE TABLE AdminUpdate (
---     AdminUpdateID UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
---     AdminID UUID NOT NULL REFERENCES Admins (AdminID),
---     PreviusUserName VARCHAR(50) NOT NULL,
---     PreviusPassword VARCHAR(50) NOT NULL,
---     CurrentUserName VARCHAR(50) NULL,
---     CurrentPassword VARCHAR(50) NULL,
---     modifyBy UUID 
--- );
---
-
---
--- CREATE OR REPLACE FUNCTION fn_adminUpdate_modi() RETURNS TRIGGER AS $$ BEGIN RETURN NULL;
--- END $$ LANGUAGE plpgsql;
--- --
--- --
--- CREATE TRIGGER tr_adminUpdate_update BEFORE
--- UPDATE ON AdminUpdate FOR EACH ROW EXECUTE FUNCTION fn_adminUpdate_modi();
--- --
--- --
--- CREATE TRIGGER tr_adminUpdate_delete BEFORE DELETE ON AdminUpdate FOR EACH ROW EXECUTE FUNCTION fn_adminUpdate_modi();
---
-
---
--- CREATE OR REPLACE FUNCTION fn_admin_update() RETURNS TRIGGER AS $$
--- DECLARE currentUserName VARCHAR(50) := NULL;
--- currentPassword VARCHAR(50) := NULL;
--- BEGIN -- Corrected NULL checks
--- IF NEW.username IS NOT NULL THEN currentUserName := NEW.username;
--- END IF;
--- IF NEW.Password IS NOT NULL THEN currentPassword := NEW.Password;
--- END IF;
--- -- Insert the old and new values into AdminUpdate
--- INSERT INTO AdminUpdate (
---         AdminID,
---         PreviusUserName,
---         PreviusPassword,
---         CurrentUserName,
---         CurrentPassword
---     )
--- VALUES (
---         OLD.AdminID,
---         OLD.UserName,
---         OLD.Password,
---         currentUserName,
---         currentPassword
---     );
--- RETURN NEW;
--- EXCEPTION
--- WHEN OTHERS THEN -- Handle exceptions with a warning
--- RAISE EXCEPTION 'Something went wrong: %',
--- SQLERRM;
--- RETURN NULL;
--- END;
--- $$ LANGUAGE plpgsql;
---
-
 --
 CREATE OR REPLACE FUNCTION isAdminOrSomeOneHasPersmission(id UUID)
 RETURNS BOOLEAN AS $$
@@ -321,8 +193,7 @@ CREATE TABLE Users (
     PersonID UUID NOT NULL REFERENCES Persons (personid),
     CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     IsDeleted bool DEFAULT FALSE,
-    addBy UUID DEFAULT NULL,
-    imagePath varchar(49) default null
+    addBy UUID DEFAULT NULL
 );
 --
 
@@ -339,6 +210,8 @@ END IF;
 RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
+---
+----
 CREATE TRIGGER tr_user_insrt BEFORE
 INSERT ON Users FOR EACH ROW EXECUTE FUNCTION fn_user_insert();
 CREATE OR REPLACE FUNCTION fn_user_deleted() RETURNS TRIGGER AS $$ BEGIN
@@ -348,6 +221,9 @@ WHERE userid = OLD.userid;
 RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
+--
+
+--
 CREATE TRIGGER tr_user_deletet BEFORE DELETE ON users FOR EACH ROW EXECUTE FUNCTION fn_user_deleted();
 CREATE VIEW usersview AS
 SELECT per.PersonID,
@@ -361,159 +237,9 @@ SELECT per.PersonID,
     use.IsVIP,
     use.CreatedAt,
     use.password,
-    use.IsDeleted as ispersondeleted,
-    use.imagepath
+    use.IsDeleted as ispersondeleted
 FROM users use
     INNER JOIN persons per ON use.personid = per.personid;
---
--- CREATE TABLE UserDeleted{
---     UserDeletedId UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
---     deletedBy UUID NOT NULL,
---     DeletedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
---     UserID UUID REFERENCES Users(UserID)
--- }
---
-
---
--- CREATE OR REPLACE FUNCTION fn_userDelete_insert()
--- RETURN TRIGGER AS $$
--- DECLARE 
--- is_canModifi BOOLEAN :=FALSE;
--- BEGIN
---   is_canModifi :=isAdminOrSomeOneHasPersmission(modifiBy_u);
---     IF modifiBy_u <> userid_u.userId OR is_canModifi= FAIL THEN
---         EXCEPTION
---         WHEN OTHERS THEN RAISE EXCEPTION  'just user OR person that has permission can modify data ', SQLERRM;
---         RETURN NULL;
---     END IF;
---     RETURN NEW;
--- END;
--- $$ LANGUAGE plpgsql;
---
-
---
--- CREATE OR REPLACE FUNCTION fn_user_update()
--- RETURN TRIGGER AS $$
--- DECLARE 
--- is_canModifi BOOLEAN :=FALSE;
--- BEGIN
---   is_canModifi :=isAdminOrSomeOneHasPersmission(modifiBy_u);
---     IF modifiBy_u <> userid_u.userId OR is_canModifi= FAIL THEN
---         EXCEPTION
---         WHEN OTHERS THEN RAISE EXCEPTION  'just user OR person that has permission can modify data ', SQLERRM;
---         RETURN NULL;
---     END IF;
---     RETURN NULL;
--- END;
--- $$ LANGUAGE plpgsql;
---
-
---
--- CREATE OR REPLACE FUNCTION fn_userUpdate_delete()
--- RETURN TRIGGER AS $$
--- DECLARE 
--- is_canModifi BOOLEAN :=FALSE;
--- BEGIN
---   is_canModifi :=isAdminOrSomeOneHasPersmission(modifiBy_u);
---     IF modifiBy_u <> userid_u.userId OR is_canModifi= FAIL THEN
---         EXCEPTION
---         WHEN OTHERS THEN RAISE EXCEPTION  'just user OR person that has permission can modify data ', SQLERRM;
---         RETURN NULL;
---     END IF;
---     RETURN NULL;
--- END;
--- $$ LANGUAGE plpgsql;
---
-
---
--- CREATE OR REPLACE TRIGGER tr_userUpdate_insert 
--- BEFORE INSERT ON UserUpdate FOR EACH ROW EXECUTE FUNCTION fn_userUpdate_insert();
--- --
--- --
--- CREATE OR REPLACE TRIGGER tr_userUpdate_insert 
--- BEFORE UPDATE ON UserUpdate FOR EACH ROW EXECUTE FUNCTION fn_userUpdate_update();
--- --
--- --
--- CREATE OR REPLACE TRIGGER tr_userUpdate_insert 
--- BEFORE DELETE ON UserUpdate FOR EACH ROW EXECUTE FUNCTION fn_userUpdate_delete();
--- --
---
--- CREATE TABLE UserUpdate(
---     userUpdateID UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
---     userId UUID REFERENCES Users(userid),
---     currentUsername VARCHAR(50),
---     currentpassword TEXT,
---     currentIsVIP bool,
---     username VARCHAR(50),
---     password TEXT,
---     IsVIP bool,
---     modifyBy UUID,
---     modifyAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
--- );
---
-
---
--- CREATE OR REPLACE FUNCTION fn_userUpdate_insert()
--- RETURN TRIGGER AS $$
--- DECLARE 
--- is_canModifi BOOLEAN :=FALSE;
--- BEGIN
---   is_canModifi :=isAdminOrSomeOneHasPersmission(modifiBy_u);
---     IF modifiBy_u <> userid_u.userId OR is_canModifi= FAIL THEN
---         EXCEPTION
---         WHEN OTHERS THEN RAISE EXCEPTION  'just user OR person that has permission can modify data ', SQLERRM;
---         RETURN NULL;
---     END IF;
---     RETURN NEW;
--- END;
--- $$ LANGUAGE plpgsql;
---
-
---
--- CREATE OR REPLACE FUNCTION fn_userUpdate_update()
--- RETURN TRIGGER AS $$
--- DECLARE 
--- is_canModifi BOOLEAN :=FALSE;
--- BEGIN
---   is_canModifi :=isAdminOrSomeOneHasPersmission(modifiBy_u);
---     IF modifiBy_u <> userid_u.userId OR is_canModifi= FAIL THEN
---         EXCEPTION
---         WHEN OTHERS THEN RAISE EXCEPTION  'just user OR person that has permission can modify data ', SQLERRM;
---         RETURN NULL;
---     END IF;
---     RETURN NULL;
--- END;
--- $$ LANGUAGE plpgsql;
---
-
---
--- CREATE OR REPLACE FUNCTION fn_userUpdate_delete()
--- RETURN TRIGGER AS $$
--- DECLARE 
--- is_canModifi BOOLEAN :=FALSE;
--- BEGIN
---   is_canModifi :=isAdminOrSomeOneHasPersmission(modifiBy_u);
---     IF modifiBy_u <> userid_u.userId OR is_canModifi= FAIL THEN
---         EXCEPTION
---         WHEN OTHERS THEN RAISE EXCEPTION  'just user OR person that has permission can modify data ', SQLERRM;
---         RETURN NULL;
---     END IF;
---     RETURN NULL;
--- END;
--- $$ LANGUAGE plpgsql;
---
-
---
--- CREATE OR REPLACE TRIGGER tr_userUpdate_insert 
--- BEFORE INSERT ON UserUpdate FOR EACH ROW EXECUTE FUNCTION fn_userUpdate_insert();
--- --
--- --
--- CREATE OR REPLACE TRIGGER tr_userUpdate_insert 
--- BEFORE UPDATE ON UserUpdate FOR EACH ROW EXECUTE FUNCTION fn_userUpdate_update();
--- --
--- --
--- CREATE OR REPLACE TRIGGER tr_userUpdate_insert 
--- BEFORE DELETE ON UserUpdate FOR EACH ROW EXECUTE FUNCTION fn_userUpdate_delete();
 --
 
 --
@@ -529,8 +255,7 @@ RETURNS TABLE (
     UserName VARCHAR(50),
     DateOfBirth DATE,
     IsVIP BOOL,
-    CreatedAt TIMESTAMP,
-    imagePath varchar(49)
+    CreatedAt TIMESTAMP
 ) AS $$ BEGIN RETURN QUERY
 SELECT per.PersonId,
     per.Name,
@@ -542,13 +267,11 @@ SELECT per.PersonId,
     us.UserName,
     us.DateOfBirth,
     us.IsVIP,
-    us.CreatedAt,
-    us.imagepath
+    us.CreatedAt
 FROM Persons per
     INNER JOIN Users us ON per.PersonID = us.PersonID
 ORDER BY us.CreatedAt DESC
 LIMIT limitNumber OFFSET limitNumber * (pageNumber - 1);
--- Correct OFFSET calculation
 EXCEPTION
 WHEN OTHERS THEN RAISE EXCEPTION 'Something went wrong: %',
 SQLERRM;
@@ -562,25 +285,23 @@ SELECT Null,
     NULL,
     NULL,
     NULL,
-    NULL,
     NULL;
--- Return an empty row in case of error
-END;
+END
 $$ LANGUAGE plpgsql;
 --  
+--
 CREATE OR REPLACE FUNCTION fn_user_insert_in (
-        userId_u UUID,
-        name VARCHAR(50),
-        phone VARCHAR(13),
-        email VARCHAR(100),
-        address TEXT,
-        username varchar(50),
-        password TEXT,
-        IsVIP bool,
-        DateOfBirth DATE,
-        addby UUID,
-        imagePath_u varchar(49)
-    ) RETURNS INT AS $$
+userId_u UUID,
+name VARCHAR(50),
+phone VARCHAR(13),
+email VARCHAR(100),
+address TEXT,
+username varchar(50),
+password TEXT,
+IsVIP bool,
+DateOfBirth DATE,
+addby UUID
+) RETURNS INT AS $$
 DECLARE person_id UUID;
 BEGIN
 INSERT INTO persons(name, email, phone, address)
@@ -593,8 +314,7 @@ INSERT INTO Users (
         password,
         isvip,
         personid,
-        addby,
-        imagePath
+        addby
     )
 VALUES(
         userId_u,
@@ -603,8 +323,7 @@ VALUES(
         Password,
         IsVIP,
         person_id,
-        addby,
-        imagePath_u
+        addby
     );
 RETURN 1;
 EXCEPTION
@@ -625,11 +344,9 @@ username_u VARCHAR(50),
 password_u TEXT,
 IsVIP_u BOOLEAN,
 personid_u UUID,
-brithday_u DATE,
-imagePath_u VARCHAR(49) -- is_canModifi BOOLEAN,
--- modifiBy_u UUID
+brithday_u DATE
 ) RETURNS INT AS $$
-DECLARE BEGIN -- Update 'persons' table
+DECLARE BEGIN
 UPDATE persons
 SET name = CASE
         WHEN name <> name_u THEN name_u
@@ -660,10 +377,6 @@ SET username = CASE
     dateofbirth = CASE
         WHEN dateofbirth <> brithday_u THEN brithday_u
         ELSE dateofbirth
-    END,
-    imagepath = CASE
-        WHEN imagePath_u IS NOT NULL THEN imagePath_u
-        ELSE imagepath
     END
 WHERE userid = userid_u;
 RETURN 1;
@@ -673,21 +386,8 @@ SQLERRM;
 RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
---
--- CREATE OR REPLACE FUNCTION fn_user_update_()
--- RETURNS TRIGGER AS $$
--- BEGIN
---     is_canModifi :=isAdminOrSomeOneHasPersmission(NEW.modifyBy);
---     IF modifiBy_u <> userid_u.userId OR is_canModifi= FALSE THEN
---         EXCEPTION
---         WHEN OTHERS THEN RAISE EXCEPTION  'just user OR person that has permission can modify data ', SQLERRM;
---         RETURN NULL;
---     END IF;
---     RETURN NEW;
--- END;
--- $$LANGUAGE plpgsql;
---
-
+----
+----
 CREATE OR REPLACE FUNCTION fn_user_deleted(personid UUID, modifiBy UUID) RETURNs INT AS $$
 DECLARE is_deleted BOOLEAN := false;
 is_hasPermission_to_delete BOOLEAN := FALSE;
@@ -717,41 +417,6 @@ END;
 $$LANGUAGE plpgsql;
 --
 
---
-
--- CREATE TRIGGER tr_user_delete
--- BEFORE DELETE
--- ON Users FOR EACH ROW
--- EXECUTE FUNCTION fn_user_deleted();
--- CREATE  TRIGGER tr_user_update 
--- BEFORE UPDATE on users
--- FOR EACH ROW EXECUTE FUNCTION fn_user_update_();
---
-
---
--- CREATE OR REPLACE FUNCTION fn_person_update () 
--- RETURNS TRIGGER 
--- AS $$
--- BEGIN 
---   is_hasPermission_to_delete :=isAdminOrSomeOneHasPersmission(modifiBy);
---   IF   OLD.ModifyBy = OLD.userId OR is_hasPermission_to_delete = TRUE THEN 
---     RETURN NEW;
---   END IF;
---   REUTURN NULL;
---   ELSE
---     EXCEPTION
---         WHEN OTHERS THEN RAISE EXCEPTION  'only user or someone had permission can delete this user ';
--- RETURN NULL;
--- END;
--- $$ LANGUAGE plpgsql;
---
-
---
--- CREATE TRIGGER tr_person_update BEFORE
--- UPDATE ON Persons FOR EACH ROW EXECUTE FUNCTION fn_person_update ();
---
-
----#genral for all users Tables
 --
 CREATE OR REPLACE FUNCTION isExistById(id UUID)
 RETURNS BOOLEAN AS $$
@@ -810,22 +475,24 @@ CREATE TABLE RoomTypes (
     Name VARCHAR(50) NOT NULL,
     CreatedBy UUID NOT NULL,
     CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    IsDeleted bool DEFAULT FALSE,
-    imagePath VARCHAR(50) DEFAULT NULL
+    IsDeleted bool DEFAULT FALSE
 );
 -----
+
+
+
+
 ----
 CREATE OR REPLACE FUNCTION fn_roomtype_insert_new(
         name_s VARCHAR,
-        createdby_s UUID,
-        imagepath VARCHAR
+        createdby_s UUID
+        
     ) RETURNS BOOLEAN AS $$
 DECLARE roomType_id UUID;
-BEGIN -- Insert the new room type and capture the RoomTypeID
-INSERT INTO RoomTypes(name, createdby, imagepath)
-VALUES (name_s, createdby_s, imagepath)
+BEGIN
+INSERT INTO RoomTypes(name, createdby)
+VALUES (name_s, createdby_s)
 RETURNING RoomTypeID INTO roomType_id;
--- Check if the RoomTypeID was successfully inserted
 IF roomType_id IS NOT NULL THEN RETURN TRUE;
 ELSE RETURN FALSE;
 END IF;
@@ -835,12 +502,14 @@ RETURN FALSE;
 END;
 $$ LANGUAGE plpgsql;
 ---
+
+
+
 ---
 CREATE OR REPLACE FUNCTION fn_roomtype_update_new(
         name_s VARCHAR,
         roomtypeid_s UUID,
-        createdby_s UUID,
-        imagepath_s VARCHAR
+        createdby_s UUID
     ) RETURNS BOOLEAN AS $$
 DECLARE is_hasPermission BOOLEAN := FALSE;
 is_creation BOOLEAN := FALSE;
@@ -856,11 +525,6 @@ SET name = CASE
     createdby = CASE
         WHEN createdby_s <> createdby_s THEN createdby_s
         ELSE createdby
-    END,
-    imagepath = CASE
-        WHEN imagepath <> imagepath_s
-        and imagepath_s IS NOT NULL THEN imagepath_s
-        ELSE imagepath
     END
 WHERE roomtypeid = roomtypeid_s;
 SELECT name INTO name_compare
@@ -903,12 +567,20 @@ WHEN OTHERS THEN RAISE EXCEPTION 'you do not have permission to create roomtype'
 RETURN NULL;
 END $$ Language plpgsql;
 ---
+--
+
 CREATE TRIGGER tr_roomtype_delete BEFORE DELETE ON roomtypes FOR EACH ROW EXECUTE FUNCTION fn_roomtype_delete();
+---
 ---
 CREATE OR REPLACE TRIGGER tr_roomtType_insert BEFORE
 INSERT ON RoomTypes FOR EACH ROW EXECUTE FUNCTION fn_roomType_insert();
+--
+
+--
 CREATE OR REPLACE TRIGGER tr_roomtType_update BEFORE
 update ON RoomTypes FOR EACH ROW EXECUTE FUNCTION fn_roomType_insert();
+--
+
 --
 CREATE OR REPLACE FUNCTION fn_roomtype_update(name_n VARCHAR(50), createdBy_n UUID) RETURNS BOOLEAN AS $$
 DECLARE is_hasPermission BOOLEAN := FALSE;
@@ -918,7 +590,7 @@ IF is_hasPermission = false THEN RAISE EXCEPTION 'you do not have permission to 
 RETURN 0;
 END IF;
 SELECT COUT(*) > 0 INTO is_exist
-FROM roomtypes
+FROM roomtypes;
 UPDATE roomtypes
 SET name = name_n,
     createdby = createdBy_n;
@@ -931,96 +603,6 @@ END;
 $$ LANGUAGE plpgsql;
 --
 
--- CREATE TABLE RoomTypeUpdate (
---     RoomTypeUpdateID UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
---     RoomTypeID UUID NOT NULL   REFERENCES RoomTypes (RoomTypeID),
---     OldName VARCHAR(50) NOT NULL,
---     NewName VARCHAR(50) NOT NULL,
---     ModifiBy UUID NOT NULL,
---     CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
--- );
--- CREATE TABLE RoomTypeDeleted (
---     RoomTypeDeletedID UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
---     RoomTypeID UUID NOT NULL   REFERENCES RoomTypes (RoomTypeID),
---     DeletedBy UUID NOT NULL,
---     DeletedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
--- );
--- CREATE OR REPLACE FUNCTION fn_roomType_insert()
--- RETURNS TRIGGER 
--- AS $$
--- DECLARE
--- is_hasPermission BOOLEAN;
--- BEGIN
---    is_hasPermission := isAdminOrSomeOneHasPersmission(NEW.ModifiBy)
---    IF is_hasPermission=FALSE THEN 
---     RAISE EXCEPTION  'has no permission to create roomtype: %', SQLERRM;
---    END IF;
---    INSERT INTO RoomTypes(RoomTypeID,CreatedBy,name) VALUES(NEW.roomtypeid,NEW.createdbyNEW.name);
---    RETURN NEW;
---    EXCEPTION
---      WHEN OTHERS THEN RAISE EXCEPTION  'Something went wrong: %', SQLERRM;
---      RETURN NULL;
--- END;
--- $$LANGUAGE plpgsql;
---
-
---
-
--- CREATE OR REPLACE FUNCTION fn_roomType_update()
--- RETURNS TRIGGER 
--- AS $$
--- DECLARE
--- is_hasPermission BOOLEAN;
--- BEGIN
---    is_hasPermission := isAdminOrSomeOneHasPersmission(NEW.ModifiBy)
---    IF is_hasPermission=FALSE THEN 
---     RAISE EXCEPTION  'has no permission to create roomtype: %', SQLERRM;
---    END IF;
---    IF OLD.name != NEW.name THEN
---      INSERT INTO RoomTypeUpdate(RoomTypeID,OldName,NewName,ModifiBy)
---      VALUES(OLD.RoomTypeID,OLD.name,NEW.name,NEW.ModifiBy);
---      UPDATE RoomTypes SET name = NEW.name WHERE  RoomTypeID = OLD.RoomTypeID;
---      RETURN NEW;
---    END IF;
---    RETURN NULL;
---    EXCEPTION
---      WHEN OTHERS THEN RAISE EXCEPTION  'Something went wrong: %', SQLERRM;
---      RETURN NULL;
--- END;
--- $$LANGUAGE plpgsql;
---
-
---
--- CREATE OR REPLACE FUNCTION fn_roomType_deleted()
--- RETURNS TRIGGER 
--- AS $$
--- DECLARE
--- is_hasPermission BOOLEAN;
--- BEGIN
---    is_hasPermission := isAdminOrSomeOneHasPersmission(NEW.CreatedBy)
---    IF is_hasPermission=FALSE THEN 
---     RAISE EXCEPTION  'has no permission to create roomtype: %', SQLERRM;
---    END IF;
---    INSERT INTO  RoomTypeDeleted (RoomTypeID , DeletedBy) VALUES (OLD.RoomTypeID,OLD.ModifiBy);
---    UPDATE RoomTypes SET IsDeleted = TRUE WHERE RoomTypeID = OLD.RoomTypeID; 
---    RETURN NEW;
---    EXCEPTION
---      WHEN OTHERS THEN RAISE EXCEPTION  'Something went wrong: %', SQLERRM;
---      RETURN NULL;
--- END;
--- $$LANGUAGE plpgsql;
---
-
---
--- CREATE OR REPLACE TRIGGER tr_roomtType_insert
--- BEFORE INSERT
--- ON RoomTypes FOR EACH ROW EXECUTE FUNCTION fn_roomType_insert();
--- --
--- CREATE  OR REPLACE TRIGGER tr_roomtype_update()
--- BEFORE UPDATE ON RoomTypes FOR EACH EXECUTE FUNCTION fn_roomType_update();
--- --
--- CREATE OR REPLACE TRIGGER tr_roomtype_deleted()
--- BEFORE DELETE ON RoomTypes FOR EACH EXECUTE FUNCTION fn_roomType_deleted();
 --
 
 CREATE TABLE Rooms (
@@ -1074,7 +656,6 @@ RETURN 0;
 END;
 $$ LANGUAGE PLPGSQL;
 ---
-
 ---
 CREATE OR REPLACE FUNCTION fn_room_insert() RETURNS TRIGGER AS $$
 DECLARE isUserDeleted BOOLEAN;
@@ -1095,7 +676,6 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER tr_roomt_insert BEFORE
 INSERT ON rooms FOR EACH ROW EXECUTE FUNCTION fn_room_insert();
 ---
-
 ----
 CREATE OR REPLACE FUNCTION fn_room_update_new (
         roomid_ UUID,
@@ -1104,9 +684,8 @@ CREATE OR REPLACE FUNCTION fn_room_update_new (
         roomtypeid_ UUID,
         capacity_ INT,
         bedNumber_ INT
-    ) RETURNS INT AS $$ 
-DECLARE
-  updateAt_holder  TIMESTAMP;   
+    ) RETURNS INT AS $$
+DECLARE updateAt_holder TIMESTAMP;
 BEGIN
 UPDATE rooms
 SET Status = CASE
@@ -1135,12 +714,10 @@ SET Status = CASE
         ELSE NEW.bedNumber
     END,
     updateAt = CURRENT_TIMESTAMP
-    WHERE roomid = roomid_ ;
-    
-
-SELECT updateAt INTO updateAt_holder FROM rooms WHERE  roomid = roomid_ ;
-
-
+WHERE roomid = roomid_;
+SELECT updateAt INTO updateAt_holder
+FROM rooms
+WHERE roomid = roomid_;
 RETURN updateAt_holder is NOT NULL;
 EXCEPTION
 WHEN OTHERS THEN RAISE EXCEPTION 'Something went wrong: %',
@@ -1151,11 +728,10 @@ $$ LANGUAGE PLPGSQL;
 ---
 
 
+
 ---
 CREATE OR REPLACE FUNCTION fn_room_update() RETURNS TRIGGER AS $$
-DECLARE 
-isUserDeleted BOOLEAN;
-
+DECLARE isUserDeleted BOOLEAN;
 BEGIN
 SELECT isdeleted INTO isUserDeleted
 FROM users
@@ -1176,8 +752,6 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER tr_roomt_update BEFORE
 INSERT ON rooms FOR EACH ROW EXECUTE FUNCTION fn_room_update();
 ----
-
-
 
 
 
@@ -1348,26 +922,3 @@ CREATE TABLE Maintenances (
     CreatedBy BIGINT NULL REFERENCES Users (UserID),
 );
 --
-
---this table is for holding images for all tables 
-CREATE TABLE Images_tb(
-    imageId UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    belongTo UUID NOT NULL,
-    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    path varchar(MAX) NOT NULL
-);
-CREATE OR REPLACE FUNCTION fn_images_tb_insert(belongTo_i UUID, path_i varchar(MAX)) RETURNS BOOLEAN AS $$
-DECLARE is_exist BOOLEAN := FALSE;
-BEGIN
-SELECT COUNT(*) > 0
-FROM RoomTypes
-WHERE roomtypeid = belongTo_i;
-IF is_exist THEN
-INSERT INTO Images_tb(belongTo, path)
-values(belongTo_i, path_i);
-END IF;
-EXCEPTION
-WHEN OTHERS THEN RAISE EXCEPTION 'Something went wrong: %',
-SQLERRM;
-RETURN NULL;
-END $$LANGUAGE plpgsql;

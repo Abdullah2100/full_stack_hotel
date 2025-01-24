@@ -10,14 +10,12 @@ public class ImageBuissness
     public Guid? ID  { get; set; }
     public string path { get; set; }
     public Guid belongTo   { get; set; }    
-    public DateTime createdAt { get; set; }
-    public ImagesTbDto imageHolder{get{return new ImagesTbDto(imagePathId:ID,imagePath:path,belongTo:belongTo,createdAt:createdAt);}}
-    public ImageBuissness(ImagesTbDto image,enMode mode)
+    public ImagesTbDto imageHolder{get{return new ImagesTbDto(imagePathId:ID,imagePath:path,belongTo:belongTo);}}
+    public ImageBuissness(ImagesTbDto image,enMode mode = enMode.add)
     {
-        this.ID = image.imagePathId;
-        this.path = image.imagePath;
+        this.ID = image.id;
+        this.path = image.path;
         this.belongTo = image.belongTo;
-        this.createdAt = image.createdAt;
         this.mode = mode;   
     }
 
@@ -42,6 +40,40 @@ public class ImageBuissness
             
             default: return false;
         }
-    } 
+    }
 
+    public static ImageBuissness? getImageById(Guid id)
+    { 
+        ImagesTbDto? result =ImagesData.image(id:id);
+        if (result != null)
+        {
+            return new ImageBuissness(result, enMode.update);
+        }
+
+        return null;
+    }
+    public static ImageBuissness? getImageByBelongTo(Guid belongTo)
+    { 
+        ImagesTbDto? result =ImagesData.image(belongto:belongTo);
+        if (result != null)
+        {
+            return new ImageBuissness(result, enMode.update);
+        }
+
+        return null;
+    }
+
+
+    public static List<ImageBuissness> getImages(Guid belongTo)
+    {
+        var  result = ImagesData.images(belongto:belongTo);
+        List<ImageBuissness> images = new List<ImageBuissness>();
+        foreach (var image in result)
+        {
+            images.Append(new ImageBuissness(image, enMode.update));
+        }
+
+        return images;
+    }
+    
 }

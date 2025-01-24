@@ -194,6 +194,8 @@ const SignUp = () => {
             />
 
 
+<div className='ms-[25px]'>
+
             <PasswordInput
                 keyType='password'
                 value={userAuth.password}
@@ -204,6 +206,7 @@ const SignUp = () => {
                 canShowOrHidePassowrd={true}
                 maxLength={8}
             />
+</div>
 
 
 
@@ -214,7 +217,7 @@ const SignUp = () => {
                 buttonStatus={status}
                 placeHolder={'Sign Up'}
                 // onSubmit={() => { }}
-                style="text-[10px] bg-mainBg w-[200px] text-white rounded-[4px] mt-2 h-6"
+                style="text-[10px] bg-mainBg w-[170px]  text-white rounded-[4px] mt-2 h-6"
             />}
             <div className="w-[200px] justify-end">
                 <Link to={'/login'} className="text-[8px] text-black hover:text-blue-600">

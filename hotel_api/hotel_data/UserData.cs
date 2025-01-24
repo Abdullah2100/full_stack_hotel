@@ -52,7 +52,7 @@ namespace hotel_data
                                         personData: personData,
                                         userName: (string)reader["username"],
                                         password: (string)(reader["password"]),
-                                        imagePath:reader["imagepath"]==DBNull.Value ? null : (string)reader["imagepath"]
+                                        imagePath:ImagesData.image(id)
 
                                     );
 
@@ -112,7 +112,7 @@ namespace hotel_data
                                         personData: personData,
                                         userName: (string)reader["username"],
                                         password: (string)(reader["password"]),
-                                        imagePath:reader["imagepath"]==DBNull.Value ? null : (string)reader["imagepath"]
+                                        imagePath:ImagesData.image( (Guid)reader["userid"])
 
                                             
                                     );
@@ -176,7 +176,7 @@ namespace hotel_data
                                     personData: personData,
                                     userName: userName,
                                     password: password,
-                                    imagePath:reader["imagepath"]==DBNull.Value ? null : (string)reader["imagepath"]
+                                    imagePath:ImagesData.image( (Guid)reader["userid"])
 
                                 );
 
@@ -235,7 +235,7 @@ namespace hotel_data
                                         userName: (string)reader["UserName"],
                                         password: "",
                                         isDeleted: (bool)reader["isdeleted"],
-                                        imagePath:reader["imagepath"]==DBNull.Value ? null : (string)reader["imagepath"]
+                                        imagePath:ImagesData.image( (Guid)reader["userid"])
                                     );
 
                                     users.Add(userHolder);
@@ -327,8 +327,8 @@ namespace hotel_data
                                   @password::TEXT, 
                                   @IsVIP::BOOLEAN, 
                                    @personid_u,
-                                   @brithday_u::DATE,
-                                   @imagePath_u::varchar
+                                   @brithday_u::DATE
+                                 
                                     ) ";
                     using (var cmd = new NpgsqlCommand(query, con))
                     {
@@ -341,11 +341,7 @@ namespace hotel_data
                         cmd.Parameters.AddWithValue("@IsVIP", userData.isVip);
                         cmd.Parameters.AddWithValue("@personid_u", userData.personID);
                         cmd.Parameters.AddWithValue("@brithday_u", userData.brithDay);
-                        if (userData.imagePath == null)
-                            cmd.Parameters.AddWithValue("@imagePath_u", DBNull.Value);
-                        else
-                            cmd.Parameters.AddWithValue("@imagePath_u", userData.imagePath);
-
+                      
                         var result = cmd.ExecuteScalar();
                         if (result != null && int.TryParse(result?.ToString(), out int userId))
                         {

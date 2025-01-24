@@ -165,7 +165,8 @@ namespace hotel_api.controller
                 imagePath = await MinIoServices.uploadFile(_config, userRequestData.imagePath,
                     MinIoServices.enBucketName.USER);
             }
-
+            
+            saveImage(null,imagePath, userId);
             var personDataHolder = new PersonDto(
                 personID: null,
                 email: userRequestData.email,
@@ -252,6 +253,8 @@ namespace hotel_api.controller
                 imagePath = await MinIoServices.uploadFile(_config, userRequestData.imagePath,
                     MinIoServices.enBucketName.USER, data.imagePath);
             }
+            var  imageHolder = ImageBuissness.getImageByBelongTo(data.ID);
+            saveImage(imageHolder,imagePath,data.ID );
 
             data.imagePath = imagePath;
 
@@ -443,7 +446,7 @@ namespace hotel_api.controller
                     MinIoServices.enBucketName.RoomType);
             }
 
-
+            saveImage(null,imageHolderPath,roomId );
             var roomTypeHolder = new RoomtTypeBuissnes(
                 new RoomTypeDto(
                     roomTypeId: roomId,
@@ -554,8 +557,9 @@ namespace hotel_api.controller
                 imageHolderPath = await MinIoServices.uploadFile(_config, roomTypeData.image,
                     MinIoServices.enBucketName.RoomType);
             }
-
-            roomtypeHolder.image = imageHolderPath;
+            
+            var  imageHolder = ImageBuissness.getImageByBelongTo((Guid)roomtypeHolder.ID);
+            saveImage(imageHolder,imageHolderPath,roomtypeHolder.ID );
 
 
             updateRoomTypeData(ref roomtypeHolder, roomTypeData, (Guid)adminid);
@@ -630,7 +634,7 @@ namespace hotel_api.controller
 
         //room
         [Authorize]
-        [HttpPost("roomtype")]
+        [HttpPost("room")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -668,14 +672,21 @@ namespace hotel_api.controller
 
             List<string>? imageHolderPath = null;
             if (roomData.images != null)
-            {
-                await MinIoServices.uploadFile(
+            { 
+                
+                imageHolderPath =  await MinIoServices.uploadFile(
                      _config,
                    roomData.images,
                    MinIoServices.enBucketName.RoomType,
                   roomId.ToString()
                 );
+                
+                
             }
+
+            saveImage(imageHolderPath, roomId);
+
+           
             
             var roomHolder = new RoomBuisness(
                 new RoomDto(
@@ -697,5 +708,36 @@ namespace hotel_api.controller
 
             return StatusCode(201, new { message = "created seccessfully" });
         }
+
+
+        private void saveImage(ImageBuissness? imageHolder,string? imagePath,Guid? belongTo)
+        {
+            if (imagePath == null) return;
+           
+            if (imageHolder != null)
+            {
+                imageHolder.path = imagePath;
+                imageHolder.save();
+            }
+            else
+            {
+                imageHolder = new ImageBuissness(new ImagesTbDto(null,imagePath,(Guid)belongTo));
+            }
+        }
+        
+        private void saveImage(
+            List<string>? imagePath,
+            Guid id,
+            ImageBuissness.enMode mode = ImageBuissness.enMode.add
+            )
+        {
+            foreach (var path in imagePath)
+            {
+                var imageHolder = new ImageBuissness(new ImagesTbDto(null,path,id));
+                imageHolder.save();
+            } 
+        }
+
+        
     }
 }

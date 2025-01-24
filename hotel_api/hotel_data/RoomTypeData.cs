@@ -34,9 +34,9 @@ public class RoomTypeData
                                     roomTypeName: (string)reader["name"],
                                     createdBy: (Guid)reader["createdby"],
                                     createdAt: (DateTime)reader["createdat"],
-                                    imagePath: reader["imagepath"] == DBNull.Value
-                                        ? null
-                                        : (string)reader["imagepath"]
+                                    imagePath:ImagesData.image( roomTypeId),
+                                    isDeleted:(bool)reader["isdeleted"]
+                               
                                 );
                             }
                         }
@@ -80,9 +80,8 @@ public class RoomTypeData
                                     roomTypeName:name, 
                                     createdBy: (Guid)reader["createdby"],
                                     createdAt: (DateTime)reader["createdat"],
-                                    imagePath: reader["imagepath"] == DBNull.Value
-                                        ? null
-                                        : (string)reader["imagepath"]
+                                    imagePath:ImagesData.image( (Guid)reader["roomtypeid"]),
+                                isDeleted:(bool)reader["isdeleted"] 
                                 );
                             }
                         }
@@ -109,15 +108,11 @@ public class RoomTypeData
             {
                 con.Open();
                 string query =
-                    "SELECT * FROM fn_roomtype_insert_new(@name_s::VARCHAR,@createdby_s,@imagepath::VARCHAR)";
+                    "SELECT * FROM fn_roomtype_insert_new(@name_s::VARCHAR,@createdby_s)";
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
                     cmd.Parameters.AddWithValue("@name_s", roomData.roomTypeName);
                     cmd.Parameters.AddWithValue("@createdby_s", roomData.createdBy);
-                    if (roomData.imagePath == null)
-                        cmd.Parameters.AddWithValue("@imagepath", DBNull.Value);
-                    else
-                        cmd.Parameters.AddWithValue("@imagepath", roomData.imagePath);
 
                     var result = cmd.ExecuteScalar();
                     if (result != null && bool.TryParse(result.ToString(), out bool isComplate))
@@ -147,17 +142,13 @@ public class RoomTypeData
                 string query = "SELECT * FROM fn_roomtype_update_new( " +
                                "@name_s::VARCHAR ," +
                                "@roomtypeid_s::UUID," +
-                               "@createdby_s::UUID, " +
-                               "@imagepath::VARCHAR)";
+                               "@createdby_s::UUID, " ;
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
                     cmd.Parameters.AddWithValue("@name_s", roomData.roomTypeName);
                     cmd.Parameters.AddWithValue("@roomtypeid_s", roomData.roomTypeID);
                     cmd.Parameters.AddWithValue("@createdby_s", roomData.createdBy);
-                    if (roomData.imagePath == null)
-                    cmd.Parameters.AddWithValue("@imagepath", DBNull.Value);
-                    else
-                    cmd.Parameters.AddWithValue("@imagepath", roomData.imagePath);
+                  
                     var result = cmd.ExecuteScalar();
                     if (result != null && bool.TryParse(result.ToString(), out bool isComplate))
                     {
@@ -255,9 +246,7 @@ public class RoomTypeData
                                     roomTypeName: (string)reader["name"],
                                     createdBy: (Guid)reader["createdby"],
                                     createdAt: (DateTime)reader["createdat"],
-                                    imagePath: reader["imagepath"] == DBNull.Value
-                                        ? null
-                                        : (string)reader["imagepath"],
+                                    imagePath:ImagesData.image( (Guid)reader["roomtypeid"]),
                                     isDeleted:(bool)reader["isdeleted"]
                                 );
                                 roomtypes.Add(roomtypeHolder);

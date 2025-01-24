@@ -35,7 +35,7 @@ export const PasswordInput =
     }: TextInputProps
     ) => {
         const [passwordType, setType] = useState<React.HTMLInputTypeAttribute>('password')
-        const generalStyle = `text-black px-2 border-gray border-2 border-r-2 rounded-[3px] text-[12px] focus:rounded-[2px] w-[200px] ${style}`;
+    const generalStyle = `text-black px-2 border-gray border-2 border-r-2 rounded-[3px] text-[12px] focus:rounded-[2px]  `+style;
 
         // Function to handle input change and call onInput with value and key
         const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -57,13 +57,13 @@ export const PasswordInput =
                                 {passwordType === 'text' ?
                                     <button
                                         onClick={() => setType('password')}
-                                        className="absolute h-5 w-5 end-1 top-1">
+                                        className="absolute h-5 w-5 end-10 top-1">
                                         <EyeIcon fontSize={5} />
                                     </button> :
                                     <button
                                         onClick={() => setType("text")}
 
-                                        className="absolute h-5 w-5 end-1 top-1">
+                                        className="absolute h-5 w-5 end-10 top-1">
                                         <EyeSlashIcon />
                                     </button>
                                 }

@@ -2,17 +2,20 @@ namespace hotel_data.dto;
 
 public class ImagesTbDto
 {
-    public ImagesTbDto(Guid? imagePathId, string imagePath, Guid belongTo, DateTime createdAt)
+    public ImagesTbDto(
+        Guid? imagePathId,
+        string imagePath,
+        Guid belongTo
+      
+        )
     {
-        this.imagePathId = imagePathId;
-        this.imagePath = imagePath;
+        this.id = imagePathId;
+        this.path = imagePath;
         this.belongTo = belongTo;
-        this.createdAt = createdAt;
     }
 
-    public Guid? imagePathId  { get; set; }
-    public string imagePath { get; set; }
+    public Guid? id  { get; set; }
+    public string path { get; set; }
     public Guid belongTo   { get; set; }    
-    public DateTime createdAt { get; set; }
     
 }
