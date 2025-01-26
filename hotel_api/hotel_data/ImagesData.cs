@@ -15,11 +15,12 @@ public class ImagesData
             using (var con = new NpgsqlConnection(connectionUr))
             {
                 con.Open();
-                string query = "INSERT INTO images(name,belongto) VALUES (@name,@belongto)";
+                string query = "INSERT INTO images(name,belongto,isThumnail) VALUES (@name,@belongto,@isThumnail)";
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
                     cmd.Parameters.AddWithValue("@name", image.belongTo);
                     cmd.Parameters.AddWithValue("@belongto", image.belongTo);
+                    cmd.Parameters.AddWithValue("@isThumnail", image.isThumnail);
                     var result = cmd.ExecuteScalar();
                     if (result != null && bool.TryParse(result.ToString(), out bool isComplate))
                     {
@@ -88,7 +89,8 @@ public class ImagesData
                                 image = new ImagesTbDto(
                                     imagePathId:(Guid)reader["name"],
                                     imagePath:(string)reader["name"],
-                                    belongTo:(Guid)reader["belongto"]
+                                    belongTo:(Guid)reader["belongto"],
+                                    null
                                 );
                             }
                         }
@@ -126,7 +128,8 @@ public class ImagesData
                                 image = new ImagesTbDto(
                                                         imagePathId:(Guid)reader["name"],
                                                         imagePath:(string)reader["name"],
-                                                        belongTo:(Guid)reader["belongto"]
+                                                        belongTo:(Guid)reader["belongto"],
+                                                        null
                                 );
                             }
                         }
@@ -164,7 +167,8 @@ public class ImagesData
                                 images.Append(new ImagesTbDto(
                                     imagePathId:(Guid)reader["name"],
                                     imagePath:(string)reader["name"],
-                                    belongTo:(Guid)reader["belongto"]
+                                    belongTo:(Guid)reader["belongto"],
+                                    null
                                 ));
                             }
                         }

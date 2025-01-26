@@ -17,6 +17,6 @@ public class RoomRequestDto
     
     public int bedNumber { get; set; }
     
-    public List<IFormFile> images { get; set; } = new List<IFormFile>();
+    public List<ImageRequestDto> images { get; set; } = new List<ImageRequestDto>();
 
 }
