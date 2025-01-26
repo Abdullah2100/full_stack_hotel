@@ -1,4 +1,6 @@
+using hotel_api_.RequestDto;
 using hotel_api.util;
+using hotel_data.dto;
 using Minio;
 using Minio.DataModel.Args;
 
@@ -59,11 +61,11 @@ namespace hotel_api.Services
         }
 
         public static async Task<string?> uploadFile(
-            IConfigurationServices _config, 
+            IConfigurationServices _config,
             IFormFile file,
-            enBucketName bucketName, 
+            enBucketName bucketName,
             string? previuseFileName = null
-            )
+        )
         {
             try
             {
@@ -114,15 +116,14 @@ namespace hotel_api.Services
             }
         }
 
-        public static async Task<List<string>?> uploadFile(
-                IConfigurationServices _config,
-                List<IFormFile> file,
-                enBucketName bucketName, 
-                string? filePath = null,
-                List<string>? previuseFileName = null
-                )
+        public static async Task<List<ImageRequestDto>?> uploadFile(
+            IConfigurationServices _config,
+            List<ImageRequestDto> file,
+            enBucketName bucketName,
+            string? filePath = null,
+            List<string>? previuseFileName = null
+        )
         {
-            List<string> result = new List<string>();
             try
             {
                 var bucketNameStr = bucketName.ToString().ToLower();
@@ -133,7 +134,10 @@ namespace hotel_api.Services
                     return null;
                 }
 
-                foreach (var formFile in file)
+                List<ImageRequestDto> unDeletedImages = await deleteFile(minioClient, file, bucketNameStr);
+
+
+                foreach (var formFile in unDeletedImages)
                 {
                     string fullName = clsUtil.generateGuid() + ".png";
                     string fileFullPath = filePath != null ? $"{filePath}/{fullName}" : fullName;
@@ -159,30 +163,64 @@ namespace hotel_api.Services
                     }
 
                     // Upload the file
-                    using (var fileStream = formFile.OpenReadStream())
+                    if (formFile.data != null)
                     {
-                        var putObject = new PutObjectArgs()
-                            .WithBucket(bucketNameStr)
-                            .WithObject(fullName)
-                            .WithStreamData(fileStream)
-                            .WithObjectSize(formFile.Length)
-                            .WithContentType(formFile.ContentType);
+                        using (var fileStream = formFile.data.OpenReadStream())
+                        {
+                            var putObject = new PutObjectArgs()
+                                .WithBucket(bucketNameStr)
+                                .WithObject(fileFullPath)
+                                .WithStreamData(fileStream)
+                                .WithObjectSize(formFile.data.Length)
+                                .WithContentType(formFile.data.ContentType);
 
-                        await minioClient.PutObjectAsync(putObject).ConfigureAwait(false);
-
-                        result.Append(fileFullPath);
+                            await minioClient.PutObjectAsync(putObject).ConfigureAwait(false);
+                        }
                     }
                 }
+
+                return unDeletedImages;
             }
             catch (Exception error)
             {
                 Console.WriteLine("Error uploading files: {0}", error.Message);
             }
 
-            return result.Count > 0 ? result : null;
+            return null;
         }
 
-        
+        private static async Task<List<ImageRequestDto>> deleteFile(IMinioClient client, List<ImageRequestDto> files,
+            string bucketName)
+        {
+            List<ImageRequestDto> newFiles = new List<ImageRequestDto>();
+
+            foreach (var file in files)
+            {
+                if (file.image.isDeleted == true)
+                {
+                    try
+                    {
+                        await client.RemoveObjectAsync(
+                            new RemoveObjectArgs()
+                                .WithBucket(bucketName)
+                                .WithObject(file.image.path)
+                        ).ConfigureAwait(false);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Error deleting file: {0}", ex.Message);
+                    }
+                }
+                else
+                {
+                    newFiles.Append(file);
+                }
+            }
+            
+            return newFiles;
+        }
+
+
         private static async Task<bool> deleteFile(IMinioClient client, string fileName, string bucketName)
         {
             try
