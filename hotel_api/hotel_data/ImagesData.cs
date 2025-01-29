@@ -18,7 +18,7 @@ public class ImagesData
                 string query = "INSERT INTO images(name,belongto,isThumnail) VALUES (@name,@belongto,@isThumnail)";
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
-                    cmd.Parameters.AddWithValue("@name", image.belongTo);
+                    cmd.Parameters.AddWithValue("@name", image.path);
                     cmd.Parameters.AddWithValue("@belongto", image.belongTo);
                     cmd.Parameters.AddWithValue("@isThumnail", image.isThumnail);
                     var result = cmd.ExecuteScalar();

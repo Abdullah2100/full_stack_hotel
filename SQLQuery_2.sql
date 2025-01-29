@@ -484,20 +484,24 @@ CREATE TABLE RoomTypes (
 
 ----
 CREATE OR REPLACE FUNCTION fn_roomtype_insert_new(
+        roomtype_id_holder UUID,
         name_s VARCHAR,
         createdby_s UUID
         
     ) RETURNS BOOLEAN AS $$
 DECLARE roomType_id UUID;
 BEGIN
-INSERT INTO RoomTypes(name, createdby)
-VALUES (name_s, createdby_s)
+INSERT INTO RoomTypes(roomtypeid,name, createdby)
+VALUES (roomtype_id_holder,name_s, createdby_s)
 RETURNING RoomTypeID INTO roomType_id;
+
+
 IF roomType_id IS NOT NULL THEN RETURN TRUE;
 ELSE RETURN FALSE;
 END IF;
 EXCEPTION
-WHEN OTHERS THEN RAISE EXCEPTION 'You do not have permission to create room type';
+WHEN OTHERS THEN RAISE EXCEPTION 'You do not have permission to create room type: %',
+SQLERRM;
 RETURN FALSE;
 END;
 $$ LANGUAGE plpgsql;

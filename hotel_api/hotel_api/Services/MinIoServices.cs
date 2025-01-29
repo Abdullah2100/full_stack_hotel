@@ -196,7 +196,7 @@ namespace hotel_api.Services
 
             foreach (var file in files)
             {
-                if (file.image.isDeleted == true)
+                /*if (file.image.isDeleted == true)
                 {
                     try
                     {
@@ -215,8 +215,9 @@ namespace hotel_api.Services
                 {
                     newFiles.Append(file);
                 }
+                */
             }
-            
+
             return newFiles;
         }
 

@@ -3,14 +3,14 @@ import { UserModule } from '../../module/userModule';
 import { Switch } from '@mui/material';
 import NotFoundComponent from '../notFoundContent';
 import { ArrowUturnLeftIcon, PencilIcon, TrashIcon } from '@heroicons/react/16/solid';
-import { userAuthModule } from '../../module/userAuthModule';
+import { IAuthModule } from '../../module/iAuthModule';
 import { Guid } from 'guid-typescript';
 import { generalMessage } from '../../util/generalPrint';
 import ImageHolder from '../imageHolder';
 
 interface UserTableProps {
   data?: UserModule[] | undefined,
-  setUser: Dispatch<SetStateAction<userAuthModule>>
+  setUser: Dispatch<SetStateAction<IAuthModule>>
   seUpdate: Dispatch<SetStateAction<boolean>>
   deleteFunc: (userId: Guid, isDeletion: boolean | undefined) => Promise<void>
   isShwoingDeleted: boolean

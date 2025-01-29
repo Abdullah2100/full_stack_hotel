@@ -1,4 +1,4 @@
-export interface PersonModule{
+export interface IPersonModule{
      personID: string,
         name: string,
         email:string,
