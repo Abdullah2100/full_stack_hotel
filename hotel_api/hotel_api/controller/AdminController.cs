@@ -436,7 +436,7 @@ namespace hotel_api.controller
                 return StatusCode(400, "roomtype is already exist");
 
 
-            var roomId = Guid.NewGuid();
+            var roomtypeId = Guid.NewGuid();
 
 
             string? imageHolderPath = null;
@@ -446,10 +446,10 @@ namespace hotel_api.controller
                     MinIoServices.enBucketName.RoomType);
             }
 
-            saveImage(null, imageHolderPath, roomId);
+            saveImage(null, imageHolderPath, roomtypeId);
             var roomTypeHolder = new RoomtTypeBuissnes(
                 new RoomTypeDto(
-                    roomTypeId: roomId,
+                    roomTypeId: roomtypeId,
                     roomTypeName: roomTypeData.name,
                     imagePath: null,
                     createdBy: (Guid)adminid,
@@ -641,7 +641,7 @@ namespace hotel_api.controller
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> createRoom
         (
-            [FromForm] RoomRequestDto roomData
+            [FromForm]   RoomRequestDto roomData
         )
         {
             var authorizationHeader = HttpContext.Request.Headers["Authorization"];
@@ -684,7 +684,7 @@ namespace hotel_api.controller
             var roomHolder = new RoomBuisness(
                 new RoomDto(
                     roomId: roomData.roomtypeid,
-                    status: roomData.status,
+                    status: RoomData.convertStatusToEnum(roomData.status),
                     pricePerNight: roomData.pricePerNight,
                     roomtypeid: roomData.roomtypeid,
                     capacity: roomData.capacity,
@@ -715,6 +715,7 @@ namespace hotel_api.controller
             else
             {
                 imageHolder = new ImageBuissness(new ImagesTbDto(null, imagePath, (Guid)belongTo));
+                imageHolder.save();
             }
         }
 
@@ -724,11 +725,12 @@ namespace hotel_api.controller
             ImageBuissness.enMode mode = ImageBuissness.enMode.add
         )
         {
-            foreach (var image in images)
+          /*  foreach (var image in images)
             {
-                var imageHolder = new ImageBuissness(image.image,mode);
+                var imageHolder = new ImageBuissness(image,mode);
                 imageHolder.save();
             }
+            */
         }
     }
 }

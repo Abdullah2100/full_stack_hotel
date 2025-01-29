@@ -1,7 +1,7 @@
 import axios from "axios"
 import { generalMessage } from "../util/generalPrint";
-import { userAuthModule } from "../module/userAuthModule";
-import { AuthResult } from "../module/userAuthResult";
+import { IAuthModule } from "../module/iAuthModule";
+import { AuthResult } from "../module/iAuthResult";
 import { enStatus } from "../module/enState";
 
 export const isValidToken = async (token: string) => {
@@ -17,7 +17,7 @@ export const isValidToken = async (token: string) => {
     return isValid;
 }
 
-export const signUpNewUser = async (userData: userAuthModule, changeState: (status: enStatus) => void) => {
+export const signUpNewUser = async (userData: IAuthModule, changeState: (status: enStatus) => void) => {
     let isSignup = false;
     changeState(enStatus.loading)
     await axios.post(

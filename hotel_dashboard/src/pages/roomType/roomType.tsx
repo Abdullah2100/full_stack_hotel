@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import Header from '../../components/header/header'
 import { TextInput } from '../../components/input/textInput'
-import { IRoomType } from '../../module/roomModule';
+import { IRoomType } from '../../module/iRoomType';
 import { PencilIcon, RectangleGroupIcon } from '@heroicons/react/16/solid';
 import SubmitButton from '../../components/button/submitButton';
 import { enMessage } from '../../module/enMessageType';
@@ -94,18 +94,18 @@ const RoomType = () => {
   }
 
 
-  const { data, error, refetch } = useQuery({
-
-    queryKey: ['users'],
-    queryFn: async () => apiClient({
-      enType: enApiType.GET,
-      endPoint: import.meta.env.VITE_ROOMTYPES,
-      prameters: undefined,
-      isRquireAuth: true,
-      jwtValue: refreshToken || ""
-    }),
-  }
-  );
+   const { data, error } = useQuery({
+ 
+     queryKey: ['roomType'],
+     queryFn: async () => apiClient({
+       enType: enApiType.GET,
+       endPoint: import.meta.env.VITE_ROOMTYPES,
+       prameters: undefined,
+       isRquireAuth: true,
+       jwtValue: refreshToken || ""
+     }),
+   }
+   );
 
   const roomtypeMutaion = useMutation({
     mutationFn: ({ data, endpoint, methodType,

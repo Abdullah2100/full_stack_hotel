@@ -1,6 +1,6 @@
 import { Guid } from "guid-typescript";
 
-export interface userAuthModule {
+export interface IAuthModule {
     userId :Guid|undefined;
     name: string
     email: string;
