@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react'
 import { TextInput } from '../../components/input/textInput'
 import SubmitButton from '../../components/button/submitButton'
 import { Link } from 'react-router-dom'
-import { userAuthModule } from '../../module/userAuthModule';
+import { IAuthModule } from '../../module/iAuthModule';
 import { useMutation } from '@tanstack/react-query';
 import apiClient from '../../services/apiClient';
 import { enApiType } from '../../module/enApiType';
@@ -15,8 +15,8 @@ import { enMessage } from '../../module/enMessageType';
 import { PasswordInput } from '../../components/input/passwordInput';
 import { useDispatch } from 'react-redux';
 import { setTokens } from '../../controller/redux/jwtSlice';
-import { AuthResult } from '../../module/userAuthResult';
-import { ISingupModle } from '../../module/singupModle';
+import { AuthResult } from '../../module/iAuthResult';
+import { ISingupModle } from '../../module/iSingupModle';
 
 const SignUp = () => {
     const dispatcher = useDispatch()

@@ -1,13 +1,13 @@
 import { Guid } from "guid-typescript";
-import { PersonModule } from "./personModule";
+import { IPersonModule } from "./iPersonModule";
 
-export interface UserModule {
+export interface IUserModule {
     userId: Guid,
     personID: Guid,
     brithDay: string
     isVip: boolean,
     userName: string,
     isDeleted:boolean,
-    personData: PersonModule,
+    personData: IPersonModule,
     imagePath:string|null
 }

@@ -107,10 +107,11 @@ public class RoomTypeData
             using (var con = new NpgsqlConnection(connectionUr))
             {
                 con.Open();
-                string query =
-                    "SELECT * FROM fn_roomtype_insert_new(@name_s::VARCHAR,@createdby_s)";
+                string query =                                   
+                    "SELECT * FROM fn_roomtype_insert_new(@room_type_id,@name_s::VARCHAR,@createdby_s)";
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
+                    cmd.Parameters.AddWithValue("@room_type_id", roomData.roomTypeID);
                     cmd.Parameters.AddWithValue("@name_s", roomData.roomTypeName);
                     cmd.Parameters.AddWithValue("@createdby_s", roomData.createdBy);
 

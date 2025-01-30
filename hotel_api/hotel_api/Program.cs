@@ -12,12 +12,14 @@ builder.Services.AddEndpointsApiExplorer();
 // Register Swagger/OpenAPI
 builder.Services.AddSwaggerGen(c =>
 {
+
     c.SwaggerDoc("v1", new OpenApiInfo
     {
         Title = "Hotel API",
         Version = "v1"
     });
 });
+
 
 // Register custom services
 builder.Services.AddSingleton<IConfigurationServices, ConfigurationServicesImp>();

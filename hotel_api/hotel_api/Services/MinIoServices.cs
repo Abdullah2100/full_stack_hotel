@@ -115,7 +115,7 @@ namespace hotel_api.Services
             }
         }
 
-        public static async Task<List<string>?> uploadFile(
+        public static async Task<List<ImageRequestDto>?> uploadFile(
                 IConfigurationServices _config,
                 List<IFormFile> file,
                 enBucketName bucketName, 
@@ -134,14 +134,10 @@ namespace hotel_api.Services
                     return null;
                 }
 
-<<<<<<< Updated upstream
-                foreach (var formFile in file)
-=======
                 List<ImageRequestDto> unDeletedImages = await deleteFile(minioClient, file, bucketNameStr, filePath);
 
 
                 foreach (var formFile in unDeletedImages)
->>>>>>> Stashed changes
                 {
                     string fullName = clsUtil.generateGuid() + ".png";
                     string fileFullPath = filePath != null ? $"{filePath}/{fullName}" : fullName;
@@ -176,28 +172,20 @@ namespace hotel_api.Services
                             .WithObjectSize(formFile.Length)
                             .WithContentType(formFile.ContentType);
 
-<<<<<<< Updated upstream
-                        await minioClient.PutObjectAsync(putObject).ConfigureAwait(false);
-
-                        result.Append(fileFullPath);
-=======
                             await minioClient.PutObjectAsync(putObject).ConfigureAwait(false);
                             formFile.fileName = fullName;
                         }
->>>>>>> Stashed changes
                     }
                 }
-            }
+            
             catch (Exception error)
             {
                 Console.WriteLine("Error uploading files: {0}", error.Message);
             }
 
-<<<<<<< Updated upstream
-            return result.Count > 0 ? result : null;
-=======
-            return null;
+            return unDeletedImages;
         }
+
 
         private static async Task<List<ImageRequestDto>> deleteFile(IMinioClient client, List<ImageRequestDto> files,
             string bucketName, string? path = null)
@@ -230,7 +218,6 @@ namespace hotel_api.Services
             }
 
             return newFiles;
->>>>>>> Stashed changes
         }
 
         
