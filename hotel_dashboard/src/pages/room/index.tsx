@@ -145,6 +145,176 @@ const Room = () => {
   }
 
 
+<<<<<<< Updated upstream
+=======
+  const { data: roomtypes, error } = useQuery({
+    queryKey: ['roomType'],
+
+    queryFn: async () => apiClient({
+      enType: enApiType.GET,
+      endPoint: import.meta.env.VITE_ROOMTYPES,
+      prameters: undefined,
+      isRquireAuth: true,
+      jwtValue: refreshToken || ""
+    }).then((data) => {
+      const roomType = data.data as IRoomType[];
+      updateInput(roomType[0].roomTypeID, 'roomtypeid')
+      return roomType;
+    })
+    ,
+  });
+
+
+  const clearData = () => {
+    setRoomData({
+      roomtypeid: undefined,
+      bedNumber: 0,
+      capacity: 0,
+      pricePerNight: 0,
+      status: enStatsu.Available,
+      images: undefined,
+      roomId: undefined,
+      createdAt: undefined,
+      beglongTo: undefined
+    })
+    setThumnail(undefined)
+    setImages(undefined)
+  }
+
+  const roomMutaion = useMutation({
+    mutationFn: ({ data, endpoint, methodType,
+      jwtToken
+    }: {
+      data?: FormData | undefined,
+      endpoint: string,
+      methodType: enApiType,
+      jwtToken?: string | null
+    }) =>
+      apiClient({
+        enType: methodType,
+        endPoint: endpoint
+        , prameters: data,
+        isRquireAuth: true,
+        jwtValue: jwtToken ?? undefined,
+        isFormData: data != undefined
+      }),
+    onSuccess: (data) => {
+      setState(enStatus.complate)
+      showToastiFy(`user ${isUpdate ? "updated" : "created"} Sueccessfuly`, enMessage.SECCESSFUL);
+      clearData()
+
+      if (isUpdate)
+        setUpdate(false)
+      // refetch();
+    },
+    onError: (error) => {
+      setState(enStatus.complate);
+      showToastiFy(error.message, enMessage.ERROR);
+
+    }
+
+  })
+
+  const validationInput = () => {
+
+    let message = "";
+    if (thumnailImage === undefined) {
+      message = "Thumnail is required"
+    }
+    else if (images === undefined || images.length === 0) {
+      message = "Images is required"
+    }
+    else if (roomData.pricePerNight === 0) {
+      message = "Price per night is required";
+    }
+    else if (roomData.roomtypeid === undefined) {
+      message = "Room type is required"
+    }
+    else if (roomData.capacity === 0) {
+      message = "Capacity is required"
+    }
+    else if (roomData.bedNumber === 0) {
+      message = "Bed number is required"
+    }
+    else if (roomData.roomtypeid === undefined) {
+      message = "Room type is required"
+      return false;
+    }
+
+    if (!(message.length === 0)) {
+
+      showToastiFy(message, enMessage.ATTENSTION)
+    }
+
+    return message.length === 0;
+  }
+
+  const createOrUpdateRoomType = async () => {
+    if (isUpdate === false) {
+      const result = !validationInput();
+      generalMessage(`this is the create room ${result}`)
+
+      if (result) return;
+    }
+
+    const formData = new FormData();
+    if (isUpdate)
+      formData.append("roomId", roomData.pricePerNight.toString());
+
+    formData.append("status", `${roomData.status}`);
+
+    formData.append("pricePerNight", `${roomData.pricePerNight}`);
+
+    formData.append("capacity", roomData.capacity.toString());
+
+    formData.append("bedNumber", roomData.bedNumber.toString());
+
+    formData.append("status", roomData.status.toString());
+
+    formData.append("roomtypeid", roomData.roomtypeid?.toString() ?? "");
+
+
+    if (images && images.length > 0) {
+      images.forEach((image, index) => {
+        formData.append(`images[${index}].id`, image.id ? image.id.toString() : "");
+        formData.append(`images[${index}].belongTo`, image.belongTo ? image.belongTo.toString() : "");
+        formData.append(`images[${index}].isDeleted`, image.isDeleted ? image.isDeleted.toString() : "");
+        formData.append(`images[${index}].isThumnail`, image.isThumnail ? image.isThumnail.toString() : "");
+        if (image.data)
+          formData.append(`images[${index}].data`, image.data);
+      });
+
+      if (thumnailImage) {
+        formData.append(`images[${images.length + 1}].id`, thumnailImage.id ? thumnailImage.id.toString() : "");
+        formData.append(`images[${images.length + 1}].belongTo`, thumnailImage.belongTo ? thumnailImage.belongTo.toString() : "");
+        formData.append(`images[${images.length + 1}].isDeleted`, thumnailImage.isDeleted ? thumnailImage.isDeleted.toString() : "");
+        formData.append(`images[${images.length + 1}].isThumnail`, thumnailImage.isThumnail ? thumnailImage.isThumnail.toString() : "");
+
+        if (thumnailImage.data)
+          formData.append(`images[${images.length + 1}].data`, thumnailImage.data);
+      }
+    }
+
+
+
+    generalMessage(`this the data of the form ${JSON.stringify(formData)}`)
+
+    await roomMutaion.mutate({
+      data: formData,
+      endpoint: import.meta.env.VITE_CREATEORUPDATEROOM,
+      methodType: isUpdate ? enApiType.PUT : enApiType.POST,
+      jwtToken: refreshToken
+    });
+
+  }
+
+
+  useEffect(() => {
+
+
+  }, [roomtypes !== undefined])
+
+>>>>>>> Stashed changes
   return (
     <div className='flex flex-row'>
 

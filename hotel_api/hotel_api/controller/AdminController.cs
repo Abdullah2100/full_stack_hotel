@@ -634,15 +634,13 @@ namespace hotel_api.controller
 
         //room
         [Authorize]
-        [HttpPost("room")]
+        [HttpPost("roomtype")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> createRoom
-        (
-            [FromForm] RoomRequestDto roomData
-        )
+            ([FromForm] RoomRequestDto roomData)
         {
             var authorizationHeader = HttpContext.Request.Headers["Authorization"];
             var id = AuthinticationServices.GetPayloadFromToken("id",
@@ -669,25 +667,19 @@ namespace hotel_api.controller
 
             var roomId = Guid.NewGuid();
 
-
-            List<string>? imageHolderPath = null;
+            List<ImageRequestDto>? imageHolderPath = null;
             if (roomData.images != null)
-            { 
-                
-                imageHolderPath =  await MinIoServices.uploadFile(
-                     _config,
-                   roomData.images,
-                   MinIoServices.enBucketName.RoomType,
-                  roomId.ToString()
+            {
+                imageHolderPath = await MinIoServices.uploadFile(
+                    _config,
+                    roomData.images,
+                    MinIoServices.enBucketName.ROOM,
+                    roomId.ToString()
                 );
-                
-                
             }
 
             saveImage(imageHolderPath, roomId);
 
-           
-            
             var roomHolder = new RoomBuisness(
                 new RoomDto(
                     roomId: roomData.roomtypeid,
@@ -708,36 +700,5 @@ namespace hotel_api.controller
 
             return StatusCode(201, new { message = "created seccessfully" });
         }
-
-
-        private void saveImage(ImageBuissness? imageHolder,string? imagePath,Guid? belongTo)
-        {
-            if (imagePath == null) return;
-           
-            if (imageHolder != null)
-            {
-                imageHolder.path = imagePath;
-                imageHolder.save();
-            }
-            else
-            {
-                imageHolder = new ImageBuissness(new ImagesTbDto(null,imagePath,(Guid)belongTo));
-            }
-        }
-        
-        private void saveImage(
-            List<string>? imagePath,
-            Guid id,
-            ImageBuissness.enMode mode = ImageBuissness.enMode.add
-            )
-        {
-            foreach (var path in imagePath)
-            {
-                var imageHolder = new ImageBuissness(new ImagesTbDto(null,path,id));
-                imageHolder.save();
-            } 
-        }
-
-        
     }
 }

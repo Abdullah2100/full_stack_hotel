@@ -1,6 +1,9 @@
+<<<<<<< Updated upstream
 using System.ComponentModel.DataAnnotations;
 using hotel_data.dto;
 
+=======
+>>>>>>> Stashed changes
 namespace hotel_api_.RequestDto;
 
 public class RoomRequestDto
@@ -16,7 +19,12 @@ public class RoomRequestDto
     public Guid roomtypeid {get; set;}
     
     public int bedNumber { get; set; }
+<<<<<<< Updated upstream
     
     public List<IFormFile> images { get; set; } = new List<IFormFile>();
 
+=======
+
+    public List<ImageRequestDto> images { get; set; }
+>>>>>>> Stashed changes
 }

@@ -1,0 +1,11 @@
+import { Guid } from "guid-typescript";
+
+export interface iImageHolder {
+    id?: Guid | undefined
+    belongTo?: Guid | undefined
+    isDeleted?: boolean | undefined
+    isThumnail?: boolean | undefined
+    fileName?: boolean | undefined
+    data?: File | undefined
+}
+

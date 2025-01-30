@@ -9,7 +9,8 @@ namespace hotel_api.Services
         public enum enBucketName
         {
             USER,
-            RoomType
+            RoomType,
+            ROOM
         }
 
         private static IMinioClient? _client(IConfigurationServices _config)
@@ -133,12 +134,19 @@ namespace hotel_api.Services
                     return null;
                 }
 
+<<<<<<< Updated upstream
                 foreach (var formFile in file)
+=======
+                List<ImageRequestDto> unDeletedImages = await deleteFile(minioClient, file, bucketNameStr, filePath);
+
+
+                foreach (var formFile in unDeletedImages)
+>>>>>>> Stashed changes
                 {
                     string fullName = clsUtil.generateGuid() + ".png";
                     string fileFullPath = filePath != null ? $"{filePath}/{fullName}" : fullName;
 
-                    // Check if bucket exists and create if necessary
+                    
                     var isExistBucket = await _isExistBucket(minioClient, bucketNameStr);
 
                     if (!isExistBucket)
@@ -168,9 +176,15 @@ namespace hotel_api.Services
                             .WithObjectSize(formFile.Length)
                             .WithContentType(formFile.ContentType);
 
+<<<<<<< Updated upstream
                         await minioClient.PutObjectAsync(putObject).ConfigureAwait(false);
 
                         result.Append(fileFullPath);
+=======
+                            await minioClient.PutObjectAsync(putObject).ConfigureAwait(false);
+                            formFile.fileName = fullName;
+                        }
+>>>>>>> Stashed changes
                     }
                 }
             }
@@ -179,7 +193,44 @@ namespace hotel_api.Services
                 Console.WriteLine("Error uploading files: {0}", error.Message);
             }
 
+<<<<<<< Updated upstream
             return result.Count > 0 ? result : null;
+=======
+            return null;
+        }
+
+        private static async Task<List<ImageRequestDto>> deleteFile(IMinioClient client, List<ImageRequestDto> files,
+            string bucketName, string? path = null)
+        {
+            List<ImageRequestDto> newFiles = files;
+
+            foreach (var file in newFiles)
+            {
+                if ((file.isDeleted == true || file.data == null))
+                {
+                    try
+                    {
+                        if (file.data != null)
+                        {
+                            string fullName = path != null ? path + '/' + file.data.FileName : file.data.FileName;
+                            await client.RemoveObjectAsync(
+                                new RemoveObjectArgs()
+                                    .WithBucket(bucketName)
+                                    .WithObject(fullName)
+                            ).ConfigureAwait(false);
+                        }
+
+                        newFiles.Remove(file);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Error deleting file: {0}", ex.Message);
+                    }
+                }
+            }
+
+            return newFiles;
+>>>>>>> Stashed changes
         }
 
         
