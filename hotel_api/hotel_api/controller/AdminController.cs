@@ -165,8 +165,8 @@ namespace hotel_api.controller
                 imagePath = await MinIoServices.uploadFile(_config, userRequestData.imagePath,
                     MinIoServices.enBucketName.USER);
             }
-
-            saveImage(null, imagePath, userId);
+            
+            saveImage(null,imagePath, userId);
             var personDataHolder = new PersonDto(
                 personID: null,
                 email: userRequestData.email,
@@ -185,7 +185,7 @@ namespace hotel_api.controller
                 userName: userRequestData.userName,
                 password: clsUtil.hashingText(userRequestData.password),
                 addBy: adminid,
-                imagePath: null
+                imagePath: imagePath
             ));
 
             var result = data.save();
@@ -251,12 +251,12 @@ namespace hotel_api.controller
             if (userRequestData.imagePath != null)
             {
                 imagePath = await MinIoServices.uploadFile(_config, userRequestData.imagePath,
-                    MinIoServices.enBucketName.USER, data.profileImage.path);
+                    MinIoServices.enBucketName.USER, data.imagePath);
             }
+            var  imageHolder = ImageBuissness.getImageByBelongTo(data.ID);
+            saveImage(imageHolder,imagePath,data.ID );
 
-            var imageHolder = ImageBuissness.getImageByBelongTo(data.ID);
-
-            saveImage(imageHolder, imagePath, data.ID);
+            data.imagePath = imagePath;
 
             updateUserData(ref data, userRequestData);
 
@@ -436,7 +436,7 @@ namespace hotel_api.controller
                 return StatusCode(400, "roomtype is already exist");
 
 
-            var roomtypeId = Guid.NewGuid();
+            var roomId = Guid.NewGuid();
 
 
             string? imageHolderPath = null;
@@ -446,12 +446,12 @@ namespace hotel_api.controller
                     MinIoServices.enBucketName.RoomType);
             }
 
-            saveImage(null, imageHolderPath, roomtypeId);
+            saveImage(null,imageHolderPath,roomId );
             var roomTypeHolder = new RoomtTypeBuissnes(
                 new RoomTypeDto(
-                    roomTypeId: roomtypeId,
+                    roomTypeId: roomId,
                     roomTypeName: roomTypeData.name,
-                    imagePath: null,
+                    imagePath: imageHolderPath,
                     createdBy: (Guid)adminid,
                     createdAt: DateTime.Now
                 )
@@ -557,9 +557,9 @@ namespace hotel_api.controller
                 imageHolderPath = await MinIoServices.uploadFile(_config, roomTypeData.image,
                     MinIoServices.enBucketName.RoomType);
             }
-
-            var imageHolder = ImageBuissness.getImageByBelongTo((Guid)roomtypeHolder.ID);
-            saveImage(imageHolder, imageHolderPath, roomtypeHolder.ID);
+            
+            var  imageHolder = ImageBuissness.getImageByBelongTo((Guid)roomtypeHolder.ID);
+            saveImage(imageHolder,imageHolderPath,roomtypeHolder.ID );
 
 
             updateRoomTypeData(ref roomtypeHolder, roomTypeData, (Guid)adminid);
@@ -634,15 +634,13 @@ namespace hotel_api.controller
 
         //room
         [Authorize]
-        [HttpPost("room")]
+        [HttpPost("roomtype")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> createRoom
-        (
-            [FromForm]   RoomRequestDto roomData
-        )
+            ([FromForm] RoomRequestDto roomData)
         {
             var authorizationHeader = HttpContext.Request.Headers["Authorization"];
             var id = AuthinticationServices.GetPayloadFromToken("id",
@@ -666,30 +664,31 @@ namespace hotel_api.controller
                 return StatusCode(401, "you not have Permission");
             }
 
+
             var roomId = Guid.NewGuid();
-            
+
             List<ImageRequestDto>? imageHolderPath = null;
             if (roomData.images != null)
             {
                 imageHolderPath = await MinIoServices.uploadFile(
                     _config,
                     roomData.images,
-                    MinIoServices.enBucketName.RoomType,
+                    MinIoServices.enBucketName.ROOM,
                     roomId.ToString()
                 );
             }
 
             saveImage(imageHolderPath, roomId);
-            
+
             var roomHolder = new RoomBuisness(
                 new RoomDto(
                     roomId: roomData.roomtypeid,
-                    status: RoomData.convertStatusToEnum(roomData.status),
+                    status: roomData.status,
                     pricePerNight: roomData.pricePerNight,
-                    roomtypeid: roomData.roomtypeid,
-                    capacity: roomData.capacity,
-                    bedNumber: roomData.bedNumber,
-                    beglongTo: (Guid)adminid,
+                    roomtypeid: roomData.roomtypeid, 
+                    capacity:roomData.capacity,
+                    bedNumber:roomData.bedNumber,
+                    beglongTo:(Guid)adminid,
                     createdAt: DateTime.Now
                 )
             );
@@ -700,37 +699,6 @@ namespace hotel_api.controller
                 return StatusCode(500, "some thing wrong");
 
             return StatusCode(201, new { message = "created seccessfully" });
-        }
-
-
-        private void saveImage(ImageBuissness? imageHolder, string? imagePath, Guid? belongTo)
-        {
-            if (imagePath == null) return;
-
-            if (imageHolder != null)
-            {
-                imageHolder.path = imagePath;
-                imageHolder.save();
-            }
-            else
-            {
-                imageHolder = new ImageBuissness(new ImagesTbDto(null, imagePath, (Guid)belongTo));
-                imageHolder.save();
-            }
-        }
-
-        private void saveImage(
-            List<ImageRequestDto>? images,
-            Guid id,
-            ImageBuissness.enMode mode = ImageBuissness.enMode.add
-        )
-        {
-          /*  foreach (var image in images)
-            {
-                var imageHolder = new ImageBuissness(image,mode);
-                imageHolder.save();
-            }
-            */
         }
     }
 }

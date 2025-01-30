@@ -103,7 +103,6 @@ public class RoomData
                                 (
                                @status::VARCHAR,
                                @pricePerNight_::NUMERIC,
-                               @CreatedAt_::TIMESTAMP , 
                                @roomtypeid_ ,
                                @capacity_::INT ,
                                @bedNumber_::INT ,
@@ -114,7 +113,6 @@ public class RoomData
                 {
                     cmd.Parameters.AddWithValue("@status",reversedStatusEnumToString(roomData.status));
                     cmd.Parameters.AddWithValue("@pricePerNight_", roomData.pricePerNight);
-                    cmd.Parameters.AddWithValue("@CreatedAt_", roomData.createdAt);
                     cmd.Parameters.AddWithValue("@roomtypeid_", roomData.roomtypeid);
                     cmd.Parameters.AddWithValue("@capacity_", roomData.capacity);
                     cmd.Parameters.AddWithValue("@bedNumber_", roomData.bedNumber);

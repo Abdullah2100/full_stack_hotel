@@ -355,22 +355,28 @@ const Room = () => {
     formData.append("roomtypeid", roomData.roomtypeid?.toString() ?? "");
 
 
-    let imagesHolder = [] as iImageHolder[];
-    if (images !== undefined) {
-      imagesHolder.push(...images);
+    if (images && images.length > 0) {
+      images.forEach((image, index) => {
+        formData.append(`images[${index}].id`, image.id ? image.id.toString() : "");
+        formData.append(`images[${index}].belongTo`, image.belongTo ? image.belongTo.toString() : "");
+        formData.append(`images[${index}].isDeleted`, image.isDeleted ? image.isDeleted.toString() : "");
+        formData.append(`images[${index}].isThumnail`, image.isThumnail ? image.isThumnail.toString() : "");
+        if (image.data)
+          formData.append(`images[${index}].data`, image.data);
+      });
+
+      if (thumnailImage) {
+        formData.append(`images[${images.length + 1}].id`, thumnailImage.id ? thumnailImage.id.toString() : "");
+        formData.append(`images[${images.length + 1}].belongTo`, thumnailImage.belongTo ? thumnailImage.belongTo.toString() : "");
+        formData.append(`images[${images.length + 1}].isDeleted`, thumnailImage.isDeleted ? thumnailImage.isDeleted.toString() : "");
+        formData.append(`images[${images.length + 1}].isThumnail`, thumnailImage.isThumnail ? thumnailImage.isThumnail.toString() : "");
+
+        if (thumnailImage.data)
+          formData.append(`images[${images.length + 1}].data`, thumnailImage.data);
+      }
     }
 
-    if (thumnailImage !== undefined) {
-      imagesHolder.push(thumnailImage);
-    }
-    // formData.append("images", imagesHolder);
-    imagesHolder.forEach((imageHolder, index) => {
-      const imgIndex = imagesHolder ? index + 1 : index; // Adjust index if thumbnail exists
-      if (imageHolder.data) {
-        formData.append(`images[${imgIndex}].data`, imageHolder.data); // Append the file
-      }
-      formData.append(`images[${imgIndex}].image`, JSON.stringify(imageHolder.image)); // Append the metadata
-    });
+
 
     generalMessage(`this the data of the form ${JSON.stringify(formData)}`)
 
