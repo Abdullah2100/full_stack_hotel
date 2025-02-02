@@ -30,7 +30,7 @@ public class UserBuissnes
                 password: password,
                 personData: personData
                 ,addBy:addBy,
-                imagePath: imagePath
+                imagePath:imagePath 
             );
         }
     }

@@ -11,8 +11,20 @@ import { enMessage } from '../../module/enMessageType';
 import { TextInput } from '../../components/input/textInput';
 import SubmitButton from '../../components/button/submitButton';
 import { enStatus } from '../../module/enState';
+import { iImageHolder } from '../../module/IImageHolder';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { enApiType } from '../../module/enApiType';
+import apiClient from '../../services/apiClient';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../controller/rootReducer';
+import { IRoomType } from '../../module/iRoomType';
+import { Guid } from 'guid-typescript';
+import { generalMessage } from '../../util/generalPrint';
+import { IRoomModule } from '../../module/iRoomModule';
+import { enStatsu } from '../../module/enStatsu';
 
 const Room = () => {
+  const refreshToken = useSelector((state: RootState) => state.auth.refreshToken)
 
   const { showToastiFy } = useContext(useToastifiContext)
 
@@ -22,19 +34,35 @@ const Room = () => {
   const [isDraggable, changeDraggableStatus] = useState(false)
 
 
-  const [pricePerDay, setPricePerDay] = useState("")
-  const [thumnailImage, setThumnail] = useState<File>()
-  const [images, setImages] = useState<File[]>()
+  const [thumnailImage, setThumnail] = useState<iImageHolder>()
+  const [images, setImages] = useState<iImageHolder[]>()
+
+  const [roomData, setRoomData] = useState<IRoomModule>({
+    roomtypeid: undefined,
+    bedNumber: 0,
+    capacity: 0,
+    pricePerNight: 0,
+    status: enStatsu.Available,
+    images: undefined,
+    roomId: undefined,
+    createdAt: undefined,
+    beglongTo: undefined
+  })
 
 
   const imageRef = useRef<HTMLInputElement>(null);
 
+  const updateInput = (value: any, key: string) => {
 
+    setRoomData((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
 
-
+  };
 
   const changeIsSingleStatus = async (isSingle: boolean) => {
-    setSingle(isSingle)
+    setSingle(prev => prev = isSingle)
   }
 
   const selectImage = async (isSingle: boolean) => {
@@ -46,7 +74,7 @@ const Room = () => {
   const uploadImageDisplayFromSelectInput = async (e) => {
     if (imageRef.current && imageRef.current.files && imageRef.current.files[0]) {
       switch (isSingle) {
-        case false: {
+        case true: {
           const uploadedFile = imageRef.current.files[0];
 
           const fileExtension = uploadedFile.name.split('.').pop()?.toLowerCase();
@@ -55,12 +83,20 @@ const Room = () => {
             showToastiFy("You must select a valid image", enMessage.ERROR);
             return;
           }
-          setThumnail(uploadedFile)
+          setThumnail(prev => prev = {
+            data: uploadedFile,
+            belongTo: undefined,
+            id: undefined,
+            isDeleted: false,
+            isThumnail: true,
+            fileName: undefined
+          })
 
         } break;
 
         default: {
 
+          let imagesHolder = [] as iImageHolder[];
           for (let i = 0; i < imageRef.current.files.length; i++) {
             const uploadedFile = imageRef.current.files[i];
 
@@ -70,11 +106,18 @@ const Room = () => {
               showToastiFy("You must select a valid image", enMessage.ERROR);
               return;
             }
-
-            if (images === undefined)
-              setImages([uploadedFile])
-            else setImages(prev => [...prev, uploadedFile]);
+            generalMessage(`this the is single images ${uploadedFile.name}`)
+            imagesHolder.push({
+              data: uploadedFile,
+              belongTo: undefined,
+              id: undefined,
+              isDeleted: false,
+              isThumnail: false,
+              fileName: undefined
+            })
           }
+
+          setImages(prev => [...(prev || []), ...imagesHolder]);
 
 
         } break;
@@ -111,7 +154,16 @@ const Room = () => {
         showToastiFy("You must select a valid image", enMessage.ERROR);
         return;
       }
-      setThumnail(file)
+      setThumnail(prev => prev = {
+        data: file,
+
+        belongTo: undefined,
+        id: undefined,
+        isDeleted: false,
+        isThumnail: true,
+        fileName: undefined
+
+      })
     }
 
   }
@@ -130,9 +182,33 @@ const Room = () => {
           showToastiFy("You must select a valid image", enMessage.ERROR);
           return;
         }
-        if (images === undefined)
-          setImages(prev => prev = [uploadedFile])
-        else setImages(prev => [...prev, uploadedFile]);  // Correct state update
+        if (images === undefined) {
+          setImages(prev => prev = [
+            {
+              data: uploadedFile,
+
+              belongTo: undefined,
+              id: undefined,
+              isDeleted: false,
+              isThumnail: false,
+              fileName: undefined
+
+            }
+          ])
+
+        }
+        else setImages(prev => [...prev,
+        {
+          data: uploadedFile,
+
+          belongTo: undefined,
+          id: undefined,
+          isDeleted: false,
+          isThumnail: false,
+          fileName: undefined
+
+        }
+        ]);  // Correct state update
       }
 
     }
@@ -145,15 +221,13 @@ const Room = () => {
   }
 
 
-<<<<<<< Updated upstream
-=======
   const { data: roomtypes, error } = useQuery({
-    queryKey: ['roomType'],
+    queryKey: ['roomTypeNotDleted'],
 
     queryFn: async () => apiClient({
       enType: enApiType.GET,
-      endPoint: import.meta.env.VITE_ROOMTYPES,
-      prameters: undefined,
+      endPoint: import.meta.env.VITE_ROOMTYPE+'true',
+      prameters:true,
       isRquireAuth: true,
       jwtValue: refreshToken || ""
     }).then((data) => {
@@ -314,7 +388,6 @@ const Room = () => {
 
   }, [roomtypes !== undefined])
 
->>>>>>> Stashed changes
   return (
     <div className='flex flex-row'>
 
@@ -335,15 +408,18 @@ const Room = () => {
             onDragLeave={handleDragLeave}
 
             className='relative mb-3 md:mb-0 '>
+
             <input
-              multiple={isSingle}
+              multiple={isSingle ? false : true}
               type="file"
               id="file"
               ref={imageRef}
               onChange={uploadImageDisplayFromSelectInput}
               hidden />
+
+
             <button
-              onClick={() => { selectImage(false) }}
+              onClick={() => { selectImage(true) }}
               className='group absolute start-2 top-11 hover:bg-gray-600 hover:rounded-sm '>
               <PencilIcon className='h-6 w-6 border-[1px] border-blue-900 rounded-sm group-hover:fill-gray-200  ' />
             </button>
@@ -353,7 +429,7 @@ const Room = () => {
             <div className=' h-44 w-44  flex flex-row justify-center items-center border-[2px] rounded-lg mt-2'
             >
               <ImageHolder
-                src={thumnailImage === undefined ? undefined : URL.createObjectURL(thumnailImage)}
+                src={thumnailImage?.data === undefined ? undefined : URL.createObjectURL(thumnailImage.data)}
                 style='flex flex-row h-24 w-24 '
                 isFromTop={true} />
             </div>
@@ -370,7 +446,7 @@ const Room = () => {
 
             className=' w-full relative'>
             <button
-              onClick={() => { selectImage(true) }}
+              onClick={() => { selectImage(false) }}
               className='group absolute start-2 top-11 hover:bg-gray-600 hover:rounded-sm '>
               <PencilIcon className='h-6 w-6 border-[1px] border-blue-900 rounded-sm group-hover:fill-gray-200  ' />
             </button>
@@ -378,16 +454,19 @@ const Room = () => {
             <h3 className='text-lg'>
               Images
             </h3>
-            <div className={`min-h-44 w-full flex flex-col md:flex-row  border-[2px] rounded-lg mt-2  md:gap-2 px-2 ${images!==undefined&&images.length>0&&'pt-9'}  justify-center items-center overflow-scroll`}
+            <div className={`min-h-44 w-full flex flex-col md:flex-row  border-[2px] rounded-lg mt-2  md:gap-2 px-2 ${images !== undefined && images.length > 0 && 'pt-9'}  justify-center items-center overflow-scroll pb-2`}
             >
               {
                 (images != undefined && images.length > 0) ? images.map((data, index) => {
-                  return <div className={`w-full lg:w-20 ${index === 0 ? 'mb-1' : index === images.length - 1 ? '' : 'mb-1'} `}>
+                  return <div
+                    className={`w-full lg:w-20 ${index === 0 ? 'mb-1' : index === images.length - 1 ? '' : 'mb-1'} `}
+                    key={index}
+                  >
                     <ImageHolder
                       deleteFun={() => { deleteImage(index) }}
                       key={index}
                       typeHolder={enNavLinkType.ROOMS}
-                      src={URL.createObjectURL(data)}
+                      src={data.data === undefined ? "" : URL.createObjectURL(data.data)}
                       style='flex  w-full lg:w-20 '
                       isFromTop={true} />
                   </div>
@@ -403,24 +482,24 @@ const Room = () => {
         </div>
 
         <div className='w-full  md:flex md:row md:flex-row md:flex-wrap md:items-center md:gap-[5px] mt-[10px]'>
-      
-          {isUpdate&&
-          <div className='w-full md:w-[150px] mb-2'>
-            <h3 className='text-[10px]'>Room Status</h3>
-            <select name="cars" id="cars" className="w-full md:w-[150px] px-2 py-[4px] rounded-sm border border-gray-300 bg-transparent text-[12px]">
-              <option className="bg-transparent hover:bg-transparent" value="Available">Available</option>
-              <option className="bg-transparent hover:bg-transparent" value="Booked">Booked</option>
-              <option className="bg-transparent hover:bg-transparent" value="Under Maintenance">Under Maintenance</option>
-            </select>
 
-          </div>
+          {isUpdate &&
+            <div className='w-full md:w-[150px] mb-2'>
+              <h3 className='text-[10px]'>Room Status</h3>
+              <select name="cars" id="cars" className="w-full md:w-[150px] px-2 py-[4px] rounded-sm border border-gray-300 bg-transparent text-[12px]">
+                <option className="bg-transparent hover:bg-transparent" value="Available">Available</option>
+                <option className="bg-transparent hover:bg-transparent" value="Booked">Booked</option>
+                <option className="bg-transparent hover:bg-transparent" value="Under Maintenance">Under Maintenance</option>
+              </select>
+
+            </div>
           }
 
           <div className='w-full md:w-[150px] mb-2'>
             <TextInput
-              keyType='eamilOrUserName'
-              value={pricePerDay}
-              onInput={(value, key) => setPricePerDay(value)}
+              keyType='pricePerNight'
+              value={roomData.pricePerNight}
+              onInput={updateInput}
               placeHolder="Price Per Night"
               style=" w-full md:w-[150px]"
             />
@@ -432,9 +511,9 @@ const Room = () => {
               <TextInput
                 isDisabled={true}
                 type='datetime-local'
-                keyType='eamilOrUserName'
-                value={pricePerDay}
-                onInput={(value, key) => setPricePerDay(value)}
+                keyType='createdAt'
+                value={roomData.createdAt}
+                onInput={updateInput}
                 placeHolder="Created At"
                 style="w-full md:w-[150px]"
               />
@@ -444,51 +523,60 @@ const Room = () => {
 
           <div className='w-full md:w-[150px] '>
             <h3 className=' text-[10px]'>RoomType</h3>
-            <select name="cars" id="cars" className="w-full md:w-[150px]  px-2 py-1 mb-2 rounded-sm border border-gray-300 bg-transparent  text-[12px]">
-              <option className="bg-transparent hover:bg-transparent " value="Available">Available</option>
-              <option className="bg-transparent hover:bg-transparent " value="Booked">Booked</option>
-              <option className="bg-transparent hover:bg-transparent " value="Under Maintenance">Under Maintenance</option>
+            <select
+              onChange={(e) => {
+                const selectedID = e.target.value;
+                updateInput(selectedID as unknown as Guid, 'roomtypeid')
+              }}
+              name="cars"
+              id="cars"
+              className="w-full md:w-[150px]  px-2 py-1 mb-2 rounded-sm border border-gray-300 bg-transparent  text-[12px]">
+              {roomtypes !== undefined && (roomtypes).map((roomType, index) => {
+
+                return <option key={index} className="bg-transparent hover:bg-transparent" value={roomType.roomTypeID?.toString()}>{roomType.roomTypeName}</option>
+              })}
             </select>
           </div>
 
 
-          <div className='w-full md:w-[100px] mb-2'>   <TextInput
-            keyType='eamilOrUserName'
-            value={pricePerDay}
-            onInput={(value, key) => setPricePerDay(value)}
-            placeHolder="Capacity"
-            style=" w-full md:w-[100px]"
-          />
+          <div className='w-full md:w-[100px] mb-2'>
+            <TextInput
+              keyType='capacity'
+              value={roomData.capacity}
+              onInput={updateInput}
+              placeHolder="Capacity"
+              style=" w-full md:w-[100px]"
+            />
           </div>
 
 
-          <div className='w-full md:w-[100px] mb-2'>   <TextInput
-            keyType='eamilOrUserName'
-            value={pricePerDay}
-            onInput={(value, key) => setPricePerDay(value)}
-            placeHolder="BedNumber"
-            style="  w-full md:w-[100px]"
-          /></div>
+          <div className='w-full md:w-[100px] mb-2'>
+            <TextInput
+              keyType='bedNumber'
+              value={roomData.bedNumber}
+              onInput={updateInput}
+              placeHolder="BedNumber"
+              style="  w-full md:w-[100px]"
+            /></div>
 
-          {isUpdate && 
-          <div className='w-full md:w-[150px] mb-2'>  
-           <TextInput
-            isDisabled={true}
-            keyType='eamilOrUserName'
-            value={pricePerDay}
-            onInput={(value, key) => setPricePerDay(value)}
-            placeHolder="BelongTo"
-            style=" w-full md:w-[150px]"
-          />
-          </div>
+          {isUpdate &&
+            <div className='w-full md:w-[150px] mb-2'>
+              <TextInput
+                isDisabled={true}
+                keyType='beglongTo'
+                value={roomData.beglongTo}
+                onInput={updateInput}
+                placeHolder="BelongTo"
+                style=" w-full md:w-[150px]"
+              />
+            </div>
           }
         </div>
-        
+
         <div className='w-full'>
 
           <SubmitButton
-            //onSubmit={async () => createOrUpdateRoomType()}
-            onSubmit={async () => { }}
+            onSubmit={async () => createOrUpdateRoomType()}
             buttonStatus={status}
             placeHolder={isUpdate ? 'update' : 'create'}
             style="text-[10px] bg-mainBg   w-full md:w-44 text-white rounded-[4px] my-2 h-8  hover:opacity-90"

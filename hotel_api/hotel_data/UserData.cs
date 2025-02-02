@@ -44,6 +44,7 @@ namespace hotel_data
                                         address: reader["address"] == DBNull.Value ? "" : (string)reader["address"]
                                     );
 
+                                    var imageHolder = ImagesData.image(id);
                                     var userData = new UserDto(
                                         userId: id,
                                         personID: (Guid)reader["personid"],
@@ -52,7 +53,7 @@ namespace hotel_data
                                         personData: personData,
                                         userName: (string)reader["username"],
                                         password: (string)(reader["password"]),
-                                        imagePath:ImagesData.image(id)
+                                        imagePath:imageHolder==null?"":imageHolder.path
 
                                     );
 
@@ -104,6 +105,8 @@ namespace hotel_data
                                         address: reader["address"] == DBNull.Value ? "" : (string)reader["address"]
                                     );
 
+                                    var imageHolder = ImagesData.image( (Guid)reader["userid"]);
+                                 
                                     var userData = new UserDto(
                                         userId: (Guid)reader["userid"],
                                         personID: (Guid)reader["personid"],
@@ -112,8 +115,7 @@ namespace hotel_data
                                         personData: personData,
                                         userName: (string)reader["username"],
                                         password: (string)(reader["password"]),
-                                        imagePath:ImagesData.image( (Guid)reader["userid"])
-
+                                        imagePath:imageHolder==null?"":imageHolder.path
                                             
                                     );
 
@@ -167,7 +169,9 @@ namespace hotel_data
                                     createdAt: (DateTime)reader["createdat"],
                                     address: reader["address"] == DBNull.Value ? "" : (string)reader["address"]
                                 );
-
+                                var imageHolder = ImagesData.image( (Guid)reader["userid"]);
+                                 
+                                
                                 userHolder = new UserDto(
                                     userId: (Guid)reader["userid"],
                                     personID: (Guid)reader["personid"],
@@ -176,7 +180,7 @@ namespace hotel_data
                                     personData: personData,
                                     userName: userName,
                                     password: password,
-                                    imagePath:ImagesData.image( (Guid)reader["userid"])
+                                    imagePath:imageHolder==null?"":imageHolder.path
 
                                 );
 
@@ -225,7 +229,8 @@ namespace hotel_data
                                         createdAt: (DateTime)reader["createdat"],
                                         address: reader["address"] == DBNull.Value ? "" : (string)reader["address"]
                                     );
-
+                                    var imageHolder = ImagesData.image( (Guid)reader["userid"]);
+                                
                                     var userHolder = new UserDto(
                                         userId: (Guid)reader["userid"],
                                         personID: (Guid)reader["personid"],
@@ -235,7 +240,7 @@ namespace hotel_data
                                         userName: (string)reader["UserName"],
                                         password: "",
                                         isDeleted: (bool)reader["isdeleted"],
-                                        imagePath:ImagesData.image( (Guid)reader["userid"])
+                                        imagePath:imageHolder==null?"":imageHolder.path
                                     );
 
                                     users.Add(userHolder);

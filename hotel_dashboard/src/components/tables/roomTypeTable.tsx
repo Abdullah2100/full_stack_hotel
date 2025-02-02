@@ -5,7 +5,7 @@ import { ArrowUturnLeftIcon, PencilIcon, TrashIcon } from '@heroicons/react/16/s
 import { userAuthModule } from '../../module/userAuthModule';
 import { Guid } from 'guid-typescript';
 import ImageHolder from '../imageHolder';
-import { IRoomType } from '../../module/roomModule';
+import { IRoomType } from '../../module/iRoomType';
 
 interface RoomTypeTableProps {
   data?: IRoomType[],
@@ -53,7 +53,8 @@ const RoomTypeTable = ({
         <tbody>
           {data !== undefined && data.length > 0 && data.map((roomtype, index) => (
 
-            <tr
+           (roomtype.isDeleted&&isShwoingDeleted === false)?undefined: 
+           <tr
               key={index}
               className={`${roomtype.isDeleted ? 'bg-red-800' : 'bg-white'} `}
             >

@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import Header from '../../components/header/header'
 import { TextInput } from '../../components/input/textInput'
-import { IRoomType } from '../../module/roomModule';
+import { IRoomType } from '../../module/iRoomType';
 import { PencilIcon, RectangleGroupIcon } from '@heroicons/react/16/solid';
 import SubmitButton from '../../components/button/submitButton';
 import { enMessage } from '../../module/enMessageType';
@@ -16,6 +16,7 @@ import RoomTypeTable from '../../components/tables/roomTypeTable';
 import ImageHolder from '../../components/imageHolder';
 import { generalMessage } from '../../util/generalPrint';
 import { Guid } from 'guid-typescript';
+import { Switch } from '@mui/material';
 
 const RoomType = () => {
   const refreshToken = useSelector((state: RootState) => state.auth.refreshToken)
@@ -28,6 +29,7 @@ const RoomType = () => {
   const [imageHolder, setImageHolder] = useState<File | undefined>(undefined);
   const [image, setImage] = useState<string | undefined>(undefined)
   const [isDraggable, changeDraggableStatus] = useState(false)
+  const [isShownDeletion, changeShowingDeleteionStatus] = useState(false)
 
   const [roomType, setRoomType] = useState<IRoomType>({
     roomTypeName: '',
@@ -96,10 +98,10 @@ const RoomType = () => {
 
   const { data, error, refetch } = useQuery({
 
-    queryKey: ['users'],
+    queryKey: ['roomtypes'],
     queryFn: async () => apiClient({
       enType: enApiType.GET,
-      endPoint: import.meta.env.VITE_ROOMTYPES,
+      endPoint: import.meta.env.VITE_ROOMTYPE+"false",
       prameters: undefined,
       isRquireAuth: true,
       jwtValue: refreshToken || ""
@@ -167,10 +169,9 @@ const RoomType = () => {
 
     if (imageHolder !== undefined)
       roomtTypeData.append("image", imageHolder)
-    if (isUpdate)
-      roomtTypeData.append("id", roomType.roomTypeID)
 
-    let endPoint = import.meta.env.VITE_CREATEROOMTYPE;
+    
+    let endPoint =!isUpdate? import.meta.env.VITE_ROOMTYPE :import.meta.env.VITE_ROOMTYPE+`/${roomType.roomTypeID}`;
     const method = isUpdate ? enApiType.PUT : enApiType.POST;
     generalMessage(`this the method  from ${method}`)
 
@@ -184,15 +185,11 @@ const RoomType = () => {
 
 
   const deleteOrUndeleteUser = async (roomtypeid: Guid, isDeleted: boolean) => {
-    const endpoint = import.meta.env.VITE_DELETEORUNDELETEROOMTYPE
-
-    generalMessage(`this show from delete function ${endpoint} `)
-
     try {
 
       await roomtypeMutaion.mutate({
         data: undefined,
-        endpoint: endpoint + '/' + roomtypeid,
+        endpoint: import.meta.env.VITE_ROOMTYPE + '/' + roomtypeid,
         methodType: enApiType.DELETE,
         jwtToken: refreshToken
       })
@@ -293,11 +290,7 @@ const RoomType = () => {
               onDrop={handleDrop}
               onDragLeave={handleDragLeave}
               className={` h-40 w-40 mb-2 md:mb-0 border-[2px] border-dashed border-gray-200 rounded-sm relative ${isDraggable ? 'bg-gray-500' : 'bg-white'}`}>
-              <button
-                onClick={selectImage}
-                className='group absolute end-1 top-2 hover:bg-gray-600 hover:rounded-sm '>
-                <PencilIcon className='h-6 w-6 border-[1px] border-blue-900 rounded-sm group-hover:fill-gray-200  ' />
-              </button>
+             
               <div className='absolute h-full w-full  flex flex-row justify-center items-center '
               >
                 <ImageHolder
@@ -306,7 +299,11 @@ const RoomType = () => {
                   style='flex flex-row h-20 w-20 '
                   isFromTop={true} />
               </div>
-
+              <button
+                onClick={selectImage}
+                className='group absolute end-1 top-2 hover:bg-gray-600 hover:rounded-sm '>
+                <PencilIcon className='h-6 w-6 border-[1px] border-blue-900 rounded-sm group-hover:fill-gray-200  ' />
+              </button>
               <input
                 type="file"
                 id="file"
@@ -339,7 +336,11 @@ const RoomType = () => {
           setRoomType={setRoomType}
           setUpdate={setUpdate}
           deleteFunc={deleteOrUndeleteUser}
-          isShwoingDeleted={false} />
+          isShwoingDeleted={isShownDeletion} />
+
+           <h3 className='pt-5'
+           >showing deletion roomtype</h3>
+          <Switch onChange={() =>{changeShowingDeleteionStatus(prev=>prev=!prev)}} />
       </div>
     </div>
   )

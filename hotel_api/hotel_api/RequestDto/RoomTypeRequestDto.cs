@@ -10,5 +10,5 @@ public class RoomTypeRequestDto
     
     [Required]
     [IsImageFile(ErrorMessage = "Only image files are supported image is [png,jpg,jpeg,svg")]
-    public IFormFile file { get; set; }
+    public IFormFile? file { get; set; }
 }

@@ -17,7 +17,13 @@ public class RoomtTypeBuissnes
     {
         get
         {
-            return new RoomTypeDto(roomTypeId: ID, roomTypeName: name, createdAt: createdAt, createdBy: createdBy,imagePath:image);
+            return new RoomTypeDto(
+                roomTypeId: ID, 
+                roomTypeName: name,
+                createdAt: createdAt,
+                createdBy: createdBy,
+                imagePath: null
+                );
         }
     }
 
@@ -27,7 +33,7 @@ public class RoomtTypeBuissnes
         this.name = roomType.roomTypeName;
         this.createdBy = roomType.createdBy;
         this.createdAt = roomType.createdAt;
-        this.image = roomType.imagePath;
+        this.image = roomType.imagePath??"";
         this.mode = mode;
     }
 
@@ -85,9 +91,9 @@ public class RoomtTypeBuissnes
         return RoomTypeData.isExist(name);
     }
 
-    public static List<RoomTypeDto> getRoomTypes()
+    public static List<RoomTypeDto> getRoomTypes(bool isNotDeletion)
     {
-        return RoomTypeData.getAll();
+        return RoomTypeData.getAll(isNotDeletion);
     }
 
 

@@ -42,6 +42,7 @@ public class ImageBuissness
         }
     }
 
+    
     public static ImageBuissness? getImageById(Guid id)
     { 
         ImagesTbDto? result =ImagesData.image(id:id);
@@ -62,8 +63,6 @@ public class ImageBuissness
 
         return null;
     }
-
-
     public static List<ImageBuissness> getImages(Guid belongTo)
     {
         var  result = ImagesData.images(belongto:belongTo);
@@ -75,5 +74,9 @@ public class ImageBuissness
 
         return images;
     }
-    
+
+    public static bool deleteImageByBelgonTo(Guid belongTo)
+    {
+        return ImagesData.deleteImage(belongTo:belongTo);
+    }
 }

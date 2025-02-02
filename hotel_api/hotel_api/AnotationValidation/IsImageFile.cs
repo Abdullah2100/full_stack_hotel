@@ -14,8 +14,10 @@ public class IsImageFile : ValidationAttribute
     {
         if (value == null)
             return false; 
-        IFormFile fileHolder = value as IFormFile;
+        IFormFile? fileHolder = value as IFormFile;
 
+        if (fileHolder == null) return false;
+        
         string fileExtetnion = clsUtil.getFileExtention(fileHolder.FileName);
         
         return  (fileExtetnion == "png" || fileExtetnion == "jpg" || fileExtetnion == "jpeg" || fileExtetnion=="svg")?

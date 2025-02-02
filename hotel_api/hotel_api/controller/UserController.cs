@@ -60,7 +60,7 @@ public class UserController : Controller
             );
 
    
-        var userHolder = new UserBuissnes(new UserDto(
+        data = new UserBuissnes(new UserDto(
             userId: userId,
             personID: null,
             brithDay: userRequestData.brithDay,
@@ -69,7 +69,7 @@ public class UserController : Controller
             userName: userRequestData.userName,
             password: clsUtil.hashingText(userRequestData.password)
         ));
-        var result = userHolder.save();
+        var result = data.save();
         string accesstoken = "", refreshToken = "";
         if (result == false)
             return StatusCode(500, "some thing wrong");

@@ -105,7 +105,7 @@ namespace hotel_api.controller
         //user
 
         [Authorize]
-        [HttpPost("createUser")]
+        [HttpPost("User")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -117,20 +117,19 @@ namespace hotel_api.controller
             var authorizationHeader = HttpContext.Request.Headers["Authorization"];
             var id = AuthinticationServices.GetPayloadFromToken("id",
                 authorizationHeader.ToString().Replace("Bearer ", ""));
-            Guid? adminid = null;
-            if (Guid.TryParse(id.Value.ToString(), out Guid outID))
-            {
-                adminid = outID;
-            }
-
-            if (adminid == null)
+            if (id == null)
             {
                 return StatusCode(401, "you not have Permission");
             }
-
+            
+            Guid? adminid = null;
+            if (Guid.TryParse(id.Value.ToString(), out Guid outid))
+            {
+                adminid = outid;
+            }
+            
             var isHasPermissionToCreateUser = AdminBuissnes.isAdminExist(adminid ?? Guid.Empty);
-
-
+            
             if (!isHasPermissionToCreateUser)
             {
                 return StatusCode(401, "you not have Permission");
@@ -143,8 +142,11 @@ namespace hotel_api.controller
                 return StatusCode(400, validateRequeset);
 
 
-            bool isExistEmail =
-                PersonBuisness.isPersonExistByEmailAndPhone(userRequestData.email, userRequestData.phone);
+            bool isExistEmail = PersonBuisness.
+                isPersonExistByEmailAndPhone(
+                    userRequestData.email, 
+                    userRequestData.phone
+                    );
 
             if (isExistEmail)
                 return StatusCode(400, "email or phone is already in use");
@@ -166,13 +168,14 @@ namespace hotel_api.controller
                     MinIoServices.enBucketName.USER);
             }
             
-            saveImage(null,imagePath, userId);
+            saveImage(imagePath,userId );
+
             var personDataHolder = new PersonDto(
                 personID: null,
                 email: userRequestData.email,
                 name: userRequestData.name,
                 phone: userRequestData.phone,
-                address: userRequestData.address
+                address: userRequestData.address??""
             );
 
 
@@ -184,12 +187,11 @@ namespace hotel_api.controller
                 personData: personDataHolder,
                 userName: userRequestData.userName,
                 password: clsUtil.hashingText(userRequestData.password),
-                addBy: adminid,
-                imagePath: imagePath
+                addBy: adminid
             ));
 
             var result = data.save();
-            string accesstoken = "", refreshToken = "";
+            
             if (result == false)
                 return StatusCode(500, "some thing wrong");
 
@@ -197,28 +199,30 @@ namespace hotel_api.controller
         }
 
         [Authorize]
-        [HttpPost("updateUser")]
+        [HttpPut("User/{userid:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> updateUser(
-            [FromForm] UserUpdateDto userRequestData
+            [FromForm] UserUpdateDto userRequestData,Guid userid
         )
         {
             var authorizationHeader = HttpContext.Request.Headers["Authorization"];
             var id = AuthinticationServices.GetPayloadFromToken("id",
                 authorizationHeader.ToString().Replace("Bearer ", ""));
+            if (id == null)
+            {
+                return StatusCode(401, "you not have Permission");
+            }
+            
             Guid? adminid = null;
             if (Guid.TryParse(id.Value.ToString(), out Guid outID))
             {
                 adminid = outID;
             }
 
-            if (adminid == null)
-            {
-                return StatusCode(401, "you not have Permission");
-            }
+          
 
             var isHasPermissionToCreateUser = AdminBuissnes.isAdminExist(adminid ?? Guid.Empty);
 
@@ -227,6 +231,11 @@ namespace hotel_api.controller
             {
                 return StatusCode(401, "you not have Permission");
             }
+            
+            var data = UserBuissnes.getUserByID(userid);
+            if (data == null)
+                return StatusCode(409, "user notFound exist");
+            
 
             string? validateRequeset = clsValidation.validateInput(phone: userRequestData.phone,
                 email: userRequestData.email, password: userRequestData.password);
@@ -234,27 +243,30 @@ namespace hotel_api.controller
             if (validateRequeset != null)
                 return StatusCode(400, validateRequeset);
 
+            
+            bool isExistPhone =false;
+            
+            if(userRequestData.phone!=null&&userRequestData.phone!= data.personData.phone)
+                isExistPhone= PersonBuisness.isPersonExistByPhone(userRequestData.phone);
 
-            bool isExistPhone = PersonBuisness.isPersonExistByPhone(userRequestData.phone);
+        
 
-            var data = UserBuissnes.getUserByID(userRequestData.Id);
-
-
-            if (isExistPhone && userRequestData.phone != data.personData.phone)
+            if (isExistPhone)
                 return StatusCode(400, "phone is already in use");
 
 
-            if (data == null)
-                return StatusCode(409, "user notFound exist");
+            
+            var  imageHolder = ImageBuissness.getImageByBelongTo(data.ID);
 
             string? imagePath = null;
             if (userRequestData.imagePath != null)
             {
                 imagePath = await MinIoServices.uploadFile(_config, userRequestData.imagePath,
-                    MinIoServices.enBucketName.USER, data.imagePath);
+                    MinIoServices.enBucketName.USER, imageHolder.path);
             }
-            var  imageHolder = ImageBuissness.getImageByBelongTo(data.ID);
-            saveImage(imageHolder,imagePath,data.ID );
+            
+            
+            saveImage(imagePath,data.ID,imageHolder );
 
             data.imagePath = imagePath;
 
@@ -271,9 +283,11 @@ namespace hotel_api.controller
 
         private void updateUserData(
             ref UserBuissnes user,
-            UserUpdateDto userRequestData
+            UserUpdateDto? userRequestData
         )
         {
+            if (userRequestData == null) return;
+            
             if (userRequestData?.name?.Length > 0 && user.personData.name != userRequestData.name)
             {
                 user.personData.name = userRequestData.name;
@@ -297,10 +311,16 @@ namespace hotel_api.controller
                 user.password = clsUtil.hashingText(userRequestData.password);
             if (userRequestData?.brithDay != null)
                 user.brithDay = (DateTime)userRequestData!.brithDay;
+            if (userRequestData?.phone != null)
+            {
+                user.userDataHolder.personData.phone = userRequestData.phone;
+            }
         }
 
+        
+        
         [Authorize]
-        [HttpDelete("deleteUser/{userId:guid}")]
+        [HttpDelete("User/{userId:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -312,16 +332,19 @@ namespace hotel_api.controller
             var authorizationHeader = HttpContext.Request.Headers["Authorization"];
             var id = AuthinticationServices.GetPayloadFromToken("id",
                 authorizationHeader.ToString().Replace("Bearer ", ""));
+            if (id == null)
+            {
+                return StatusCode(401, "you not have Permission");
+            }
+            
+            
             Guid? adminid = null;
             if (Guid.TryParse(id.Value.ToString(), out Guid outID))
             {
                 adminid = outID;
             }
 
-            if (adminid == null)
-            {
-                return StatusCode(401, "you not have Permission");
-            }
+            
 
             var isHasPermissionToCreateUser = AdminBuissnes.isAdminExist(adminid ?? Guid.Empty);
 
@@ -338,6 +361,7 @@ namespace hotel_api.controller
                 return StatusCode(409, "user notFound exist");
 
 
+            
             var result = UserBuissnes.deleteUser(userId);
             if (result == false)
                 return StatusCode(500, "some thing wrong");
@@ -346,7 +370,7 @@ namespace hotel_api.controller
         }
 
         [Authorize]
-        [HttpPost("makeUserVip/{userId:guid}")]
+        [HttpPost("User/{userId:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -404,6 +428,7 @@ namespace hotel_api.controller
         )
         {
             var authorizationHeader = HttpContext.Request.Headers["Authorization"];
+           
             var id = AuthinticationServices.GetPayloadFromToken("id",
                 authorizationHeader.ToString().Replace("Bearer ", ""));
             Guid? adminid = null;
@@ -417,10 +442,10 @@ namespace hotel_api.controller
                 return StatusCode(401, "you not have Permission");
             }
 
-            var isHasPermissionToCreateUser = AdminBuissnes.isAdminExist(adminid ?? Guid.Empty);
+            var isHasPermissionToCreateRoomType = AdminBuissnes.isAdminExist(adminid ?? Guid.Empty);
 
 
-            if (!isHasPermissionToCreateUser)
+            if (!isHasPermissionToCreateRoomType)
             {
                 return StatusCode(401, "you not have Permission");
             }
@@ -430,13 +455,13 @@ namespace hotel_api.controller
                 return StatusCode(400, "roomtype name must be under 50 characters");
 
 
-            bool isExistEmail = RoomtTypeBuissnes.isExist(roomTypeData.name);
+            bool isExistName = RoomtTypeBuissnes.isExist(roomTypeData.name);
 
-            if (isExistEmail)
+            if (isExistName)
                 return StatusCode(400, "roomtype is already exist");
 
 
-            var roomId = Guid.NewGuid();
+            var roomtypeid = Guid.NewGuid();
 
 
             string? imageHolderPath = null;
@@ -446,12 +471,12 @@ namespace hotel_api.controller
                     MinIoServices.enBucketName.RoomType);
             }
 
-            saveImage(null,imageHolderPath,roomId );
+            saveImage(imageHolderPath,roomtypeid );
+            
             var roomTypeHolder = new RoomtTypeBuissnes(
                 new RoomTypeDto(
-                    roomTypeId: roomId,
+                    roomTypeId: roomtypeid,
                     roomTypeName: roomTypeData.name,
-                    imagePath: imageHolderPath,
                     createdBy: (Guid)adminid,
                     createdAt: DateTime.Now
                 )
@@ -467,12 +492,12 @@ namespace hotel_api.controller
 
 
         [Authorize]
-        [HttpGet("roomtypes")]
+        [HttpGet("roomtype{isNotDeletion:bool}")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> getRoomTypes()
+        public  IActionResult getRoomTypes(bool? isNotDeletion)
         {
             try
             {
@@ -498,7 +523,7 @@ namespace hotel_api.controller
                     return StatusCode(401, "you not have Permission");
                 }
 
-                var roomtypes = RoomtTypeBuissnes.getRoomTypes();
+                var roomtypes = RoomtTypeBuissnes.getRoomTypes(isNotDeletion??false);
 
                 return Ok(roomtypes);
             }
@@ -511,12 +536,12 @@ namespace hotel_api.controller
 
 
         [Authorize]
-        [HttpPut("roomtype")]
+        [HttpPut("roomtype/{roomtypeid:guid}")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> updateRoomTypes([FromForm] RoomTypeRequest roomTypeData)
+        public async Task<IActionResult> updateRoomTypes([FromForm] RoomTypeRequest roomTypeData,Guid roomtypeid)
         {
             var authorizationHeader = HttpContext.Request.Headers["Authorization"];
             var id = AuthinticationServices.GetPayloadFromToken("id",
@@ -541,26 +566,26 @@ namespace hotel_api.controller
             }
 
 
-            if (roomTypeData.name.Length > 50 || roomTypeData.id == null)
+            if (roomTypeData.name.Length > 50 || roomtypeid == null)
                 return StatusCode(400, "roomtype name must be under 50 characters");
 
 
-            var roomtypeHolder = RoomtTypeBuissnes.getRoomType((Guid)roomTypeData.id);
+            var roomtypeHolder = RoomtTypeBuissnes.getRoomType(roomtypeid);
 
             if (roomtypeHolder == null)
                 return StatusCode(400, "roomtype is already exist");
 
+            var  imageHolder = ImageBuissness.getImageByBelongTo((Guid)roomtypeid);
 
             string? imageHolderPath = null;
             if (roomTypeData.image != null)
             {
                 imageHolderPath = await MinIoServices.uploadFile(_config, roomTypeData.image,
-                    MinIoServices.enBucketName.RoomType);
+                    MinIoServices.enBucketName.RoomType,imageHolder.path);
             }
             
-            var  imageHolder = ImageBuissness.getImageByBelongTo((Guid)roomtypeHolder.ID);
-            saveImage(imageHolder,imageHolderPath,roomtypeHolder.ID );
-
+            
+            saveImage(imageHolderPath,roomtypeid,imageHolder);
 
             updateRoomTypeData(ref roomtypeHolder, roomTypeData, (Guid)adminid);
             var result = roomtypeHolder.save();
@@ -570,6 +595,8 @@ namespace hotel_api.controller
 
             return StatusCode(201, new { message = "created seccessfully" });
         }
+
+
 
         private void updateRoomTypeData(ref RoomtTypeBuissnes data, RoomTypeRequest holder, Guid createdBy)
         {
@@ -591,7 +618,7 @@ namespace hotel_api.controller
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult deleteRoomtype(
+        public IActionResult deleteOrUnDeleteRoomtype(
             Guid roomtypeid
         )
         {
@@ -634,7 +661,7 @@ namespace hotel_api.controller
 
         //room
         [Authorize]
-        [HttpPost("roomtype")]
+        [HttpPost("room")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -700,5 +727,46 @@ namespace hotel_api.controller
 
             return StatusCode(201, new { message = "created seccessfully" });
         }
+        
+        private void saveImage(
+            string? imagePath,
+            Guid? id
+            ,ImageBuissness? imageHolder=null
+            )
+        {
+            if (imageHolder != null)
+            {
+                imageHolder.path = imagePath;
+                imageHolder.save();
+            }
+           else if(imagePath != null&&id!=null)
+            {
+                imageHolder = new ImageBuissness(new ImagesTbDto(imagePath:imagePath,belongTo:(Guid)id,imagePathId:null));
+                imageHolder.save();
+            }
+        }
+        
+        private void saveImage(
+            List<ImageRequestDto>? imagePath,
+            Guid id,
+            ImageBuissness.enMode mode = ImageBuissness.enMode.add
+            )
+        {
+            if (imagePath != null)
+            {
+                foreach (var path in imagePath)
+                {
+                    var imageHolder = new ImageBuissness(
+                        new ImagesTbDto(
+                            imagePath:path.fileName,belongTo:id,imagePathId:null)
+                        ,mode
+                    
+                    );
+                    imageHolder.save();
+                }
+            }
+        }
+
+
     }
 }

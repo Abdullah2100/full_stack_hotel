@@ -4,8 +4,7 @@ namespace hotel_api_.RequestDto;
 
 public class UserUpdateDto
 {
-    [Required]
-    public Guid Id { get; set; }
+   
     [MaxLength(50)]
     public string? name { get; set; } = "";
 
