@@ -1,3 +1,4 @@
+using hotel_api_.RequestDto;
 using hotel_api.util;
 using Minio;
 using Minio.DataModel.Args;
@@ -60,11 +61,11 @@ namespace hotel_api.Services
         }
 
         public static async Task<string?> uploadFile(
-            IConfigurationServices _config, 
+            IConfigurationServices _config,
             IFormFile file,
-            enBucketName bucketName, 
+            enBucketName bucketName,
             string? previuseFileName = null
-            )
+        )
         {
             try
             {
@@ -116,14 +117,15 @@ namespace hotel_api.Services
         }
 
         public static async Task<List<ImageRequestDto>?> uploadFile(
-                IConfigurationServices _config,
-                List<IFormFile> file,
-                enBucketName bucketName, 
-                string? filePath = null,
-                List<string>? previuseFileName = null
-                )
+            IConfigurationServices _config,
+            List<ImageRequestDto> file,
+            enBucketName bucketName,
+            string? filePath = null,
+            List<string>? previuseFileName = null
+        )
         {
-            List<string> result = new List<string>();
+            List<ImageRequestDto>? unDeletedImages = null;
+
             try
             {
                 var bucketNameStr = bucketName.ToString().ToLower();
@@ -134,7 +136,7 @@ namespace hotel_api.Services
                     return null;
                 }
 
-                List<ImageRequestDto> unDeletedImages = await deleteFile(minioClient, file, bucketNameStr, filePath);
+                unDeletedImages = await deleteFile(minioClient, file, bucketNameStr, filePath);
 
 
                 foreach (var formFile in unDeletedImages)
@@ -142,7 +144,7 @@ namespace hotel_api.Services
                     string fullName = clsUtil.generateGuid() + ".png";
                     string fileFullPath = filePath != null ? $"{filePath}/{fullName}" : fullName;
 
-                    
+
                     var isExistBucket = await _isExistBucket(minioClient, bucketNameStr);
 
                     if (!isExistBucket)
@@ -163,32 +165,36 @@ namespace hotel_api.Services
                     }
 
                     // Upload the file
-                    using (var fileStream = formFile.OpenReadStream())
+                    if (formFile.data != null)
                     {
-                        var putObject = new PutObjectArgs()
-                            .WithBucket(bucketNameStr)
-                            .WithObject(fullName)
-                            .WithStreamData(fileStream)
-                            .WithObjectSize(formFile.Length)
-                            .WithContentType(formFile.ContentType);
+                        using (var fileStream = formFile.data.OpenReadStream())
+                        {
+                            var putObject = new PutObjectArgs()
+                                .WithBucket(bucketNameStr)
+                                .WithObject(fullName)
+                                .WithStreamData(fileStream)
+                                .WithObjectSize(formFile.data.Length)
+                                .WithContentType(formFile.data.ContentType);
 
                             await minioClient.PutObjectAsync(putObject).ConfigureAwait(false);
                             formFile.fileName = fullName;
                         }
                     }
                 }
-            
+            }
             catch (Exception error)
             {
                 Console.WriteLine("Error uploading files: {0}", error.Message);
             }
 
-            return unDeletedImages;
+            return null;
         }
 
-
-        private static async Task<List<ImageRequestDto>> deleteFile(IMinioClient client, List<ImageRequestDto> files,
-            string bucketName, string? path = null)
+        private static async Task<List<ImageRequestDto>> deleteFile(
+            IMinioClient client, 
+            List<ImageRequestDto> files,
+            string bucketName, string? path = null
+            )
         {
             List<ImageRequestDto> newFiles = files;
 
@@ -220,8 +226,11 @@ namespace hotel_api.Services
             return newFiles;
         }
 
-        
-        private static async Task<bool> deleteFile(IMinioClient client, string fileName, string bucketName)
+
+        private static async Task<bool> deleteFile(
+            IMinioClient client,
+            string fileName, 
+            string bucketName)
         {
             try
             {
@@ -242,7 +251,11 @@ namespace hotel_api.Services
         }
 
 
-        private static async Task<bool> isFileExist(IMinioClient client, string fileName, string bucketName)
+        private static async Task<bool> isFileExist(
+            IMinioClient client, 
+            string fileName, 
+            string bucketName
+            )
         {
             try
             {

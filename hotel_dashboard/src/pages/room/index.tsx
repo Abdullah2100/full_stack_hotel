@@ -11,8 +11,6 @@ import { enMessage } from '../../module/enMessageType';
 import { TextInput } from '../../components/input/textInput';
 import SubmitButton from '../../components/button/submitButton';
 import { enStatus } from '../../module/enState';
-import { IRoomModule } from '../../module/iRoomModule';
-import { enStatsu } from '../../module/enRoomStatus';
 import { iImageHolder } from '../../module/IImageHolder';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { enApiType } from '../../module/enApiType';
@@ -22,6 +20,8 @@ import { RootState } from '../../controller/rootReducer';
 import { IRoomType } from '../../module/iRoomType';
 import { Guid } from 'guid-typescript';
 import { generalMessage } from '../../util/generalPrint';
+import { IRoomModule } from '../../module/iRoomModule';
+import { enStatsu } from '../../module/enStatsu';
 
 const Room = () => {
   const refreshToken = useSelector((state: RootState) => state.auth.refreshToken)
@@ -34,7 +34,6 @@ const Room = () => {
   const [isDraggable, changeDraggableStatus] = useState(false)
 
 
-  const [pricePerDay, setPricePerDay] = useState("")
   const [thumnailImage, setThumnail] = useState<iImageHolder>()
   const [images, setImages] = useState<iImageHolder[]>()
 
@@ -86,13 +85,11 @@ const Room = () => {
           }
           setThumnail(prev => prev = {
             data: uploadedFile,
-            image: {
-              belongTo: undefined,
-              id: undefined,
-              isDeleted: false,
-              isThumnail: true,
-              path: undefined
-            }
+            belongTo: undefined,
+            id: undefined,
+            isDeleted: false,
+            isThumnail: true,
+            fileName: undefined
           })
 
         } break;
@@ -112,19 +109,15 @@ const Room = () => {
             generalMessage(`this the is single images ${uploadedFile.name}`)
             imagesHolder.push({
               data: uploadedFile,
-              image: {
-                belongTo: undefined,
-                id: undefined,
-                isDeleted: false,
-                isThumnail: false,
-                path: undefined
-              }
+              belongTo: undefined,
+              id: undefined,
+              isDeleted: false,
+              isThumnail: false,
+              fileName: undefined
             })
           }
 
-
           setImages(prev => [...(prev || []), ...imagesHolder]);
-
 
 
         } break;
@@ -163,13 +156,13 @@ const Room = () => {
       }
       setThumnail(prev => prev = {
         data: file,
-        image: {
-          belongTo: undefined,
-          id: undefined,
-          isDeleted: false,
-          isThumnail: true,
-          path: undefined
-        }
+
+        belongTo: undefined,
+        id: undefined,
+        isDeleted: false,
+        isThumnail: true,
+        fileName: undefined
+
       })
     }
 
@@ -193,13 +186,13 @@ const Room = () => {
           setImages(prev => prev = [
             {
               data: uploadedFile,
-              image: {
-                belongTo: undefined,
-                id: undefined,
-                isDeleted: false,
-                isThumnail: false,
-                path: undefined
-              }
+
+              belongTo: undefined,
+              id: undefined,
+              isDeleted: false,
+              isThumnail: false,
+              fileName: undefined
+
             }
           ])
 
@@ -207,13 +200,13 @@ const Room = () => {
         else setImages(prev => [...prev,
         {
           data: uploadedFile,
-          image: {
-            belongTo: undefined,
-            id: undefined,
-            isDeleted: false,
-            isThumnail: false,
-            path: undefined
-          }
+
+          belongTo: undefined,
+          id: undefined,
+          isDeleted: false,
+          isThumnail: false,
+          fileName: undefined
+
         }
         ]);  // Correct state update
       }
@@ -229,12 +222,12 @@ const Room = () => {
 
 
   const { data: roomtypes, error } = useQuery({
-    queryKey: ['roomType'],
+    queryKey: ['roomTypeNotDleted'],
 
     queryFn: async () => apiClient({
       enType: enApiType.GET,
-      endPoint: import.meta.env.VITE_ROOMTYPES,
-      prameters: undefined,
+      endPoint: import.meta.env.VITE_ROOMTYPE+'true',
+      prameters:true,
       isRquireAuth: true,
       jwtValue: refreshToken || ""
     }).then((data) => {

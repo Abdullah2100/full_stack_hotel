@@ -53,7 +53,8 @@ const RoomTypeTable = ({
         <tbody>
           {data !== undefined && data.length > 0 && data.map((roomtype, index) => (
 
-            <tr
+           (roomtype.isDeleted&&isShwoingDeleted === false)?undefined: 
+           <tr
               key={index}
               className={`${roomtype.isDeleted ? 'bg-red-800' : 'bg-white'} `}
             >

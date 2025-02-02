@@ -32,6 +32,7 @@ namespace hotel_api.util
 
         public static string hashingText(string? text)
         {
+            if (text == null) return "";
             using (SHA256 sha256 = SHA256.Create())
             {
                 // Compute the hash of the given string

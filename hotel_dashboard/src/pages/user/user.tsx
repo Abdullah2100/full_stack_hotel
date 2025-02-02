@@ -105,6 +105,7 @@ const User = () => {
       refetch();
     },
     onError: (error) => {
+
       setState(enStatus.complate);
       showToastiFy(error.message, enMessage.ERROR);
 
@@ -170,43 +171,52 @@ const User = () => {
     formData.append("name", userHolder.name);
     formData.append("email", userHolder.email);
     formData.append("phone", userHolder.phone);
-    formData.append("address", userHolder.address);
     formData.append("userName", userHolder.username);
     formData.append("password", userHolder.password);
     formData.append("brithDay", new Date(userHolder.brithDay).toISOString());
     formData.append("isVip", "false");
+    
+    if (userHolder.address !== '')
+      formData.append("address", userHolder.address ?? "");
 
+    
     if (userHolder.imagePath !== undefined)
       formData.append("imagePath", userHolder.imagePath);
 
-    if (isUpdate)
-      formData.append("id", userHolder?.userId?.toString() || "");
 
-    // if (isUpdate) data
-    generalMessage(`this shown the user id ${userHolder.userId}`)
+    let endPoint = isUpdate ? import.meta.env.VITE_USER + `/${userHolder.userId}` : import.meta.env.VITE_USER;
+    generalMessage(`this shown the user id ${userHolder.address === null}`)
 
-    let endPoint = isUpdate ? import.meta.env.VITE_UPDATEUSERS : import.meta.env.VITE_CreateUSERS;
-
-    await userMutaion.mutate({ data: formData, endpoint: endPoint, methodType: enApiType.POST, jwtToken: refreshToken })
+    await userMutaion.mutate({ data: formData, endpoint: endPoint, methodType: isUpdate ? enApiType.PUT : enApiType.POST, jwtToken: refreshToken })
 
   };
 
 
-  const deleteOrUndeleteUser = async (userId: Guid, isDeletion?: boolean | undefined) => {
-    let endpoint = '';
-    if (isDeletion !== undefined) {
-      endpoint = (isDeletion ? import.meta.env.VITE_DELETEDTEUSERS : import.meta.env.VITE_UNDELETE_USER)
-    }
-    else {
-      endpoint = import.meta.env.VITE_MAKEUSERVIP
-    }
+  const deleteOrUndeleteUser = async (userId: Guid) => {
+    let endpoint = import.meta.env.VITE_USER
+
+    generalMessage(`this the endpoint ${endpoint}`)
 
     await userMutaion.mutate({
       data: undefined,
       endpoint: endpoint + '/' + userId,
-      methodType: isDeletion ? enApiType.DELETE : enApiType.POST,
+      methodType: enApiType.DELETE,
       jwtToken: refreshToken
-    })
+    });
+
+  };
+
+  const makeUserVip = async (userId: Guid) => {
+    let endpoint = import.meta.env.VITE_USER
+
+    generalMessage(`this the endpoint ${endpoint}`)
+
+    await userMutaion.mutate({
+      data: undefined,
+      endpoint: endpoint + '/' + userId,
+      methodType: enApiType.POST,
+      jwtToken: refreshToken
+    });
 
   };
 
@@ -402,7 +412,7 @@ const User = () => {
               keyType='address'
               value={userHolder.address}
               onInput={updateInput}
-              placeHolder="Yemen Sanaa"
+              placeHolder="address"
               style="h-16 w-full"
               isRequire={true}
               isMultipleLine={true}
@@ -425,6 +435,7 @@ const User = () => {
             data={data !== undefined ? (data.data as UserModule[]) : undefined}
             setUser={setUser}
             seUpdate={setUpdate}
+            makeUserVip={makeUserVip}
             deleteFunc={deleteOrUndeleteUser}
             isShwoingDeleted={isShowingDeleted}
           />

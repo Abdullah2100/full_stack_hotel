@@ -35,9 +35,9 @@ export default async function apiClient(
         });
         return repsonse;
     } catch (error) {
-        generalMessage(JSON.stringify(error),true)
+        generalMessage(JSON.stringify(error?.response?.data),true)
         throw {
-            message: error?.response?.statusText || error?.message,
+            message: error?.response?.data||error?.response?.statusText || error?.message,
             response: error?.response?.data,
             status: error?.response?.status,
         };

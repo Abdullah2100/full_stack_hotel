@@ -15,14 +15,13 @@ public class UserRequestDto
     //[MinLength(10)]
     public string phone { get; set; } = "";
 
-    [Required] public string address { get; set; } = "";
+     public string? address { get; set; } = null;
 
     [Required]
     public string userName { get; set; } = "";
 
     [Required]
     [MaxLength(16)]
-    //[MinLength(8)]
     public string? password { get; set; } = "";
 
     [Required]
@@ -30,6 +29,6 @@ public class UserRequestDto
     
     public bool isVip   { get; set; } = false;
 
-    public IFormFile imagePath { get; set; } 
+    public IFormFile? imagePath { get; set; } 
 
 }

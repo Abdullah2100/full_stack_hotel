@@ -29,14 +29,14 @@ public class RoomTypeData
                             {
                                 //if ((bool)reader["isdeleted"] == true) continue;
 
+                                var imageHolder = ImagesData.image(roomTypeId);
                                 roomType = new RoomTypeDto(
-                                    roomTypeId:roomTypeId,
+                                    roomTypeId: roomTypeId,
                                     roomTypeName: (string)reader["name"],
                                     createdBy: (Guid)reader["createdby"],
                                     createdAt: (DateTime)reader["createdat"],
-                                    imagePath:ImagesData.image( roomTypeId),
-                                    isDeleted:(bool)reader["isdeleted"]
-                               
+                                    imagePath: imageHolder == null ? "" : imageHolder.path,
+                                    isDeleted: (bool)reader["isdeleted"]
                                 );
                             }
                         }
@@ -74,14 +74,15 @@ public class RoomTypeData
                             while (reader.Read())
                             {
                                 //if ((bool)reader["isdeleted"] == true) continue;
+                                var imageHolder = ImagesData.image((Guid)reader["roomtypeid"]);
 
                                 roomType = new RoomTypeDto(
-                                    roomTypeId:(Guid)reader["roomtypeid"],
-                                    roomTypeName:name, 
+                                    roomTypeId: (Guid)reader["roomtypeid"],
+                                    roomTypeName: name,
                                     createdBy: (Guid)reader["createdby"],
                                     createdAt: (DateTime)reader["createdat"],
-                                    imagePath:ImagesData.image( (Guid)reader["roomtypeid"]),
-                                isDeleted:(bool)reader["isdeleted"] 
+                                    imagePath: imageHolder == null ? "" : imageHolder.path,
+                                    isDeleted: (bool)reader["isdeleted"]
                                 );
                             }
                         }
@@ -107,11 +108,11 @@ public class RoomTypeData
             using (var con = new NpgsqlConnection(connectionUr))
             {
                 con.Open();
-                string query =                                   
-                    "SELECT * FROM fn_roomtype_insert_new(@room_type_id,@name_s::VARCHAR,@createdby_s)";
+                string query =
+                    "SELECT * FROM fn_roomtype_insert_new(@roomtype_id_holder::UUID,@name_s::VARCHAR,@createdby_s)";
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
-                    cmd.Parameters.AddWithValue("@room_type_id", roomData.roomTypeID);
+                    cmd.Parameters.AddWithValue("@roomtype_id_holder", roomData.roomTypeID);
                     cmd.Parameters.AddWithValue("@name_s", roomData.roomTypeName);
                     cmd.Parameters.AddWithValue("@createdby_s", roomData.createdBy);
 
@@ -143,13 +144,13 @@ public class RoomTypeData
                 string query = "SELECT * FROM fn_roomtype_update_new( " +
                                "@name_s::VARCHAR ," +
                                "@roomtypeid_s::UUID," +
-                               "@createdby_s::UUID, " ;
+                               "@createdby_s::UUID); ";
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
                     cmd.Parameters.AddWithValue("@name_s", roomData.roomTypeName);
                     cmd.Parameters.AddWithValue("@roomtypeid_s", roomData.roomTypeID);
                     cmd.Parameters.AddWithValue("@createdby_s", roomData.createdBy);
-                  
+
                     var result = cmd.ExecuteScalar();
                     if (result != null && bool.TryParse(result.ToString(), out bool isComplate))
                     {
@@ -202,16 +203,22 @@ public class RoomTypeData
             using (var con = new NpgsqlConnection(connectionUr))
             {
                 con.Open();
-                string query = "SELECT count(*)>0 FROM RoomTypes WHERE name = name";
+                string query = "SELECT * FROM RoomTypes WHERE name = name";
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
                     cmd.Parameters.AddWithValue("name", name);
-                    var result = cmd.ExecuteScalar();
-                    if (result != null && bool.TryParse(result.ToString(), out bool isComplate))
+                    using (var result = cmd.ExecuteReader())
                     {
-                        isExist = isComplate;
+                        if (result.HasRows)
+                        {
+                            if(result.Rows!=0)
+                                isExist = true;
+                        }
+                        
                     }
+                   
                 }
+                
             }
         }
         catch (Exception ex)
@@ -222,7 +229,7 @@ public class RoomTypeData
         return isExist;
     }
 
-    public static List<RoomTypeDto> getAll()
+    public static List<RoomTypeDto> getAll(bool isNotDeletion)
     {
         List<RoomTypeDto> roomtypes = new List<RoomTypeDto>();
         try
@@ -230,8 +237,9 @@ public class RoomTypeData
             using (var con = new NpgsqlConnection(connectionUr))
             {
                 con.Open();
-                string query = @"select * from roomtypes";
+                string query = queryForGetDeletedOrNoteDeltedRoomtype(isNotDeletion);
 
+               
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
                     using (var reader = cmd.ExecuteReader())
@@ -241,14 +249,15 @@ public class RoomTypeData
                             while (reader.Read())
                             {
                                 //if ((bool)reader["isdeleted"] == true) continue;
+                                var imageHolder = ImagesData.image((Guid)reader["roomtypeid"]);
 
                                 var roomtypeHolder = new RoomTypeDto(
                                     roomTypeId: (Guid)reader["roomtypeid"],
                                     roomTypeName: (string)reader["name"],
                                     createdBy: (Guid)reader["createdby"],
                                     createdAt: (DateTime)reader["createdat"],
-                                    imagePath:ImagesData.image( (Guid)reader["roomtypeid"]),
-                                    isDeleted:(bool)reader["isdeleted"]
+                                    imagePath:imageHolder==null?"":imageHolder.path,
+                                    isDeleted: (bool)reader["isdeleted"]
                                 );
                                 roomtypes.Add(roomtypeHolder);
                             }
@@ -265,7 +274,19 @@ public class RoomTypeData
 
         return roomtypes;
     }
-    
+
+    private static string queryForGetDeletedOrNoteDeltedRoomtype(bool isNotDeletion)
+    {
+        switch (isNotDeletion)
+        {
+            case true:
+            {
+                return @"select * from roomtypes where isdeleted= FALSE";
+
+            }
+            default: return @"select * from roomtypes";
+        }
+    }
     public static bool deleteOrUnDelete(
         Guid id
     )
@@ -295,6 +316,4 @@ public class RoomTypeData
 
         return isDeleted;
     }
- 
-    
 }

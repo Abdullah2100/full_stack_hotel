@@ -1,6 +1,6 @@
 import { Guid } from "guid-typescript";
-import { enStatsu } from "./enRoomStatus";
 import { iImageHolder } from "./IImageHolder";
+import { enStatsu } from "./enStatsu";
 
 export interface IRoomModule {
     roomId?: Guid | undefined
