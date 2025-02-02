@@ -4,7 +4,7 @@ import SubmitButton from '../../components/button/submitButton';
 import { TextInput } from '../../components/input/textInput';
 import '../../index.css'
 import { enStatus } from '../../module/enState';
-import { userAuthLoginModule } from '../../module/userAuthLoginModule';
+import { IAuthLoginModule } from '../../module/IAuthLoginModule';
 import { useContext, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useToastifiContext } from '../../context/toastifyCustom';
@@ -12,7 +12,7 @@ import apiClient from '../../services/apiClient';
 import { enApiType } from '../../module/enApiType';
 import { useMutation } from '@tanstack/react-query';
 import { setTokens } from '../../controller/redux/jwtSlice';
-import { AuthResult } from '../../module/userAuthResult';
+import { AuthResult } from '../../module/iAuthResult';
 import { enMessage } from '../../module/enMessageType';
 import { PasswordInput } from '../../components/input/passwordInput';
 const Login = () => {
@@ -21,7 +21,7 @@ const Login = () => {
 
     const [status, setState] = useState<enStatus>(enStatus.none)
 
-    const [authLoginModule, setUser] = useState<userAuthLoginModule>({
+    const [authLoginModule, setUser] = useState<IAuthLoginModule>({
         eamilOrUserName: 'asda@gmail.com',
         password: 'asAS12#$'
     });

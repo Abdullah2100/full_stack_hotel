@@ -1,4 +1,4 @@
-export interface userAuthLoginModule
+export interface IAuthLoginModule
 {
     eamilOrUserName:string
     password:string;

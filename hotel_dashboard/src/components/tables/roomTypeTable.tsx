@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction } from 'react'
 import { Switch } from '@mui/material';
 import NotFoundComponent from '../notFoundContent';
 import { ArrowUturnLeftIcon, PencilIcon, TrashIcon } from '@heroicons/react/16/solid';
-import { userAuthModule } from '../../module/userAuthModule';
+import { IAuthModule } from '../../module/iAuthModule';
 import { Guid } from 'guid-typescript';
 import ImageHolder from '../imageHolder';
 import { IRoomType } from '../../module/iRoomType';

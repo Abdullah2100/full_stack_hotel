@@ -185,7 +185,7 @@ public class RoomData
 
  
     
-    private static enStatsu convertStatusToEnum(string status)
+    public static enStatsu convertStatusToEnum(string status)
     {
         switch (status)
         {

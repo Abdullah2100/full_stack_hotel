@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import Header from '../../components/header/header'
 import { CameraIcon, UsersIcon } from '@heroicons/react/16/solid'
-import { userAuthModule } from '../../module/userAuthModule';
+import { IAuthModule } from '../../module/iAuthModule';
 import { TextInput } from '../../components/input/textInput';
 import { PasswordInput } from '../../components/input/passwordInput';
 import SubmitButton from '../../components/button/submitButton';
@@ -35,7 +35,7 @@ const User = () => {
   const [isShowingDeleted, setShowingDeleted] = useState<boolean>(false)
   const [isDraggable, changeDraggableStatus] = useState(false)
 
-  const [userHolder, setUser] = useState<userAuthModule>({
+  const [userHolder, setUser] = useState<IAuthModule>({
     userId: undefined,
     name: '',
     email: '',

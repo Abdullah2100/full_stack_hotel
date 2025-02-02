@@ -9,7 +9,7 @@ public class ImageBuissness
     public enMode mode { get; set; }  
     public Guid? ID  { get; set; }
     public string path { get; set; }
-    public Guid belongTo   { get; set; }    
+    public Guid? belongTo   { get; set; }    
     public ImagesTbDto imageHolder{get{return new ImagesTbDto(imagePathId:ID,imagePath:path,belongTo:belongTo);}}
     public ImageBuissness(ImagesTbDto image,enMode mode = enMode.add)
     {
