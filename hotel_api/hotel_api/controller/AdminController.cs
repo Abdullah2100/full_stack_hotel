@@ -748,8 +748,7 @@ namespace hotel_api.controller
         
         private void saveImage(
             List<ImageRequestDto>? imagePath,
-            Guid id,
-            ImageBuissness.enMode mode = ImageBuissness.enMode.add
+            Guid id
             )
         {
             if (imagePath != null)
@@ -759,7 +758,7 @@ namespace hotel_api.controller
                     var imageHolder = new ImageBuissness(
                         new ImagesTbDto(
                             imagePath:path.fileName,belongTo:id,imagePathId:null)
-                        ,mode
+                      
                     
                     );
                     imageHolder.save();

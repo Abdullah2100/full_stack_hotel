@@ -39,9 +39,9 @@ const Room = () => {
 
   const [roomData, setRoomData] = useState<IRoomModule>({
     roomtypeid: undefined,
-    bedNumber: 0,
-    capacity: 0,
-    pricePerNight: 0,
+    bedNumber: 10,
+    capacity: 10,
+    pricePerNight: 10,
     status: enStatsu.Available,
     images: undefined,
     roomId: undefined,
@@ -182,33 +182,20 @@ const Room = () => {
           showToastiFy("You must select a valid image", enMessage.ERROR);
           return;
         }
-        if (images === undefined) {
-          setImages(prev => prev = [
-            {
-              data: uploadedFile,
+     
+        setImages(prev => [...(prev || []), ...[
+          {
+            data: uploadedFile,
 
-              belongTo: undefined,
-              id: undefined,
-              isDeleted: false,
-              isThumnail: false,
-              fileName: undefined
+            belongTo: undefined,
+            id: undefined,
+            isDeleted: false,
+            isThumnail: false,
+            fileName: undefined
 
-            }
-          ])
+          }
+        ]]);
 
-        }
-        else setImages(prev => [...prev,
-        {
-          data: uploadedFile,
-
-          belongTo: undefined,
-          id: undefined,
-          isDeleted: false,
-          isThumnail: false,
-          fileName: undefined
-
-        }
-        ]);  // Correct state update
       }
 
     }
@@ -226,8 +213,8 @@ const Room = () => {
 
     queryFn: async () => apiClient({
       enType: enApiType.GET,
-      endPoint: import.meta.env.VITE_ROOMTYPE+'true',
-      prameters:true,
+      endPoint: import.meta.env.VITE_ROOMTYPE + 'true',
+      prameters: true,
       isRquireAuth: true,
       jwtValue: refreshToken || ""
     }).then((data) => {
@@ -350,6 +337,7 @@ const Room = () => {
 
     if (images && images.length > 0) {
       images.forEach((image, index) => {
+        generalMessage(`this the index number ${index}`)
         formData.append(`images[${index}].id`, image.id ? image.id.toString() : "");
         formData.append(`images[${index}].belongTo`, image.belongTo ? image.belongTo.toString() : "");
         formData.append(`images[${index}].isDeleted`, image.isDeleted ? image.isDeleted.toString() : "");
@@ -359,13 +347,15 @@ const Room = () => {
       });
 
       if (thumnailImage) {
-        formData.append(`images[${images.length + 1}].id`, thumnailImage.id ? thumnailImage.id.toString() : "");
-        formData.append(`images[${images.length + 1}].belongTo`, thumnailImage.belongTo ? thumnailImage.belongTo.toString() : "");
-        formData.append(`images[${images.length + 1}].isDeleted`, thumnailImage.isDeleted ? thumnailImage.isDeleted.toString() : "");
-        formData.append(`images[${images.length + 1}].isThumnail`, thumnailImage.isThumnail ? thumnailImage.isThumnail.toString() : "");
+                generalMessage(`this the index number ${images.length}`)
 
-        if (thumnailImage.data)
-          formData.append(`images[${images.length + 1}].data`, thumnailImage.data);
+        formData.append(`images[${images.length}].id`, thumnailImage.id ? thumnailImage.id.toString() : "");
+        formData.append(`images[${images.length}].belongTo`, thumnailImage.belongTo ? thumnailImage.belongTo.toString() : "");
+        formData.append(`images[${images.length}].isDeleted`, thumnailImage.isDeleted ? thumnailImage.isDeleted.toString() : "");
+        formData.append(`images[${images.length}].isThumnail`, thumnailImage.isThumnail ? thumnailImage.isThumnail.toString() : "");
+
+        // if (thumnailImage.data)
+          formData.append(`images[${images.length}].data`, thumnailImage.data);
       }
     }
 
@@ -375,18 +365,13 @@ const Room = () => {
 
     await roomMutaion.mutate({
       data: formData,
-      endpoint: import.meta.env.VITE_CREATEORUPDATEROOM,
+      endpoint: import.meta.env.VITE_ROOM,
       methodType: isUpdate ? enApiType.PUT : enApiType.POST,
       jwtToken: refreshToken
     });
 
   }
 
-
-  useEffect(() => {
-
-
-  }, [roomtypes !== undefined])
 
   return (
     <div className='flex flex-row'>

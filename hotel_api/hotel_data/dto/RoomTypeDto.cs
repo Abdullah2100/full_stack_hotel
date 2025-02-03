@@ -8,7 +8,7 @@ public class RoomTypeDto
         Guid createdBy,
         DateTime createdAt,
         bool isDeleted = false,
-        ImagesTbDto? imagePath = null
+        string? imagePath = null
         )
     {
         roomTypeID = roomTypeId;
@@ -21,7 +21,7 @@ public class RoomTypeDto
 
     public Guid? roomTypeID { get; set; }
     public string roomTypeName { get; set; }
-    public ImagesTbDto? imagePath { get; set; }
+    public string? imagePath { get; set; }
     public Guid createdBy { get; set; }
     public DateTime createdAt { get; set; }
     public bool isDeleted { get; set; }
