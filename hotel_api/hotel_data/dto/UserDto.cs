@@ -19,7 +19,7 @@ public class UserDto
 
     public string password { get; set; }
     public bool isDeleted { get; set; }
-    public ImagesTbDto? imagePath { get; set; } = null;
+    public string? imagePath { get; set; } = null;
 
     public UserDto(
         Guid userId,
@@ -31,7 +31,7 @@ public class UserDto
         string password,
         Guid? addBy=null,
         bool isDeleted=false,
-        ImagesTbDto? imagePath=null
+        string? imagePath=null
       )
     {
         this.userId = userId;

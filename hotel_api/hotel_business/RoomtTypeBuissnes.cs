@@ -9,7 +9,7 @@ public class RoomtTypeBuissnes
    public enMode mode { get; set; }  
     public Guid? ID { get; set; }
     public string name { get; set; }
-    public ImagesTbDto image { get; set; }
+    public string? image { get; set; }
     public Guid createdBy { get; set; }
     public DateTime createdAt { get; set; }
 

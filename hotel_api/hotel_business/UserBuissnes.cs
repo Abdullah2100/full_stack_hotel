@@ -29,8 +29,7 @@ public class UserBuissnes
                 userName: userName,
                 password: password,
                 personData: personData
-                ,addBy:addBy,
-                imagePath:imagePath 
+                ,addBy:addBy
             );
         }
     }

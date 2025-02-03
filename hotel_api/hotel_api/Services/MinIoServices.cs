@@ -171,13 +171,13 @@ namespace hotel_api.Services
                         {
                             var putObject = new PutObjectArgs()
                                 .WithBucket(bucketNameStr)
-                                .WithObject(fullName)
+                                .WithObject(fileFullPath)
                                 .WithStreamData(fileStream)
                                 .WithObjectSize(formFile.data.Length)
                                 .WithContentType(formFile.data.ContentType);
 
                             await minioClient.PutObjectAsync(putObject).ConfigureAwait(false);
-                            formFile.fileName = fullName;
+                            formFile.fileName = fileFullPath;
                         }
                     }
                 }
@@ -187,7 +187,7 @@ namespace hotel_api.Services
                 Console.WriteLine("Error uploading files: {0}", error.Message);
             }
 
-            return null;
+            return unDeletedImages;
         }
 
         private static async Task<List<ImageRequestDto>> deleteFile(

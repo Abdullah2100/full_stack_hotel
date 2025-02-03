@@ -101,6 +101,7 @@ public class RoomData
                 con.Open();
                 string query = @"select * from fn_room_insert_new
                                 (
+                                @roomid_u::UUID,
                                @status::VARCHAR,
                                @pricePerNight_::NUMERIC,
                                @roomtypeid_ ,
@@ -111,6 +112,7 @@ public class RoomData
 
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
+                    cmd.Parameters.AddWithValue("@roomid_u",roomData.roomId);
                     cmd.Parameters.AddWithValue("@status",reversedStatusEnumToString(roomData.status));
                     cmd.Parameters.AddWithValue("@pricePerNight_", roomData.pricePerNight);
                     cmd.Parameters.AddWithValue("@roomtypeid_", roomData.roomtypeid);
@@ -118,9 +120,9 @@ public class RoomData
                     cmd.Parameters.AddWithValue("@bedNumber_", roomData.bedNumber);
                     cmd.Parameters.AddWithValue("@belongTo_", roomData.beglongTo);
                     var reader = cmd.ExecuteScalar();
-                    if (reader != null && bool.TryParse(reader.ToString(),out bool result))
+                    if (reader != null && int.TryParse(reader.ToString(),out int result))
                     {
-                        isCration = result;
+                        isCration = result>0?true:false;
                     }
                
                 }

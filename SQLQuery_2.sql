@@ -662,6 +662,7 @@ CREATE TABLE Rooms (
 
 ---
 CREATE OR REPLACE FUNCTION fn_room_insert_new(
+        roomid_u UUID,
         status VARCHAR(10),
         pricePerNight_ NUMERIC(10, 2),
         roomtypeid_ UUID,
@@ -678,15 +679,16 @@ BEGIN
 
 
     -- Check if the user has permission to delete
-    is_hasPermission_to_delete := isAdminOrSomeOneHasPersmission(modifiBy);
+    -- is_hasPermission_to_delete := isAdminOrSomeOneHasPersmission(modifiBy);
 
-    IF is_hasPermission_to_delete = FALSE THEN
-        RAISE EXCEPTION 'You do not have permission to perform this action';
-        RETURN 0;  -- You might want to return a specific error code
-    END IF;
+    -- IF is_hasPermission_to_delete = FALSE THEN
+    --     RAISE EXCEPTION 'You do not have permission to perform this action';
+    --     RETURN 0;  -- You might want to return a specific error code
+    -- END IF;
 
     -- Insert the new room
     INSERT INTO rooms(
+        roomid,
         Status,
         pricePerNight,
         roomtypeid,
@@ -695,6 +697,7 @@ BEGIN
         belongTo
     )
     VALUES (
+        roomid_u,
         status,
         pricePerNight_,
         roomtypeid_,
