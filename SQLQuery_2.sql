@@ -3,26 +3,15 @@ DROP DATABASE hotel_db;
 CREATE DATABASE hotel_db;
 \ c hotel_db;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
 ---
-
-
-
-
-
 ---
 CREATE TABLE images(
     imageid UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(200) NOT NULL,
     belongTo UUID NOT NULL,
-    isThumnail  BOOLEAN DEFAULT FALSE
+    isThumnail BOOLEAN DEFAULT FALSE
 );
-
-
 ---
-
-
-
 ---
 CREATE TABLE Persons (
     PersonID UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -32,10 +21,6 @@ CREATE TABLE Persons (
     Address TEXT NULL
 );
 ---
-
-
-
-
 ---
 CREATE TABLE Admins (
     AdminID UUID PRIMARY KEY,
@@ -214,14 +199,14 @@ $$ LANGUAGE plpgsql;
 ----
 CREATE TRIGGER tr_user_insrt BEFORE
 INSERT ON Users FOR EACH ROW EXECUTE FUNCTION fn_user_insert();
-
-
 ---
-
 ---
 CREATE OR REPLACE FUNCTION fn_user_deleted() RETURNS TRIGGER AS $$ BEGIN
 UPDATE users
-SET  IsDeleted = CASE WHEN isdeleted = TRUE THEN FALSE ELSE TRUE END
+SET IsDeleted = CASE
+        WHEN isdeleted = TRUE THEN FALSE
+        ELSE TRUE
+    END
 WHERE userid = OLD.userid;
 RETURN NULL;
 END;
@@ -249,9 +234,6 @@ SELECT per.PersonID,
 FROM users use
     INNER JOIN persons per ON use.personid = per.personid;
 --
-
-
-
 
 --
 CREATE OR REPLACE FUNCTION getUserPagination(pageNumber INT, limitNumber INT)
@@ -297,13 +279,8 @@ SELECT Null,
     NULL,
     NULL,
     NULL;
-END
-$$ LANGUAGE plpgsql;
+END $$ LANGUAGE plpgsql;
 --  
-
-
-
-
 --
 CREATE OR REPLACE FUNCTION fn_user_insert_in (
 userId_u UUID,
@@ -348,8 +325,6 @@ RETURN 0;
 END;
 $$ LANGUAGE plpgsql;
 --
-
-
 
 --
 CREATE OR REPLACE FUNCTION fn_user_update(
@@ -495,24 +470,17 @@ CREATE TABLE RoomTypes (
     IsDeleted bool DEFAULT FALSE
 );
 -----
-
-
-
-
 ----
 CREATE OR REPLACE FUNCTION fn_roomtype_insert_new(
         roomtype_id_holder UUID,
         name_s VARCHAR,
         createdby_s UUID
-        
     ) RETURNS BOOLEAN AS $$
 DECLARE roomType_id UUID;
 BEGIN
-INSERT INTO RoomTypes(roomtypeid,name, createdby)
-VALUES (roomtype_id_holder,name_s, createdby_s)
+INSERT INTO RoomTypes(roomtypeid, name, createdby)
+VALUES (roomtype_id_holder, name_s, createdby_s)
 RETURNING RoomTypeID INTO roomType_id;
-
-
 IF roomType_id IS NOT NULL THEN RETURN TRUE;
 ELSE RETURN FALSE;
 END IF;
@@ -523,9 +491,6 @@ RETURN FALSE;
 END;
 $$ LANGUAGE plpgsql;
 ---
-
-
-
 ---
 CREATE OR REPLACE FUNCTION fn_roomtype_update_new(
         name_s VARCHAR,
@@ -560,12 +525,6 @@ RETURN FALSE;
 END;
 $$ LANGUAGE plpgsql;
 ----
-
-
-
-
-
-
 -----
 CREATE OR REPLACE FUNCTION fn_roomtype_insert() RETURNS TRIGGER AS $$
 DECLARE is_hasPermission BOOLEAN := FALSE;
@@ -594,29 +553,19 @@ WHEN OTHERS THEN RAISE EXCEPTION 'you do not have permission to create roomtype'
 RETURN NULL;
 END $$ Language plpgsql;
 ---
-
-
-
 --
 
 CREATE TRIGGER tr_roomtype_delete BEFORE DELETE ON roomtypes FOR EACH ROW EXECUTE FUNCTION fn_roomtype_delete();
 ---
-
-
 ---
 CREATE OR REPLACE TRIGGER tr_roomtType_insert BEFORE
 INSERT ON RoomTypes FOR EACH ROW EXECUTE FUNCTION fn_roomType_insert();
 --
 
-
-
 --
 CREATE OR REPLACE TRIGGER tr_roomtType_update BEFORE
 update ON RoomTypes FOR EACH ROW EXECUTE FUNCTION fn_roomType_insert();
 --
-
-
-
 
 --
 CREATE OR REPLACE FUNCTION fn_roomtype_update(name_n VARCHAR(50), createdBy_n UUID) RETURNS BOOLEAN AS $$
@@ -640,9 +589,6 @@ END;
 $$ LANGUAGE plpgsql;
 --
 
-
-
-
 --
 
 CREATE TABLE Rooms (
@@ -655,10 +601,61 @@ CREATE TABLE Rooms (
     roomtypeid UUID NOT NULL REFERENCES RoomTypes (roomtypeid),
     capacity INT NOT NULL,
     bedNumber INT NOT NULL,
-    belongTo UUID ,
-    updateAt TIMESTAMP NULL
+    belongTo UUID,
+    updateAt TIMESTAMP NULL,
+    isBlock BOOLEAN DEFAULT FALSE
 );
 --
+
+--
+
+CREATE OR REPLACE FUNCTION getRoomsByPage(pageNumber INT, limitNumber INT) RETURNS TABLE(
+        RoomID UUID,
+        Status VARCHAR(10),
+        pricePerNight NUMERIC(10, 2),
+        CreatedAt TIMESTAMP,
+        roomtypeid UUID,
+        capacity INT,
+        bedNumber INT,
+        belongTo UUID,
+        isblock Boolean
+    ) AS $$ BEGIN
+RETURN QUERY SELECT
+rom.roomid,
+    rom.Status,
+    rom.pricepernight,
+    rom.CreatedAt,
+    rom.roomtypeid,
+    rom.capacity,
+    rom.bedNumber,
+    rom.belongTo
+    ,rom.isblock
+FROM rooms rom
+    INNER JOIN roomtypes romt ON rom.roomtypeid = romt.roomtypeid
+    LEFT JOIN users usr ON rom.belongto = usr.userid
+    LEFT JOIN admins adms ON rom.belongto = adms.adminid
+WHERE rom.isBlock = FALSE
+ORDER BY rom.CreatedAt DESC
+LIMIT limitNumber OFFSET limitNumber * (pageNumber - 1);
+EXCEPTION
+WHEN OTHERS THEN RAISE EXCEPTION 'Something went wrong: %',
+SQLERRM;
+RETURN QUERY
+SELECT 
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL;
+END;
+$$ LANGUAGE plpgsql;
+---
+
+
 
 ---
 CREATE OR REPLACE FUNCTION fn_room_insert_new(
@@ -670,24 +667,16 @@ CREATE OR REPLACE FUNCTION fn_room_insert_new(
         bedNumber_ INT,
         belongTo_ UUID
     ) RETURNS INT AS $$
-DECLARE 
-    roomid_holder UUID;
-    is_hasPermission_to_delete BOOLEAN;
-BEGIN
-
-
-
-
-    -- Check if the user has permission to delete
-    -- is_hasPermission_to_delete := isAdminOrSomeOneHasPersmission(modifiBy);
-
-    -- IF is_hasPermission_to_delete = FALSE THEN
-    --     RAISE EXCEPTION 'You do not have permission to perform this action';
-    --     RETURN 0;  -- You might want to return a specific error code
-    -- END IF;
-
-    -- Insert the new room
-    INSERT INTO rooms(
+DECLARE roomid_holder UUID;
+is_hasPermission_to_delete BOOLEAN;
+BEGIN -- Check if the user has permission to delete
+-- is_hasPermission_to_delete := isAdminOrSomeOneHasPersmission(modifiBy);
+-- IF is_hasPermission_to_delete = FALSE THEN
+--     RAISE EXCEPTION 'You do not have permission to perform this action';
+--     RETURN 0;  -- You might want to return a specific error code
+-- END IF;
+-- Insert the new room
+INSERT INTO rooms(
         roomid,
         Status,
         pricePerNight,
@@ -696,7 +685,7 @@ BEGIN
         bedNumber,
         belongTo
     )
-    VALUES (
+VALUES (
         roomid_u,
         status,
         pricePerNight_,
@@ -705,25 +694,20 @@ BEGIN
         bedNumber_,
         belongTo_
     )
-    RETURNING roomid INTO roomid_holder;
-
-    -- Check if the insertion was successful
-    IF roomid_holder IS NOT NULL THEN
-        RETURN 1;  -- Return a success code
-     -- Return failure if roomid is NULL
-    END IF;
-
-        RETURN 0; 
+RETURNING roomid INTO roomid_holder;
+-- Check if the insertion was successful
+IF roomid_holder IS NOT NULL THEN RETURN 1;
+-- Return a success code
+-- Return failure if roomid is NULL
+END IF;
+RETURN 0;
 EXCEPTION
-    WHEN OTHERS THEN 
-        RAISE EXCEPTION 'Something went wrong: %', SQLERRM;
-        RETURN 0;
+WHEN OTHERS THEN RAISE EXCEPTION 'Something went wrong: %',
+SQLERRM;
+RETURN 0;
 END;
 $$ LANGUAGE PLPGSQL;
-
 ---
-
-
 ---
 CREATE OR REPLACE FUNCTION fn_room_insert() RETURNS TRIGGER AS $$
 DECLARE isUserDeleted BOOLEAN;
@@ -742,8 +726,6 @@ RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
 ---
-
-
 ---
 CREATE TRIGGER tr_roomt_insert BEFORE
 INSERT ON rooms FOR EACH ROW EXECUTE FUNCTION fn_room_insert();
@@ -798,9 +780,6 @@ RETURN 0;
 END;
 $$ LANGUAGE PLPGSQL;
 ---
-
-
-
 ---
 CREATE OR REPLACE FUNCTION fn_room_update() RETURNS TRIGGER AS $$
 DECLARE isUserDeleted BOOLEAN;
@@ -824,10 +803,6 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER tr_roomt_update BEFORE
 INSERT ON rooms FOR EACH ROW EXECUTE FUNCTION fn_room_update();
 ----
-
-
-
-
 ---
 CREATE TABLE Departments (
     DepartmentID BIGSERIAL PRIMARY KEY,
@@ -993,4 +968,4 @@ CREATE TABLE Maintenances (
     ExpectedBy BIGINT NOT NULL REFERENCES Employees (EmployeeID),
     CreatedBy BIGINT NULL REFERENCES Users (UserID),
 );
---
+- -

@@ -84,6 +84,11 @@ public class RoomBuisness
             default: return false;
         }
     }
-    
+
+
+    public static List<RoomDto> getAllRooms(int pagenumber,int limitPerPage)
+    {
+        return RoomData.getRoomByPage(pagenumber, limitPerPage);
+    }
     
 }

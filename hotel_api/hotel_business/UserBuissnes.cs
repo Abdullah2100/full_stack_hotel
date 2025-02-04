@@ -10,8 +10,8 @@ public class UserBuissnes
     public Guid ID { get; set; }
     public Guid? personID { get; set; }
     public Guid? addBy { get; set; }
-    public DateTime brithDay { get; set; }
-    public bool isVip { get; set; }
+    public DateTime? brithDay { get; set; }
+    public bool? isVip { get; set; }= false;
     public PersonDto personData { get; set; }
     public string userName { get; set; }
     public string password { get; set; }
@@ -23,7 +23,7 @@ public class UserBuissnes
         {
             return new UserDto(
                 userId: ID,
-                personID: personData.personID ?? Guid.Empty,
+              
                 brithDay: brithDay,
                 isVip: isVip,
                 userName: userName,
@@ -37,7 +37,6 @@ public class UserBuissnes
     public UserBuissnes(UserDto userData,enMode mode=enMode.add)
     {
         this.ID = userData.userId;
-        this.personID = userData.personData.personID ?? Guid.Empty;
         this.brithDay = userData.brithDay;
         this.isVip = userData.isVip;
         this.personData = userData.personData;

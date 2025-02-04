@@ -47,7 +47,6 @@ namespace hotel_data
                                     var imageHolder = ImagesData.image(id);
                                     var userData = new UserDto(
                                         userId: id,
-                                        personID: (Guid)reader["personid"],
                                         brithDay: (DateTime)reader["dateofbirth"],
                                         isVip: (bool)reader["isvip"],
                                         personData: personData,
@@ -109,7 +108,6 @@ namespace hotel_data
                                  
                                     var userData = new UserDto(
                                         userId: (Guid)reader["userid"],
-                                        personID: (Guid)reader["personid"],
                                         brithDay: (DateTime)reader["dateofbrith"],
                                         isVip: (bool)reader["isvip"],
                                         personData: personData,
@@ -174,7 +172,6 @@ namespace hotel_data
                                 
                                 userHolder = new UserDto(
                                     userId: (Guid)reader["userid"],
-                                    personID: (Guid)reader["personid"],
                                     brithDay: (DateTime)reader["dateofbirth"],
                                     isVip: (bool)reader["isvip"],
                                     personData: personData,
@@ -233,7 +230,6 @@ namespace hotel_data
                                 
                                     var userHolder = new UserDto(
                                         userId: (Guid)reader["userid"],
-                                        personID: (Guid)reader["personid"],
                                         brithDay: (DateTime)reader["dateofbirth"],
                                         isVip: (bool)reader["isvip"],
                                         personData: personData,
@@ -344,7 +340,7 @@ namespace hotel_data
                         cmd.Parameters.AddWithValue("@username", userData.userName);
                         cmd.Parameters.AddWithValue("@password", userData.password);
                         cmd.Parameters.AddWithValue("@IsVIP", userData.isVip);
-                        cmd.Parameters.AddWithValue("@personid_u", userData.personID);
+                        cmd.Parameters.AddWithValue("@personid_u", userData.personData.personID);
                         cmd.Parameters.AddWithValue("@brithday_u", userData.brithDay);
                       
                         var result = cmd.ExecuteScalar();
