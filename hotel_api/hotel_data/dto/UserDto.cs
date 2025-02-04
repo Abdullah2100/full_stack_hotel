@@ -6,12 +6,12 @@ public class UserDto
 {
     public Guid userId  { get; set; }
 
-    public Guid? personID  { get; set; }
+  
     public Guid? addBy  { get; set; }
 
-    public DateTime brithDay   { get; set; }
+    public DateTime? brithDay   { get; set; }
 
-    public bool isVip   { get; set; }
+    public bool? isVip   { get; set; } = false;
 
     public PersonDto personData { get; set; }
 
@@ -21,21 +21,22 @@ public class UserDto
     public bool isDeleted { get; set; }
     public string? imagePath { get; set; } = null;
 
+    public bool? isUser { get; set; } = true;
+
     public UserDto(
         Guid userId,
-        Guid? personID, 
-        DateTime brithDay, 
-        bool isVip,
         PersonDto personData, 
         string userName,
         string password,
+        DateTime? brithDay= null, 
+        bool? isVip = null,
         Guid? addBy=null,
         bool isDeleted=false,
         string? imagePath=null
       )
     {
         this.userId = userId;
-        this.personID = personID;
+
         this.brithDay = brithDay;
         this.isVip = isVip;
         this.personData = personData;

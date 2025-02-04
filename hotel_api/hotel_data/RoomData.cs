@@ -185,7 +185,58 @@ public class RoomData
         return isUpdate;
     }
 
- 
+     public static List<RoomDto> getRoomByPage(int pageNumber = 1, int numberOfRoom = 20)
+        {
+            List<RoomDto> rooms = new List<RoomDto>();
+            try
+            {
+                using (var con = new NpgsqlConnection(connectionUr))
+                {
+                    con.Open();
+                    string query = @"select * from  getRoomsByPage(@pagenumber,@limitnumber)";
+
+                    using (var cmd = new NpgsqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@pagenumber", pageNumber <= 1 ? 1 : pageNumber - 1);
+                        cmd.Parameters.AddWithValue("@limitnumber", numberOfRoom);
+
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            if (reader.HasRows)
+                            {
+                                while (reader.Read())
+                                {
+                                    var roomid = (Guid)reader["roomid"];
+                                var roomHolder =     new RoomDto(
+                                        roomId:roomid,
+                                        status: convertStatusToEnum((string)reader["status"]),
+                                        pricePerNight: (decimal)reader["pricepernight"],
+                                        capacity: (int)reader["capacity"],
+                                        roomtypeid: (Guid)reader["roomtypeid"],
+                                        bedNumber: (int)reader["bednumber"],
+                                        beglongTo:(Guid)reader["belongto"],
+                                        createdAt: (DateTime)reader["createdat"],
+                                        isBlock: (bool)reader["isblock"],
+                                        images:ImagesData.images(roomid)
+                                    );
+
+                                    rooms.Add(roomHolder);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("this from getting user by id error {0}", ex.Message);
+                return null;
+            }
+
+            return rooms;
+        }
+
+    
     
     public static enStatsu convertStatusToEnum(string status)
     {

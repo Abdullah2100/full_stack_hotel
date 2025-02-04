@@ -62,7 +62,6 @@ public class UserController : Controller
    
         data = new UserBuissnes(new UserDto(
             userId: userId,
-            personID: null,
             brithDay: userRequestData.brithDay,
             isVip: userRequestData.isVip,
             personData: personDataHolder,

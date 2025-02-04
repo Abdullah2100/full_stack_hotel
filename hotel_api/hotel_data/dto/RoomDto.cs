@@ -3,15 +3,17 @@ namespace hotel_data.dto;
 public class RoomDto
 {
     public RoomDto(
-        Guid roomId, 
-        enStatsu status, 
-        decimal pricePerNight, 
-        int capacity, 
-        Guid roomtypeid, 
-        int bedNumber, 
+        Guid roomId,
+        enStatsu status,
+        decimal pricePerNight,
+        int capacity,
+        Guid roomtypeid,
+        int bedNumber,
         Guid beglongTo,
-        DateTime createdAt
-        )
+        DateTime createdAt,
+        bool isBlock =false,
+        List<ImagesTbDto>? images = null
+    )
     {
         this.roomId = roomId;
         this.status = status;
@@ -21,15 +23,35 @@ public class RoomDto
         this.bedNumber = bedNumber;
         this.beglongTo = beglongTo;
         this.createdAt = createdAt;
+        this.isBlock = isBlock; 
+        this.images = images;
+        var adminData = AdminData.getAdmin(beglongTo);
+        var userData = UserData.getUser(beglongTo);
+        if (adminData != null)
+        {
+            this.user = adminData.toUserDto();
+        }
+        else
+        {
+            this.user = userData;
+        }
+
+        this.roomData = RoomTypeData.getRoomType(roomId);
     }
 
     public Guid roomId { get; set; }
-    public enStatsu status {get; set;} = enStatsu.Available; 
-    public decimal pricePerNight {get; set;}
-    public int capacity {get; set;}
-    public Guid roomtypeid {get; set;}
+    public enStatsu status { get; set; } = enStatsu.Available;
+    public decimal pricePerNight { get; set; }
+    public int capacity { get; set; }
+    public Guid roomtypeid { get; set; }
     public DateTime createdAt { get; set; } = DateTime.UtcNow;
     public int bedNumber { get; set; }
-    public Guid beglongTo {get; set;}
-    public List<string> images { get; set; } = new List<string>();
+    public Guid beglongTo { get; set; }
+    
+    public bool isBlock { get; set; } = false;
+
+    public UserDto? user { get; set; } = null;
+    public RoomTypeDto? roomData { get; set; } = null;
+
+    public List<ImagesTbDto>? images { get; set; } 
 }
