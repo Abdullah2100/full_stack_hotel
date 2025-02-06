@@ -12,6 +12,7 @@ public class RoomDto
         Guid beglongTo,
         DateTime createdAt,
         bool isBlock =false,
+        bool isDeleted =false,
         List<ImagesTbDto>? images = null
     )
     {
@@ -23,7 +24,8 @@ public class RoomDto
         this.bedNumber = bedNumber;
         this.beglongTo = beglongTo;
         this.createdAt = createdAt;
-        this.isBlock = isBlock; 
+        this.isBlock = isBlock;
+        this.isDeleted = isDeleted;
         this.images = images;
         var adminData = AdminData.getAdmin(beglongTo);
         var userData = UserData.getUser(beglongTo);
@@ -49,6 +51,7 @@ public class RoomDto
     public Guid beglongTo { get; set; }
     
     public bool isBlock { get; set; } = false;
+    public bool isDeleted { get; set; } = false;
 
     public UserDto? user { get; set; } = null;
     public RoomTypeDto? roomData { get; set; } = null;

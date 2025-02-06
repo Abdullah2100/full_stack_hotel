@@ -23,7 +23,6 @@ const ImageHolder = ({
   const [isHasError, setHasError] = useState<boolean>(false);
 
   const handleError = (e) => {
-    generalMessage(`this error ${JSON.stringify(e)}`, true)
     setHasError(true);
   };
 

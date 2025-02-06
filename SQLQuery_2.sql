@@ -603,7 +603,8 @@ CREATE TABLE Rooms (
     bedNumber INT NOT NULL,
     belongTo UUID,
     updateAt TIMESTAMP NULL,
-    isBlock BOOLEAN DEFAULT FALSE
+    isBlock BOOLEAN DEFAULT FALSE,
+    isDeleted BOOLEAN DEFAULT FALSE
 );
 --
 
@@ -618,7 +619,8 @@ CREATE OR REPLACE FUNCTION getRoomsByPage(pageNumber INT, limitNumber INT) RETUR
         capacity INT,
         bedNumber INT,
         belongTo UUID,
-        isblock Boolean
+        isblock Boolean,
+        isDeleted Boolean
     ) AS $$ BEGIN
 RETURN QUERY SELECT
 rom.roomid,
@@ -629,7 +631,8 @@ rom.roomid,
     rom.capacity,
     rom.bedNumber,
     rom.belongTo
-    ,rom.isblock
+    ,rom.isblock,
+    rom.isdeleted
 FROM rooms rom
     INNER JOIN roomtypes romt ON rom.roomtypeid = romt.roomtypeid
     LEFT JOIN users usr ON rom.belongto = usr.userid
@@ -642,6 +645,7 @@ WHEN OTHERS THEN RAISE EXCEPTION 'Something went wrong: %',
 SQLERRM;
 RETURN QUERY
 SELECT 
+    NULL,
     NULL,
     NULL,
     NULL,
