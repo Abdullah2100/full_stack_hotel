@@ -35,14 +35,8 @@ namespace hotel_data
                                 {
                                     // if (((bool)reader["ispersondeleted"] == true)) return null;
 
-                                    var personData = new PersonDto(
-                                        personID: (Guid)reader["personid"],
-                                        email: (string)reader["email"],
-                                        name: (string)reader["name"],
-                                        phone: (string)reader["phone"],
-                                        createdAt: (DateTime)reader["createdat"],
-                                        address: reader["address"] == DBNull.Value ? "" : (string)reader["address"]
-                                    );
+                                    var personData = PersonData.getPerson((Guid)reader["personid"]);
+
 
                                     var imageHolder = ImagesData.image(id);
                                     var userData = new UserDto(
@@ -95,14 +89,8 @@ namespace hotel_data
                                 {
                                     if (((bool)reader["ispersondeleted"] == true)) return null;
 
-                                    var personData = new PersonDto(
-                                        personID: (Guid)reader["personid"],
-                                        email: (string)reader["email"],
-                                        name: (string)reader["name"],
-                                        phone: (string)reader["phone"],
-                                        createdAt: (DateTime)reader["dateofbrith"],
-                                        address: reader["address"] == DBNull.Value ? "" : (string)reader["address"]
-                                    );
+                                    var personData = PersonData.getPerson((Guid)reader["personid"]);
+
 
                                     var imageHolder = ImagesData.image( (Guid)reader["userid"]);
                                  
@@ -159,14 +147,8 @@ namespace hotel_data
                             {
                                 if ((bool)reader["ispersondeleted"] == true) return null;
 
-                                var personData = new PersonDto(
-                                    personID: (Guid)reader["personid"],
-                                    email: (string)reader["email"],
-                                    name: (string)reader["name"],
-                                    phone: (string)reader["phone"],
-                                    createdAt: (DateTime)reader["createdat"],
-                                    address: reader["address"] == DBNull.Value ? "" : (string)reader["address"]
-                                );
+                                var personData = PersonData.getPerson((Guid)reader["personid"]);
+
                                 var imageHolder = ImagesData.image( (Guid)reader["userid"]);
                                  
                                 
@@ -218,14 +200,7 @@ namespace hotel_data
                                 {
                                     //if ((bool)reader["isdeleted"] == true) continue;
 
-                                    var personData = new PersonDto(
-                                        (Guid)reader["personid"],
-                                        email: (string)reader["email"],
-                                        name: (string)reader["name"],
-                                        phone: (string)reader["phone"],
-                                        createdAt: (DateTime)reader["createdat"],
-                                        address: reader["address"] == DBNull.Value ? "" : (string)reader["address"]
-                                    );
+                                    var personData = PersonData.getPerson((Guid)reader["personid"]);
                                     var imageHolder = ImagesData.image( (Guid)reader["userid"]);
                                 
                                     var userHolder = new UserDto(

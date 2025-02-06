@@ -217,7 +217,8 @@ public class RoomData
                                         beglongTo:(Guid)reader["belongto"],
                                         createdAt: (DateTime)reader["createdat"],
                                         isBlock: (bool)reader["isblock"],
-                                        images:ImagesData.images(roomid)
+                                        images:ImagesData.images(roomid),
+                                        isDeleted:(bool)reader["isdeleted"]
                                     );
 
                                     rooms.Add(roomHolder);

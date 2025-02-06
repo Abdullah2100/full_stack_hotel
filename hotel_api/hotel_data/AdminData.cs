@@ -136,7 +136,7 @@ namespace hotel_data
                 {
                     connection.Open();
 
-                    string query = @"SELECT * FROM fn_admin_get(@ID)";
+                    string query = @"SELECT * FROM admins where adminid =@ID";
 
                     using (var cmd = new NpgsqlCommand(query, connection))
                     {
@@ -146,26 +146,21 @@ namespace hotel_data
                         {
                             if (result.HasRows)
                             {
-                                var person = new PersonDto
-                                (
-                                    (Guid)result["personid"],
-                                    (string)result["name"],
-                                    (string)result["email"],
-                                    result["address"] == DBNull.Value ? "" : (string)result["address"],
-                                    (string)result["phone"],
-                                    createdAt: (DateTime)result["CreatedAt"]
-                                );
+                                if (result.Read())
+                                {
+                                    var person = PersonData.getPerson((Guid)result["personid"]); 
 
-                                var admin = new AdminDto
-                                (
-                                    adminID: ID,
-                                    userName: (string)result["username"],
-                                    password: "",
-                                    personsId: (Guid)result["personid"],
-                                    personData: person
-                                );
+                                    var admin = new AdminDto
+                                    (
+                                        adminID: ID,
+                                        userName: (string)result["username"],
+                                        password: "",
+                                        personsId: (Guid)result["personid"],
+                                        personData: person
+                                    );
 
-                                return admin;
+                                    return admin;
+                                }
                             }
                         }
                     }
@@ -207,21 +202,15 @@ namespace hotel_data
                             {
                                 if (result.Read())
                                 {
+                                    var personData = PersonData.getPerson((Guid)result["personid"]);
+
                                     adminData = new AdminDto
                                     (
                                         adminID: (Guid)result["adminid"],
                                         userName: username,
                                         password: password,
                                         personsId: (Guid)result["personid"],
-                                        personData: new PersonDto
-                                        (
-                                            (Guid)result["personid"],
-                                            (string)result["name"],
-                                            (string)result["email"],
-                                            result["address"] == DBNull.Value ? "" : (string)result["address"],
-                                            (string)result["phone"],
-                                            createdAt: null
-                                        )
+                                        personData:personData
                                     );
                                 }
                             }

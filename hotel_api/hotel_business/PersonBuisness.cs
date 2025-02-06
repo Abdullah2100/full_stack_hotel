@@ -78,8 +78,7 @@ namespace hotel_business
 
         public static PersonBuisness? getPersonByID(Guid ID)
         {
-            bool isDeleted = false;
-            var personData = PersonData.getPerson(ID, ref isDeleted);
+            var personData = PersonData.getPerson(ID);
             if (personData != null)
             {
                 return new PersonBuisness(personData, enMode.update);

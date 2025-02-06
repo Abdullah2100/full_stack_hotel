@@ -1,116 +1,120 @@
 import { Dispatch, SetStateAction } from 'react'
+import { RoomModule } from '../../module/RoomModule';
 import { Switch } from '@mui/material';
 import NotFoundComponent from '../notFoundContent';
 import { ArrowUturnLeftIcon, PencilIcon, TrashIcon } from '@heroicons/react/16/solid';
 import { IAuthModule } from '../../module/iAuthModule';
 import { Guid } from 'guid-typescript';
-import { IUserModule } from '../../module/iUserModule';
 import ImageHolder from '../imageHolder';
+import { IRoomModule } from '../../module/iRoomModule';
+import { generalMessage } from '../../util/generalPrint';
 
-interface UserTableProps {
-  data?: IUserModule[] | undefined,
-  setUser: Dispatch<SetStateAction<IAuthModule>>
+interface RoomTableProps {
+  data?: IRoomModule[] | undefined,
+  setRoom: Dispatch<SetStateAction<IAuthModule>>
   seUpdate: Dispatch<SetStateAction<boolean>>
-  deleteFunc: (userId: Guid) => Promise<void>
-  makeUserVip: (userId: Guid) => Promise<void>
+  deleteFunc: (roomId: Guid) => Promise<void>
+  makeRoomVip: (roomId: Guid) => Promise<void>
   isShwoingDeleted: boolean
 
 }
 
-const UersTable = ({
+const RoomTable = ({
   data,
-  setUser,
+  setRoom,
   seUpdate,
   deleteFunc,
-  makeUserVip,
+  makeRoomVip,
   isShwoingDeleted = false
-}: UserTableProps) => {
+}: RoomTableProps) => {
 
-
-  const setUserData = (user: IUserModule) => {
-    setUser({
-      userId: user.userId,
-      address: user.personData?.address,
-      brithDay: user.brithDay.split('T')[0], //dateHolder.toISOString().split('T')[0],
-      email: user.personData?.email,
-      name: user.personData?.name,
-      password: '',
-      phone: user.personData?.phone,
-      username: user.userName,
-      imagePath: user.imagePath?.toString()
-    })
+  const setRoomData = (room: RoomModule) => {
+    // setRoom({
+    //   roomId: Room.RoomId,
+    //   address: Room.personData?.address,
+    //   brithDay: Room.brithDay.split('T')[0], //dateHolder.toISOString().split('T')[0],
+    //   email: Room.personData?.email,
+    //   name: Room.personData?.name,
+    //   password: '',
+    //   phone: Room.personData?.phone,
+    //   Roomname: Room.RoomName,
+    //   imagePath: Room.imagePath?.toString()
+    // })
     seUpdate(true)
   }
 
   return (
-    <div className={`overflow-x-auto justify-center ${data === undefined && 'h-48'} `}>
+    <div className={`overflow-x-auto justify-center ${data === undefined && 'h-48'} pb-7 `}>
       <table className="min-w-full table-auto border-collapse">
         <thead className="bg-gray-200 text-gray-600">
           <tr>
             <th className="px-4 py-2 border-b text-left whitespace-nowrap"></th>
-            <th className="px-4 py-2 border-b text-left whitespace-nowrap">profileImage</th>
-            <th className="px-4 py-2 border-b text-left whitespace-nowrap">Name</th>
-            <th className="px-4 py-2 border-b text-left whitespace-nowrap">Email</th>
+            <th className="px-4 py-2 border-b text-left whitespace-nowrap">Owner by</th>
+            {/* <th className="px-4 py-2 border-b text-left whitespace-nowrap">Name</th> */}
+            {/* <th className="px-4 py-2 border-b text-left whitespace-nowrap">Email</th>
             <th className="px-4 py-2 border-b text-left whitespace-nowrap">Phone</th>
             <th className="px-4 py-2 border-b text-left whitespace-nowrap">Address</th>
             <th className="px-4 py-2 border-b text-left whitespace-nowrap">Created At</th>
             <th className="px-4 py-2 border-b text-left whitespace-nowrap">Brithday</th>
             <th className="px-4 py-2 border-b text-left whitespace-nowrap">VIP Status</th>
-            <th className="px-4 py-2 border-b text-left whitespace-nowrap">Operation</th>
+            <th className="px-4 py-2 border-b text-left whitespace-nowrap">Operation</th> */}
           </tr>
         </thead>
         <tbody>
-          {data !== undefined && data.length > 0 && data.map((user, index) => (
-            user.isDeleted && isShwoingDeleted === false ? undefined : <tr
+          {data !== undefined && data.length > 0 && data.map((Room, index) => (
+            Room.isDeleted && isShwoingDeleted === false ? undefined : <tr
               key={index}
-              className={` ${user.isDeleted ? 'bg-red-500' : 'bg-white'}`}
+              className={` ${Room.isDeleted ? 'bg-red-500' : 'bg-white'}`}
             >
               <td className="px-4 py-2 border-b text-left whitespace-nowrap">{index + 1}</td>
+              <td className="px-4 py-2 border-b text-left whitespace-nowrap">{Room?.user?.personData.name || ""}</td>
+              {
+                
+                /*
               <td className="px-4 py-2 border-b text-left whitespace-nowrap">{
 
-                <ImageHolder src={`http://172.19.0.1:9000/user/${user.imagePath}`}
+                <ImageHolder src={`http://172.19.0.1:9000/Room/${Room.imagePath}`}
                   style='flex flex-row h-20 w-20'
                 />
               }</td>
 
-              <td className="px-4 py-2 border-b text-left whitespace-nowrap">{user?.personData?.name || ""}</td>
-              <td className="px-4 py-2 border-b text-left whitespace-nowrap">{user?.personData?.email || ""}</td>
-              <td className="px-4 py-2 border-b text-left whitespace-nowrap">{user?.personData?.phone || ""}</td>
-              <td className="px-4 py-2 border-b text-left whitespace-nowrap">{user?.personData?.address || ""}</td>
+              <td className="px-4 py-2 border-b text-left whitespace-nowrap">{Room?.personData?.email || ""}</td>
+              <td className="px-4 py-2 border-b text-left whitespace-nowrap">{Room?.personData?.phone || ""}</td>
+              <td className="px-4 py-2 border-b text-left whitespace-nowrap">{Room?.personData?.address || ""}</td>
               <td className="px-4 py-2 border-b text-left whitespace-nowrap">
-                {user?.personData?.createdAt === undefined ? "" : new Date(user.personData.createdAt).toISOString().split('T')[0]}
+                {Room?.personData?.createdAt === undefined ? "" : new Date(Room.personData.createdAt).toISOString().split('T')[0]}
               </td>
               <td className="px-4 py-2 border-b text-left whitespace-nowrap">
-                {user?.personData?.createdAt === undefined ? "" : user.brithDay.split('T')[0]}
+                {Room?.personData?.createdAt === undefined ? "" : Room.brithDay.split('T')[0]}
               </td>
               <td className="px-4 py-2 border-b text-left whitespace-nowrap">
                 <Switch
-                  defaultChecked={user.isVip}
-                  disabled={user.isDeleted}
-                  onChange={() => makeUserVip(user.userId)}
+                  defaultChecked={Room.isVip}
+                  disabled={Room.isDeleted}
+                  onChange={() => makeRoomVip(Room.RoomId)}
                 />
               </td>
 
               <td className="px-4 py-1   text-left ">
-                {user.isDeleted === false ?
+                {Room.isDeleted === false ?
                   <div className='flex flex-row justify-between'>
 
                     <button
-                      onClick={() => deleteFunc(user.userId)}
+                      onClick={() => deleteFunc(Room.RoomId)}
                       className='border-[2px] rounded-[3px] border-red-600 h-7 w-7 flex justify-center items-center'
                     ><TrashIcon className='h-4 w-4 text-red-600 ' /></button>
                     <button
-                      onClick={() => setUserData(user)}
+                      onClick={() => setRoomData(Room)}
                       className='border-[2px] rounded-[3px] border-green-800 h-7 w-7 flex justify-center items-center bg-gray-200'
                     ><PencilIcon className='h-6 w-6 text-green-800' /></button>
                   </div> :
-                  <button onClick={() => deleteFunc(user.userId)}>
+                  <button onClick={() => deleteFunc(Room.RoomId)}>
 
                     <ArrowUturnLeftIcon
                       className='h-6 w-6 text-white' />
                   </button>
                 }
-              </td>
+              </td> */}
             </tr>
           ))}
         </tbody>
@@ -127,4 +131,4 @@ const UersTable = ({
   )
 }
 
-export default UersTable
+export default RoomTable

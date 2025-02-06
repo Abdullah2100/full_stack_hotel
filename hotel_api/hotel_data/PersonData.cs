@@ -129,7 +129,7 @@ namespace hotel_data
 
 
         public static PersonDto? getPerson(
-            Guid id, ref bool isDelelted
+            Guid id
             )
         {
             try
@@ -149,7 +149,7 @@ namespace hotel_data
                         {
                             if (result.HasRows)
                             {
-                                isDelelted = (bool)result["isdeleted"];
+                               
                                 var person = new PersonDto
                                 (
                                    personID: id,

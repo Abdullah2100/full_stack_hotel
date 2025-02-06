@@ -5,7 +5,7 @@ import { PencilIcon } from '@heroicons/react/16/solid';
 import ImageHolder from '../../components/imageHolder';
 import RoomsIcon from '../../assets/rooms_icon';
 import { enNavLinkType } from '../../module/enNavLinkType';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { SetStateAction, useContext, useEffect, useRef, useState } from 'react';
 import { useToastifiContext } from '../../context/toastifyCustom';
 import { enMessage } from '../../module/enMessageType';
 import { TextInput } from '../../components/input/textInput';
@@ -22,6 +22,8 @@ import { Guid } from 'guid-typescript';
 import { generalMessage } from '../../util/generalPrint';
 import { IRoomModule } from '../../module/iRoomModule';
 import { enStatsu } from '../../module/enStatsu';
+import RoomTable from '../../components/tables/roomTable';
+import { IAuthModule } from '../../module/iAuthModule';
 
 const Room = () => {
   const refreshToken = useSelector((state: RootState) => state.auth.refreshToken)
@@ -32,6 +34,7 @@ const Room = () => {
   const [isUpdate, setUpdate] = useState<boolean>(false)
   const [isSingle, setSingle] = useState(false)
   const [isDraggable, changeDraggableStatus] = useState(false)
+  const [pageNumber, setPageNumber] = useState(1)
 
 
   const [thumnailImage, setThumnail] = useState<iImageHolder>()
@@ -106,7 +109,6 @@ const Room = () => {
               showToastiFy("You must select a valid image", enMessage.ERROR);
               return;
             }
-            generalMessage(`this the is single images ${uploadedFile.name}`)
             imagesHolder.push({
               data: uploadedFile,
               belongTo: undefined,
@@ -182,7 +184,7 @@ const Room = () => {
           showToastiFy("You must select a valid image", enMessage.ERROR);
           return;
         }
-     
+
         setImages(prev => [...(prev || []), ...[
           {
             data: uploadedFile,
@@ -313,7 +315,6 @@ const Room = () => {
   const createOrUpdateRoomType = async () => {
     if (isUpdate === false) {
       const result = !validationInput();
-      generalMessage(`this is the create room ${result}`)
 
       if (result) return;
     }
@@ -337,7 +338,6 @@ const Room = () => {
 
     if (images && images.length > 0) {
       images.forEach((image, index) => {
-        generalMessage(`this the index number ${index}`)
         formData.append(`images[${index}].id`, image.id ? image.id.toString() : "");
         formData.append(`images[${index}].belongTo`, image.belongTo ? image.belongTo.toString() : "");
         formData.append(`images[${index}].isDeleted`, image.isDeleted ? image.isDeleted.toString() : "");
@@ -347,7 +347,6 @@ const Room = () => {
       });
 
       if (thumnailImage) {
-                generalMessage(`this the index number ${images.length}`)
 
         formData.append(`images[${images.length}].id`, thumnailImage.id ? thumnailImage.id.toString() : "");
         formData.append(`images[${images.length}].belongTo`, thumnailImage.belongTo ? thumnailImage.belongTo.toString() : "");
@@ -355,13 +354,10 @@ const Room = () => {
         formData.append(`images[${images.length}].isThumnail`, thumnailImage.isThumnail ? thumnailImage.isThumnail.toString() : "");
 
         // if (thumnailImage.data)
-          formData.append(`images[${images.length}].data`, thumnailImage.data);
+        formData.append(`images[${images.length}].data`, thumnailImage.data);
       }
     }
 
-
-
-    generalMessage(`this the data of the form ${JSON.stringify(formData)}`)
 
     await roomMutaion.mutate({
       data: formData,
@@ -372,13 +368,32 @@ const Room = () => {
 
   }
 
+const {data} =   useQuery({
+    queryKey: ['rooms'],
+    queryFn: async () => apiClient({
+      enType: enApiType.GET,
+      endPoint: import.meta.env.VITE_ROOM + `/${pageNumber}`,
+      prameters: undefined,
+      isRquireAuth: true,
+      jwtValue: refreshToken || ""
+    }),
+  }
+  );
+
+  useEffect(()=>{
+    if(data!=undefined){
+      const dataToType = data as unknown as IRoomModule[];
+      generalMessage(JSON.stringify(dataToType))
+    }
+  },[data])
+
 
   return (
     <div className='flex flex-row'>
 
       <Header index={3} />
 
-      <div className='min-h-screen w-[calc(100%-192px)] ms-[192px] flex flex-col px-2 items-start  overflow-scroll '>
+      <div className='min-h-screen w-[calc(100%-192px)] ms-[192px] flex flex-col px-2 items-start  overflow-y-auto '>
         <div className='flex flex-row items-center mt-2'>
           <RoomsIcon className='h-8 fill-black group-hover:fill-gray-200 -ms-1' />
           <h3 className='text-2xl ms-1'>Room</h3>
@@ -578,6 +593,20 @@ const Room = () => {
             textstyle='text-[14px] text-black'
           />
         </div>
+      
+      <div>
+           <RoomTable data={data === undefined ? undefined : data.data as unknown as IRoomModule[]} setRoom={function (value: SetStateAction<IAuthModule>): void {
+          throw new Error('Function not implemented.');
+        } } seUpdate={function (value: SetStateAction<boolean>): void {
+          throw new Error('Function not implemented.');
+        } } deleteFunc={function (roomId: Guid): Promise<void> {
+          throw new Error('Function not implemented.');
+        } } makeRoomVip={function (roomId: Guid): Promise<void> {
+          throw new Error('Function not implemented.');
+        } } isShwoingDeleted={false}/>
+      </div>
+         
+         
       </div>
     </div>
   )

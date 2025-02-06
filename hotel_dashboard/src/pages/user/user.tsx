@@ -185,7 +185,6 @@ const User = () => {
 
 
     let endPoint = isUpdate ? import.meta.env.VITE_USER + `/${userHolder.userId}` : import.meta.env.VITE_USER;
-    generalMessage(`this shown the user id ${userHolder.address === null}`)
 
     await userMutaion.mutate({ data: formData, endpoint: endPoint, methodType: isUpdate ? enApiType.PUT : enApiType.POST, jwtToken: refreshToken })
 
@@ -195,7 +194,6 @@ const User = () => {
   const deleteOrUndeleteUser = async (userId: Guid) => {
     let endpoint = import.meta.env.VITE_USER
 
-    generalMessage(`this the endpoint ${endpoint}`)
 
     await userMutaion.mutate({
       data: undefined,
@@ -209,7 +207,6 @@ const User = () => {
   const makeUserVip = async (userId: Guid) => {
     let endpoint = import.meta.env.VITE_USER
 
-    generalMessage(`this the endpoint ${endpoint}`)
 
     await userMutaion.mutate({
       data: undefined,
@@ -237,7 +234,6 @@ const User = () => {
         return;
       }
       const cachedURL = URL.createObjectURL(uploadedFile);
-      ///generalMessage("this the image url " + cachedURL)
       setImage(cachedURL);
       setUser((prev) => ({
         ...prev,
@@ -270,7 +266,6 @@ const User = () => {
       return;
     }
     const cachedURL = URL.createObjectURL(file);
-    generalMessage("this the image url " + cachedURL)
     setImage(cachedURL);
     setUser((prev) => ({
       ...prev,

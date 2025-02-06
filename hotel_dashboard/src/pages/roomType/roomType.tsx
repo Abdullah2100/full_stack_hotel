@@ -173,7 +173,6 @@ const RoomType = () => {
     
     let endPoint =!isUpdate? import.meta.env.VITE_ROOMTYPE :import.meta.env.VITE_ROOMTYPE+`/${roomType.roomTypeID}`;
     const method = isUpdate ? enApiType.PUT : enApiType.POST;
-    generalMessage(`this the method  from ${method}`)
 
     roomtypeMutaion.mutate({
       data: roomtTypeData,
