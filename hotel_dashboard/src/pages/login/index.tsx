@@ -113,6 +113,7 @@ const Login = () => {
                     style=" mb-2 w-[200px]"
                 />
                 <PasswordInput
+                 style=" mb-2 w-[200px]"
                     keyType='Password'
                     value={authLoginModule.password}
                     onInput={updateInput}

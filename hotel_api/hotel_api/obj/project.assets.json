@@ -1427,19 +1427,19 @@
     ]
   },
   "packageFolders": {
-    "/home/abdullh-alhashmi/.nuget/packages/": {}
+    "/home/abdullah/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/abdullh-alhashmi/Public/full_stack_hotel/hotel_api/hotel_api/hotel_api.csproj",
+      "projectUniqueName": "/home/abdullah/Desktop/full_stack_hotel/hotel_api/hotel_api/hotel_api.csproj",
       "projectName": "hotel_api",
-      "projectPath": "/home/abdullh-alhashmi/Public/full_stack_hotel/hotel_api/hotel_api/hotel_api.csproj",
-      "packagesPath": "/home/abdullh-alhashmi/.nuget/packages/",
-      "outputPath": "/home/abdullh-alhashmi/Public/full_stack_hotel/hotel_api/hotel_api/obj/",
+      "projectPath": "/home/abdullah/Desktop/full_stack_hotel/hotel_api/hotel_api/hotel_api.csproj",
+      "packagesPath": "/home/abdullah/.nuget/packages/",
+      "outputPath": "/home/abdullah/Desktop/full_stack_hotel/hotel_api/hotel_api/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/home/abdullh-alhashmi/.nuget/NuGet/NuGet.Config"
+        "/home/abdullah/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
@@ -1451,8 +1451,8 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "projectReferences": {
-            "/home/abdullh-alhashmi/Public/full_stack_hotel/hotel_api/hotel_business/hotel_business.csproj": {
-              "projectPath": "/home/abdullh-alhashmi/Public/full_stack_hotel/hotel_api/hotel_business/hotel_business.csproj"
+            "/home/abdullah/Desktop/full_stack_hotel/hotel_api/hotel_business/hotel_business.csproj": {
+              "projectPath": "/home/abdullah/Desktop/full_stack_hotel/hotel_api/hotel_business/hotel_business.csproj"
             }
           }
         }
@@ -1465,7 +1465,7 @@
       "restoreAuditProperties": {
         "enableAudit": "true",
         "auditLevel": "low",
-        "auditMode": "direct"
+        "auditMode": "all"
       },
       "SdkAnalysisLevel": "9.0.100"
     },
@@ -1517,7 +1517,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.102/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/home/abdullah/.dotnet/sdk/9.0.100/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
