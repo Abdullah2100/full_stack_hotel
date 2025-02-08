@@ -47,7 +47,7 @@ export const PasswordInput =
         return (
             <div className="">
                 {isHasTitle &&
-                    <h6 className="text-[10px] bg mb-[0.5px]">{keyType}</h6>}
+                    <h6 className="text-[10px]  mb-[0.5px]">{keyType}</h6>}
                 {
                     <div>
                         {

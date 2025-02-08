@@ -1,5 +1,5 @@
 import 'react'
-import './style.css';
+import './styleNotFound.css';
 import notFoundImage from '../../assets/page-not-found.png'
 
 const NotFoundImage = ()=>{

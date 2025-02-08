@@ -129,7 +129,7 @@ const Login = () => {
                     buttonStatus={status}
                     placeHolder={'تسجيل الدخول'}
                     onSubmit={async () => { onSubmit() }}
-                    style={'text-[10px] bg-mainBg w-[200px] text-white rounded-[4px]   mt-2  h-6 '} />
+                    style={'text-[10px] bg-mainBg w-[200px] text-white rounded-[4px]   mt-2  h-6  bg-green-200'} />
                 <div className='w-[200px] justify-end '>
 
                     <Link to={'/signup'} className='text-[8px] text-black hover:text-blue-600'>
