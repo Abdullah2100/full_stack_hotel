@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/home/abdullah/Desktop/full_stack_hotel/hotel_api/hotel_api/hotel_api.csproj": {}
+    "/home/abdullah/Public/full_stack_hotel/hotel_api/hotel_api/hotel_api.csproj": {}
   },
   "projects": {
-    "/home/abdullah/Desktop/full_stack_hotel/hotel_api/hotel_api/hotel_api.csproj": {
+    "/home/abdullah/Public/full_stack_hotel/hotel_api/hotel_api/hotel_api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/abdullah/Desktop/full_stack_hotel/hotel_api/hotel_api/hotel_api.csproj",
+        "projectUniqueName": "/home/abdullah/Public/full_stack_hotel/hotel_api/hotel_api/hotel_api.csproj",
         "projectName": "hotel_api",
-        "projectPath": "/home/abdullah/Desktop/full_stack_hotel/hotel_api/hotel_api/hotel_api.csproj",
+        "projectPath": "/home/abdullah/Public/full_stack_hotel/hotel_api/hotel_api/hotel_api.csproj",
         "packagesPath": "/home/abdullah/.nuget/packages/",
-        "outputPath": "/home/abdullah/Desktop/full_stack_hotel/hotel_api/hotel_api/obj/",
+        "outputPath": "/home/abdullah/Public/full_stack_hotel/hotel_api/hotel_api/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/abdullah/.nuget/NuGet/NuGet.Config"
@@ -26,8 +26,8 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "/home/abdullah/Desktop/full_stack_hotel/hotel_api/hotel_business/hotel_business.csproj": {
-                "projectPath": "/home/abdullah/Desktop/full_stack_hotel/hotel_api/hotel_business/hotel_business.csproj"
+              "/home/abdullah/Public/full_stack_hotel/hotel_api/hotel_business/hotel_business.csproj": {
+                "projectPath": "/home/abdullah/Public/full_stack_hotel/hotel_api/hotel_business/hotel_business.csproj"
               }
             }
           }
@@ -40,7 +40,7 @@
         "restoreAuditProperties": {
           "enableAudit": "true",
           "auditLevel": "low",
-          "auditMode": "all"
+          "auditMode": "direct"
         },
         "SdkAnalysisLevel": "9.0.100"
       },
@@ -92,18 +92,18 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/home/abdullah/.dotnet/sdk/9.0.100/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.102/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "/home/abdullah/Desktop/full_stack_hotel/hotel_api/hotel_business/hotel_business.csproj": {
+    "/home/abdullah/Public/full_stack_hotel/hotel_api/hotel_business/hotel_business.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/abdullah/Desktop/full_stack_hotel/hotel_api/hotel_business/hotel_business.csproj",
+        "projectUniqueName": "/home/abdullah/Public/full_stack_hotel/hotel_api/hotel_business/hotel_business.csproj",
         "projectName": "hotel_business",
-        "projectPath": "/home/abdullah/Desktop/full_stack_hotel/hotel_api/hotel_business/hotel_business.csproj",
+        "projectPath": "/home/abdullah/Public/full_stack_hotel/hotel_api/hotel_business/hotel_business.csproj",
         "packagesPath": "/home/abdullah/.nuget/packages/",
-        "outputPath": "/home/abdullah/Desktop/full_stack_hotel/hotel_api/hotel_business/obj/",
+        "outputPath": "/home/abdullah/Public/full_stack_hotel/hotel_api/hotel_business/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/abdullah/.nuget/NuGet/NuGet.Config"
@@ -118,8 +118,8 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "/home/abdullah/Desktop/full_stack_hotel/hotel_api/hotel_data/hotel_data.csproj": {
-                "projectPath": "/home/abdullah/Desktop/full_stack_hotel/hotel_api/hotel_data/hotel_data.csproj"
+              "/home/abdullah/Public/full_stack_hotel/hotel_api/hotel_data/hotel_data.csproj": {
+                "projectPath": "/home/abdullah/Public/full_stack_hotel/hotel_api/hotel_data/hotel_data.csproj"
               }
             }
           }
@@ -132,7 +132,7 @@
         "restoreAuditProperties": {
           "enableAudit": "true",
           "auditLevel": "low",
-          "auditMode": "all"
+          "auditMode": "direct"
         },
         "SdkAnalysisLevel": "9.0.100"
       },
@@ -155,18 +155,18 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/home/abdullah/.dotnet/sdk/9.0.100/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.102/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "/home/abdullah/Desktop/full_stack_hotel/hotel_api/hotel_data/hotel_data.csproj": {
+    "/home/abdullah/Public/full_stack_hotel/hotel_api/hotel_data/hotel_data.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/abdullah/Desktop/full_stack_hotel/hotel_api/hotel_data/hotel_data.csproj",
+        "projectUniqueName": "/home/abdullah/Public/full_stack_hotel/hotel_api/hotel_data/hotel_data.csproj",
         "projectName": "hotel_data",
-        "projectPath": "/home/abdullah/Desktop/full_stack_hotel/hotel_api/hotel_data/hotel_data.csproj",
+        "projectPath": "/home/abdullah/Public/full_stack_hotel/hotel_api/hotel_data/hotel_data.csproj",
         "packagesPath": "/home/abdullah/.nuget/packages/",
-        "outputPath": "/home/abdullah/Desktop/full_stack_hotel/hotel_api/hotel_data/obj/",
+        "outputPath": "/home/abdullah/Public/full_stack_hotel/hotel_api/hotel_data/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/abdullah/.nuget/NuGet/NuGet.Config"
@@ -191,7 +191,7 @@
         "restoreAuditProperties": {
           "enableAudit": "true",
           "auditLevel": "low",
-          "auditMode": "all"
+          "auditMode": "direct"
         },
         "SdkAnalysisLevel": "9.0.100"
       },
@@ -220,7 +220,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/home/abdullah/.dotnet/sdk/9.0.100/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.102/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
