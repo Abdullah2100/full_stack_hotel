@@ -19,7 +19,7 @@ const SubmitButton = (
     }: submitButtonProps) => {
     return (<button
         onClick={buttonStatus !== enStatus.loading ? onSubmit : undefined}
-        color="primary"
+       // color="primary"
         className={style}
     >
         {
