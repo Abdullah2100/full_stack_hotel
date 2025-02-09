@@ -353,7 +353,7 @@ const Room = () => {
         formData.append(`images[${images.length}].isDeleted`, thumnailImage.isDeleted ? thumnailImage.isDeleted.toString() : "");
         formData.append(`images[${images.length}].isThumnail`, thumnailImage.isThumnail ? thumnailImage.isThumnail.toString() : "");
 
-        // if (thumnailImage.data)
+        if (thumnailImage.data)
         formData.append(`images[${images.length}].data`, thumnailImage.data);
       }
     }

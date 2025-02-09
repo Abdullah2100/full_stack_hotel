@@ -20,8 +20,7 @@ namespace hotel_data.dto
             string email, 
             string name, 
             string phone, 
-            string address,
-            DateTime? createdAt= null
+            string address
             )
         {
             this.personID = personID;
@@ -29,7 +28,6 @@ namespace hotel_data.dto
             this.phone = phone;
             this.address = address;
             this.email = email;
-            this.createdAt = createdAt;
         }
 
     }

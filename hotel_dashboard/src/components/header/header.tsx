@@ -4,13 +4,13 @@ import NavLink from '../navLink/navLink'
 import Logo from '../../assets/logo'
 import { enNavLinkType } from '../../module/enNavLinkType'
 import Logout from '../button/logoutButton'
-
+ 
 interface iHeaderProp {
   index?: number | undefined
 }
 const Header = ({ index = 0 }: iHeaderProp) => {
   return (
-    <div className="w-48 bg-mainBg flex flex-col items-center pe-7 fixed top-0 left-0 h-full  overflow-scroll no-scrollbar">
+    <div className="w-48 bg-mainBg flex flex-col items-center pe-7 fixed top-0 left-0 h-full   overflow-scroll no-scrollbar">
       {/* logo */}
       <div className="mt-4 mb-10">
         <Link to={'/'}>

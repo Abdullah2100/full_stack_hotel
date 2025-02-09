@@ -69,7 +69,8 @@ public class ImageBuissness
         List<ImageBuissness> images = new List<ImageBuissness>();
         foreach (var image in result)
         {
-            images.Append(new ImageBuissness(image, enMode.update));
+            var imageHolder = new ImageBuissness(image, enMode.update);
+            images.Add(imageHolder);
         }
 
         return images;
