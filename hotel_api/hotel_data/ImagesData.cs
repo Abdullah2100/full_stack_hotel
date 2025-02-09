@@ -150,21 +150,25 @@ public class ImagesData
             using (var con = new NpgsqlConnection(connectionUr))
             {
                 con.Open();
-                string query = "SELECT * FROM images where belongto = @belongto";
+                string query = "SELECT * FROM images WHERE belongto = @belongto";
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
-                    cmd.Parameters.AddWithValue("belongto", belongto);
+                    cmd.Parameters.AddWithValue("@belongto", belongto);
                     using (var reader = cmd.ExecuteReader())
                     {
                         if (reader.HasRows)
                         {
                             while (reader.Read())
                             {
-                                images.Append(new ImagesTbDto(
-                                    imagePathId: (Guid)reader["name"],
+                                var imageHolder = new ImagesTbDto(
+                                    imagePathId: (Guid)reader["imageid"],
                                     imagePath: (string)reader["name"],
                                     belongTo: (Guid)reader["belongto"]
-                                ));
+                                    , isThumnail: (bool)reader["isthumnail"]
+
+                                );
+                                images.Add(imageHolder);
+                               
                             }
                         }
                     }

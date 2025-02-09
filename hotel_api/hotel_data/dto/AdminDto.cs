@@ -39,8 +39,7 @@ namespace hotel_data.dto
                 email: this.personData.email,
                 phone: this.personData.phone,
                 name: this.personData.name,
-                address: this.personData.address,
-                createdAt:this.personData.createdAt
+                address: this.personData.address
             );
 
             var userData = new UserDto(

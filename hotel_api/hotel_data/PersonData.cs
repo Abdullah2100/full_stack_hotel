@@ -12,15 +12,14 @@ namespace hotel_data
         public static string connectionUrl = clsConnnectionUrl.url;
 
         public static bool createPerson(
-           PersonDto personData
-            )
+            PersonDto personData
+        )
         {
             bool isCreated = false;
             try
             {
                 using (var connection = new NpgsqlConnection(connectionUrl))
                 {
-
                     connection.Open();
 
                     string query = @"
@@ -30,36 +29,35 @@ namespace hotel_data
 
                     using (var cmd = new NpgsqlCommand(query, connection))
                     {
-
                         cmd.Parameters.AddWithValue("@name", personData.name);
                         cmd.Parameters.AddWithValue("@phone", personData.phone);
                         cmd.Parameters.AddWithValue("@email", personData.email);
                         cmd.Parameters.AddWithValue("@address", personData.address);
 
-                      cmd.ExecuteScalar();
-                        isCreated =  true ;
+                        cmd.ExecuteScalar();
+                        isCreated = true;
                     }
                 }
+
                 return isCreated;
             }
             catch (Exception ex)
             {
                 Console.WriteLine("\nthis error from person create {0} \n", ex.Message);
-
             }
+
             return isCreated;
         }
 
         public static bool updatePerson(
-                    PersonDto personData
-           )
+            PersonDto personData
+        )
         {
             bool isUpdate = false;
             try
             {
                 using (var connection = new NpgsqlConnection(connectionUrl))
                 {
-
                     connection.Open();
 
                     string query = @"
@@ -72,39 +70,37 @@ namespace hotel_data
                         if (personData != null)
                         {
                             cmd.Parameters.AddWithValue("@id", personData.personID!);
-                            
-                        cmd.Parameters.AddWithValue("@name", personData.name);
-                        cmd.Parameters.AddWithValue("@phone", personData.phone);
-                        cmd.Parameters.AddWithValue("@address", personData.address);
+
+                            cmd.Parameters.AddWithValue("@name", personData.name);
+                            cmd.Parameters.AddWithValue("@phone", personData.phone);
+                            cmd.Parameters.AddWithValue("@address", personData.address);
                         }
-                        
+
                         cmd.ExecuteNonQuery();
                         isUpdate = true;
                     }
                 }
+
                 return isUpdate;
             }
             catch (Exception ex)
             {
                 Console.WriteLine("\nthis error from person create {0} \n", ex.Message);
-
             }
+
             return isUpdate;
         }
 
 
-
-
         public static bool deletePerson(
-          Guid id
-       )
+            Guid id
+        )
         {
             bool isDelelted = false;
             try
             {
                 using (var connection = new NpgsqlConnection(connectionUrl))
                 {
-
                     connection.Open();
 
                     string query = @" DELETE FROM  persons WHERE personid =@id;";
@@ -114,29 +110,30 @@ namespace hotel_data
                         cmd.Parameters.AddWithValue("@id", id);
 
                         cmd.ExecuteNonQuery();
-                         isDelelted = true;
+                        isDelelted = true;
                     }
                 }
+
                 return isDelelted;
             }
             catch (Exception ex)
             {
                 Console.WriteLine("\nthis error from person deleted {0} \n", ex.Message);
-
             }
+
             return isDelelted;
         }
 
 
         public static PersonDto? getPerson(
             Guid id
-            )
+        )
         {
+            PersonDto? person = null;
             try
             {
                 using (var connection = new NpgsqlConnection(connectionUrl))
                 {
-
                     connection.Open();
 
                     string query = @" SELECT * FROM  persons WHERE personid =@id;";
@@ -147,44 +144,39 @@ namespace hotel_data
 
                         using (var result = cmd.ExecuteReader())
                         {
-                            if (result.HasRows)
+                            if (result.Read())
                             {
-                               
-                                var person = new PersonDto
+                                person = new PersonDto
                                 (
-                                   personID: id,
-                                    email:(string)result["name"],
-                                    name:(string)result["email"],
-                                    phone:result["address"] == DBNull.Value ? "" : (string)result["address"],
-                                    address:(string)result["phone"],
-                                    createdAt: (DateTime)result["CreatedAt"]
+                                    personID: id,
+                                    name: (string)result["name"],
+                                    email: (string)result["email"],
+                                    phone: result["phone"] == DBNull.Value ? "" : (string)result["phone"],
+                                    address: (string)result["address"]
                                 );
                             }
                         }
                     }
                 }
-                return null;
             }
             catch (Exception ex)
             {
                 Console.WriteLine("\nthis error from person getPerson by id {0} \n", ex.Message);
-
             }
-            return null;
+
+            return person;
         }
 
-      
 
         public static bool isExist(
             Guid id
-            )
+        )
         {
             bool isExist = false;
             try
             {
                 using (var connection = new NpgsqlConnection(connectionUrl))
                 {
-
                     connection.Open();
 
                     string query = @" SELECT * FROM  persons WHERE personid =@id;";
@@ -200,18 +192,19 @@ namespace hotel_data
                         }
                     }
                 }
+
                 return isExist;
             }
             catch (Exception ex)
             {
                 Console.WriteLine("\nthis error from person deleted {0} \n", ex.Message);
-
             }
+
             return isExist;
         }
 
         public static bool isExist(
-            string phone 
+            string phone
         )
         {
             bool isExist = false;
@@ -219,7 +212,6 @@ namespace hotel_data
             {
                 using (var connection = new NpgsqlConnection(connectionUrl))
                 {
-
                     connection.Open();
 
                     string query = @" SELECT * FROM  persons WHERE phone =@phone;";
@@ -235,28 +227,28 @@ namespace hotel_data
                         }
                     }
                 }
+
                 return isExist;
             }
             catch (Exception ex)
             {
                 Console.WriteLine("\nthis error from person deleted {0} \n", ex.Message);
-
             }
+
             return isExist;
         }
 
 
         public static bool isExist(
-               string email,
-               string phone
-               )
+            string email,
+            string phone
+        )
         {
             bool isExist = false;
             try
             {
                 using (var connection = new NpgsqlConnection(connectionUrl))
                 {
-
                     connection.Open();
 
                     string query = @" SELECT * FROM  persons WHERE email =@email OR phone = @phone;";
@@ -273,16 +265,15 @@ namespace hotel_data
                         }
                     }
                 }
+
                 return isExist;
             }
             catch (Exception ex)
             {
                 Console.WriteLine("\nthis error from person deleted {0} \n", ex.Message);
-
             }
+
             return isExist;
         }
-
-
     }
 }

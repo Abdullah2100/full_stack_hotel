@@ -11,11 +11,26 @@
     <list default="true" id="a5d946be-ded5-4850-9962-9f8d801bf9de" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.hotel_api/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.hotel_api/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_api/obj/hotel_api.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/obj/hotel_api.csproj.nuget.dgspec.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_api/obj/hotel_api.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/obj/hotel_api.csproj.nuget.g.props" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_api/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/obj/project.assets.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_api/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/obj/project.nuget.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_business/ImageBuissness.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/ImageBuissness.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_business/obj/hotel_business.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/obj/hotel_business.csproj.nuget.dgspec.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_business/obj/hotel_business.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/obj/hotel_business.csproj.nuget.g.props" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_business/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/obj/project.assets.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_business/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/obj/project.nuget.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_data/AdminData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/AdminData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_data/ImagesData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/ImagesData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_data/PersonData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/PersonData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_data/dto/AdminDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/dto/AdminDto.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_data/dto/PersonDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/dto/PersonDto.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotel_data/dto/RoomDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/dto/RoomDto.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/components/header/header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/components/header/header.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/pages/room/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/pages/room/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/tsconfig.app.json" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/tsconfig.app.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,7 +44,10 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/8430bc457b534877bc12d102f8823a72e28600/bc/47e8c40d/ExceptionDispatchInfo.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/4adb5b691829c26d83fa849c65de669c2b38704fa6a8e6216dafbcb24e24d4f/NpgsqlDataReader.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/6728f66657329080f0f419df519283a455cdca7d2617a05b18553b02da52fa/Nullable.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/b93677e7bc427676ed5eae846f2dbe4e1095f5ba135155b96527ce5e11e871/Component.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/c2f3c2871cbc269fcb5ffb2c471c92336812a76ce642b22dd65228dad125a91e/DbDataReader.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProblemsViewState">
@@ -44,21 +62,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    ".NET Launch Settings Profile.hotel_api: http.executor": "Debug",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "XThreadsFramesViewSplitterKey": "0.03851852",
-    "git-widget-placeholder": "fixing__tailwind__impelementaion",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;.NET Launch Settings Profile.hotel_api: http.executor&quot;: &quot;Debug&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;XThreadsFramesViewSplitterKey&quot;: &quot;0.03851852&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected=".NET Launch Settings Profile.hotel_api: http">
     <configuration name="hotel_api: http" type="LaunchSettings" factoryName=".NET Launch Settings Profile">
       <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/hotel_api/hotel_api.csproj" />
@@ -149,6 +167,9 @@
       <workItem from="1738853017321" duration="1712000" />
       <workItem from="1738913546484" duration="145000" />
       <workItem from="1738990064064" duration="6411000" />
+      <workItem from="1739012946473" duration="486000" />
+      <workItem from="1739094286770" duration="4702000" />
+      <workItem from="1739103274424" duration="24000" />
     </task>
     <servers />
   </component>
@@ -358,6 +379,7 @@
         <watch expression="_config.getKey(&quot;accessKy&quot;)" />
         <watch expression=" _config.getKey(&quot;secretKey&quot;)" />
         <watch expression="adminData.toUserDto()" />
+        <watch expression="(Guid)result[&quot;personid&quot;]" />
       </configuration>
     </watches-manager>
   </component>

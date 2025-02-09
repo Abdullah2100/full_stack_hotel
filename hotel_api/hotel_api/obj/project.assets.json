@@ -1427,19 +1427,19 @@
     ]
   },
   "packageFolders": {
-    "/home/abdullah/.nuget/packages/": {}
+    "/home/abdullh-alhashmi/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/abdullah/Public/full_stack_hotel/hotel_api/hotel_api/hotel_api.csproj",
+      "projectUniqueName": "/home/abdullh-alhashmi/Public/full_stack_hotel/hotel_api/hotel_api/hotel_api.csproj",
       "projectName": "hotel_api",
-      "projectPath": "/home/abdullah/Public/full_stack_hotel/hotel_api/hotel_api/hotel_api.csproj",
-      "packagesPath": "/home/abdullah/.nuget/packages/",
-      "outputPath": "/home/abdullah/Public/full_stack_hotel/hotel_api/hotel_api/obj/",
+      "projectPath": "/home/abdullh-alhashmi/Public/full_stack_hotel/hotel_api/hotel_api/hotel_api.csproj",
+      "packagesPath": "/home/abdullh-alhashmi/.nuget/packages/",
+      "outputPath": "/home/abdullh-alhashmi/Public/full_stack_hotel/hotel_api/hotel_api/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/home/abdullah/.nuget/NuGet/NuGet.Config"
+        "/home/abdullh-alhashmi/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
@@ -1451,8 +1451,8 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "projectReferences": {
-            "/home/abdullah/Public/full_stack_hotel/hotel_api/hotel_business/hotel_business.csproj": {
-              "projectPath": "/home/abdullah/Public/full_stack_hotel/hotel_api/hotel_business/hotel_business.csproj"
+            "/home/abdullh-alhashmi/Public/full_stack_hotel/hotel_api/hotel_business/hotel_business.csproj": {
+              "projectPath": "/home/abdullh-alhashmi/Public/full_stack_hotel/hotel_api/hotel_business/hotel_business.csproj"
             }
           }
         }

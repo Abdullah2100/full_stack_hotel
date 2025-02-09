@@ -148,7 +148,8 @@ namespace hotel_data
                             {
                                 if (result.Read())
                                 {
-                                    var person = PersonData.getPerson((Guid)result["personid"]); 
+                                    var personid = (Guid)result["personid"];
+                                    var person = PersonData.getPerson(personid); 
 
                                     var admin = new AdminDto
                                     (
@@ -202,8 +203,8 @@ namespace hotel_data
                             {
                                 if (result.Read())
                                 {
-                                    var personData = PersonData.getPerson((Guid)result["personid"]);
-
+                                    var personid = (Guid)result["personid"];
+                                    var personData = PersonData.getPerson(personid); 
                                     adminData = new AdminDto
                                     (
                                         adminID: (Guid)result["adminid"],
