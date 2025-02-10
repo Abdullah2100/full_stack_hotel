@@ -11,7 +11,8 @@ import { generalMessage } from '../../util/generalPrint';
 
 interface RoomTableProps {
   data?: IRoomModule[] | undefined,
-  setRoom: Dispatch<SetStateAction<IAuthModule>>
+  setRoom: Dispatch<SetStateAction<IRoomModule>>
+  setRoomHover: Dispatch<SetStateAction<IRoomModule|undefined>>
   seUpdate: Dispatch<SetStateAction<boolean>>
   deleteFunc: (roomId: Guid) => Promise<void>
   makeRoomVip: (roomId: Guid) => Promise<void>
@@ -22,6 +23,7 @@ interface RoomTableProps {
 const RoomTable = ({
   data,
   setRoom,
+  setRoomHover,
   seUpdate,
   deleteFunc,
   makeRoomVip,
@@ -67,7 +69,21 @@ const RoomTable = ({
               className={` ${Room.isDeleted ? 'bg-red-500' : 'bg-white'}`}
             >
               <td className="px-4 py-2 border-b text-left whitespace-nowrap">{index + 1}</td>
-              <td className="px-4 py-2 border-b text-left whitespace-nowrap">{Room?.user?.personData.name || ""}</td>
+              <td className="px-4 py-2 border-b text-left whitespace-nowrap">
+                <div onMouseEnter={
+                  (e)=>{
+                    setRoomHover(Room)
+                  }
+                }
+                onMouseLeave={
+                  (e)=>{
+                    setRoomHover(undefined)
+                  }
+                }
+                >
+                  {Room?.user?.personData.name || ""}
+                </div>
+              </td>
               {
                 
                 /*
