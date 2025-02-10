@@ -52,6 +52,8 @@ const Room = () => {
     beglongTo: undefined
   })
 
+  const [roomHolder, setRoomHover] = useState<IRoomModule | undefined>(undefined)
+
 
   const imageRef = useRef<HTMLInputElement>(null);
 
@@ -244,6 +246,11 @@ const Room = () => {
     setImages(undefined)
   }
 
+
+  useEffect(() => {
+    generalMessage(`this the message data ${JSON.stringify(roomHolder)}`)
+  }, [roomHolder])
+
   const roomMutaion = useMutation({
     mutationFn: ({ data, endpoint, methodType,
       jwtToken
@@ -354,7 +361,7 @@ const Room = () => {
         formData.append(`images[${images.length}].isThumnail`, thumnailImage.isThumnail ? thumnailImage.isThumnail.toString() : "");
 
         if (thumnailImage.data)
-        formData.append(`images[${images.length}].data`, thumnailImage.data);
+          formData.append(`images[${images.length}].data`, thumnailImage.data);
       }
     }
 
@@ -368,7 +375,7 @@ const Room = () => {
 
   }
 
-const {data} =   useQuery({
+  const { data } = useQuery({
     queryKey: ['rooms'],
     queryFn: async () => apiClient({
       enType: enApiType.GET,
@@ -380,12 +387,12 @@ const {data} =   useQuery({
   }
   );
 
-  useEffect(()=>{
-    if(data!=undefined){
+  useEffect(() => {
+    if (data != undefined) {
       const dataToType = data as unknown as IRoomModule[];
-      generalMessage(JSON.stringify(dataToType))
+      // generalMessage(JSON.stringify(dataToType))
     }
-  },[data])
+  }, [data])
 
 
   return (
@@ -593,20 +600,42 @@ const {data} =   useQuery({
             textstyle='text-[14px] text-black'
           />
         </div>
-      
-      <div>
-           <RoomTable data={data === undefined ? undefined : data.data as unknown as IRoomModule[]} setRoom={function (value: SetStateAction<IAuthModule>): void {
-          throw new Error('Function not implemented.');
-        } } seUpdate={function (value: SetStateAction<boolean>): void {
-          throw new Error('Function not implemented.');
-        } } deleteFunc={function (roomId: Guid): Promise<void> {
-          throw new Error('Function not implemented.');
-        } } makeRoomVip={function (roomId: Guid): Promise<void> {
-          throw new Error('Function not implemented.');
-        } } isShwoingDeleted={false}/>
-      </div>
-         
-         
+
+
+        <div className='relative'>
+
+          <RoomTable data={data === undefined ? undefined : data.data as unknown as IRoomModule[]}
+            setRoomHover={setRoomHover}
+            setRoom={setRoomData} seUpdate={function (value: SetStateAction<boolean>): void {
+              throw new Error('Function not implemented.');
+            }} deleteFunc={function (roomId: Guid): Promise<void> {
+              throw new Error('Function not implemented.');
+            }} makeRoomVip={function (roomId: Guid): Promise<void> {
+              throw new Error('Function not implemented.');
+            }} isShwoingDeleted={false} />
+
+          {roomHolder !== undefined &&
+            <div className='absolute  bg-gray-600  z-30 bottom-14 -end-20 flex flex-row rounded-2xl'>
+              <div>
+                <ImageHolder
+                  iconColor='text-white'
+                  src={`http://172.19.0.1:9000/user/${roomHolder.user.imagePath}`}
+                  style='flex flex-row h-20 w-20'
+                />
+              </div>
+              <div className='me-4 ms-4 w-max-{50px}'>
+              <h1
+                className='text-white'
+              >
+                {"asdfakjsldfjsdalkfkldsajlksdjfklsdjflksdajflksdajflkdsjflkdsjflkdsajf;ldsakjfkldsajflkdsajflkasdjflksadjflkasdjflksdjflkasdjf"}
+                {/* {"roomHolder.user?.personData.name"} */}
+              </h1>
+                </div>
+            </div>}
+
+        </div>
+
+
       </div>
     </div>
   )

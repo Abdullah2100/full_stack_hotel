@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 @theme {
-  --color-mainBg: '#5d2fd5';
-  --text-mainColor: '#5d2fd5';
+  --color-mainBg: #5d2fd5;
+  --text-mainColor: #5d2fd5;
 }
 
 /* Add custom utilities or styling */

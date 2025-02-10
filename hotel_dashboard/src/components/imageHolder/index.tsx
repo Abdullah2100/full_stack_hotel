@@ -7,6 +7,7 @@ import { PhotoIcon } from '@heroicons/react/24/outline';
 interface ImageHolderProps {
   src?: string | undefined;
   style?: string | undefined;
+  iconColor?:string |undefined;
   isFromTop?: boolean | undefined;
   typeHolder?: enNavLinkType | undefined;
   deleteFun?: () => void | undefined;
@@ -15,6 +16,7 @@ interface ImageHolderProps {
 const ImageHolder = ({
   src,
   style,
+  iconColor,
   isFromTop = false,
   typeHolder = undefined,
   deleteFun = undefined
@@ -31,7 +33,7 @@ const ImageHolder = ({
     switch (typeHolder) {
 
       case enNavLinkType.ROOMS: return <PhotoIcon />
-      default: return <UserCircleIcon />
+      default: return <UserCircleIcon className={`${iconColor ? 'text-white' : ''}`} />
     }
 
   }
@@ -47,7 +49,8 @@ const ImageHolder = ({
       {
         deleteFun &&
         <button onClick={deleteFun}>
-          <XMarkIcon className='absolute -top-1 -end-1 h-6 w-6 text-gray-400' />
+          <XMarkIcon 
+          className={`absolute -top-1 -end-1 h-6 w-6 'text-gray-400'}`} />
         </button>
       }
       {imageHandler()}

@@ -9,11 +9,11 @@ import './index.css'
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Provider store={store}>
-    <ToastifyCustom>
-      <UseAuthUser>
-        <App />
-      </UseAuthUser>
-    </ToastifyCustom>
+      <ToastifyCustom>
+        <UseAuthUser>
+          <App />
+        </UseAuthUser>
+      </ToastifyCustom>
     </Provider>
   </StrictMode>
 )
