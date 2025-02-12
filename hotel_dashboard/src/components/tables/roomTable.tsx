@@ -8,11 +8,12 @@ import { Guid } from 'guid-typescript';
 import ImageHolder from '../imageHolder';
 import { IRoomModule } from '../../module/iRoomModule';
 import { generalMessage } from '../../util/generalPrint';
+import DateFormat from '../../util/dateFormat';
 
 interface RoomTableProps {
   data?: IRoomModule[] | undefined,
   setRoom: Dispatch<SetStateAction<IRoomModule>>
-  setRoomHover: Dispatch<SetStateAction<IRoomModule|undefined>>
+  setRoomHover: Dispatch<SetStateAction<IRoomModule | undefined>>
   seUpdate: Dispatch<SetStateAction<boolean>>
   deleteFunc: (roomId: Guid) => Promise<void>
   makeRoomVip: (roomId: Guid) => Promise<void>
@@ -52,6 +53,8 @@ const RoomTable = ({
           <tr>
             <th className="px-4 py-2 border-b text-left whitespace-nowrap"></th>
             <th className="px-4 py-2 border-b text-left whitespace-nowrap">Owner by</th>
+            <th className="px-4 py-2 border-b text-left whitespace-nowrap">RoomType</th>
+            <th className="px-4 py-2 border-b text-left whitespace-nowrap">Created At</th>
             {/* <th className="px-4 py-2 border-b text-left whitespace-nowrap">Name</th> */}
             {/* <th className="px-4 py-2 border-b text-left whitespace-nowrap">Email</th>
             <th className="px-4 py-2 border-b text-left whitespace-nowrap">Phone</th>
@@ -70,22 +73,24 @@ const RoomTable = ({
             >
               <td className="px-4 py-2 border-b text-left whitespace-nowrap">{index + 1}</td>
               <td className="px-4 py-2 border-b text-left whitespace-nowrap">
-                <div onMouseEnter={
-                  (e)=>{
-                    setRoomHover(Room)
-                  }
-                }
-                onMouseLeave={
-                  (e)=>{
-                    setRoomHover(undefined)
-                  }
-                }
+                <button
+                  className='text-blue-600'
+                  onClick={() => { setRoomHover(Room) }}
+                  style={{ cursor: 'pointer' }}
                 >
-                  {Room?.user?.personData.name || ""}
-                </div>
+                  {
+                    Room?.user?.personData.name || ""
+                  }
+                </button>
+
+
               </td>
+
+              <td className="px-4 py-2 border-b text-left whitespace-nowrap">{Room.roomData?.roomTypeName}</td>
+              <td className="px-4 py-2 border-b text-left whitespace-nowrap">{DateFormat.toStringDate(Room.createdAt)}</td>
+
               {
-                
+
                 /*
               <td className="px-4 py-2 border-b text-left whitespace-nowrap">{
 
