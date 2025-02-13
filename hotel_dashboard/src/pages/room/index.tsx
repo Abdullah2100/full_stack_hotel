@@ -15,7 +15,7 @@ import { iImageHolder } from '../../module/IImageHolder';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { enApiType } from '../../module/enApiType';
 import apiClient from '../../services/apiClient';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../controller/rootReducer';
 import { IRoomType } from '../../module/iRoomType';
 import { Guid } from 'guid-typescript';
@@ -24,9 +24,12 @@ import { IRoomModule } from '../../module/iRoomModule';
 import { enStatsu } from '../../module/enStatsu';
 import RoomTable from '../../components/tables/roomTable';
 import { IAuthModule } from '../../module/iAuthModule';
+import { logout } from '../../controller/redux/jwtSlice';
 
 const Room = () => {
   const refreshToken = useSelector((state: RootState) => state.auth.refreshToken)
+  const token = useSelector((state: RootState) => state.auth.token)
+  const dispatch = useDispatch()
 
   const { showToastiFy } = useContext(useToastifiContext)
 
@@ -57,6 +60,10 @@ const Room = () => {
 
   const imageRef = useRef<HTMLInputElement>(null);
 
+  const logoutFn = ()=>{
+     dispatch(logout())
+  }
+
   const updateInput = (value: any, key: string) => {
 
     setRoomData((prev) => ({
@@ -76,7 +83,7 @@ const Room = () => {
     })
   }
 
-  const uploadImageDisplayFromSelectInput = async (e) => {
+  const uploadImageDisplayFromSelectInput = async (e: React.DragEvent<HTMLDivElement>) => {
     if (imageRef.current && imageRef.current.files && imageRef.current.files[0]) {
       switch (isSingle) {
         case true: {
@@ -131,12 +138,12 @@ const Room = () => {
     }
   };
 
-  const draggbleFun = (e) => {
+  const draggbleFun = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     changeDraggableStatus(true)
   }
 
-  const draggableOver = (e) => {
+  const draggableOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     changeDraggableStatus(true)
   }
@@ -145,7 +152,7 @@ const Room = () => {
     changeDraggableStatus(false);
   };
 
-  const handleDropImage = (e) => {
+  const handleDropImage = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     changeDraggableStatus(false)
     if (e.dataTransfer.files) {
@@ -172,7 +179,7 @@ const Room = () => {
 
   }
 
-  const handleDropImages = (e) => {
+  const handleDropImages = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     changeDraggableStatus(false)
     if (e.dataTransfer.files) {
@@ -220,8 +227,10 @@ const Room = () => {
       endPoint: import.meta.env.VITE_ROOMTYPE + 'true',
       prameters: true,
       isRquireAuth: true,
-      jwtValue: refreshToken || ""
+      jwtRefresh: refreshToken || ""
+      ,jwtValue:token || ""
     }).then((data) => {
+      if(data===undefined)return[];
       const roomType = data.data as IRoomType[];
       updateInput(roomType[0].roomTypeID, 'roomtypeid')
       return roomType;
@@ -247,26 +256,26 @@ const Room = () => {
   }
 
 
-  useEffect(() => {
-    generalMessage(`this the message data ${JSON.stringify(roomHolder)}`)
-  }, [roomHolder])
+
 
   const roomMutaion = useMutation({
     mutationFn: ({ data, endpoint, methodType,
-      jwtToken
+      token, refreshToken
     }: {
       data?: FormData | undefined,
       endpoint: string,
       methodType: enApiType,
-      jwtToken?: string | null
+      token?: string | null
+      refreshToken?: string | null
     }) =>
       apiClient({
         enType: methodType,
         endPoint: endpoint
         , prameters: data,
         isRquireAuth: true,
-        jwtValue: jwtToken ?? undefined,
-        isFormData: data != undefined
+        isFormData: data != undefined,
+           jwtValue: token || "",
+              jwtRefresh:refreshToken ?? undefined
       }),
     onSuccess: (data) => {
       setState(enStatus.complate)
@@ -280,7 +289,9 @@ const Room = () => {
     onError: (error) => {
       setState(enStatus.complate);
       showToastiFy(error.message, enMessage.ERROR);
-
+      if(error.status===401){
+        logoutFn()
+      }
     }
 
   })
@@ -370,22 +381,34 @@ const Room = () => {
       data: formData,
       endpoint: import.meta.env.VITE_ROOM,
       methodType: isUpdate ? enApiType.PUT : enApiType.POST,
-      jwtToken: refreshToken
+      refreshToken: refreshToken,
+      token:token
     });
 
   }
 
-  const { data } = useQuery({
+  const { data ,error:roomsError } = useQuery({
     queryKey: ['rooms'],
     queryFn: async () => apiClient({
       enType: enApiType.GET,
       endPoint: import.meta.env.VITE_ROOM + `/${pageNumber}`,
       prameters: undefined,
       isRquireAuth: true,
-      jwtValue: refreshToken || ""
+      jwtValue: token || "",
+              jwtRefresh:refreshToken ?? undefined
+
     }),
+  
   }
   );
+
+  useEffect(()=>{
+
+    if((roomsError!==undefined&&roomsError?.stack.)||error!==undefined){
+      
+        logoutFn()
+      }
+  },[roomsError!==undefined,error!==undefined])
 
   useEffect(() => {
     if (data != undefined) {

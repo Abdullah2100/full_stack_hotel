@@ -47,8 +47,8 @@
     ".NET Launch Settings Profile.hotel_api: http.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "XThreadsFramesViewSplitterKey": "0.09122807",
-    "git-widget-placeholder": "room__get__complate",
+    "XThreadsFramesViewSplitterKey": "0.19018404",
+    "git-widget-placeholder": "update__room__table",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -152,6 +152,7 @@
       <workItem from="1739103274424" duration="24000" />
       <workItem from="1739181394953" duration="6629000" />
       <workItem from="1739268215673" duration="5800000" />
+      <workItem from="1739441882285" duration="4191000" />
     </task>
     <servers />
   </component>
