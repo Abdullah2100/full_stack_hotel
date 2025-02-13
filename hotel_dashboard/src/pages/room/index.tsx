@@ -1,6 +1,6 @@
 import Header from '../../components/header/header'
 
-import { PencilIcon } from '@heroicons/react/16/solid';
+import { PencilIcon, XMarkIcon } from '@heroicons/react/16/solid';
 
 import ImageHolder from '../../components/imageHolder';
 import RoomsIcon from '../../assets/rooms_icon';
@@ -602,7 +602,7 @@ const Room = () => {
         </div>
 
 
-        <div className='relative'>
+        <div className='relative overflow-y-scroll'>
 
           <RoomTable data={data === undefined ? undefined : data.data as unknown as IRoomModule[]}
             setRoomHover={setRoomHover}
@@ -613,9 +613,22 @@ const Room = () => {
             }} makeRoomVip={function (roomId: Guid): Promise<void> {
               throw new Error('Function not implemented.');
             }} isShwoingDeleted={false} />
+        </div>
 
-          {roomHolder !== undefined &&
-            <div className='absolute  bg-gray-600  z-30 bottom-14 -end-20 flex flex-row rounded-2xl'>
+        {
+
+          <div className={`fixed  bg-gray-600  bottom-14   flex flex-row   h-screen w-screen top-0 start-0  transition-opacity duration-300 ${roomHolder ? 'opacity-100  z-30' : 'opacity-0  -z-10'}`}>
+            <button
+              onClick={() => {
+                setRoomHover(undefined)
+              }}
+              style={{ cursor: 'pointer' }}
+              className='absolute z-30'
+            >
+              <XMarkIcon className='h-7 w-6 text-white absolute top-0' />
+
+            </button>
+            {roomHolder && <div className='absolute h-screen w-screen flex flex-row items-center justify-center z-10'>
               <div>
                 <ImageHolder
                   iconColor='text-white'
@@ -623,17 +636,23 @@ const Room = () => {
                   style='flex flex-row h-20 w-20'
                 />
               </div>
-              <div className='me-4 ms-4 w-max-{50px}'>
-              <h1
-                className='text-white'
-              >
-                {"asdfakjsldfjsdalkfkldsajlksdjfklsdjflksdajflksdajflkdsjflkdsjflkdsajf;ldsakjfkldsajflkdsajflkasdjflksadjflkasdjflksdjflkasdjf"}
-                {/* {"roomHolder.user?.personData.name"} */}
-              </h1>
-                </div>
-            </div>}
+              <div className='me-4 ms-4 flex flex-col flex-nowrap max-w-[200px]'>
+                <h4 className='text-white'>
+                  {roomHolder.user?.personData.name}
+                </h4>
+                 <h4 className='text-white mt-2'>
+                  {roomHolder.user?.personData.phone}
 
-        </div>
+                </h4>
+                <h4 className='text-white mt-1'>
+                  {roomHolder.user?.personData.email}
+
+                </h4>
+              </div>
+            </div>}
+          </div>
+
+        }
 
 
       </div>
