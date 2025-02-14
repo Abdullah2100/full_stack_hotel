@@ -42,7 +42,7 @@ const Login = () => {
             apiClient({
                 enType: enApiType.POST,
                 endPoint: import.meta.env.VITE_SINGIN,
-                prameters: userData
+                parameters: userData
             }),
         onSuccess: (data) => {
             setState(enStatus.complate)
@@ -52,19 +52,10 @@ const Login = () => {
         onError: (error) => {
             setState(enStatus.complate);
 
-            if (error.response) {
-                // Extract error message from the server response
-                const errorMessage = error?.response || "An error occurred";
-                showToastiFy(errorMessage, enMessage.ERROR);
-            } else if (error.request) {
-                // Handle network errors or no response received
-                const requestError = "No response received from server";
-                showToastiFy(requestError, enMessage.ERROR);
-            } else {
-                // Handle other unknown errors
+           
                 const unknownError = error.message || "An unknown error occurred";
-                showToastiFy(unknownError, enMessage.ERROR);
-            }
+                showToastiFy(unknownError, enMessage.ERROR)
+
         }
 
     })
@@ -113,7 +104,7 @@ const Login = () => {
                     style=" mb-2 w-[200px]"
                 />
                 <PasswordInput
-                 style=" mb-2 w-[200px]"
+                    style=" mb-2 w-[200px]"
                     keyType='Password'
                     value={authLoginModule.password}
                     onInput={updateInput}

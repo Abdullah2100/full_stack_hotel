@@ -60,8 +60,8 @@ const Room = () => {
 
   const imageRef = useRef<HTMLInputElement>(null);
 
-  const logoutFn = ()=>{
-     dispatch(logout())
+  const logoutFn = () => {
+    dispatch(logout())
   }
 
   const updateInput = (value: any, key: string) => {
@@ -95,8 +95,11 @@ const Room = () => {
             showToastiFy("You must select a valid image", enMessage.ERROR);
             return;
           }
+          
+          const fileNew = new File([uploadedFile], "ffffffff." + uploadedFile.type.split('/')[0], { type: uploadedFile.type });
+
           setThumnail(prev => prev = {
-            data: uploadedFile,
+            data: fileNew,
             belongTo: undefined,
             id: undefined,
             isDeleted: false,
@@ -165,8 +168,9 @@ const Room = () => {
         showToastiFy("You must select a valid image", enMessage.ERROR);
         return;
       }
+      const fileNew = new File([file], "ffffffff." + file.type.split('/')[0], { type: file.type });
       setThumnail(prev => prev = {
-        data: file,
+        data: fileNew,
 
         belongTo: undefined,
         id: undefined,
@@ -228,9 +232,9 @@ const Room = () => {
       prameters: true,
       isRquireAuth: true,
       jwtRefresh: refreshToken || ""
-      ,jwtValue:token || ""
+      , jwtValue: token || ""
     }).then((data) => {
-      if(data===undefined)return[];
+      if (data === undefined) return [];
       const roomType = data.data as IRoomType[];
       updateInput(roomType[0].roomTypeID, 'roomtypeid')
       return roomType;
@@ -274,8 +278,8 @@ const Room = () => {
         , prameters: data,
         isRquireAuth: true,
         isFormData: data != undefined,
-           jwtValue: token || "",
-              jwtRefresh:refreshToken ?? undefined
+        jwtValue: token || "",
+        jwtRefresh: refreshToken ?? undefined
       }),
     onSuccess: (data) => {
       setState(enStatus.complate)
@@ -284,13 +288,18 @@ const Room = () => {
 
       if (isUpdate)
         setUpdate(false)
-      // refetch();
+
     },
     onError: (error) => {
       setState(enStatus.complate);
-      showToastiFy(error.message, enMessage.ERROR);
-      if(error.status===401){
-        logoutFn()
+      if (error != undefined && error !== null) {
+        if (error.status === 401) {
+          logoutFn()
+        } else {
+          showToastiFy(error?.message?.toString() || "An unknown error occurred", enMessage.ERROR)
+
+        }
+
       }
     }
 
@@ -382,12 +391,12 @@ const Room = () => {
       endpoint: import.meta.env.VITE_ROOM,
       methodType: isUpdate ? enApiType.PUT : enApiType.POST,
       refreshToken: refreshToken,
-      token:token
+      token: token
     });
 
   }
 
-  const { data ,error:roomsError } = useQuery({
+  const { data, error: roomsError } = useQuery({
     queryKey: ['rooms'],
     queryFn: async () => apiClient({
       enType: enApiType.GET,
@@ -395,20 +404,14 @@ const Room = () => {
       prameters: undefined,
       isRquireAuth: true,
       jwtValue: token || "",
-              jwtRefresh:refreshToken ?? undefined
+      jwtRefresh: refreshToken ?? undefined
 
     }),
-  
+
   }
   );
 
-  useEffect(()=>{
 
-    if((roomsError!==undefined&&roomsError?.stack.)||error!==undefined){
-      
-        logoutFn()
-      }
-  },[roomsError!==undefined,error!==undefined])
 
   useEffect(() => {
     if (data != undefined) {
@@ -416,6 +419,20 @@ const Room = () => {
       // generalMessage(JSON.stringify(dataToType))
     }
   }, [data])
+
+
+
+  useEffect(() => {
+    if (error != undefined && error !== null) {
+      if (error.status === 401) {
+        dispatch(logout())
+      } else {
+        showToastiFy(error?.message?.toString() || "An unknown error occurred", enMessage.ERROR)
+
+      }
+    }
+  }, [error])
+
 
 
   return (
@@ -663,7 +680,7 @@ const Room = () => {
                 <h4 className='text-white'>
                   {roomHolder.user?.personData.name}
                 </h4>
-                 <h4 className='text-white mt-2'>
+                <h4 className='text-white mt-2'>
                   {roomHolder.user?.personData.phone}
 
                 </h4>

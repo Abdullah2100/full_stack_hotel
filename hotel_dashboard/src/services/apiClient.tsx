@@ -1,73 +1,70 @@
 import axios from "axios";
 import { enApiType } from "../module/enApiType";
-import { enStatus } from "../module/enState";
 import { generalMessage } from "../util/generalPrint";
 
 interface ApiClientProps {
     enType: enApiType;
     endPoint: string;
-    prameters?: any | undefined;
-    jwtValue?: string | undefined;
-    jwtRefresh?: string | undefined;
-    isFormData?: boolean | undefined;
-    isRquireAuth?: boolean | undefined;
-    tryNumber?: number | undefined;
+    parameters?: any;
+    jwtValue?: string;
+    jwtRefresh?: string;
+    isFormData?: boolean;
+    isRequireAuth?: boolean;
+    tryNumber?: number;
 }
 
-export default async function apiClient(
-    {
-        enType,
-        prameters,
-        endPoint,
-        jwtValue = '',
-        jwtRefresh = '',
-        isFormData = false,
-        isRquireAuth = false,
-        tryNumber = 1
-    }: ApiClientProps
-) {
-    const full_url = import.meta.env.VITE_BASE_URL + endPoint
-    const header = handleHeader(isRquireAuth, isFormData, jwtValue)
-    generalMessage(full_url)
+export default async function apiClient({
+    enType,
+    parameters,
+    endPoint,
+    jwtValue = '',
+    jwtRefresh = '',
+    isFormData = false,
+    isRequireAuth = false,
+    tryNumber = 0,
+}: ApiClientProps) {
+    const fullUrl = import.meta.env.VITE_BASE_URL + endPoint;
+    const token = tryNumber === 1 ? jwtValue : jwtRefresh;
+    const headers = handleHeaders(isRequireAuth, isFormData, token);
+
+ 
     try {
-
-        const repsonse = await axios({
-            url: full_url,
+        const response = await axios({
+            url: fullUrl,
             method: enType.toString(),
-            data: prameters,
-            headers: header
+            data: parameters,
+            headers: headers,
         });
-        return repsonse;
-    } catch (error) {
-        if (error?.response?.status === 401 && tryNumber == 1) {
-            apiClient({
-                enType: enType,
-                prameters: prameters,
-                jwtValue: jwtValue,
-                jwtRefresh: jwtRefresh,
-                endPoint: endPoint,
-                isFormData: isFormData,
-                isRquireAuth: isRquireAuth,
-                tryNumber: 2,
-            })
-        } else {
 
-            throw {
-                message: error?.response?.data || error?.response?.statusText || error?.message,
-                response: error?.response?.data,
-                status: error?.response?.status,
-                
-            };
+        return response;
+    } catch (error) {
+        if (error?.response?.status === 401 && tryNumber === 1) {
+            // Retry with refresh token
+            return apiClient({
+                enType,
+                parameters,
+                endPoint,
+                jwtValue,
+                jwtRefresh,
+                isFormData,
+                isRequireAuth,
+                tryNumber: 2, // Retry with refresh token
+            });
+        } else {
+            // Return the error for handling by the caller
+            throw error;
         }
     }
 }
 
-function handleHeader(isRquireAuth: boolean, isFormData: boolean, jwtValue: string) {
-    const header = {
-        'Authorization': !isRquireAuth ? undefined : `Bearer ${jwtValue}`,
-        "Content-Type": (isFormData ? 'multipart/form-data' : 'application/json')
+function handleHeaders(isRequireAuth: boolean, isFormData: boolean, jwtValue: string) {
+    const headers: Record<string, string> = {
+        "Content-Type": isFormData ? "multipart/form-data" : "application/json",
+    };
+
+    if (isRequireAuth && jwtValue) {
+        headers["Authorization"] = `Bearer ${jwtValue}`;
     }
 
-    return header;
+    return headers;
 }
-

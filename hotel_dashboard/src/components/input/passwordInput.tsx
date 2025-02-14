@@ -35,7 +35,7 @@ export const PasswordInput =
     }: TextInputProps
     ) => {
         const [passwordType, setType] = useState<React.HTMLInputTypeAttribute>('password')
-    const generalStyle = `text-black px-2 border-gray border-2 border-r-2 rounded-[3px] text-[12px] focus:rounded-[2px]  `+style;
+        const generalStyle = `px-2 ${isDisabled?'':'border-gray-300 border-[1px] '}  rounded-[3px] text-[12px] focus:rounded-[2px] ${isDisabled?'bg-gray-500 placeholder-gray-400 text-gray-400':'text-black '} `+style;
 
         // Function to handle input change and call onInput with value and key
         const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -45,25 +45,27 @@ export const PasswordInput =
 
 
         return (
-            <div className="">
+            <div >
                 {isHasTitle &&
                     <h6 className="text-[10px]  mb-[0.5px]">{keyType}</h6>}
                 {
-                    <div>
+                    <div className="relative">
                         {
                             canShowOrHidePassowrd === true &&
-                            <div className="w-[200px]  relative">
+                            <div className="absolute top-1 end-3 z-30">
 
                                 {passwordType === 'text' ?
                                     <button
                                         onClick={() => setType('password')}
-                                        className="absolute h-5 w-5 end-10 top-1">
+                                        className=" h-5 w-5 "
+                                        >
                                         <EyeIcon fontSize={5} />
                                     </button> :
                                     <button
                                         onClick={() => setType("text")}
 
-                                        className="absolute h-5 w-5 end-10 top-1">
+                                        className="h-5 w-5"
+                                        >
                                         <EyeSlashIcon />
                                     </button>
                                 }

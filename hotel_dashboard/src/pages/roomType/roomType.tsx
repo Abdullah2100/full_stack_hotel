@@ -11,15 +11,19 @@ import apiClient from '../../services/apiClient';
 import { enApiType } from '../../module/enApiType';
 import { notifyManager, useMutation, useQuery } from '@tanstack/react-query';
 import { RootState } from '../../controller/rootReducer';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import RoomTypeTable from '../../components/tables/roomTypeTable';
 import ImageHolder from '../../components/imageHolder';
 import { generalMessage } from '../../util/generalPrint';
 import { Guid } from 'guid-typescript';
 import { Switch } from '@mui/material';
+import { logout } from '../../controller/redux/jwtSlice';
 
 const RoomType = () => {
+  const dispatch = useDispatch();
+
   const refreshToken = useSelector((state: RootState) => state.auth.refreshToken)
+  const token = useSelector((state: RootState) => state.auth.token)
 
   const { showToastiFy } = useContext(useToastifiContext)
   const [status, setState] = useState<enStatus>(enStatus.none)
@@ -94,6 +98,10 @@ const RoomType = () => {
     setImage(undefined)
     setImageHolder(undefined)
   }
+  const logoutFn = () => {
+    dispatch(logout())
+  }
+
 
 
   const { data, error, refetch } = useQuery({
@@ -101,22 +109,25 @@ const RoomType = () => {
     queryKey: ['roomtypes'],
     queryFn: async () => apiClient({
       enType: enApiType.GET,
-      endPoint: import.meta.env.VITE_ROOMTYPE+"false",
+      endPoint: import.meta.env.VITE_ROOMTYPE + "false",
       prameters: undefined,
       isRquireAuth: true,
-      jwtValue: refreshToken || ""
+      jwtValue: token || "",
+      jwtRefresh: refreshToken || "",
+      tryNumber: 1
     }),
   }
   );
 
   const roomtypeMutaion = useMutation({
     mutationFn: ({ data, endpoint, methodType,
-      jwtToken
+      jwtToken, jwtRefreshToken
     }: {
       data?: FormData | undefined,
       endpoint: string,
       methodType: enApiType,
-      jwtToken?: string | null
+      jwtToken?: string | null,
+      jwtRefreshToken?: string | null
     }) =>
       apiClient({
         enType: methodType,
@@ -124,6 +135,7 @@ const RoomType = () => {
         , prameters: data,
         isRquireAuth: true,
         jwtValue: jwtToken ?? undefined,
+        jwtRefresh: jwtRefreshToken ?? undefined,
         isFormData: data != undefined
       }),
     onSuccess: (data) => {
@@ -137,8 +149,15 @@ const RoomType = () => {
     },
     onError: (error) => {
       setState(enStatus.complate);
-      showToastiFy(error.message, enMessage.ERROR);
+       if (error != undefined && error !== null) {
+        if (error.status === 401) {
+          logoutFn()
+        } else {
+          showToastiFy(error?.message?.toString() || "An unknown error occurred", enMessage.ERROR)
 
+        }
+
+      }
     }
 
   })
@@ -170,15 +189,16 @@ const RoomType = () => {
     if (imageHolder !== undefined)
       roomtTypeData.append("image", imageHolder)
 
-    
-    let endPoint =!isUpdate? import.meta.env.VITE_ROOMTYPE :import.meta.env.VITE_ROOMTYPE+`/${roomType.roomTypeID}`;
+
+    let endPoint = !isUpdate ? import.meta.env.VITE_ROOMTYPE : import.meta.env.VITE_ROOMTYPE + `/${roomType.roomTypeID}`;
     const method = isUpdate ? enApiType.PUT : enApiType.POST;
 
     roomtypeMutaion.mutate({
       data: roomtTypeData,
       endpoint: endPoint,
       methodType: method,
-      jwtToken: refreshToken
+      jwtToken: token,
+      jwtRefreshToken: refreshToken
     })
   }
 
@@ -190,7 +210,8 @@ const RoomType = () => {
         data: undefined,
         endpoint: import.meta.env.VITE_ROOMTYPE + '/' + roomtypeid,
         methodType: enApiType.DELETE,
-        jwtToken: refreshToken
+        jwtToken: token,
+        jwtRefreshToken: refreshToken
       })
 
       refetch()
@@ -250,10 +271,16 @@ const RoomType = () => {
   }
 
   useEffect(() => {
-    if (error != undefined) {
-      showToastiFy(error?.message?.toString() || "An unknown error occurred", enMessage.ERROR)
+    if (error != undefined && error !== null) {
+      if (error.status === 401) {
+        logoutFn()
+      } else {
+        showToastiFy(error?.message?.toString() || "An unknown error occurred", enMessage.ERROR)
+
+      }
     }
   }, [error])
+
 
 
   return (
@@ -289,7 +316,7 @@ const RoomType = () => {
               onDrop={handleDrop}
               onDragLeave={handleDragLeave}
               className={` h-40 w-40 mb-2 md:mb-0 border-[2px] border-dashed border-gray-200 rounded-sm relative ${isDraggable ? 'bg-gray-500' : 'bg-white'}`}>
-             
+
               <div className='absolute h-full w-full  flex flex-row justify-center items-center '
               >
                 <ImageHolder
@@ -337,9 +364,9 @@ const RoomType = () => {
           deleteFunc={deleteOrUndeleteUser}
           isShwoingDeleted={isShownDeletion} />
 
-           <h3 className='pt-5'
-           >showing deletion roomtype</h3>
-          <Switch onChange={() =>{changeShowingDeleteionStatus(prev=>prev=!prev)}} />
+        <h3 className='pt-5'
+        >showing deletion roomtype</h3>
+        <Switch onChange={() => { changeShowingDeleteionStatus(prev => prev = !prev) }} />
       </div>
     </div>
   )

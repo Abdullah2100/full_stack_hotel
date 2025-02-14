@@ -11,7 +11,7 @@ import { notifyManager, useMutation, useQuery } from '@tanstack/react-query';
 import apiClient from '../../services/apiClient';
 import { enApiType } from '../../module/enApiType';
 import NotFoundPage from '../NotFound/notfound';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../controller/rootReducer';
 import { generalMessage } from '../../util/generalPrint';
 import { useToastifiContext } from '../../context/toastifyCustom';
@@ -22,12 +22,18 @@ import { isHasCapitalLetter, isHasNumber, isHasSmallLetter, isHasSpicalCharacter
 import { Guid } from 'guid-typescript';
 import { Switch } from '@mui/material';
 import ImageHolder from '../../components/imageHolder';
+import { logout } from '../../controller/redux/jwtSlice';
 
 const User = () => {
+  const dispatch = useDispatch()
+
+
   const { showToastiFy } = useContext(useToastifiContext)
   const imageRef = useRef<HTMLInputElement>(null)
   const [image, setImage] = useState<string | undefined>(undefined)
+
   const refreshToken = useSelector((state: RootState) => state.auth.refreshToken)
+  const token = useSelector((state: RootState) => state.auth.token)
 
   const [status, setState] = useState<enStatus>(enStatus.none)
   const [page, setPage] = useState<number>(1)
@@ -57,27 +63,35 @@ const User = () => {
   };
 
   const { data, error, refetch } = useQuery({
-
     queryKey: ['users'],
     queryFn: async () => apiClient({
       enType: enApiType.GET,
       endPoint: import.meta.env.VITE_USERS + `${page}`,
       prameters: undefined,
       isRquireAuth: true,
-      jwtValue: refreshToken || ""
+      jwtValue: token || "",
+      jwtRefresh: refreshToken || ""
     }),
   }
   );
+const logoutFn = ()=>{
+     dispatch(logout())
+  }
 
 
   const userMutaion = useMutation({
-    mutationFn: ({ data, endpoint, methodType,
-      jwtToken
+    mutationFn: ({
+      data,
+      endpoint,
+      methodType,
+      jwtToken,
+      jwtRerreshToken
     }: {
       data?: FormData | undefined,
       endpoint: string,
       methodType: enApiType,
-      jwtToken?: string | null
+      jwtToken?: string | null,
+      jwtRerreshToken?: string | null
     }) =>
       apiClient({
         enType: methodType,
@@ -85,6 +99,7 @@ const User = () => {
         , prameters: data,
         isRquireAuth: true,
         jwtValue: jwtToken ?? undefined,
+        jwtRefresh: jwtToken ?? undefined,
         isFormData: data != undefined
       }),
     onSuccess: (data) => {
@@ -107,8 +122,14 @@ const User = () => {
     onError: (error) => {
 
       setState(enStatus.complate);
-      showToastiFy(error.message, enMessage.ERROR);
+      if (error != undefined && error !== null) {
+        if (error.status === 401) {
+          logoutFn()
+        } else {
+          showToastiFy(error?.message?.toString() || "An unknown error occurred", enMessage.ERROR)
 
+        }
+      }
     }
 
   })
@@ -175,18 +196,24 @@ const User = () => {
     formData.append("password", userHolder.password);
     formData.append("brithDay", new Date(userHolder.brithDay).toISOString());
     formData.append("isVip", "false");
-    
+
     if (userHolder.address !== '')
       formData.append("address", userHolder.address ?? "");
 
-    
+
     if (userHolder.imagePath !== undefined)
       formData.append("imagePath", userHolder.imagePath);
 
 
     let endPoint = isUpdate ? import.meta.env.VITE_USER + `/${userHolder.userId}` : import.meta.env.VITE_USER;
 
-    await userMutaion.mutate({ data: formData, endpoint: endPoint, methodType: isUpdate ? enApiType.PUT : enApiType.POST, jwtToken: refreshToken })
+    await userMutaion.mutate({
+      data: formData,
+      endpoint: endPoint,
+      methodType: isUpdate ? enApiType.PUT : enApiType.POST,
+      jwtToken: token,
+      jwtRerreshToken: refreshToken
+    })
 
   };
 
@@ -194,29 +221,29 @@ const User = () => {
   const deleteOrUndeleteUser = async (userId: Guid) => {
     let endpoint = import.meta.env.VITE_USER
 
-
     await userMutaion.mutate({
       data: undefined,
       endpoint: endpoint + '/' + userId,
       methodType: enApiType.DELETE,
-      jwtToken: refreshToken
+      jwtToken: token,
+      jwtRerreshToken: refreshToken
     });
 
   };
 
+
   const makeUserVip = async (userId: Guid) => {
     let endpoint = import.meta.env.VITE_USER
-
 
     await userMutaion.mutate({
       data: undefined,
       endpoint: endpoint + '/' + userId,
       methodType: enApiType.POST,
-      jwtToken: refreshToken
+      jwtToken: token,
+      jwtRerreshToken: refreshToken
     });
 
   };
-
 
 
   const selectImage = (e) => {
@@ -288,6 +315,17 @@ const User = () => {
   }, [error, data])
 
 
+
+  useEffect(() => {
+    if (error != undefined && error !== null) {
+      if (error.status === 401) {
+       logoutFn()
+      } else {
+        showToastiFy(error?.message?.toString() || "An unknown error occurred", enMessage.ERROR)
+
+      }
+    }
+  }, [error])
 
 
   return (

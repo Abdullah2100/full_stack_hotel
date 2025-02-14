@@ -1,11 +1,9 @@
 import { ArrowLeftEndOnRectangleIcon } from "@heroicons/react/16/solid";
 import { useDispatch } from "react-redux";
 import { logout } from "../../controller/redux/jwtSlice";
-import { useNavigate } from "react-router-dom";
 
 const Logout = ()=>{
     const dispatch = useDispatch();
-          const navigation = useNavigate()
 
 
       const signout = async()=>{
