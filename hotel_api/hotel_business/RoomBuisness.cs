@@ -27,7 +27,7 @@ public class RoomBuisness
         get
         {
             return new RoomDto(
-                roomId: this.roomtypeid,
+                roomId: this.ID,
                 status: this.status,
                 pricePerNight: this.pricePerNight,
                 capacity: this.capacity,
@@ -44,7 +44,7 @@ public class RoomBuisness
         enMode mode = enMode.add
     )
     {
-        this.ID = roomData.roomtypeid;
+        this.ID = roomData.roomId;
         this.status = roomData.status;
         this.pricePerNight = roomData.pricePerNight;
         this.capacity = roomData.capacity;
@@ -89,6 +89,13 @@ public class RoomBuisness
     public static List<RoomDto> getAllRooms(int pagenumber,int limitPerPage)
     {
         return RoomData.getRoomByPage(pagenumber, limitPerPage);
+    }
+
+    public static RoomBuisness? getRoom(Guid roomId)
+    {
+        var result = RoomData.getRoom(roomId);
+        if(result != null)return new RoomBuisness(result, enMode.update);
+        return null;
     }
     
 }

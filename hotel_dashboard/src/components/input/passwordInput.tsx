@@ -56,13 +56,19 @@ export const PasswordInput =
 
                                 {passwordType === 'text' ?
                                     <button
-                                        onClick={() => setType('password')}
+                                        onClick={(e) =>{
+e.preventDefault();
+setType('password');
+                                        } }
                                         className=" h-5 w-5 "
                                         >
                                         <EyeIcon fontSize={5} />
                                     </button> :
                                     <button
-                                        onClick={() => setType("text")}
+                                        onClick={(e) =>{
+                                            e.preventDefault();
+                                            setType("text")
+                                        }}
 
                                         className="h-5 w-5"
                                         >
@@ -78,10 +84,18 @@ export const PasswordInput =
                             placeholder={placeHolder}
                             maxLength={maxLength}
                             disabled={isDisabled}
-                            onChange={handleChange}
+                            onChange={
+                                (e)=>{
+                                  e.preventDefault();
+                                  handleChange;
+                                }
+                                }
                             type={passwordType}
                             required={isRequire}
-                            onFocus={onFoucseInpur}
+                            onFocus={(e)=>{
+                                e.preventDefault() ;
+                               onFoucseInpur;
+                             }}
                         />
                     </div>
                 }

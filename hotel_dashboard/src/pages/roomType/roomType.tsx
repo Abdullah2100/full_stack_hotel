@@ -49,13 +49,30 @@ const RoomType = () => {
     }));
   };
 
-  const selectImage = (e) => {
+
+    const clearData = () => {
+    setRoomType({
+      roomTypeName: '',
+      createdAt: null,
+      createdBy: null,
+      roomTypeID: null
+    })
+    setImage(undefined)
+    setImageHolder(undefined)
+  }
+  const logoutFn = () => {
+    dispatch(logout())
+  }
+
+
+  const selectImage = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     imageRef.current?.click();
   }
 
 
-  const uploadImageDisplayFromSelectInput = async (e) => {
+  const uploadImageDisplayFromSelectInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault()
     if (imageRef.current && imageRef.current.files && imageRef.current.files[0]) {
       const uploadedFile = imageRef.current.files[0];
       const fileExtension = uploadedFile.name.split('.').pop()?.toLowerCase();
@@ -88,21 +105,6 @@ const RoomType = () => {
   };
 
 
-  const clearData = () => {
-    setRoomType({
-      roomTypeName: '',
-      createdAt: null,
-      createdBy: null,
-      roomTypeID: null
-    })
-    setImage(undefined)
-    setImageHolder(undefined)
-  }
-  const logoutFn = () => {
-    dispatch(logout())
-  }
-
-
 
   const { data, error, refetch } = useQuery({
 
@@ -110,8 +112,8 @@ const RoomType = () => {
     queryFn: async () => apiClient({
       enType: enApiType.GET,
       endPoint: import.meta.env.VITE_ROOMTYPE + "false",
-      prameters: undefined,
-      isRquireAuth: true,
+      parameters: undefined,
+      isRequireAuth: true,
       jwtValue: token || "",
       jwtRefresh: refreshToken || "",
       tryNumber: 1
@@ -132,11 +134,12 @@ const RoomType = () => {
       apiClient({
         enType: methodType,
         endPoint: endpoint
-        , prameters: data,
-        isRquireAuth: true,
+        , parameters: data,
+        isRequireAuth: true,
         jwtValue: jwtToken ?? undefined,
         jwtRefresh: jwtRefreshToken ?? undefined,
         isFormData: data != undefined
+        , tryNumber: 1
       }),
     onSuccess: (data) => {
       setState(enStatus.complate)
@@ -149,8 +152,8 @@ const RoomType = () => {
     },
     onError: (error) => {
       setState(enStatus.complate);
-       if (error != undefined && error !== null) {
-        if (error.status === 401) {
+      if (error != undefined && error !== null) {
+        if ((error as any).status === 401) {
           logoutFn()
         } else {
           showToastiFy(error?.message?.toString() || "An unknown error occurred", enMessage.ERROR)
@@ -223,22 +226,22 @@ const RoomType = () => {
     }
   };
 
-
-
-  const draggbleFun = (e) => {
+  const draggbleFun = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     changeDraggableStatus(true)
   }
 
-  const draggableOver = (e) => {
+  const draggableOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     changeDraggableStatus(true)
   }
-  const handleDragLeave = () => {
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault()
     changeDraggableStatus(false);
   };
 
-  const handleDrop = (e) => {
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     changeDraggableStatus(false)
     const file = e.dataTransfer.files[0];
@@ -272,7 +275,7 @@ const RoomType = () => {
 
   useEffect(() => {
     if (error != undefined && error !== null) {
-      if (error.status === 401) {
+      if ((error as any).status === 401) {
         logoutFn()
       } else {
         showToastiFy(error?.message?.toString() || "An unknown error occurred", enMessage.ERROR)
@@ -321,7 +324,7 @@ const RoomType = () => {
               >
                 <ImageHolder
                   src={image != undefined ? image : roomType?.imagePath ?
-                    `http://172.19.0.1:9000/roomtype/` + roomType.imagePath?.toString() : undefined}
+                    `${import.meta.env.VITE_MINIO_ENDPOINT}/roomtype/` + roomType.imagePath?.toString() : undefined}
                   style='flex flex-row h-20 w-20 '
                   isFromTop={true} />
               </div>

@@ -15,9 +15,9 @@ export default class DateFormat {
         return this.day + '/' + this.month + '/' + this.year
     }
 
-    static toStringDate(dateHolder?: Date | undefined) {
+    static toStringDate(dateHolder?: Date | undefined |null) {
 
-        if (dateHolder === undefined) return '';
+        if (dateHolder === undefined || dateHolder===null) return '';
         //let dateHolderToString = dateHolder.toISOString().split('T')[0];
         let dateHolderToString = dateHolder.toString().split('T')[0];
 

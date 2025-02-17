@@ -22,7 +22,7 @@ public class UserUpdateDto
 
     public DateTime? brithDay { get; set; } = null;
     
-    public bool isVip   { get; set; } = false;
+    public bool? isVip   { get; set; } = false;
 
     public IFormFile? imagePath { get; set; } = null;
 }

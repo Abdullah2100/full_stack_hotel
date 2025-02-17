@@ -7,7 +7,7 @@ public class RoomData
 {
     static string connectionUr = clsConnnectionUrl.url;
 
-    public static RoomDto getRoom(Guid roomID)
+    public static RoomDto? getRoom(Guid roomID)
     {
         RoomDto? room = null;
         try
@@ -162,7 +162,7 @@ public class RoomData
                 
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
-                    cmd.Parameters.AddWithValue("@roomid_", roomData.roomtypeid);
+                    cmd.Parameters.AddWithValue("@roomid_", roomData.roomId);
                     cmd.Parameters.AddWithValue("@status",reversedStatusEnumToString(roomData.status));
                     cmd.Parameters.AddWithValue("@pricePerNight_", roomData.pricePerNight);
                     cmd.Parameters.AddWithValue("@roomtypeid_", roomData.roomtypeid);

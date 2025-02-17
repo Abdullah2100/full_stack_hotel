@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { DragEventHandler, useContext, useEffect, useRef, useState } from 'react'
 import Header from '../../components/header/header'
 import { CameraIcon, UsersIcon } from '@heroicons/react/16/solid'
 import { IAuthModule } from '../../module/iAuthModule';
@@ -17,12 +17,12 @@ import { generalMessage } from '../../util/generalPrint';
 import { useToastifiContext } from '../../context/toastifyCustom';
 import { enMessage } from '../../module/enMessageType';
 import NotFoundComponent from '../../components/notFoundContent';
-import { UserModule } from '../../module/userModule';
 import { isHasCapitalLetter, isHasNumber, isHasSmallLetter, isHasSpicalCharacter, isValidEmail } from '../../util/regexValidation';
 import { Guid } from 'guid-typescript';
 import { Switch } from '@mui/material';
 import ImageHolder from '../../components/imageHolder';
 import { logout } from '../../controller/redux/jwtSlice';
+import { IUserModule } from '../../module/iUserModule';
 
 const User = () => {
   const dispatch = useDispatch()
@@ -67,15 +67,16 @@ const User = () => {
     queryFn: async () => apiClient({
       enType: enApiType.GET,
       endPoint: import.meta.env.VITE_USERS + `${page}`,
-      prameters: undefined,
-      isRquireAuth: true,
+      parameters: undefined,
+      isRequireAuth: true,
       jwtValue: token || "",
-      jwtRefresh: refreshToken || ""
+      jwtRefresh: refreshToken || "",
+      tryNumber: 1
     }),
   }
   );
-const logoutFn = ()=>{
-     dispatch(logout())
+  const logoutFn = () => {
+    dispatch(logout())
   }
 
 
@@ -96,11 +97,12 @@ const logoutFn = ()=>{
       apiClient({
         enType: methodType,
         endPoint: endpoint
-        , prameters: data,
-        isRquireAuth: true,
+        , parameters: data,
+        isRequireAuth: true,
         jwtValue: jwtToken ?? undefined,
-        jwtRefresh: jwtToken ?? undefined,
-        isFormData: data != undefined
+        jwtRefresh: jwtRerreshToken ?? undefined,
+        isFormData: data != undefined,
+        tryNumber: 1
       }),
     onSuccess: (data) => {
       setState(enStatus.complate)
@@ -123,7 +125,7 @@ const logoutFn = ()=>{
 
       setState(enStatus.complate);
       if (error != undefined && error !== null) {
-        if (error.status === 401) {
+        if ((error as any).status === 401) {
           logoutFn()
         } else {
           showToastiFy(error?.message?.toString() || "An unknown error occurred", enMessage.ERROR)
@@ -246,12 +248,13 @@ const logoutFn = ()=>{
   };
 
 
-  const selectImage = (e) => {
+  const selectImage = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     imageRef.current?.click();
   }
 
-  const uploadImageDisplay = async () => {
+  const uploadImageDisplay = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault()
     if (imageRef.current && imageRef.current.files && imageRef.current.files[0]) {
 
       const uploadedFile = imageRef.current.files[0];
@@ -270,20 +273,21 @@ const logoutFn = ()=>{
   }
 
 
-  const draggbleFun = (e) => {
+  const draggbleFun = (e: React.DragEvent) => {
     e.preventDefault();
     changeDraggableStatus(true)
   }
 
-  const draggableOver = (e) => {
+  const draggableOver = (e: React.DragEvent) => {
     e.preventDefault();
     changeDraggableStatus(true)
   }
-  const handleDragLeave = () => {
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault()
     changeDraggableStatus(false);
   };
 
-  const handleDrop = (e) => {
+  const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     changeDraggableStatus(false)
     const file = e.dataTransfer.files[0];
@@ -318,8 +322,8 @@ const logoutFn = ()=>{
 
   useEffect(() => {
     if (error != undefined && error !== null) {
-      if (error.status === 401) {
-       logoutFn()
+      if ((error as any).status === 401) {
+        logoutFn()
       } else {
         showToastiFy(error?.message?.toString() || "An unknown error occurred", enMessage.ERROR)
 
@@ -350,7 +354,7 @@ const logoutFn = ()=>{
 
             <ImageHolder
               src={image != undefined ? image : userHolder?.imagePath ?
-                `http://172.19.0.1:9000/user/` + userHolder.imagePath?.toString() : undefined}
+                `${import.meta.env.VITE_MINIO_ENDPOINT}/user/` + userHolder.imagePath?.toString() : undefined}
               style='flex flex-row h-20 w-20 '
               isFromTop={true} />
 
@@ -465,7 +469,7 @@ const logoutFn = ()=>{
 
         <div className="overflow-x-auto   w-full mt-4 mb-5">
           <UersTable
-            data={data !== undefined ? (data.data as UserModule[]) : undefined}
+            data={data !== undefined ? (data.data as IUserModule[]) : undefined}
             setUser={setUser}
             seUpdate={setUpdate}
             makeUserVip={makeUserVip}

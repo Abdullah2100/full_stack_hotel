@@ -68,7 +68,7 @@ const UersTable = ({
               <td className="px-4 py-2 border-b text-left whitespace-nowrap">{index + 1}</td>
               <td className="px-4 py-2 border-b text-left whitespace-nowrap">{
 
-                <ImageHolder src={`http://172.19.0.1:9000/user/${user.imagePath}`}
+                <ImageHolder src={`${import.meta.env.VITE_MINIO_ENDPOINT}/user/${user.imagePath}`}
                   style='flex flex-row h-20 w-20'
                 />
               }</td>

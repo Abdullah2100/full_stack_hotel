@@ -25,6 +25,11 @@ import { enStatsu } from '../../module/enStatsu';
 import RoomTable from '../../components/tables/roomTable';
 import { IAuthModule } from '../../module/iAuthModule';
 import { logout } from '../../controller/redux/jwtSlice';
+import UserShape from '../../components/user';
+import { IUserModule } from '../../module/iUserModule';
+import ImagesPlay from '../../components/images';
+import { General } from '../../util/general';
+import DateFormat from '../../util/dateFormat';
 
 const Room = () => {
   const refreshToken = useSelector((state: RootState) => state.auth.refreshToken)
@@ -43,6 +48,10 @@ const Room = () => {
   const [thumnailImage, setThumnail] = useState<iImageHolder>()
   const [images, setImages] = useState<iImageHolder[]>()
 
+  const [imagesHolder, setImagesHolder] = useState<iImageHolder[]>()
+
+  const [deletedImages, setdeletedImagess] = useState<iImageHolder[]>()
+
   const [roomData, setRoomData] = useState<IRoomModule>({
     roomtypeid: undefined,
     bedNumber: 10,
@@ -55,10 +64,45 @@ const Room = () => {
     beglongTo: undefined
   })
 
-  const [roomHolder, setRoomHover] = useState<IRoomModule | undefined>(undefined)
+  const [userData, setUserHover] = useState<IUserModule | undefined>(undefined)
 
 
   const imageRef = useRef<HTMLInputElement>(null);
+
+  const handleRoomEditeButton = (roomDataHolder: IRoomModule) => {
+
+
+    if (roomDataHolder.images) {
+      // roomDataHolder.images.map(x => {
+      //  if (x != undefined)
+      // })
+      const thumnailHolder = roomDataHolder.images?.find(x => x.isThumnail === true);
+      if (thumnailHolder) {
+        //generalMessage(`\n\n\nthis shown the images ${JSON.stringify(import.meta.env.VITE_MINIO_ENDPOINT + "/room/" + thumnailHolder.path)}\n\n`)
+        generalMessage(`\n\n\nthis shown the images ${thumnailImage?.path}\n\n`)
+        setThumnail(thumnailHolder)
+
+      }
+      setImages(roomDataHolder.images?.filter(x => x.isThumnail === false))
+
+    }
+    setUpdate(true)
+    setRoomData({
+      isBlock: roomDataHolder.isBlock,
+      isDeleted: roomDataHolder.isDeleted,
+      roomData: roomDataHolder.roomData,
+      user: roomDataHolder.user,
+      roomtypeid: roomDataHolder.roomtypeid,
+      bedNumber: roomDataHolder.bedNumber,
+      capacity: roomDataHolder.capacity,
+      pricePerNight: roomDataHolder.pricePerNight,
+      status: General.convetNumberToEnStatus((roomDataHolder.status as number)),
+      images: roomData.images,
+      roomId: roomDataHolder.roomId,
+      createdAt: roomDataHolder.createdAt,
+      beglongTo: roomDataHolder.beglongTo
+    })
+  }
 
   const logoutFn = () => {
     dispatch(logout())
@@ -77,17 +121,28 @@ const Room = () => {
     setSingle(prev => prev = isSingle)
   }
 
-  const selectImage = async (isSingle: boolean) => {
+  const selectImage = async (isSingle: boolean, e: React.MouseEvent) => {
+
+    e.preventDefault()
     await changeIsSingleStatus(isSingle).then(() => {
+
       imageRef.current?.click();
     })
   }
 
-  const uploadImageDisplayFromSelectInput = async (e: React.DragEvent<HTMLDivElement>) => {
-    if (imageRef.current && imageRef.current.files && imageRef.current.files[0]) {
+  const uploadImageDisplayFromSelectInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault()
+
+    if (imageRef.current && imageRef.current.files) {
+
       switch (isSingle) {
         case true: {
+
           const uploadedFile = imageRef.current.files[0];
+
+          if (thumnailImage) {
+            addDeletedFileToDeletedList(thumnailImage);
+          }
 
           const fileExtension = uploadedFile.name.split('.').pop()?.toLowerCase();
 
@@ -95,16 +150,17 @@ const Room = () => {
             showToastiFy("You must select a valid image", enMessage.ERROR);
             return;
           }
-          
+
           const fileNew = new File([uploadedFile], "ffffffff." + uploadedFile.type.split('/')[0], { type: uploadedFile.type });
 
-          setThumnail(prev => prev = {
+
+          setThumnail({
             data: fileNew,
             belongTo: undefined,
             id: undefined,
             isDeleted: false,
             isThumnail: true,
-            fileName: undefined
+            path: undefined
           })
 
         } break;
@@ -127,7 +183,7 @@ const Room = () => {
               id: undefined,
               isDeleted: false,
               isThumnail: false,
-              fileName: undefined
+              path: undefined
             })
           }
 
@@ -141,6 +197,7 @@ const Room = () => {
     }
   };
 
+
   const draggbleFun = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     changeDraggableStatus(true)
@@ -151,7 +208,8 @@ const Room = () => {
     changeDraggableStatus(true)
   }
 
-  const handleDragLeave = () => {
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault()
     changeDraggableStatus(false);
   };
 
@@ -159,7 +217,9 @@ const Room = () => {
     e.preventDefault();
     changeDraggableStatus(false)
     if (e.dataTransfer.files) {
-
+      if (thumnailImage) {
+        addDeletedFileToDeletedList(thumnailImage);
+      }
 
       const file = e.dataTransfer.files[0];
       const fileExtension = file.name.split('.').pop()?.toLowerCase();
@@ -176,7 +236,7 @@ const Room = () => {
         id: undefined,
         isDeleted: false,
         isThumnail: true,
-        fileName: undefined
+        path: undefined
 
       })
     }
@@ -206,7 +266,7 @@ const Room = () => {
             id: undefined,
             isDeleted: false,
             isThumnail: false,
-            fileName: undefined
+            path: undefined
 
           }
         ]]);
@@ -216,9 +276,21 @@ const Room = () => {
     }
   }
 
+  const addDeletedFileToDeletedList = (image: iImageHolder) => {
+
+    if (!(image?.id === undefined)) {
+      image.isDeleted = true;
+      setdeletedImagess([...(deletedImages || []), image])
+    };
+  }
+
+
   const deleteImage = (index: number) => {
     if (!(images === undefined)) {
-      setImages(images.filter((_, i) => i !== index))
+      addDeletedFileToDeletedList(images[index]);
+    }
+    if (images) {
+      setImages(images.filter(x => x.id !== images[index].id));
     }
   }
 
@@ -229,10 +301,11 @@ const Room = () => {
     queryFn: async () => apiClient({
       enType: enApiType.GET,
       endPoint: import.meta.env.VITE_ROOMTYPE + 'true',
-      prameters: true,
-      isRquireAuth: true,
+      parameters: true,
+      isRequireAuth: true,
       jwtRefresh: refreshToken || ""
-      , jwtValue: token || ""
+      , jwtValue: token || "",
+      tryNumber: 1
     }).then((data) => {
       if (data === undefined) return [];
       const roomType = data.data as IRoomType[];
@@ -244,7 +317,11 @@ const Room = () => {
 
 
   const clearData = () => {
-    setRoomData({
+    setRoomData(prev => prev = {
+      isBlock: undefined,
+      isDeleted: null,
+      roomData: undefined,
+      user: undefined,
       roomtypeid: undefined,
       bedNumber: 0,
       capacity: 0,
@@ -260,8 +337,6 @@ const Room = () => {
   }
 
 
-
-
   const roomMutaion = useMutation({
     mutationFn: ({ data, endpoint, methodType,
       token, refreshToken
@@ -275,17 +350,18 @@ const Room = () => {
       apiClient({
         enType: methodType,
         endPoint: endpoint
-        , prameters: data,
-        isRquireAuth: true,
+        , parameters: data,
+        isRequireAuth: true,
         isFormData: data != undefined,
         jwtValue: token || "",
-        jwtRefresh: refreshToken ?? undefined
+        jwtRefresh: refreshToken ?? undefined,
+        tryNumber: 1
       }),
     onSuccess: (data) => {
       setState(enStatus.complate)
       showToastiFy(`user ${isUpdate ? "updated" : "created"} Sueccessfuly`, enMessage.SECCESSFUL);
       clearData()
-
+      refetch()
       if (isUpdate)
         setUpdate(false)
 
@@ -293,7 +369,7 @@ const Room = () => {
     onError: (error) => {
       setState(enStatus.complate);
       if (error != undefined && error !== null) {
-        if (error.status === 401) {
+        if ((error as any).status === 401) {
           logoutFn()
         } else {
           showToastiFy(error?.message?.toString() || "An unknown error occurred", enMessage.ERROR)
@@ -339,7 +415,7 @@ const Room = () => {
     return message.length === 0;
   }
 
-  const createOrUpdateRoomType = async () => {
+  const createOrUpdateRoom = async () => {
     if (isUpdate === false) {
       const result = !validationInput();
 
@@ -347,9 +423,6 @@ const Room = () => {
     }
 
     const formData = new FormData();
-    if (isUpdate)
-      formData.append("roomId", roomData.pricePerNight.toString());
-
     formData.append("status", `${roomData.status}`);
 
     formData.append("pricePerNight", `${roomData.pricePerNight}`);
@@ -385,10 +458,31 @@ const Room = () => {
       }
     }
 
+    if (isUpdate) {
+      // formData.append("roomId", roomData.roomId ? roomData.roomId.toString() : '');
+
+      if (deletedImages)
+        deletedImages.forEach((image, index) => {
+          formData.append(`images[${index}].id`, image.id ? image.id.toString() : "");
+          formData.append(`images[${index}].belongTo`, image.belongTo ? image.belongTo.toString() : "");
+          formData.append(`images[${index}].isDeleted`, image.isDeleted ? image.isDeleted.toString() : "");
+          formData.append(`images[${index}].isThumnail`, image.isThumnail ? image.isThumnail.toString() : "");
+          if (image.data)
+            formData.append(`images[${index}].data`, image.data);
+        });
+
+    }
+
+
+    let endpoint = import.meta.env.VITE_ROOM;
+
+    if (isUpdate && roomData.roomId) {
+      endpoint += '/' + roomData.roomId.toString();
+    }
 
     await roomMutaion.mutate({
       data: formData,
-      endpoint: import.meta.env.VITE_ROOM,
+      endpoint:endpoint ,
       methodType: isUpdate ? enApiType.PUT : enApiType.POST,
       refreshToken: refreshToken,
       token: token
@@ -396,16 +490,16 @@ const Room = () => {
 
   }
 
-  const { data, error: roomsError } = useQuery({
+  const { data, error: roomsError, refetch } = useQuery({
     queryKey: ['rooms'],
     queryFn: async () => apiClient({
       enType: enApiType.GET,
       endPoint: import.meta.env.VITE_ROOM + `/${pageNumber}`,
-      prameters: undefined,
-      isRquireAuth: true,
+      parameters: undefined,
+      isRequireAuth: true,
       jwtValue: token || "",
-      jwtRefresh: refreshToken ?? undefined
-
+      jwtRefresh: refreshToken ?? undefined,
+      tryNumber: 1
     }),
 
   }
@@ -413,22 +507,13 @@ const Room = () => {
 
 
 
-  useEffect(() => {
-    if (data != undefined) {
-      const dataToType = data as unknown as IRoomModule[];
-      // generalMessage(JSON.stringify(dataToType))
-    }
-  }, [data])
-
-
 
   useEffect(() => {
-    if (error != undefined && error !== null) {
-      if (error.status === 401) {
+    if ((error != undefined && error !== null) || (roomsError != undefined && roomsError !== null)) {
+      if ((error as any).status === 401 || (roomsError as any).status == 401) {
         dispatch(logout())
       } else {
-        showToastiFy(error?.message?.toString() || "An unknown error occurred", enMessage.ERROR)
-
+        showToastiFy((error?.message?.toString() || roomsError?.message.toString()) || "An unknown error occurred", enMessage.ERROR)
       }
     }
   }, [error])
@@ -440,33 +525,25 @@ const Room = () => {
 
       <Header index={3} />
 
-      <div className='min-h-screen w-[calc(100%-192px)] ms-[192px] flex flex-col px-2 items-start  overflow-y-auto '>
+      <div className='min-h-screen w-[calc(100%-192px)] ms-[192px] flex flex-col px-2 items-start '>
         <div className='flex flex-row items-center mt-2'>
           <RoomsIcon className='h-8 fill-black group-hover:fill-gray-200 -ms-1' />
           <h3 className='text-2xl ms-1'>Room</h3>
         </div>
 
-        <div className='w-full h-full mt-4 flex flex-col'>
 
+
+
+        <div className='w-full h-full mt-4 flex flex-col'>
           <div
             onDrag={draggbleFun}
             onDragOver={draggableOver}
             onDrop={handleDropImage}
             onDragLeave={handleDragLeave}
-
             className='relative mb-3 md:mb-0 '>
 
-            <input
-              multiple={isSingle ? false : true}
-              type="file"
-              id="file"
-              ref={imageRef}
-              onChange={uploadImageDisplayFromSelectInput}
-              hidden />
-
-
             <button
-              onClick={() => { selectImage(true) }}
+              onClick={(e) => selectImage(true, e)}
               className='group absolute start-2 top-11 hover:bg-gray-600 hover:rounded-sm '>
               <PencilIcon className='h-6 w-6 border-[1px] border-blue-900 rounded-sm group-hover:fill-gray-200  ' />
             </button>
@@ -475,15 +552,26 @@ const Room = () => {
             </h3>
             <div className=' h-44 w-44  flex flex-row justify-center items-center border-[2px] rounded-lg mt-2'
             >
-              <ImageHolder
-                src={thumnailImage?.data === undefined ? undefined : URL.createObjectURL(thumnailImage.data)}
-                style='flex flex-row h-24 w-24 '
-                isFromTop={true} />
+              <img
+                src={
+                  thumnailImage?.data === undefined ?
+                    `${import.meta.env.VITE_MINIO_ENDPOINT}/room/${thumnailImage?.path}`
+                    : URL.createObjectURL(thumnailImage.data)
+                }
+                className='flex flex-row h-24 w-24 '
+              />
             </div>
+
+            <input
+              multiple={false}
+              type="file"
+              id="file"
+              ref={imageRef}
+              onChange={uploadImageDisplayFromSelectInput}
+              hidden />
           </div>
 
           <div className='md:w-3' />
-
 
           <div
             onDrag={draggbleFun}
@@ -493,7 +581,7 @@ const Room = () => {
 
             className=' w-full relative'>
             <button
-              onClick={() => { selectImage(false) }}
+              onClick={(e) => selectImage(false, e)}
               className='group absolute start-2 top-11 hover:bg-gray-600 hover:rounded-sm '>
               <PencilIcon className='h-6 w-6 border-[1px] border-blue-900 rounded-sm group-hover:fill-gray-200  ' />
             </button>
@@ -513,7 +601,7 @@ const Room = () => {
                       deleteFun={() => { deleteImage(index) }}
                       key={index}
                       typeHolder={enNavLinkType.ROOMS}
-                      src={data.data === undefined ? "" : URL.createObjectURL(data.data)}
+                      src={data.data === undefined ? `${import.meta.env.VITE_MINIO_ENDPOINT}/room/${data.path}` : URL.createObjectURL(data.data)}
                       style='flex  w-full lg:w-20 '
                       isFromTop={true} />
                   </div>
@@ -524,7 +612,17 @@ const Room = () => {
                   isFromTop={true} />
               }
             </div>
+
+            <input
+              multiple={true}
+              type="file"
+              id="file"
+              ref={imageRef}
+              onChange={uploadImageDisplayFromSelectInput}
+              hidden />
           </div>
+
+
 
         </div>
 
@@ -623,7 +721,7 @@ const Room = () => {
         <div className='w-full'>
 
           <SubmitButton
-            onSubmit={async () => createOrUpdateRoomType()}
+            onSubmit={async () => createOrUpdateRoom()}
             buttonStatus={status}
             placeHolder={isUpdate ? 'update' : 'create'}
             style="text-[10px] bg-mainBg   w-full md:w-44 text-white rounded-[4px] my-2 h-8  hover:opacity-90"
@@ -635,64 +733,32 @@ const Room = () => {
             onSubmit={async () => { }}
             // buttonStatus={status}
             placeHolder={'reseat'}
-
             style="text-[10px] bg-white border-[1px]  w-full md:w-44 text-white rounded-[4px] my-2 h-8  hover:opacity-90 md:ms-2"
             textstyle='text-[14px] text-black'
           />
         </div>
 
 
-        <div className='relative overflow-y-scroll'>
+        {/* <div className='relative overflow-y-scroll'> */}
 
-          <RoomTable data={data === undefined ? undefined : data.data as unknown as IRoomModule[]}
-            setRoomHover={setRoomHover}
-            setRoom={setRoomData} seUpdate={function (value: SetStateAction<boolean>): void {
-              throw new Error('Function not implemented.');
-            }} deleteFunc={function (roomId: Guid): Promise<void> {
-              throw new Error('Function not implemented.');
-            }} makeRoomVip={function (roomId: Guid): Promise<void> {
-              throw new Error('Function not implemented.');
-            }} isShwoingDeleted={false} />
-        </div>
+        <RoomTable data={data === undefined ? undefined : data.data as unknown as IRoomModule[]}
+          setUserHover={setUserHover}
+          setRoom={handleRoomEditeButton}
+          setRoomImages={setImagesHolder}
+          deleteFunc={function (roomId: Guid): Promise<void> {
+            throw new Error('Function not implemented.');
+          }} makeRoomVip={function (roomId: Guid): Promise<void> {
+            throw new Error('Function not implemented.');
+          }} isShwoingDeleted={false} />
+        {/* </div> */}
 
-        {
+        <UserShape
+          userData={userData ? userData : undefined}
+          changeTheButtonStatus={setUserHover}
+        />
 
-          <div className={`fixed  bg-gray-600  bottom-14   flex flex-row   h-screen w-screen top-0 start-0  transition-opacity duration-300 ${roomHolder ? 'opacity-100  z-30' : 'opacity-0  -z-10'}`}>
-            <button
-              onClick={() => {
-                setRoomHover(undefined)
-              }}
-              style={{ cursor: 'pointer' }}
-              className='absolute z-30'
-            >
-              <XMarkIcon className='h-7 w-6 text-white absolute top-0' />
 
-            </button>
-            {roomHolder && <div className='absolute h-screen w-screen flex flex-row items-center justify-center z-10'>
-              <div>
-                <ImageHolder
-                  iconColor='text-white'
-                  src={`http://172.19.0.1:9000/user/${roomHolder.user.imagePath}`}
-                  style='flex flex-row h-20 w-20'
-                />
-              </div>
-              <div className='me-4 ms-4 flex flex-col flex-nowrap max-w-[200px]'>
-                <h4 className='text-white'>
-                  {roomHolder.user?.personData.name}
-                </h4>
-                <h4 className='text-white mt-2'>
-                  {roomHolder.user?.personData.phone}
-
-                </h4>
-                <h4 className='text-white mt-1'>
-                  {roomHolder.user?.personData.email}
-
-                </h4>
-              </div>
-            </div>}
-          </div>
-
-        }
+        <ImagesPlay images={imagesHolder} setImagesToNull={setImagesHolder} />
 
 
       </div>

@@ -1,21 +1,24 @@
 import { Dispatch, SetStateAction } from 'react'
-import { RoomModule } from '../../module/RoomModule';
-import { Switch } from '@mui/material';
+
 import NotFoundComponent from '../notFoundContent';
-import { ArrowUturnLeftIcon, PencilIcon, TrashIcon } from '@heroicons/react/16/solid';
-import { IAuthModule } from '../../module/iAuthModule';
+
 import { Guid } from 'guid-typescript';
-import ImageHolder from '../imageHolder';
+
 import { IRoomModule } from '../../module/iRoomModule';
-import { generalMessage } from '../../util/generalPrint';
+
 import DateFormat from '../../util/dateFormat';
+import { ArrowUturnLeftIcon, PencilIcon, PhotoIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { generalMessage } from '../../util/generalPrint';
+import { General } from '../../util/general';
+import { IUserModule } from '../../module/iUserModule';
+import { iImageHolder } from '../../module/IImageHolder';
 
 interface RoomTableProps {
   data?: IRoomModule[] | undefined,
-  setRoom: Dispatch<SetStateAction<IRoomModule>>
-  setRoomHover: Dispatch<SetStateAction<IRoomModule | undefined>>
-  seUpdate: Dispatch<SetStateAction<boolean>>
-  deleteFunc: (roomId: Guid) => Promise<void>
+  setRoom: (roomData:IRoomModule)=>void;
+  setUserHover: Dispatch<SetStateAction<IUserModule | undefined>>
+  setRoomImages: Dispatch<SetStateAction<iImageHolder[] | undefined>>
+   deleteFunc: (roomId: Guid) => Promise<void>
   makeRoomVip: (roomId: Guid) => Promise<void>
   isShwoingDeleted: boolean
 
@@ -24,45 +27,34 @@ interface RoomTableProps {
 const RoomTable = ({
   data,
   setRoom,
-  setRoomHover,
-  seUpdate,
-  deleteFunc,
+  setUserHover,
+  setRoomImages,
+   deleteFunc,
   makeRoomVip,
   isShwoingDeleted = false
 }: RoomTableProps) => {
 
-  const setRoomData = (room: RoomModule) => {
-    // setRoom({
-    //   roomId: Room.RoomId,
-    //   address: Room.personData?.address,
-    //   brithDay: Room.brithDay.split('T')[0], //dateHolder.toISOString().split('T')[0],
-    //   email: Room.personData?.email,
-    //   name: Room.personData?.name,
-    //   password: '',
-    //   phone: Room.personData?.phone,
-    //   Roomname: Room.RoomName,
-    //   imagePath: Room.imagePath?.toString()
-    // })
-    seUpdate(true)
-  }
+  data?.forEach((x)=>{
+    generalMessage(`this the data from api ${
+       JSON.stringify(x)
+    }`)
+  })
+   
 
   return (
-    <div className={`overflow-x-auto justify-center ${data === undefined && 'h-48'} pb-7 `}>
-      <table className="min-w-full table-auto border-collapse">
+    <div className={`w-full pb-5 overflow-auto`}>
+      <table className="w-full  table-auto border-collapse">
         <thead className="bg-gray-200 text-gray-600">
           <tr>
             <th className="px-4 py-2 border-b text-left whitespace-nowrap"></th>
             <th className="px-4 py-2 border-b text-left whitespace-nowrap">Owner by</th>
+            <th className="px-4 py-2 border-b text-left whitespace-nowrap">Status</th>
             <th className="px-4 py-2 border-b text-left whitespace-nowrap">RoomType</th>
+            <th className="px-4 py-2 border-b text-left whitespace-nowrap">Price Per Night</th>
+            <th className="px-4 py-2 border-b text-left whitespace-nowrap">bedNumber</th>
             <th className="px-4 py-2 border-b text-left whitespace-nowrap">Created At</th>
-            {/* <th className="px-4 py-2 border-b text-left whitespace-nowrap">Name</th> */}
-            {/* <th className="px-4 py-2 border-b text-left whitespace-nowrap">Email</th>
-            <th className="px-4 py-2 border-b text-left whitespace-nowrap">Phone</th>
-            <th className="px-4 py-2 border-b text-left whitespace-nowrap">Address</th>
-            <th className="px-4 py-2 border-b text-left whitespace-nowrap">Created At</th>
-            <th className="px-4 py-2 border-b text-left whitespace-nowrap">Brithday</th>
-            <th className="px-4 py-2 border-b text-left whitespace-nowrap">VIP Status</th>
-            <th className="px-4 py-2 border-b text-left whitespace-nowrap">Operation</th> */}
+            <th className="px-4 py-2 border-b text-left whitespace-nowrap">Images</th>
+            <th className="px-4 py-2 border-b text-left whitespace-nowrap">Operations</th>
           </tr>
         </thead>
         <tbody>
@@ -75,7 +67,10 @@ const RoomTable = ({
               <td className="px-4 py-2 border-b text-left whitespace-nowrap">
                 <button
                   className='text-blue-600'
-                  onClick={() => { setRoomHover(Room) }}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    setUserHover(Room?.user)
+                  }}
                   style={{ cursor: 'pointer' }}
                 >
                   {
@@ -85,57 +80,47 @@ const RoomTable = ({
 
 
               </td>
+              <td className={`px-4 py-2 border-b text-left whitespace-nowrap  ${General.handlingEnStatusColor((Room.status as number))}`}>{General.convetNumberToEnStatus((Room.status as number))}</td>
+
 
               <td className="px-4 py-2 border-b text-left whitespace-nowrap">{Room.roomData?.roomTypeName}</td>
-              <td className="px-4 py-2 border-b text-left whitespace-nowrap">{DateFormat.toStringDate(Room.createdAt)}</td>
-
-              {
-
-                /*
-              <td className="px-4 py-2 border-b text-left whitespace-nowrap">{
-
-                <ImageHolder src={`http://172.19.0.1:9000/Room/${Room.imagePath}`}
-                  style='flex flex-row h-20 w-20'
-                />
+              <td className="px-4 py-2 border-b text-left whitespace-nowrap">{Room.pricePerNight}</td>
+              <td className="px-4 py-2 border-b text-left whitespace-nowrap">{Room.bedNumber}</td>
+              <td className="px-4 py-2 border-b text-left whitespace-nowrap ">{DateFormat.toStringDate(Room.createdAt)}</td>
+              <td className="px-4 py-2 border-b text-left whitespace-nowrap cursor-pointer">{
+                <button 
+                onClick={(e)=>{
+                  e.preventDefault();
+                  setRoomImages(Room.images)
+                }}
+                className='cursor-pointer w-full h-14'>
+                  <PhotoIcon className='h-6 w-6 text-blue-700 ms-4' />
+                </button>
               }</td>
-
-              <td className="px-4 py-2 border-b text-left whitespace-nowrap">{Room?.personData?.email || ""}</td>
-              <td className="px-4 py-2 border-b text-left whitespace-nowrap">{Room?.personData?.phone || ""}</td>
-              <td className="px-4 py-2 border-b text-left whitespace-nowrap">{Room?.personData?.address || ""}</td>
               <td className="px-4 py-2 border-b text-left whitespace-nowrap">
-                {Room?.personData?.createdAt === undefined ? "" : new Date(Room.personData.createdAt).toISOString().split('T')[0]}
-              </td>
-              <td className="px-4 py-2 border-b text-left whitespace-nowrap">
-                {Room?.personData?.createdAt === undefined ? "" : Room.brithDay.split('T')[0]}
-              </td>
-              <td className="px-4 py-2 border-b text-left whitespace-nowrap">
-                <Switch
-                  defaultChecked={Room.isVip}
-                  disabled={Room.isDeleted}
-                  onChange={() => makeRoomVip(Room.RoomId)}
-                />
-              </td>
-
-              <td className="px-4 py-1   text-left ">
                 {Room.isDeleted === false ?
                   <div className='flex flex-row justify-between'>
 
                     <button
-                      onClick={() => deleteFunc(Room.RoomId)}
-                      className='border-[2px] rounded-[3px] border-red-600 h-7 w-7 flex justify-center items-center'
+                      // onClick={() => deleteFunc(roomtype.roomTypeID as Guid, roomtype.isDeleted ?? false)}
+                      className='border-[2px] rounded-[3px] border-red-600 h-7 w-7 flex justify-center items-center cursor-pointer'
                     ><TrashIcon className='h-4 w-4 text-red-600 ' /></button>
                     <button
-                      onClick={() => setRoomData(Room)}
-                      className='border-[2px] rounded-[3px] border-green-800 h-7 w-7 flex justify-center items-center bg-gray-200'
+                      onClick={() => setRoom(Room)}
+                      className='border-[2px] rounded-[3px] border-green-800 h-7 w-7 flex justify-center items-center bg-white cursor-pointer'
                     ><PencilIcon className='h-6 w-6 text-green-800' /></button>
-                  </div> :
-                  <button onClick={() => deleteFunc(Room.RoomId)}>
+                  </div>
+                  :
+                  <button
+                  //  onClick={() => { deleteFunc(roomtype.roomTypeID as Guid, roomtype.isDeleted ?? true) }}
+                  >
 
                     <ArrowUturnLeftIcon
                       className='h-6 w-6 text-white' />
                   </button>
                 }
-              </td> */}
+              </td>
+
             </tr>
           ))}
         </tbody>
