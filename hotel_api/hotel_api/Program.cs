@@ -12,7 +12,6 @@ builder.Services.AddEndpointsApiExplorer();
 // Register Swagger/OpenAPI
 builder.Services.AddSwaggerGen(c =>
 {
-
     c.SwaggerDoc("v1", new OpenApiInfo
     {
         Title = "Hotel API",

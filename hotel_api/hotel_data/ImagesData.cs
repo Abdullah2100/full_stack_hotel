@@ -15,11 +15,16 @@ public class ImagesData
             using (var con = new NpgsqlConnection(connectionUr))
             {
                 con.Open();
-                string query = "INSERT INTO images(name,belongto) VALUES (@name,@belongto)";
+                string query = @"INSERT INTO images(name,belongto,isthumnail) 
+                                 VALUES (@name,@belongto,@isthumnail)";
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
                     cmd.Parameters.AddWithValue("@name", image.path);
                     cmd.Parameters.AddWithValue("@belongto", image.belongTo);
+                    if (image.isThumnail != null)
+                    {
+                    cmd.Parameters.AddWithValue("@isthumnail", image.isThumnail);
+                    }else cmd.Parameters.AddWithValue("@isthumnail", DBNull.Value);
                     var result = cmd.ExecuteScalar();
                     if (result != null && bool.TryParse(result.ToString(), out bool isComplate))
                     {
@@ -90,6 +95,7 @@ public class ImagesData
                                     imagePathId: (Guid)reader["imageid"],
                                     imagePath: (string)reader["name"],
                                     belongTo: (Guid)reader["belongto"]
+                                    ,isThumnail:(bool)reader["isthumnail"]
                                 );
                             }
                         }
@@ -126,7 +132,9 @@ public class ImagesData
                                 image = new ImagesTbDto(
                                     imagePathId: (Guid)reader["imageid"],
                                     imagePath: (string)reader["name"],
-                                    belongTo: (Guid)reader["belongto"]
+                                    belongTo: (Guid)reader["belongto"],
+                                     isThumnail:reader["isthumnail"]==DBNull.Value?false: (bool)reader["isthumnail"]
+
                                 );
                             }
                         }
@@ -164,7 +172,7 @@ public class ImagesData
                                     imagePathId: (Guid)reader["imageid"],
                                     imagePath: (string)reader["name"],
                                     belongTo: (Guid)reader["belongto"]
-                                    , isThumnail: (bool)reader["isthumnail"]
+                                    , isThumnail:reader["isthumnail"]==DBNull.Value?false: (bool)reader["isthumnail"]
 
                                 );
                                 images.Add(imageHolder);
@@ -236,4 +244,30 @@ public class ImagesData
 
         return isDeleted;
     }
+    
+    public static bool deleteImageById(Guid id)
+    {
+        bool isDeleted = false;
+        try
+        {
+            using (var con = new NpgsqlConnection(connectionUr))
+            {
+                con.Open();
+                string query = "DELETE FROM images  WHERE imageid= @id";
+                using (var cmd = new NpgsqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@id", id);
+                    cmd.ExecuteNonQuery();
+                    isDeleted = true;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("this the error from get image by path {0}", ex.Message);
+        }
+
+        return isDeleted;
+    }
+
 }

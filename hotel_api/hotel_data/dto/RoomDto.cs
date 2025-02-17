@@ -39,7 +39,7 @@ public class RoomDto
         }
 
         this.roomData = RoomTypeData.getRoomType(roomId);
-        this.images = ImagesData.images(roomId);
+        this.images = images;
     }
 
     public Guid roomId { get; set; }

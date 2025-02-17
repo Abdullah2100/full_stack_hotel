@@ -48,9 +48,9 @@ const ImageHolder = ({
     <div className={`${style} relative`}>
       {
         deleteFun &&
-        <button onClick={deleteFun}>
-          <XMarkIcon 
-          className={`absolute -top-1 -end-1 h-6 w-6 'text-gray-400'}`} />
+        <button onClick={deleteFun} className='bg-white group hover:bg-gray-400 cursor-pointer absolute end-1 rounded-sm top-1'>
+        <XMarkIcon 
+          className={` h-6 w-6  hover:text-gray-50  `} />
         </button>
       }
       {imageHandler()}

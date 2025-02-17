@@ -1,5 +1,7 @@
 using hotel_api_.RequestDto;
 using hotel_api.util;
+using hotel_business;
+using hotel_data.dto;
 using Minio;
 using Minio.DataModel.Args;
 
@@ -90,7 +92,7 @@ namespace hotel_api.Services
                 {
                     bool isHasPrevImage = await isFileExist(minioClient, previuseFileName, bucketNameStr);
                     if (!isHasPrevImage)
-                        await deleteFile(minioClient, previuseFileName, bucketNameStr);
+                        await deletExistFileAndReteurnUnDeletedFile(minioClient, previuseFileName, bucketNameStr);
                 }
 
                 // Upload the file
@@ -120,8 +122,7 @@ namespace hotel_api.Services
             IConfigurationServices _config,
             List<ImageRequestDto> file,
             enBucketName bucketName,
-            string? filePath = null,
-            List<string>? previuseFileName = null
+            string? filePath = null
         )
         {
             List<ImageRequestDto>? unDeletedImages = null;
@@ -136,7 +137,8 @@ namespace hotel_api.Services
                     return null;
                 }
 
-                unDeletedImages = await deleteFile(minioClient, file, bucketNameStr, filePath);
+                //unDeletedImages = await deleteFile(minioClient, file, bucketNameStr, filePath);
+                unDeletedImages = await deletExistFileAndReteurnUnDeletedFile(minioClient, file, bucketNameStr, filePath);
 
 
                 foreach (var formFile in unDeletedImages)
@@ -152,18 +154,18 @@ namespace hotel_api.Services
                         await _createNewBucket(minioClient, bucketNameStr);
                     }
 
-                    if (previuseFileName != null)
-                    {
-                        foreach (var se in previuseFileName)
-                        {
-                            bool isExist = await isFileExist(minioClient, se, bucketNameStr);
-                            if (!isExist)
-                            {
-                                await deleteFile(minioClient, se, bucketNameStr);
-                            }
-                        }
-                    }
-
+                    /*   if (previuseFileName != null)
+                       {
+                           foreach (var se in previuseFileName)
+                           {
+                               bool isExist = await isFileExist(minioClient, se.path, bucketNameStr);
+                               if (!isExist)
+                               {
+                                   await deleteFile(minioClient, se.path, bucketNameStr);
+                               }
+                           }
+                       }
+   */
                     // Upload the file
                     if (formFile.data != null)
                     {
@@ -190,11 +192,11 @@ namespace hotel_api.Services
             return unDeletedImages;
         }
 
-        private static async Task<List<ImageRequestDto>> deleteFile(
-            IMinioClient client, 
+        private static async Task<List<ImageRequestDto>> deletExistFileAndReteurnUnDeletedFile(
+            IMinioClient client,
             List<ImageRequestDto> files,
             string bucketName, string? path = null
-            )
+        )
         {
             List<ImageRequestDto> newFiles = files;
 
@@ -215,6 +217,8 @@ namespace hotel_api.Services
                         }
 
                         newFiles.Remove(file);
+                        if (file.id != null)
+                            ImageBuissness.deleteImage((Guid)file.id);
                     }
                     catch (Exception ex)
                     {
@@ -227,9 +231,9 @@ namespace hotel_api.Services
         }
 
 
-        private static async Task<bool> deleteFile(
+        private static async Task<bool> deletExistFileAndReteurnUnDeletedFile(
             IMinioClient client,
-            string fileName, 
+            string fileName,
             string bucketName)
         {
             try
@@ -252,10 +256,10 @@ namespace hotel_api.Services
 
 
         private static async Task<bool> isFileExist(
-            IMinioClient client, 
-            string fileName, 
+            IMinioClient client,
+            string fileName,
             string bucketName
-            )
+        )
         {
             try
             {

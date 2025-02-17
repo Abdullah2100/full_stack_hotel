@@ -416,7 +416,7 @@ namespace hotel_api.controller
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> createNewRoomType(
-            [FromForm] RoomTypeRequest roomTypeData
+            [FromForm] RoomTypeRequestUpdateDto roomTypeData
         )
         {
             var authorizationHeader = HttpContext.Request.Headers["Authorization"];
@@ -533,7 +533,7 @@ namespace hotel_api.controller
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> updateRoomTypes([FromForm] RoomTypeRequest roomTypeData, Guid roomtypeid)
+        public async Task<IActionResult> updateRoomTypes([FromForm] RoomTypeRequestUpdateDto roomTypeData, Guid roomtypeid)
         {
             var authorizationHeader = HttpContext.Request.Headers["Authorization"];
             var id = AuthinticationServices.GetPayloadFromToken("id",
@@ -589,7 +589,7 @@ namespace hotel_api.controller
         }
 
 
-        private void updateRoomTypeData(ref RoomtTypeBuissnes data, RoomTypeRequest holder, Guid createdBy)
+        private void updateRoomTypeData(ref RoomtTypeBuissnes data, RoomTypeRequestUpdateDto holder, Guid createdBy)
         {
             if (data.name != holder.name)
             {
@@ -700,7 +700,7 @@ namespace hotel_api.controller
 
             var roomHolder = new RoomBuisness(
                 new RoomDto(
-                    roomId: roomData.roomtypeid,
+                    roomId: roomId,
                     status: roomData.status,
                     pricePerNight: roomData.pricePerNight,
                     roomtypeid: roomData.roomtypeid,
@@ -719,43 +719,6 @@ namespace hotel_api.controller
             return StatusCode(201, new { message = "created seccessfully" });
         }
 
-        private void saveImage(
-            string? imagePath,
-            Guid? id
-            , ImageBuissness? imageHolder = null
-        )
-        {
-            if (imageHolder != null)
-            {
-                imageHolder.path = imagePath;
-                imageHolder.save();
-            }
-            else if (imagePath != null && id != null)
-            {
-                imageHolder =
-                    new ImageBuissness(new ImagesTbDto(imagePath: imagePath, belongTo: (Guid)id, imagePathId: null));
-                imageHolder.save();
-            }
-        }
-
-        private void saveImage(
-            List<ImageRequestDto>? imagePath,
-            Guid id
-        )
-        {
-            if (imagePath != null)
-            {
-                foreach (var path in imagePath)
-                {
-                    var imageHolder = new ImageBuissness(
-                        new ImagesTbDto(
-                            imagePath: path.fileName, belongTo: id, imagePathId: null)
-                    );
-                    imageHolder.save();
-                }
-            }
-        }
-
 
         [Authorize]
         [HttpGet("room/{pageNumber:int}")]
@@ -771,11 +734,148 @@ namespace hotel_api.controller
                 var rooms = RoomBuisness.getAllRooms(pageNumber, 25);
 
                 return Ok(rooms);
-
             }
             catch (Exception ex)
             {
                 return StatusCode(500, "Something went wrong");
+            }
+        }
+
+        [Authorize]
+        [HttpPut("room/{roomId:guid}")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> updateRoom
+        ([FromForm] RoomRequestUpdateDto roomData,
+            Guid roomId
+        )
+        {
+            var authorizationHeader = HttpContext.Request.Headers["Authorization"];
+            var id = AuthinticationServices.GetPayloadFromToken("id",
+                authorizationHeader.ToString().Replace("Bearer ", ""));
+            Guid? adminid = null;
+            if (Guid.TryParse(id.Value.ToString(), out Guid outID))
+            {
+                adminid = outID;
+            }
+
+            if (adminid == null)
+            {
+                return StatusCode(401, "you not have Permission");
+            }
+
+            var isHasPermissionToCreateUser = AdminBuissnes.isAdminExist(adminid ?? Guid.Empty);
+
+
+            if (!isHasPermissionToCreateUser)
+            {
+                return StatusCode(401, "you not have Permission");
+            }
+
+            var room = RoomBuisness.getRoom(roomId);
+
+            if (room == null)
+                return StatusCode(400, "room not found");
+
+
+            List<ImageRequestDto>? imageHolderPath = null;
+            if (roomData.images != null)
+            {
+                imageHolderPath = await MinIoServices.uploadFile(
+                    _config,
+                    roomData.images,
+                    MinIoServices.enBucketName.ROOM,
+                    roomId.ToString()
+                );
+            }
+
+            saveImage(imageHolderPath, roomId);
+            _updateRoomData(ref room, roomData);
+
+            var result = room.save();
+
+            if (result == false)
+                return StatusCode(500, "some thing wrong");
+
+            return StatusCode(201, new { message = "created seccessfully" });
+        }
+
+        private void _updateRoomData(ref RoomBuisness roomData, RoomRequestUpdateDto newRoomData)
+        {
+         
+           if (newRoomData.status!=null && roomData.status != newRoomData.status)
+           {
+               roomData.status =(enStatsu)newRoomData.status;
+           }
+
+           if (newRoomData.pricePerNight != null && newRoomData.pricePerNight != roomData.pricePerNight)
+           {
+               roomData.pricePerNight =(int) newRoomData.pricePerNight;
+           }
+
+           if (newRoomData.bedNumber != null && newRoomData.bedNumber != roomData.bedNumber)
+           {
+               roomData.bedNumber = (int) newRoomData.bedNumber;
+           }
+
+           if (newRoomData.roomtypeid != null && newRoomData.roomtypeid != roomData.roomtypeid)
+           {
+               roomData.roomtypeid =(Guid) newRoomData.roomtypeid;
+           }
+
+           if (newRoomData.capacity != null && newRoomData.capacity != roomData.capacity)
+           {
+               roomData.capacity = (int) newRoomData.capacity;
+           }
+          
+           
+        }
+
+
+        private void saveImage(
+            string? imagePath,
+            Guid? id
+            , ImageBuissness? imageHolder = null
+        )
+        {
+            if (imageHolder != null)
+            {
+                imageHolder.path = imagePath;
+                imageHolder.save();
+            }
+            else if (imagePath != null && id != null)
+            {
+                imageHolder =
+                    new ImageBuissness(
+                        new ImagesTbDto(
+                            imagePath: imagePath,
+                            belongTo: (Guid)id,
+                            imagePathId: null,
+                            isThumnail: imageHolder.isThumnail));
+                imageHolder.save();
+            }
+        }
+
+        private void saveImage(
+            List<ImageRequestDto>? imagePath,
+            Guid id
+        )
+        {
+            if (imagePath != null)
+            {
+                foreach (var path in imagePath)
+                {
+                    var imageHolder = new ImageBuissness(
+                        new ImagesTbDto(
+                            imagePath: path.fileName,
+                            belongTo: id,
+                            imagePathId: null,
+                            isThumnail: path.isThumnail)
+                    );
+                    imageHolder.save();
+                }
             }
         }
     }

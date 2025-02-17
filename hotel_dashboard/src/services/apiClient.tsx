@@ -36,6 +36,7 @@ export default async function apiClient({
             headers: headers,
         });
 
+         generalMessage(`this shown the token from user ${token}`)
         return response;
     } catch (error) {
         if (error?.response?.status === 401 && tryNumber === 1) {

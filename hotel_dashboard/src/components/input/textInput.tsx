@@ -39,6 +39,7 @@ export const TextInput =
 
     // Function to handle input change and call onInput with value and key
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      e.preventDefault()
       onInput(e.target.value, keyType); // Use name attribute to determine the key
     };
 
@@ -63,7 +64,10 @@ export const TextInput =
               disabled={isDisabled}
               onChange={handleChange}
               required={isRequire}
-              onFocus={onFoucseInpur}
+              onFocus={(e)=>{
+                 e.preventDefault() ;
+                onFoucseInpur;
+              }}
             />
             :
             <div>
@@ -75,10 +79,13 @@ export const TextInput =
                 placeholder={placeHolder}
                 maxLength={maxLength}
                 disabled={isDisabled}
-                onChange={handleChange}
+                onChange={  handleChange }
                 type={type}
                 required={isRequire}
-                onFocus={onFoucseInpur}
+                onFocus={(e)=>{
+                  e.preventDefault() ;
+                 onFoucseInpur;
+               }}
               />
             </div>
         }

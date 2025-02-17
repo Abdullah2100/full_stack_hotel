@@ -6,6 +6,7 @@ import { IAuthModule } from '../../module/iAuthModule';
 import { Guid } from 'guid-typescript';
 import ImageHolder from '../imageHolder';
 import { IRoomType } from '../../module/iRoomType';
+import DateFormat from '../../util/dateFormat';
 
 interface RoomTypeTableProps {
   data?: IRoomType[],
@@ -69,7 +70,7 @@ const RoomTypeTable = ({
               <td className="px-4 py-2 border-b text-left whitespace-nowrap">{roomtype.roomTypeName}</td>
 
               <td className="px-4 py-2 border-b text-left whitespace-nowrap">
-                {roomtype?.createdAt ? new Date(roomtype.createdAt).toISOString().split('T')[0] : ""}
+               {DateFormat.toStringDate(roomtype.createdAt)}
               </td>
 
               <td className="px-4 py-1   text-left ">

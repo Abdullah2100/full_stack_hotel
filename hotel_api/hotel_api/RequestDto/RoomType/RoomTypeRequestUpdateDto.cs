@@ -2,8 +2,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace hotel_api_.RequestDto;
 
-public class RoomTypeRequest
+public class RoomTypeRequestUpdateDto
 {
-    [Required] [StringLength(50)] public string name { get; set; } = "";
+     [StringLength(50)] public string name { get; set; } = "";
     public IFormFile? image { get; set; } = null;
 }

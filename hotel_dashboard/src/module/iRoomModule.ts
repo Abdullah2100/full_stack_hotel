@@ -6,7 +6,7 @@ import { IUserModule } from "./iUserModule";
 
 export interface IRoomModule {
     roomId?: Guid | undefined;
-    status: enStatsu;
+    status: enStatsu |number;
     pricePerNight: number;
     capacity: number;
     roomtypeid?: Guid | undefined;

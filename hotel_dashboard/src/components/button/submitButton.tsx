@@ -18,7 +18,10 @@ const SubmitButton = (
         textstyle
     }: submitButtonProps) => {
     return (<button
-        onClick={buttonStatus !== enStatus.loading ? onSubmit : undefined}
+        onClick={(e)=>{
+            e.preventDefault();
+            buttonStatus !== enStatus.loading ?onSubmit() : undefined
+        }}
        // color="primary"
         className={style}
     >

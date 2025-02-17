@@ -10,12 +10,22 @@ public class ImageBuissness
     public Guid? ID  { get; set; }
     public string path { get; set; }
     public Guid? belongTo   { get; set; }    
-    public ImagesTbDto imageHolder{get{return new ImagesTbDto(imagePathId:ID,imagePath:path,belongTo:belongTo);}}
-    public ImageBuissness(ImagesTbDto image,enMode mode = enMode.add)
+    public bool? isThumnail   { get; set; }    
+    public ImagesTbDto imageHolder{get{return new ImagesTbDto(
+        imagePathId:ID,
+        imagePath:path,
+        belongTo:belongTo,
+        isThumnail:isThumnail
+        );}}
+    public ImageBuissness(
+        ImagesTbDto image,
+        enMode mode = enMode.add
+        )
     {
         this.ID = image.id;
         this.path = image.path;
         this.belongTo = image.belongTo;
+        this.isThumnail = image.isThumnail;
         this.mode = mode;   
     }
 
@@ -79,5 +89,10 @@ public class ImageBuissness
     public static bool deleteImageByBelgonTo(Guid belongTo)
     {
         return ImagesData.deleteImage(belongTo:belongTo);
+    }
+    
+    public static bool deleteImage(Guid id)
+    {
+        return ImagesData.deleteImageById(id);
     }
 }
