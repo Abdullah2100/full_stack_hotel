@@ -28,14 +28,18 @@ public class RoomData
                             {
                                 string statusHolder = (string)reader["status"];
                                 room = new RoomDto(
-                                    roomId: (Guid)reader["roomid"],
-                                    status: convertStatusToEnum(statusHolder),
+                                    roomId:roomID,
+                                    status: convertStatusToEnum((string)reader["status"]),
                                     pricePerNight: (decimal)reader["pricepernight"],
-                                    createdAt: (DateTime)reader["created_at"],
-                                    roomtypeid: (Guid)reader["roomtypeid"],
                                     capacity: (int)reader["capacity"],
+                                    roomtypeid: (Guid)reader["roomtypeid"],
                                     bedNumber: (int)reader["bednumber"],
-                                    beglongTo: (Guid)reader["belongto"]
+                                    beglongTo:(Guid)reader["belongto"],
+                                    createdAt: (DateTime)reader["createdat"],
+                                    isBlock: (bool)reader["isblock"],
+                                    images:ImagesData.images(roomID),
+                                    isDeleted:(bool)reader["isdeleted"]
+                                    
                                 );
                             }
                         }
@@ -152,10 +156,10 @@ public class RoomData
                 con.Open();
                 string query = @"select * from fn_room_update_new
                                 (
-                               @roomid_,
+                               @roomid_::UUID,
                                @status::VARCHAR,
                                @pricePerNight_::NUMERIC,
-                               @roomtypeid_ ,
+                               @roomtypeid_::UUID ,
                                @capacity_::INT ,
                                @bedNumber_::INT
                                 )";

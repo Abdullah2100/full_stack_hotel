@@ -737,39 +737,39 @@ INSERT ON rooms FOR EACH ROW EXECUTE FUNCTION fn_room_insert();
 ----
 CREATE OR REPLACE FUNCTION fn_room_update_new (
         roomid_ UUID,
-        status VARCHAR(10),
+        status_ VARCHAR(10),
         pricePerNight_ NUMERIC(10, 2),
         roomtypeid_ UUID,
         capacity_ INT,
         bedNumber_ INT
-    ) RETURNS INT AS $$
+    ) RETURNS Boolean AS $$
 DECLARE updateAt_holder TIMESTAMP;
 BEGIN
 UPDATE rooms
 SET Status = CASE
-        WHEN status <> NEW.Status
-        AND status IS NOT NULL THEN status
-        ELSE NEW.Status
+        WHEN status <> status_
+        AND status_ IS NOT NULL THEN status_
+        ELSE status
     END,
     pricePerNight = CASE
-        WHEN pricePerNight_ <> NEW.pricePerNight
+        WHEN pricePerNight_ <>  pricePerNight
         AND pricePerNight_ IS NOT NULL THEN pricePerNight_
-        ELSE NEW.pricePerNight
+        ELSE  pricePerNight
     END,
     roomtypeid = CASE
-        WHEN roomtypeid_ <> NEW.roomtypeid
+        WHEN roomtypeid_ <>  roomtypeid
         AND roomtypeid_ IS NOT NULL THEN roomtypeid_
-        ELSE NEW.roomtypeid
+        ELSE  roomtypeid
     END,
     capacity = CASE
-        WHEN capacity_ <> NEW.capacity
+        WHEN capacity_ <>  capacity
         AND capacity_ IS NOT NULL THEN capacity_
-        ELSE NEW.capacity
+        ELSE  capacity
     END,
     bedNumber = CASE
-        WHEN bedNumber_ <> NEW.bedNumber
+        WHEN bedNumber_ <>  bedNumber
         AND bedNumber_ IS NOT NULL THEN bedNumber_
-        ELSE NEW.bedNumber
+        ELSE  bedNumber
     END,
     updateAt = CURRENT_TIMESTAMP
 WHERE roomid = roomid_;
@@ -780,7 +780,7 @@ RETURN updateAt_holder is NOT NULL;
 EXCEPTION
 WHEN OTHERS THEN RAISE EXCEPTION 'Something went wrong: %',
 SQLERRM;
-RETURN 0;
+RETURN false;
 END;
 $$ LANGUAGE PLPGSQL;
 ---

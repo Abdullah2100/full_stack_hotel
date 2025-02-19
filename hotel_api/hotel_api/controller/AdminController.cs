@@ -766,10 +766,10 @@ namespace hotel_api.controller
                 return StatusCode(401, "you not have Permission");
             }
 
-            var isHasPermissionToCreateUser = AdminBuissnes.isAdminExist(adminid ?? Guid.Empty);
+            var isHasPermissionToCurd = AdminBuissnes.isAdminExist(adminid ?? Guid.Empty);
 
 
-            if (!isHasPermissionToCreateUser)
+            if (!isHasPermissionToCurd)
             {
                 return StatusCode(401, "you not have Permission");
             }
@@ -788,9 +788,11 @@ namespace hotel_api.controller
                     roomData.images,
                     MinIoServices.enBucketName.ROOM,
                     roomId.ToString()
+                    
                 );
             }
 
+            if(imageHolderPath!=null)
             saveImage(imageHolderPath, roomId);
             _updateRoomData(ref room, roomData);
 
@@ -799,7 +801,7 @@ namespace hotel_api.controller
             if (result == false)
                 return StatusCode(500, "some thing wrong");
 
-            return StatusCode(201, new { message = "created seccessfully" });
+            return StatusCode(200, new { message = "update seccessfully" });
         }
 
         private void _updateRoomData(ref RoomBuisness roomData, RoomRequestUpdateDto newRoomData)
