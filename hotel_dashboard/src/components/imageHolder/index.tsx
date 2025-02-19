@@ -21,7 +21,8 @@ const ImageHolder = ({
   typeHolder = undefined,
   deleteFun = undefined
 }: ImageHolderProps) => {
-
+  if(deleteFun===undefined)
+   generalMessage(`\n\nthis the src file ${src}\n\n`)
   const [isHasError, setHasError] = useState<boolean>(false);
 
   const handleError = (e) => {

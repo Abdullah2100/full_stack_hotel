@@ -138,7 +138,8 @@ namespace hotel_api.Services
                 }
 
                 //unDeletedImages = await deleteFile(minioClient, file, bucketNameStr, filePath);
-                unDeletedImages = await deletExistFileAndReteurnUnDeletedFile(minioClient, file, bucketNameStr, filePath);
+                unDeletedImages =
+                    await deletExistFileAndReteurnUnDeletedFile(minioClient, file, bucketNameStr);
 
 
                 foreach (var formFile in unDeletedImages)
@@ -195,35 +196,36 @@ namespace hotel_api.Services
         private static async Task<List<ImageRequestDto>> deletExistFileAndReteurnUnDeletedFile(
             IMinioClient client,
             List<ImageRequestDto> files,
-            string bucketName, string? path = null
+            string bucketName
         )
         {
-            List<ImageRequestDto> newFiles = files;
+            List<ImageRequestDto> newFiles = new List<ImageRequestDto>();
 
-            foreach (var file in newFiles)
+            foreach (var file in files)
             {
                 if ((file.isDeleted == true || file.data == null))
                 {
                     try
                     {
-                        if (file.data != null)
+                        if (file.isDeleted == true)
                         {
-                            string fullName = path != null ? path + '/' + file.data.FileName : file.data.FileName;
                             await client.RemoveObjectAsync(
                                 new RemoveObjectArgs()
                                     .WithBucket(bucketName)
-                                    .WithObject(fullName)
+                                    .WithObject(file.fileName)
                             ).ConfigureAwait(false);
+                            if (file.id != null)
+                                ImageBuissness.deleteImage((Guid)file.id);
                         }
-
-                        newFiles.Remove(file);
-                        if (file.id != null)
-                            ImageBuissness.deleteImage((Guid)file.id);
                     }
                     catch (Exception ex)
                     {
                         Console.WriteLine("Error deleting file: {0}", ex.Message);
                     }
+                }
+                else if ((file.data != null))
+                {
+                    newFiles.Add(file);
                 }
             }
 

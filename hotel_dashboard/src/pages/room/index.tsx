@@ -5,7 +5,7 @@ import { PencilIcon, XMarkIcon } from '@heroicons/react/16/solid';
 import ImageHolder from '../../components/imageHolder';
 import RoomsIcon from '../../assets/rooms_icon';
 import { enNavLinkType } from '../../module/enNavLinkType';
-import { SetStateAction, useContext, useEffect, useRef, useState } from 'react';
+import { SetStateAction, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useToastifiContext } from '../../context/toastifyCustom';
 import { enMessage } from '../../module/enMessageType';
 import { TextInput } from '../../components/input/textInput';
@@ -45,12 +45,12 @@ const Room = () => {
   const [pageNumber, setPageNumber] = useState(1)
 
 
-  const [thumnailImage, setThumnail] = useState<iImageHolder>()
-  const [images, setImages] = useState<iImageHolder[]>()
+  const [thumnailImage, setThumnail] = useState<iImageHolder | undefined>(undefined)
+  const [images, setImages] = useState<iImageHolder[] | undefined>(undefined)
 
   const [imagesHolder, setImagesHolder] = useState<iImageHolder[]>()
 
-  const [deletedImages, setdeletedImagess] = useState<iImageHolder[]>()
+  const [deletedImages, setdeletedImagess] = useState<iImageHolder[] | undefined>(undefined)
 
   const [roomData, setRoomData] = useState<IRoomModule>({
     roomtypeid: undefined,
@@ -69,6 +69,14 @@ const Room = () => {
 
   const imageRef = useRef<HTMLInputElement>(null);
 
+  const theumnailHolder = useMemo(() => {
+    return <ImageHolder
+      typeHolder={enNavLinkType.ROOMS}
+      src={thumnailImage?.data === undefined ? `${import.meta.env.VITE_MINIO_ENDPOINT}/room/${thumnailImage?.path}` : URL.createObjectURL(thumnailImage.data)}
+      style='flex  w-full lg:w-20 '
+      isFromTop={true} />
+  }, [thumnailImage])
+
   const handleRoomEditeButton = (roomDataHolder: IRoomModule) => {
 
 
@@ -77,8 +85,9 @@ const Room = () => {
       //  if (x != undefined)
       // })
       const thumnailHolder = roomDataHolder.images?.find(x => x.isThumnail === true);
+      generalMessage(`\n\n\nthis shown the images ${JSON.stringify(roomDataHolder.images)}\n\n`)
+
       if (thumnailHolder) {
-        //generalMessage(`\n\n\nthis shown the images ${JSON.stringify(import.meta.env.VITE_MINIO_ENDPOINT + "/room/" + thumnailHolder.path)}\n\n`)
         generalMessage(`\n\n\nthis shown the images ${thumnailImage?.path}\n\n`)
         setThumnail(thumnailHolder)
 
@@ -276,22 +285,34 @@ const Room = () => {
     }
   }
 
-  const addDeletedFileToDeletedList = (image: iImageHolder) => {
 
-    if (!(image?.id === undefined)) {
+  const addDeletedFileToDeletedList = (image: iImageHolder) => {
+    if (image?.id !== undefined) {
+
       image.isDeleted = true;
-      setdeletedImagess([...(deletedImages || []), image])
-    };
-  }
+
+      // Update the state
+      let deletedImageList = [] as iImageHolder[];
+      if (deletedImages === undefined) {
+        deletedImageList = [image]
+      }
+      if (deletedImages !== undefined) {
+        deletedImageList = [...deletedImages, image]
+      }
+      setdeletedImagess(deletedImageList);
+    }
+  };
 
 
   const deleteImage = (index: number) => {
-    if (!(images === undefined)) {
+    if ((images && images?.length > 0)) {
+
       addDeletedFileToDeletedList(images[index]);
-    }
-    if (images) {
+
       setImages(images.filter(x => x.id !== images[index].id));
     }
+    // if (images) {
+    // }
   }
 
 
@@ -416,6 +437,8 @@ const Room = () => {
   }
 
   const createOrUpdateRoom = async () => {
+    let counter = 0;
+
     if (isUpdate === false) {
       const result = !validationInput();
 
@@ -436,43 +459,58 @@ const Room = () => {
     formData.append("roomtypeid", roomData.roomtypeid?.toString() ?? "");
 
 
+    if (thumnailImage) {
+
+      formData.append(`images[${counter}].id`, thumnailImage.id ? thumnailImage.id.toString() : "");
+      formData.append(`images[${counter}].belongTo`, thumnailImage.belongTo ? thumnailImage.belongTo.toString() : "");
+      formData.append(`images[${counter}].isDeleted`, thumnailImage.isDeleted ? thumnailImage.isDeleted.toString() : "");
+      if (thumnailImage.path !== undefined)
+        formData.append(`images[${counter}].fileName`, thumnailImage.path ?? "");
+      formData.append(`images[${counter}].isDeleted`, thumnailImage.isDeleted ? thumnailImage.isDeleted.toString() : "");
+      formData.append(`images[${counter}].isThumnail`, thumnailImage.isThumnail ? thumnailImage.isThumnail.toString() : "");
+
+      if (thumnailImage.data)
+        formData.append(`images[${counter}].data`, thumnailImage.data);
+    }
+
+
     if (images && images.length > 0) {
       images.forEach((image, index) => {
-        formData.append(`images[${index}].id`, image.id ? image.id.toString() : "");
-        formData.append(`images[${index}].belongTo`, image.belongTo ? image.belongTo.toString() : "");
-        formData.append(`images[${index}].isDeleted`, image.isDeleted ? image.isDeleted.toString() : "");
-        formData.append(`images[${index}].isThumnail`, image.isThumnail ? image.isThumnail.toString() : "");
+        counter += 1;
+        formData.append(`images[${counter}].id`, image.id ? image.id.toString() : "");
+        formData.append(`images[${counter}].belongTo`, image.belongTo ? image.belongTo.toString() : "");
+        formData.append(`images[${counter}].isDeleted`, image.isDeleted ? image.isDeleted.toString() : "");
+        if (image.path !== undefined)
+          formData.append(`images[${counter}].fileName`, image.path ?? "");
+        formData.append(`images[${counter}].isThumnail`, image.isThumnail ? image.isThumnail.toString() : "");
         if (image.data)
-          formData.append(`images[${index}].data`, image.data);
+          formData.append(`images[${counter}].data`, image.data);
       });
-
-      if (thumnailImage) {
-
-        formData.append(`images[${images.length}].id`, thumnailImage.id ? thumnailImage.id.toString() : "");
-        formData.append(`images[${images.length}].belongTo`, thumnailImage.belongTo ? thumnailImage.belongTo.toString() : "");
-        formData.append(`images[${images.length}].isDeleted`, thumnailImage.isDeleted ? thumnailImage.isDeleted.toString() : "");
-        formData.append(`images[${images.length}].isThumnail`, thumnailImage.isThumnail ? thumnailImage.isThumnail.toString() : "");
-
-        if (thumnailImage.data)
-          formData.append(`images[${images.length}].data`, thumnailImage.data);
-      }
     }
+
+
 
     if (isUpdate) {
       // formData.append("roomId", roomData.roomId ? roomData.roomId.toString() : '');
+      if (deletedImages) {
 
-      if (deletedImages)
         deletedImages.forEach((image, index) => {
-          formData.append(`images[${index}].id`, image.id ? image.id.toString() : "");
-          formData.append(`images[${index}].belongTo`, image.belongTo ? image.belongTo.toString() : "");
-          formData.append(`images[${index}].isDeleted`, image.isDeleted ? image.isDeleted.toString() : "");
-          formData.append(`images[${index}].isThumnail`, image.isThumnail ? image.isThumnail.toString() : "");
+          counter += 1;
+
+          formData.append(`images[${counter}].id`, image.id ? image.id.toString() : "");
+          formData.append(`images[${counter}].belongTo`, image.belongTo ? image.belongTo.toString() : "");
+          formData.append(`images[${counter}].isDeleted`, image.isDeleted ? image.isDeleted.toString() : "");
+          if (image.path !== undefined)
+            formData.append(`images[${counter}].fileName`, image.path ?? "");
+          formData.append(`images[${counter}].isThumnail`, image.isThumnail ? image.isThumnail.toString() : "");
           if (image.data)
-            formData.append(`images[${index}].data`, image.data);
-        });
+            formData.append(`images[${counter}].data`, image.data);
+        })
+      };
 
     }
 
+    generalMessage(`Deleted images updated: ${JSON.stringify(deletedImages?.length)}`);
 
     let endpoint = import.meta.env.VITE_ROOM;
 
@@ -482,7 +520,7 @@ const Room = () => {
 
     await roomMutaion.mutate({
       data: formData,
-      endpoint:endpoint ,
+      endpoint: endpoint,
       methodType: isUpdate ? enApiType.PUT : enApiType.POST,
       refreshToken: refreshToken,
       token: token
@@ -560,6 +598,9 @@ const Room = () => {
                 }
                 className='flex flex-row h-24 w-24 '
               />
+              {
+                //theumnailHolder
+              }
             </div>
 
             <input
@@ -750,7 +791,7 @@ const Room = () => {
           }} makeRoomVip={function (roomId: Guid): Promise<void> {
             throw new Error('Function not implemented.');
           }} isShwoingDeleted={false} />
-        {/* </div> */}
+
 
         <UserShape
           userData={userData ? userData : undefined}

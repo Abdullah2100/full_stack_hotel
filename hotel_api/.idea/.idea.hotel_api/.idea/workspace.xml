@@ -9,43 +9,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a5d946be-ded5-4850-9962-9f8d801bf9de" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../SQLQuery_2.sql" beforeDir="false" afterPath="$PROJECT_DIR$/../SQLQuery_2.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.hotel_api/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.hotel_api/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/RequestDto/RoomRequestDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/RequestDto/Room/RoomRequestDto.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/RequestDto/RoomTypeRequest.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/RequestDto/RoomType/RoomTypeRequestUpdateDto.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/RequestDto/RoomTypeRequestDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/RequestDto/RoomType/RoomTypeRequestDto.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/RequestDto/UserRequestDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/RequestDto/User/UserRequestDto.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/RequestDto/UserUpdateDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/RequestDto/User/UserUpdateDto.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_api/Services/MinIoServices.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/Services/MinIoServices.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_api/obj/hotel_api.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/obj/hotel_api.csproj.nuget.dgspec.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_api/obj/hotel_api.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/obj/hotel_api.csproj.nuget.g.props" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_api/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/obj/project.assets.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_api/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_api/obj/project.nuget.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_business/ImageBuissness.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/ImageBuissness.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_business/RoomBuisness.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/RoomBuisness.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_business/obj/hotel_business.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/obj/hotel_business.csproj.nuget.dgspec.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_business/obj/hotel_business.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/obj/hotel_business.csproj.nuget.g.props" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_business/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/obj/project.assets.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_business/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_business/obj/project.nuget.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_data/ImagesData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/ImagesData.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hotel_data/RoomData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/RoomData.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_data/dto/ImagesTbDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/dto/ImagesTbDto.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel_data/dto/RoomDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/hotel_data/dto/RoomDto.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/components/button/submitButton.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/components/button/submitButton.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/components/imageHolder/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/components/imageHolder/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/components/input/passwordInput.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/components/input/passwordInput.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/components/input/textInput.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/components/input/textInput.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/components/tables/roomTable.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/components/tables/roomTable.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/components/tables/roomTypeTable.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/components/tables/roomTypeTable.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/components/tables/usersTable.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/components/tables/usersTable.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/module/IImageHolder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/module/IImageHolder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/module/iRoomModule.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/module/iRoomModule.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/pages/room/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/pages/room/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/pages/roomType/roomType.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/pages/roomType/roomType.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/pages/user/user.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/pages/user/user.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/services/apiClient.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/services/apiClient.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hotel_dashboard/src/util/dateFormat.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../hotel_dashboard/src/util/dateFormat.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,6 +34,8 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/1c3f7d5c03bf77051eb8a758fb3549c4e2d4cb3dc6f6d567a94a315044961e/List.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/28cd855de94bfd8634946dc58c1968981f553bac8b4628e2e0457228ee2eea/Guid.Unix.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/4adb5b691829c26d83fa849c65de669c2b38704fa6a8e6216dafbcb24e24d4f/NpgsqlDataReader.cs" root0="FORCE_HIGHLIGHTING" />
@@ -66,6 +43,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/9791af8a6f1fd2d4426079f66fc5d3f23fc58597deb8a17878388a76d84013/Guid.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/b93677e7bc427676ed5eae846f2dbe4e1095f5ba135155b96527ce5e11e871/Component.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/c2f3c2871cbc269fcb5ffb2c471c92336812a76ce642b22dd65228dad125a91e/DbDataReader.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/db7395f4add94e6d10e515b3e55373f2821f8323de7dc8e314d78feefacf5584/ActionMethodExecutor.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f8fdff6920a6a186765c356799993ad6972eb8285ca31ea98d157ac4b3d16/DateTime.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
@@ -86,8 +64,8 @@
     ".NET Launch Settings Profile.hotel_api: http.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "XThreadsFramesViewSplitterKey": "0.11369509",
-    "git-widget-placeholder": "main",
+    "XThreadsFramesViewSplitterKey": "0.05",
+    "git-widget-placeholder": "room__update__design",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -198,6 +176,9 @@
       <workItem from="1739638937766" duration="6014000" />
       <workItem from="1739700316900" duration="6189000" />
       <workItem from="1739791056183" duration="7551000" />
+      <workItem from="1739873103862" duration="3420000" />
+      <workItem from="1739950531962" duration="49000" />
+      <workItem from="1739954523678" duration="8574000" />
     </task>
     <servers />
   </component>
@@ -381,26 +362,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/hotel_api/Services/MinIoServices.cs</url>
-          <line>143</line>
+          <line>192</line>
           <properties documentPath="$PROJECT_DIR$/hotel_api/Services/MinIoServices.cs" containingFunctionPresentation="Method 'uploadFile'">
             <startOffsets>
-              <option value="5048" />
+              <option value="7074" />
             </startOffsets>
             <endOffsets>
-              <option value="5089" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="87" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/hotel_api/Services/MinIoServices.cs</url>
-          <line>191</line>
-          <properties documentPath="$PROJECT_DIR$/hotel_api/Services/MinIoServices.cs" containingFunctionPresentation="Method 'uploadFile'">
-            <startOffsets>
-              <option value="7064" />
-            </startOffsets>
-            <endOffsets>
-              <option value="7087" />
+              <option value="7097" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="89" />
@@ -431,6 +399,97 @@
           </properties>
           <option name="timeStamp" value="92" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/hotel_api/controller/AdminController.cs</url>
+          <line>776</line>
+          <properties documentPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" containingFunctionPresentation="Method 'updateRoom'">
+            <startOffsets>
+              <option value="27617" />
+            </startOffsets>
+            <endOffsets>
+              <option value="27657" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="93" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/hotel_api/controller/AdminController.cs</url>
+          <line>690</line>
+          <properties documentPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" containingFunctionPresentation="Method 'createRoom'">
+            <startOffsets>
+              <option value="24673" />
+            </startOffsets>
+            <endOffsets>
+              <option value="24898" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="95" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/hotel_api/Services/MinIoServices.cs</url>
+          <line>231</line>
+          <properties documentPath="$PROJECT_DIR$/hotel_api/Services/MinIoServices.cs" containingFunctionPresentation="Method 'deletExistFileAndReteurnUnDeletedFile'">
+            <startOffsets>
+              <option value="8465" />
+            </startOffsets>
+            <endOffsets>
+              <option value="8481" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="100" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/hotel_api/Services/MinIoServices.cs</url>
+          <line>140</line>
+          <properties documentPath="$PROJECT_DIR$/hotel_api/Services/MinIoServices.cs" containingFunctionPresentation="Method 'uploadFile'">
+            <startOffsets>
+              <option value="4923" />
+            </startOffsets>
+            <endOffsets>
+              <option value="5039" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="106" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/hotel_api/Services/MinIoServices.cs</url>
+          <line>222</line>
+          <properties documentPath="$PROJECT_DIR$/hotel_api/Services/MinIoServices.cs" containingFunctionPresentation="Method 'deletExistFileAndReteurnUnDeletedFile'">
+            <startOffsets>
+              <option value="8217" />
+            </startOffsets>
+            <endOffsets>
+              <option value="8275" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="108" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/hotel_api/controller/AdminController.cs</url>
+          <line>794</line>
+          <properties documentPath="$PROJECT_DIR$/hotel_api/controller/AdminController.cs" containingFunctionPresentation="Method 'updateRoom'">
+            <startOffsets>
+              <option value="28153" />
+            </startOffsets>
+            <endOffsets>
+              <option value="28178" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="109" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/hotel_data/RoomData.cs</url>
+          <line>155</line>
+          <properties documentPath="$PROJECT_DIR$/hotel_data/RoomData.cs" containingFunctionPresentation="Method 'updateRoom'">
+            <startOffsets>
+              <option value="5295" />
+            </startOffsets>
+            <endOffsets>
+              <option value="5306" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="110" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <pin-to-top-manager>
@@ -448,6 +507,7 @@
         <watch expression="adminData.toUserDto()" />
         <watch expression="(Guid)result[&quot;personid&quot;]" />
         <watch expression="reader[&quot;isthumnail&quot;]" />
+        <watch expression="(file.data == null &amp;&amp; file.isDeleted == true)" />
       </configuration>
     </watches-manager>
   </component>
