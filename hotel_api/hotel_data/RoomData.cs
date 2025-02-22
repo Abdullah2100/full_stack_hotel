@@ -276,5 +276,44 @@ public class RoomData
         }
     }
 
-    
+    public static bool deleteRoom
+    (
+       Guid roomid,
+       Guid userId
+    )
+    {
+        bool isDeleted = false;
+        try
+        {
+            using (var con = new NpgsqlConnection(connectionUr))
+            {
+                
+                con.Open();
+                string query = @"select * from room_delete
+                                (
+                               @roomid::UUID,
+                               @userid::UUID 
+                                )";
+                
+                using (var cmd = new NpgsqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@roomid", roomid);
+                    cmd.Parameters.AddWithValue("@userid", userId);
+                    var reader = cmd.ExecuteScalar();
+                    if (reader != null && bool.TryParse(reader.ToString(),out bool result))
+                    {
+                        isDeleted = result;
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("this from create room {0}", ex.Message);
+           
+        }
+
+        return isDeleted;
+    }
+ 
 }

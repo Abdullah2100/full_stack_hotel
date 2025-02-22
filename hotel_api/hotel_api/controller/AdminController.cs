@@ -804,6 +804,57 @@ namespace hotel_api.controller
             return StatusCode(200, new { message = "update seccessfully" });
         }
 
+        
+          [Authorize]
+        [HttpDelete("room/{roomId:guid}")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> deleteOrUnDeleteRoom
+        ([FromForm] RoomRequestUpdateDto roomData,
+            Guid roomId
+        )
+        {
+            var authorizationHeader = HttpContext.Request.Headers["Authorization"];
+            var id = AuthinticationServices.GetPayloadFromToken("id",
+                authorizationHeader.ToString().Replace("Bearer ", ""));
+            Guid? adminid = null;
+            if (Guid.TryParse(id.Value.ToString(), out Guid outID))
+            {
+                adminid = outID;
+            }
+
+            if (adminid == null)
+            {
+                return StatusCode(401, "you not have Permission");
+            }
+
+            var isHasPermissionToCurd = AdminBuissnes.isAdminExist(adminid ?? Guid.Empty);
+
+
+            if (!isHasPermissionToCurd)
+            {
+                return StatusCode(401, "you not have Permission");
+            }
+
+            var room = RoomBuisness.getRoom(roomId);
+
+            if (room == null)
+                return StatusCode(400, "room not found");
+
+
+         
+
+            var result = RoomBuisness.deleteRoom(room.ID,(Guid)adminid);
+
+            if (result == false)
+                return StatusCode(500, "some thing wrong");
+
+            return StatusCode(200, new { message = "deleted seccessfully" });
+        }
+        
+        
         private void _updateRoomData(ref RoomBuisness roomData, RoomRequestUpdateDto newRoomData)
         {
          

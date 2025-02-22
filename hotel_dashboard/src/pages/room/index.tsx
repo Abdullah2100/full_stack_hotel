@@ -542,7 +542,17 @@ const Room = () => {
 
   }
   );
+  const deleteOrUndeleteRoom = async (userId: Guid) => {
+     generalMessage(`this shown the deletion function is caled ${import.meta.env.VITE_ROOM + '/' + userId}`)
+    await roomMutaion.mutate({
+      data: undefined,
+      endpoint: import.meta.env.VITE_ROOM + '/' + userId,
+      methodType: enApiType.DELETE,
+      token: token,
+      refreshToken: refreshToken
+    });
 
+  };
 
 
 
@@ -786,11 +796,7 @@ const Room = () => {
           setUserHover={setUserHover}
           setRoom={handleRoomEditeButton}
           setRoomImages={setImagesHolder}
-          deleteFunc={function (roomId: Guid): Promise<void> {
-            throw new Error('Function not implemented.');
-          }} makeRoomVip={function (roomId: Guid): Promise<void> {
-            throw new Error('Function not implemented.');
-          }} isShwoingDeleted={false} />
+          deleteFunc={deleteOrUndeleteRoom}  isShwoingDeleted={false} />
 
 
         <UserShape
