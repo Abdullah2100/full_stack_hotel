@@ -19,7 +19,6 @@ interface RoomTableProps {
   setUserHover: Dispatch<SetStateAction<IUserModule | undefined>>
   setRoomImages: Dispatch<SetStateAction<iImageHolder[] | undefined>>
    deleteFunc: (roomId: Guid) => Promise<void>
-  makeRoomVip: (roomId: Guid) => Promise<void>
   isShwoingDeleted: boolean
 
 }
@@ -30,7 +29,6 @@ const RoomTable = ({
   setUserHover,
   setRoomImages,
    deleteFunc,
-  makeRoomVip,
   isShwoingDeleted = false
 }: RoomTableProps) => {
 
@@ -102,7 +100,7 @@ const RoomTable = ({
                   <div className='flex flex-row justify-between'>
 
                     <button
-                      // onClick={() => deleteFunc(roomtype.roomTypeID as Guid, roomtype.isDeleted ?? false)}
+                       onClick={() => { deleteFunc(Room.roomId as Guid) }}
                       className='border-[2px] rounded-[3px] border-red-600 h-7 w-7 flex justify-center items-center cursor-pointer'
                     ><TrashIcon className='h-4 w-4 text-red-600 ' /></button>
                     <button
@@ -112,7 +110,7 @@ const RoomTable = ({
                   </div>
                   :
                   <button
-                  //  onClick={() => { deleteFunc(roomtype.roomTypeID as Guid, roomtype.isDeleted ?? true) }}
+                   onClick={() => { deleteFunc(Room.roomId as Guid) }}
                   >
 
                     <ArrowUturnLeftIcon

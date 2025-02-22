@@ -610,6 +610,32 @@ CREATE TABLE Rooms (
 
 --
 
+CREATE OR REPLACE FUNCTION is_room_belong_to_user(
+    room_id UUID,
+    user_id UUID
+) RETURNS BOOLEAN
+AS $$
+DECLARE
+isBelongTo BOOLEAN;
+BEGIN
+
+SELECT 
+COUT(*)>0 INTO isBelongTo 
+FROM rooms 
+WHERE roomid = room_id AND belongto = user_id;
+RETURN isBelongTo;
+EXCEPTION
+WHEN OTHERS THEN RAISE EXCEPTION 'Something went wrong: %',
+SQLERRM;
+RETURN FALSE;
+
+END;
+$$LANGUAGE PLPGSQL;
+
+--
+
+--
+
 CREATE OR REPLACE FUNCTION getRoomsByPage(pageNumber INT, limitNumber INT) RETURNS TABLE(
         RoomID UUID,
         Status VARCHAR(10),
@@ -807,7 +833,57 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER tr_roomt_update BEFORE
 INSERT ON rooms FOR EACH ROW EXECUTE FUNCTION fn_room_update();
 ----
+----
+CREATE OR REPLACE FUNCTION room_delete(
+    room_id UUID,
+    user_id UUID
+) RETURNS BOOLEAN 
+AS $$
+DECLARE
+isHasPermission BOOLEAN;
+isItBelongToHim BOOLEAN;
+BEGIN
+isHasPermission = isAdminOrSomeOneHasPersmission(user_id);
+isItBelongToHim = is_room_belong_to_user(user_id,user_id);
+
+IF isHasPermission OR isItBelongToHim THEN
+   UPDATE ROOMS SET  
+   isdeleted = CASE WHEN  isdeleted=TRUE THEN FALSE ELSE TRUE END 
+   WHERE roomid = room_id;
+   RETURN TRUE;
+END IF;
+
+RETURN FALSE;
+EXCEPTION
+WHEN OTHERS THEN RAISE EXCEPTION 'Something went wrong: %',
+SQLERRM;
+RETURN FALSE;
+END;
+$$ LANGUAGE plpgsql;
 ---
+
+---
+
+CREATE OR REPLACE FUNCTION fn_room_delete_tr()
+RETURNS TRIGGER 
+AS $$
+BEGIN
+return null;
+END;
+$$ LANGUAGE plpgsql;
+---
+
+---
+
+CREATE TRIGGER tr_delete_room 
+BEFORE DELETE 
+ON rooms 
+FOR EACH ROW EXECUTE FUNCTION fn_room_delete_tr();
+
+
+
+----
+----
 CREATE TABLE Departments (
     DepartmentID BIGSERIAL PRIMARY KEY,
     Name VARCHAR(50) NOT NULL

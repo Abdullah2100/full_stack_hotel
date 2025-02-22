@@ -86,7 +86,7 @@ public class RoomBuisness
     }
 
 
-    public static List<RoomDto> getAllRooms(int pagenumber,int limitPerPage)
+    public static List<RoomDto> getAllRooms(int pagenumber, int limitPerPage)
     {
         return RoomData.getRoomByPage(pagenumber, limitPerPage);
     }
@@ -94,8 +94,12 @@ public class RoomBuisness
     public static RoomBuisness? getRoom(Guid roomId)
     {
         var result = RoomData.getRoom(roomId);
-        if(result != null)return new RoomBuisness(result, enMode.update);
+        if (result != null) return new RoomBuisness(result, enMode.update);
         return null;
     }
-    
+
+    public static bool deleteRoom(Guid roomId, Guid userId)
+    {
+        return RoomData.deleteRoom(roomId, userId);
+    }
 }
