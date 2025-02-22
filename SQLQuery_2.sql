@@ -620,7 +620,7 @@ isBelongTo BOOLEAN;
 BEGIN
 
 SELECT 
-COUT(*)>0 INTO isBelongTo 
+COUNT(*)>0 INTO isBelongTo 
 FROM rooms 
 WHERE roomid = room_id AND belongto = user_id;
 RETURN isBelongTo;
