@@ -30,6 +30,7 @@ import { IUserModule } from '../../module/iUserModule';
 import ImagesPlay from '../../components/images';
 import { General } from '../../util/general';
 import DateFormat from '../../util/dateFormat';
+import { Switch } from '@mui/material';
 
 const Room = () => {
   const refreshToken = useSelector((state: RootState) => state.auth.refreshToken)
@@ -44,6 +45,7 @@ const Room = () => {
   const [isDraggable, changeDraggableStatus] = useState(false)
   const [pageNumber, setPageNumber] = useState(1)
 
+  const [isShowingDeleted, setShowingDeleted] = useState<boolean>(false)
 
   const [thumnailImage, setThumnail] = useState<iImageHolder | undefined>(undefined)
   const [images, setImages] = useState<iImageHolder[] | undefined>(undefined)
@@ -543,7 +545,7 @@ const Room = () => {
   }
   );
   const deleteOrUndeleteRoom = async (userId: Guid) => {
-     generalMessage(`this shown the deletion function is caled ${import.meta.env.VITE_ROOM + '/' + userId}`)
+    generalMessage(`this shown the deletion function is caled ${import.meta.env.VITE_ROOM + '/' + userId}`)
     await roomMutaion.mutate({
       data: undefined,
       endpoint: import.meta.env.VITE_ROOM + '/' + userId,
@@ -796,8 +798,13 @@ const Room = () => {
           setUserHover={setUserHover}
           setRoom={handleRoomEditeButton}
           setRoomImages={setImagesHolder}
-          deleteFunc={deleteOrUndeleteRoom}  isShwoingDeleted={false} />
-
+          deleteFunc={deleteOrUndeleteRoom} 
+          isShwoingDeleted={isShowingDeleted}
+           />
+        <div>
+          <h3>showing the deleted rooms</h3>
+          <Switch onChange={() => setShowingDeleted(prev => !prev)} />
+        </div>
 
         <UserShape
           userData={userData ? userData : undefined}
