@@ -7,6 +7,7 @@ using hotel_api.util;
 using hotel_api.Services;
 using hotel_data;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR;
 
 namespace hotel_api.controller
 {
@@ -16,7 +17,9 @@ namespace hotel_api.controller
     {
         private readonly IConfigurationServices _config;
 
-        public AdminController(IConfigurationServices config)
+        public AdminController(
+            IConfigurationServices config
+            )
         {
             this._config = config;
         }
@@ -103,7 +106,6 @@ namespace hotel_api.controller
         }
 
         //user
-
         [Authorize]
         [HttpPost("User")]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -257,7 +259,7 @@ namespace hotel_api.controller
             if (userRequestData.imagePath != null)
             {
                 imagePath = await MinIoServices.uploadFile(_config, userRequestData.imagePath,
-                    MinIoServices.enBucketName.USER, imageHolder.path);
+                    MinIoServices.enBucketName.USER, imageHolder?.path??"");
             }
 
 
@@ -375,7 +377,7 @@ namespace hotel_api.controller
             var id = AuthinticationServices.GetPayloadFromToken("id",
                 authorizationHeader.ToString().Replace("Bearer ", ""));
             Guid? adminid = null;
-            if (Guid.TryParse(id.Value.ToString(), out Guid outID))
+            if (Guid.TryParse(id?.Value.ToString(), out Guid outID))
             {
                 adminid = outID;
             }
@@ -731,6 +733,7 @@ namespace hotel_api.controller
         {
             try
             {
+
                 var rooms = RoomBuisness.getAllRooms(pageNumber, 25);
 
                 return Ok(rooms);
@@ -804,7 +807,38 @@ namespace hotel_api.controller
             return StatusCode(200, new { message = "update seccessfully" });
         }
 
-        
+        private void _updateRoomData(ref RoomBuisness roomData, RoomRequestUpdateDto newRoomData)
+        {
+         
+            if (newRoomData.status!=null && roomData.status != newRoomData.status)
+            {
+                roomData.status =(enStatsu)newRoomData.status;
+            }
+
+            if (newRoomData.pricePerNight != null && newRoomData.pricePerNight != roomData.pricePerNight)
+            {
+                roomData.pricePerNight =(int) newRoomData.pricePerNight;
+            }
+
+            if (newRoomData.bedNumber != null && newRoomData.bedNumber != roomData.bedNumber)
+            {
+                roomData.bedNumber = (int) newRoomData.bedNumber;
+            }
+
+            if (newRoomData.roomtypeid != null && newRoomData.roomtypeid != roomData.roomtypeid)
+            {
+                roomData.roomtypeid =(Guid) newRoomData.roomtypeid;
+            }
+
+            if (newRoomData.capacity != null && newRoomData.capacity != roomData.capacity)
+            {
+                roomData.capacity = (int) newRoomData.capacity;
+            }
+          
+           
+        }
+
+ 
           [Authorize]
         [HttpDelete("room/{roomId:guid}")]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -850,43 +884,11 @@ namespace hotel_api.controller
 
             if (result == false)
                 return StatusCode(500, "some thing wrong");
-
             return StatusCode(200, new { message = "deleted seccessfully" });
         }
         
         
-        private void _updateRoomData(ref RoomBuisness roomData, RoomRequestUpdateDto newRoomData)
-        {
-         
-           if (newRoomData.status!=null && roomData.status != newRoomData.status)
-           {
-               roomData.status =(enStatsu)newRoomData.status;
-           }
-
-           if (newRoomData.pricePerNight != null && newRoomData.pricePerNight != roomData.pricePerNight)
-           {
-               roomData.pricePerNight =(int) newRoomData.pricePerNight;
-           }
-
-           if (newRoomData.bedNumber != null && newRoomData.bedNumber != roomData.bedNumber)
-           {
-               roomData.bedNumber = (int) newRoomData.bedNumber;
-           }
-
-           if (newRoomData.roomtypeid != null && newRoomData.roomtypeid != roomData.roomtypeid)
-           {
-               roomData.roomtypeid =(Guid) newRoomData.roomtypeid;
-           }
-
-           if (newRoomData.capacity != null && newRoomData.capacity != roomData.capacity)
-           {
-               roomData.capacity = (int) newRoomData.capacity;
-           }
-          
-           
-        }
-
-
+        
         private void saveImage(
             string? imagePath,
             Guid? id

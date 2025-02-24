@@ -8,7 +8,6 @@ namespace hotel_business
 {
     public class PermissionBuisness
     {
-          public enum enMode {add, update};
         enMode mode = enMode.add;
           public long ID { get; set; }
         public int permissionNum { get; set; }

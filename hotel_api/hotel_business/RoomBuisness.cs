@@ -5,11 +5,6 @@ namespace hotel_business;
 
 public class RoomBuisness
 {
-    public enum enMode
-    {
-        add,
-        update
-    };
 
     enMode mode = enMode.add;
 
