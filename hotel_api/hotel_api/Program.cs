@@ -74,5 +74,4 @@ app.UseAuthorization();
 // Enable HTTPS and map controllers
 app.UseHttpsRedirection();
 app.MapControllers();
-app.MapHub<EventHub>("/hotelHub");
 app.Run();

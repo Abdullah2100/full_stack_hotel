@@ -880,6 +880,119 @@ BEFORE DELETE
 ON rooms 
 FOR EACH ROW EXECUTE FUNCTION fn_room_delete_tr();
 
+----
+----
+
+
+----
+----
+CREATE TABLE Bookings (
+    BookingID BIGSERIAL PRIMARY KEY,
+    RoomID UUID  NOT NULL REFERENCES Rooms (roomid),
+    Dayes INT NOT NULL,
+    BookingStatus VARCHAR(50) CHECK (
+        BookingStatus IN ('Pending', 'Confirmed', 'Cancelled')
+    ) DEFAULT 'Pending',
+    TotalPrice NUMERIC(10, 2),
+    FristPayment NUMERIC(10, 2) NOT NULL CHECK(
+        FristPayment=TotalPrice/3
+    ),
+    ServicePayment NUMERIC(10, 2) DEFAULT 0,
+    MaintincePayment NUMERIC(10, 2) DEFAULT 0,
+    -- PaymentStatus VARCHAR(50) CHECK (PaymentStatus IN ('Paid', 'Unpaid', 'Partial')) DEFAULT 'Unpaid',
+    excpectedLeaveDate TIMESTAMP NOT NULL,
+    LeaveDate TIMESTAMP DEFAULT NULL,
+    belongTo  UUID NOT NULL ,
+    -- ExpectedBy BIGINT NOT NULL REFERENCES Employees (EmployeeID),
+    -- CreatedBy BIGINT NOT NULL REFERENCES Users (UserID),
+    -- DeletedBy BIGINT NULL REFERENCES Employees (EmployeeID),
+    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    -- DeletedAt TIMESTAMP NULL,
+    -- ExcptedAt TIMESTAMP NULL,
+);
+----
+----
+CREATE OR REPLACE FUNCTION fn_bookin_insert(
+    RoomID_ UUID  ,
+    Dayes_ INT,
+    BookingStatus_ VARCHAR(50) ,
+    TotalPrice_ NUMERIC(10, 2),
+    FristPayment_ NUMERIC(10, 2) ,
+    ServicePayment_ NUMERIC(10, 2) ,
+    MaintincePayment_ NUMERIC(10, 2) ,
+     excpectedLeaveDate_ TIMESTAMP  ,
+    userid_  UUID
+     
+)RETURNS BOOLEAN AS $$
+DECLARE
+isNotDeletion Boolean;
+BEGIN
+
+SELECT isdeleted INTO isNotDeletion FROM user WHERE userid = userid_;
+IF isNotDeletion = TRUE THEN
+RAISE EXCEPTION 'The user is deleted';
+RETURN FALSE;
+END IF;
+INSERT INTO Bookings(
+    RoomID,
+    Dayes,
+    BookingStatus,
+    TotalPrice,
+    FristPayment,
+    ServicePayment,
+    MaintincePayment,
+    excpectedLeaveDate,
+    belongTo
+) VALUES(
+    RoomID_,
+    Dayes_,
+    BookingStatus_,
+    TotalPrice_,
+    FristPayment_,
+    ServicePayment_,
+    MaintincePayment_,
+    excpectedLeaveDate_,
+    userid_
+);
+
+
+RETURN TRUE;
+EXCEPTION
+WHEN OTHERS THEN RAISE EXCEPTION 'Something went wrong: %',
+SQLERRM;
+RETURN FALSE;
+END;
+$$ LANGUAGE plpgsql;
+---
+---
+
+CREATE OR REPLACE FUNCTION fn_booking_insert_tr()
+RETURNS TRIGGER
+AS $$
+DECLARE
+isValidId BOOLEAN;
+BEGIN
+isValidId = isExistById(NEW.belongto);
+IF isValidId = FALSE THEN
+RAISE EXCEPTION 'Something went wrong: %',
+SQLERRM;
+RETURN NULL;
+END IF;
+RETURN NEW;
+EXCEPTION
+WHEN OTHERS THEN RAISE EXCEPTION 'Something went wrong: %',
+SQLERRM;
+RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+----
+----
+CREATE TRIGGER tr_bookin_insert
+BEFORE INSERT ON bookings
+FOR EACH ROW EXECUTE FUNCTION fn_booking_insert_tr();
+----
+----
+
 
 
 ----
@@ -961,30 +1074,6 @@ $$LANGUAGE plpgsql;
 CREATE TRIGGER tr_employee_deleted BEFORE DELETE ON Employees FOR EACH ROW EXECUTE FUNCTION handle_employee_deleted ();
 --
 
---
-
-CREATE TABLE Bookings (
-    BookingID BIGSERIAL PRIMARY KEY,
-    Dayes INT NOT NULL,
-    BookingStatus VARCHAR(50) CHECK (
-        BookingStatus IN ('Pending', 'Confirmed', 'Cancelled')
-    ) DEFAULT 'Pending',
-    FristPayment NUMERIC(10, 2) NOT NULL,
-    TotalPrice NUMERIC(10, 2),
-    ServicePayment NUMERIC(10, 2) DEFAULT 0,
-    MaintincePayment NUMERIC(10, 2) DEFAULT 0,
-    PaymentStatus VARCHAR(50) CHECK (PaymentStatus IN ('Paid', 'Unpaid', 'Partial')) DEFAULT 'Unpaid',
-    LeaveDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UserID INT NOT NULL REFERENCES Users (UserID),
-    RoomID INT NOT NULL REFERENCES Rooms (RoomID),
-    ExpectedBy BIGINT NOT NULL REFERENCES Employees (EmployeeID),
-    CreatedBy BIGINT NOT NULL REFERENCES Users (UserID),
-    DeletedBy BIGINT NULL REFERENCES Employees (EmployeeID),
-    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    DeletedAt TIMESTAMP NULL,
-    ExcptedAt TIMESTAMP NULL,
-);
---
 
 --
 

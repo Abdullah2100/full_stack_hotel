@@ -5,7 +5,6 @@ namespace hotel_business;
 
 public class UserBuissnes
 {
-    public enum enMode {add,update}
     enMode mode = enMode.add; 
     public Guid ID { get; set; }
     public Guid? personID { get; set; }

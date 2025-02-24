@@ -16,15 +16,12 @@ namespace hotel_api.controller
     public class AdminController : ControllerBase
     {
         private readonly IConfigurationServices _config;
-        private readonly IHubContext<EventHub> _hubContext;
 
         public AdminController(
-            IConfigurationServices config,
-            IHubContext<EventHub> hubContext
+            IConfigurationServices config
             )
         {
             this._config = config;
-            this._hubContext = hubContext;
         }
 
 
@@ -109,7 +106,6 @@ namespace hotel_api.controller
         }
 
         //user
-
         [Authorize]
         [HttpPost("User")]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -737,7 +733,6 @@ namespace hotel_api.controller
         {
             try
             {
-                _hubContext.Clients.All.SendAsync("hotelDeleted","niceddd");
 
                 var rooms = RoomBuisness.getAllRooms(pageNumber, 25);
 
@@ -812,7 +807,38 @@ namespace hotel_api.controller
             return StatusCode(200, new { message = "update seccessfully" });
         }
 
-        
+        private void _updateRoomData(ref RoomBuisness roomData, RoomRequestUpdateDto newRoomData)
+        {
+         
+            if (newRoomData.status!=null && roomData.status != newRoomData.status)
+            {
+                roomData.status =(enStatsu)newRoomData.status;
+            }
+
+            if (newRoomData.pricePerNight != null && newRoomData.pricePerNight != roomData.pricePerNight)
+            {
+                roomData.pricePerNight =(int) newRoomData.pricePerNight;
+            }
+
+            if (newRoomData.bedNumber != null && newRoomData.bedNumber != roomData.bedNumber)
+            {
+                roomData.bedNumber = (int) newRoomData.bedNumber;
+            }
+
+            if (newRoomData.roomtypeid != null && newRoomData.roomtypeid != roomData.roomtypeid)
+            {
+                roomData.roomtypeid =(Guid) newRoomData.roomtypeid;
+            }
+
+            if (newRoomData.capacity != null && newRoomData.capacity != roomData.capacity)
+            {
+                roomData.capacity = (int) newRoomData.capacity;
+            }
+          
+           
+        }
+
+ 
           [Authorize]
         [HttpDelete("room/{roomId:guid}")]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -862,38 +888,7 @@ namespace hotel_api.controller
         }
         
         
-        private void _updateRoomData(ref RoomBuisness roomData, RoomRequestUpdateDto newRoomData)
-        {
-         
-           if (newRoomData.status!=null && roomData.status != newRoomData.status)
-           {
-               roomData.status =(enStatsu)newRoomData.status;
-           }
-
-           if (newRoomData.pricePerNight != null && newRoomData.pricePerNight != roomData.pricePerNight)
-           {
-               roomData.pricePerNight =(int) newRoomData.pricePerNight;
-           }
-
-           if (newRoomData.bedNumber != null && newRoomData.bedNumber != roomData.bedNumber)
-           {
-               roomData.bedNumber = (int) newRoomData.bedNumber;
-           }
-
-           if (newRoomData.roomtypeid != null && newRoomData.roomtypeid != roomData.roomtypeid)
-           {
-               roomData.roomtypeid =(Guid) newRoomData.roomtypeid;
-           }
-
-           if (newRoomData.capacity != null && newRoomData.capacity != roomData.capacity)
-           {
-               roomData.capacity = (int) newRoomData.capacity;
-           }
-          
-           
-        }
-
-
+        
         private void saveImage(
             string? imagePath,
             Guid? id
