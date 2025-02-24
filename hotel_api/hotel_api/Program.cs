@@ -6,10 +6,8 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Register services
 builder.Services.AddEndpointsApiExplorer();
 
-// Register Swagger/OpenAPI
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
@@ -20,15 +18,12 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 
-// Register custom services
 builder.Services.AddSingleton<IConfigurationServices, ConfigurationServicesImp>();
 
 var configuration = builder.Configuration;
 
-// Add controllers to the application
 builder.Services.AddControllers();
 
-// Configure JWT Authentication
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -53,6 +48,9 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader();   // Allows any headers
     });
 });
+
+builder.Services.AddSignalR();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline
@@ -76,5 +74,5 @@ app.UseAuthorization();
 // Enable HTTPS and map controllers
 app.UseHttpsRedirection();
 app.MapControllers();
-
+app.MapHub<EventHub>("/hotelHub");
 app.Run();

@@ -7,6 +7,7 @@ using hotel_api.util;
 using hotel_api.Services;
 using hotel_data;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR;
 
 namespace hotel_api.controller
 {
@@ -15,10 +16,15 @@ namespace hotel_api.controller
     public class AdminController : ControllerBase
     {
         private readonly IConfigurationServices _config;
+        private readonly IHubContext<EventHub> _hubContext;
 
-        public AdminController(IConfigurationServices config)
+        public AdminController(
+            IConfigurationServices config,
+            IHubContext<EventHub> hubContext
+            )
         {
             this._config = config;
+            this._hubContext = hubContext;
         }
 
 
@@ -257,7 +263,7 @@ namespace hotel_api.controller
             if (userRequestData.imagePath != null)
             {
                 imagePath = await MinIoServices.uploadFile(_config, userRequestData.imagePath,
-                    MinIoServices.enBucketName.USER, imageHolder.path);
+                    MinIoServices.enBucketName.USER, imageHolder?.path??"");
             }
 
 
@@ -375,7 +381,7 @@ namespace hotel_api.controller
             var id = AuthinticationServices.GetPayloadFromToken("id",
                 authorizationHeader.ToString().Replace("Bearer ", ""));
             Guid? adminid = null;
-            if (Guid.TryParse(id.Value.ToString(), out Guid outID))
+            if (Guid.TryParse(id?.Value.ToString(), out Guid outID))
             {
                 adminid = outID;
             }
@@ -731,6 +737,8 @@ namespace hotel_api.controller
         {
             try
             {
+                _hubContext.Clients.All.SendAsync("hotelDeleted","niceddd");
+
                 var rooms = RoomBuisness.getAllRooms(pageNumber, 25);
 
                 return Ok(rooms);
@@ -850,7 +858,6 @@ namespace hotel_api.controller
 
             if (result == false)
                 return StatusCode(500, "some thing wrong");
-
             return StatusCode(200, new { message = "deleted seccessfully" });
         }
         

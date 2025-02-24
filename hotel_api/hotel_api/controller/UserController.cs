@@ -56,7 +56,7 @@ public class UserController : Controller
             email: userRequestData.email,
             name: userRequestData.name,
             phone: userRequestData.phone,
-            address: userRequestData.address
+            address: userRequestData.address??""
             );
 
    
