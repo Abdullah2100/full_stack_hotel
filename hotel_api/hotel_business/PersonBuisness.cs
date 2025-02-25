@@ -10,7 +10,6 @@ namespace hotel_business
 {
     public class PersonBuisness
     {
-        public enum enMode { add, update };
         enMode mode = enMode.add;
         public Guid ID { get; set; }
         public string name { get; set; }
