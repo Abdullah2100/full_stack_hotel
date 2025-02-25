@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using hotel_api_.RequestDto;
+using hotel_api_.RequestDto.Booking;
 using Microsoft.AspNetCore.Mvc;
 using hotel_data.dto;
 using hotel_business;
@@ -19,7 +20,7 @@ namespace hotel_api.controller
 
         public AdminController(
             IConfigurationServices config
-            )
+        )
         {
             this._config = config;
         }
@@ -259,7 +260,7 @@ namespace hotel_api.controller
             if (userRequestData.imagePath != null)
             {
                 imagePath = await MinIoServices.uploadFile(_config, userRequestData.imagePath,
-                    MinIoServices.enBucketName.USER, imageHolder?.path??"");
+                    MinIoServices.enBucketName.USER, imageHolder?.path ?? "");
             }
 
 
@@ -535,7 +536,8 @@ namespace hotel_api.controller
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> updateRoomTypes([FromForm] RoomTypeRequestUpdateDto roomTypeData, Guid roomtypeid)
+        public async Task<IActionResult> updateRoomTypes([FromForm] RoomTypeRequestUpdateDto roomTypeData,
+            Guid roomtypeid)
         {
             var authorizationHeader = HttpContext.Request.Headers["Authorization"];
             var id = AuthinticationServices.GetPayloadFromToken("id",
@@ -733,7 +735,6 @@ namespace hotel_api.controller
         {
             try
             {
-
                 var rooms = RoomBuisness.getAllRooms(pageNumber, 25);
 
                 return Ok(rooms);
@@ -791,12 +792,11 @@ namespace hotel_api.controller
                     roomData.images,
                     MinIoServices.enBucketName.ROOM,
                     roomId.ToString()
-                    
                 );
             }
 
-            if(imageHolderPath!=null)
-            saveImage(imageHolderPath, roomId);
+            if (imageHolderPath != null)
+                saveImage(imageHolderPath, roomId);
             _updateRoomData(ref room, roomData);
 
             var result = room.save();
@@ -809,37 +809,34 @@ namespace hotel_api.controller
 
         private void _updateRoomData(ref RoomBuisness roomData, RoomRequestUpdateDto newRoomData)
         {
-         
-            if (newRoomData.status!=null && roomData.status != newRoomData.status)
+            if (newRoomData.status != null && roomData.status != newRoomData.status)
             {
-                roomData.status =(enStatsu)newRoomData.status;
+                roomData.status = (enStatsu)newRoomData.status;
             }
 
             if (newRoomData.pricePerNight != null && newRoomData.pricePerNight != roomData.pricePerNight)
             {
-                roomData.pricePerNight =(int) newRoomData.pricePerNight;
+                roomData.pricePerNight = (int)newRoomData.pricePerNight;
             }
 
             if (newRoomData.bedNumber != null && newRoomData.bedNumber != roomData.bedNumber)
             {
-                roomData.bedNumber = (int) newRoomData.bedNumber;
+                roomData.bedNumber = (int)newRoomData.bedNumber;
             }
 
             if (newRoomData.roomtypeid != null && newRoomData.roomtypeid != roomData.roomtypeid)
             {
-                roomData.roomtypeid =(Guid) newRoomData.roomtypeid;
+                roomData.roomtypeid = (Guid)newRoomData.roomtypeid;
             }
 
             if (newRoomData.capacity != null && newRoomData.capacity != roomData.capacity)
             {
-                roomData.capacity = (int) newRoomData.capacity;
+                roomData.capacity = (int)newRoomData.capacity;
             }
-          
-           
         }
 
- 
-          [Authorize]
+
+        [Authorize]
         [HttpDelete("room/{roomId:guid}")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -878,17 +875,75 @@ namespace hotel_api.controller
                 return StatusCode(400, "room not found");
 
 
-         
-
-            var result = RoomBuisness.deleteRoom(room.ID,(Guid)adminid);
+            var result = RoomBuisness.deleteRoom(room.ID, (Guid)adminid);
 
             if (result == false)
                 return StatusCode(500, "some thing wrong");
             return StatusCode(200, new { message = "deleted seccessfully" });
         }
-        
-        
-        
+
+
+        [Authorize]
+        [HttpDelete("room")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> createBooking
+        ([FromBody] BookingRequestDto bookingData
+        )
+        {
+            var authorizationHeader = HttpContext.Request.Headers["Authorization"];
+            var id = AuthinticationServices.GetPayloadFromToken("id",
+                authorizationHeader.ToString().Replace("Bearer ", ""));
+            Guid? adminid = null;
+            if (Guid.TryParse(id.Value.ToString(), out Guid outID))
+            {
+                adminid = outID;
+            }
+
+            if (adminid == null)
+            {
+                return StatusCode(401, "you not have Permission");
+            }
+
+            var isHasPermissionToCurd = AdminBuissnes.isAdminExist(adminid ?? Guid.Empty);
+
+
+            if (!isHasPermissionToCurd)
+            {
+                return StatusCode(401, "you not have Permission");
+            }
+
+
+            var isThereAnyConfirmBookingByRoomID = BookingBuiseness.getBookingConfirmByRoomID(bookingData.roomid);
+
+            if (isThereAnyConfirmBookingByRoomID == true)
+                return StatusCode(400, "room already is confirming booking");
+
+            var bookingDataHolder = new BookingDto(
+                id: null,
+                roomid: bookingData.roomid,
+                userId: adminid.Value,
+                days: bookingData.days,
+                bookingStatus: BookingDto.convertBookingStatus(bookingData.enBookingStatus),
+                totalPrice: bookingData.totalPrice,
+                firstPaymen: bookingData.firstPaymen,
+                servicePayemen: 0,
+                maintainPayment: 0,
+                excpectedleavedAt: bookingData.excpectedleavedAt,
+                leavedAt: null,
+                createdAt: DateTime.Now
+            );
+            var bookingHolder = new BookingBuiseness(bookingDataHolder);
+
+            var result = bookingHolder.save();
+
+            if (result == false)
+                return StatusCode(500, "some thing wrong");
+            return StatusCode(200, new { message = "deleted seccessfully" });
+        }
+
         private void saveImage(
             string? imagePath,
             Guid? id

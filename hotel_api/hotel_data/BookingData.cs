@@ -110,4 +110,37 @@ public class BookingData
             return isCreated;
         }
  */
+
+       public static bool getBookingConfirmByRoomID(Guid roomID)
+        {
+            bool isExist = false;
+            try
+            {
+                using (var con = new NpgsqlConnection(connectionUr))
+                {
+                    con.Open();
+                    string query = @"SELECT isExist =COUNT(*)>0 FROM Bookings WHERE RoomID = @roomid AND BookingStatus='Confirmed'";
+
+                    using (var cmd = new NpgsqlCommand(query, con))
+                    {
+
+                        cmd.Parameters.AddWithValue("@roomid", roomID);
+                        
+                        var result = cmd.ExecuteScalar();
+
+                        if (result != null && bool.TryParse(result?.ToString(), out bool isCreatedOutpu))
+                        {
+                            isExist = isCreatedOutpu;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("this from create user error {0}", ex);
+            }
+
+            return isExist;
+        }
+  
 }

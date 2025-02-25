@@ -66,3 +66,8 @@ coverage/
 project.lock.json
 project.fragment.lock.json
 artifacts/
+
+
+#android
+*.gradle
+*build

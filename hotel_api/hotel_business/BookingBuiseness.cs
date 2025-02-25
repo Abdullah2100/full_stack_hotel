@@ -71,5 +71,10 @@ public class BookingBuiseness
             default: return false;
         } 
     }
+
+    public static bool getBookingConfirmByRoomID(Guid roomId)
+    {
+        return BookingData.getBookingConfirmByRoomID(roomId);
+    }
  
 }
