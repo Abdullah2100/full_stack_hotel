@@ -3,8 +3,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.hilt.andorid)  // Use the corrected alias here
     alias(libs.plugins.ksp.android)   // Use the correct KSP plugin
-
-
+    alias(libs.plugins.kotlin.serialize.plugin)
 }
 
 android {
@@ -51,6 +50,8 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+
 }
 
 dependencies {
@@ -81,5 +82,17 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.ktx)
+
+    // Ktor dependencies
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.android)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.serialization.kotlinx.json)
+
+    // Kotlinx Serialization JSON
+    implementation(libs.kotlinx.serialization.json)
+
+    // Kotlin Coroutines
+    implementation(libs.kotlinx.coroutines.android)
 
 }
