@@ -1,4 +1,4 @@
-package com.example.hotel_mobile.services.room.authintication
+package com.example.hotel_mobile.Data.room.authintication
 
 import androidx.room.Dao
 import androidx.room.Insert

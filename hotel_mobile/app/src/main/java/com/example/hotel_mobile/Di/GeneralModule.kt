@@ -16,7 +16,6 @@ import io.ktor.client.request.accept
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
-import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
 import javax.inject.Singleton
 
@@ -33,7 +32,12 @@ class GeneralModule {
                 url("")
             }
             install(ContentNegotiation){
-                json(Json)
+                json(Json
+                {
+                    prettyPrint = true
+                    isLenient = true
+                    ignoreUnknownKeys = true
+                })
             }
         }
     }
