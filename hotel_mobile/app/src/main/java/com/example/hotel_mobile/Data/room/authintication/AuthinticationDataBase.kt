@@ -1,7 +1,8 @@
-package com.example.hotel_mobile.services.room.authintication
+package com.example.hotel_mobile.Data.room.authintication
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import com.example.hotel_mobile.Data.room.authintication.AuthinticationDAO
 import com.example.hotel_mobile.Modle.AuthModle
 import javax.inject.Singleton
 
