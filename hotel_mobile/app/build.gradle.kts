@@ -74,9 +74,10 @@ dependencies {
 
 
     //hilt
-    debugImplementation(libs.android.hilt)
+    implementation(libs.android.hilt)
     debugImplementation(libs.android.hilt.test)
     ksp(libs.hilt.comiler)
+    implementation(libs.hilt.nav)
 
     //room
     implementation(libs.androidx.room.runtime)
