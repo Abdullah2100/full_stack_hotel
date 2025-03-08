@@ -27,8 +27,7 @@ android {
         release {
             isMinifyEnabled = false
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
         }
     }
@@ -50,6 +49,7 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
 
 
 }
@@ -79,10 +79,6 @@ dependencies {
     ksp(libs.hilt.comiler)
     implementation(libs.hilt.nav)
 
-    //room
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.ktx)
-    implementation(libs.androidx.room.ktx)
 
     // Ktor dependencies
     implementation(libs.ktor.client.core)
@@ -91,7 +87,7 @@ dependencies {
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.ktor.loggin)
     implementation(libs.ktor.auth)
-    implementation(libs.ktor.cio)
+//    implementation(libs.ktor.cio)
 
 
     // Kotlinx Serialization JSON
@@ -102,4 +98,7 @@ dependencies {
 
     //navigation
     implementation(libs.compose.navigation)
+
+    //constrain
+    implementation(libs.compose.constrin)
 }

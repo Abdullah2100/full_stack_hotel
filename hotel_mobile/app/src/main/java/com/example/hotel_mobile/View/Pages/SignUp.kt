@@ -46,7 +46,7 @@ import java.nio.file.WatchEvent
 
 
 @Composable
-fun LoginPage(
+fun SignUpPage(
     nav: NavHostController,
     finalScreenViewModel: AuthViewModle = hiltViewModel()
 ) {
@@ -73,15 +73,15 @@ fun LoginPage(
                   verticalAlignment = Alignment.CenterVertically,
                   horizontalArrangement = Arrangement.Center
               ) {
-                  Text(text = "ليس لديك حساب")
+                  Text(text = "لديك  حساب")
                   Box(
                   modifier = Modifier
                       .padding(start = 5.dp)
                       .clickable {
-                          nav.navigate(Screens.signUp)
+                          nav.navigate(Screens.login)
                       }
                   ) {
-                      Text(text = "انشاء", color = Color.Blue )
+                      Text(text = "دخول", color = Color.Blue )
 
                   }
               }
@@ -158,7 +158,7 @@ fun LoginPage(
                         .height(35.dp)
                 ) {
                     Text(
-                        "دخول",
+                        "تسجيل",
                         color = Color.White,
                         fontSize = 16.sp
                     )
