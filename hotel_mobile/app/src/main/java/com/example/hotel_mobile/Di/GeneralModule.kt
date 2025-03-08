@@ -2,9 +2,7 @@ package com.example.hotel_mobile.Di
 
 import android.content.Context
 import android.util.Log
-import androidx.multidex.BuildConfig
-import androidx.room.RoomDatabase
-import dagger.Module
+  import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
