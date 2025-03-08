@@ -1,5 +1,6 @@
 package com.example.hotel_mobile.ViewModle
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.hotel_mobile.Dto.LoginDto
 import com.example.hotel_mobile.Modle.enNetworkStatus
@@ -14,6 +15,8 @@ import com.example.hotel_mobile.Dto.AuthResultDto
 import com.example.hotel_mobile.Dto.SingUpDto
 import com.example.hotel_mobile.Modle.AuthModle
 import com.example.hotel_mobile.Modle.NetworkCallHandler
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -25,10 +28,13 @@ class AuthViewModle @Inject constructor(
 
     val statusChange = MutableStateFlow<enNetworkStatus>(enNetworkStatus.None)
     val errorMessage = MutableStateFlow<String?>(null)
+    val errorHandling = CoroutineExceptionHandler{_,ex->
+        Log.d("AuthError",ex.message?:"")
+    }
 
     fun loginUser(userDto: LoginDto) {
         statusChange.update { enNetworkStatus.Loading }
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Main + errorHandling) {
             delay(1000L)
             when (val result = authRepository.loginUser(userDto)) {
                 is NetworkCallHandler.Successful<*> -> {
@@ -37,10 +43,11 @@ class AuthViewModle @Inject constructor(
                     statusChange.update { enNetworkStatus.Complate }
                 }
                 is NetworkCallHandler.Error -> {
-                    errorMessage.update { result.data }
+                    throw Exception(result.data) ;
                 }
                 else->{
-                    errorMessage.update { "unexpected Stat" }
+                    throw Exception("unexpected Stat") ;
+
                 }
             }
         }
@@ -48,7 +55,7 @@ class AuthViewModle @Inject constructor(
 
     fun signUpUser(userDto: SingUpDto) {
         statusChange.update { enNetworkStatus.Loading }
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Main + errorHandling) {
             delay(1000L)
             when (val result = authRepository.createNewUser(userDto)) {
                 is NetworkCallHandler.Successful<*> -> {
@@ -57,10 +64,11 @@ class AuthViewModle @Inject constructor(
                     statusChange.update { enNetworkStatus.Complate }
                 }
                 is NetworkCallHandler.Error -> {
-                    errorMessage.update { result.data }
+                    throw Exception(result.data) ;
                 }
                 else->{
-                    errorMessage.update { "unexpected Stat" }
+                    throw Exception("unexpected Stat") ;
+
                 }
             }
         }
