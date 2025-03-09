@@ -1,7 +1,7 @@
 \ c postgres;
 DROP DATABASE hotel_db;
 CREATE DATABASE hotel_db;
-\ c hotel_db;
+\c hotel_db;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 ---
 ---

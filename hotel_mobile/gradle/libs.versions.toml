@@ -71,6 +71,3 @@ hilt-andorid = {id="com.google.dagger.hilt.android",version.ref = "hiltVersion"}
 
 # KSP plugin
 ksp-android = { id = "com.google.devtools.ksp", version.ref = "kspVersion" }
-
-
-
