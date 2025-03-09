@@ -2,7 +2,8 @@ package com.example.hotel_mobile.Di
 
 import android.content.Context
 import android.util.Log
-  import dagger.Module
+import androidx.multidex.BuildConfig
+import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -11,6 +12,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.request.accept
@@ -32,6 +34,10 @@ class GeneralModule {
         return HttpClient(Android) {
             engine {
                 connectTimeout = 60_000
+            }
+
+            defaultRequest {
+                host="http://localhost:5266/api"
             }
 
             install(DefaultRequest) {
