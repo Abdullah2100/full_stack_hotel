@@ -11,6 +11,7 @@ import com.example.hotel_mobile.View.navigation.NavController
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()

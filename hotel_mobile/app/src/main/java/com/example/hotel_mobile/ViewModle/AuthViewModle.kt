@@ -28,6 +28,9 @@ class AuthViewModle @Inject constructor(
     val errorMessage = MutableStateFlow<String?>(null)
     val errorHandling = CoroutineExceptionHandler{_,ex->
         Log.d("AuthError",ex.message?:"")
+        viewModelScope.launch {
+            statusChange.emit(enNetworkStatus.Error)
+        }
     }
 
     fun loginUser(userDto: LoginDto) {

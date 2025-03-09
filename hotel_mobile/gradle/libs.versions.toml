@@ -60,6 +60,11 @@ kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx",name="kotlinx-cor
 #constrin layout
 compose-constrin = {group = "androidx.constraintlayout",name = "constraintlayout-compose",version.ref="constrain-compose"}
 
+#material icon
+material-icon-compose = {group = "androidx.compose.material",name = "material-icons-extended",version.ref = "activityCompose"}
+
+
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

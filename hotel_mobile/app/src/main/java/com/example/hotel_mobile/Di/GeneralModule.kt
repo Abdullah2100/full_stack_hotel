@@ -32,19 +32,15 @@ class GeneralModule {
     @Provides
     fun provideHttpClient(): HttpClient {
         return HttpClient(Android) {
+
             engine {
                 connectTimeout = 60_000
             }
 
-            defaultRequest {
-                host="http://localhost:5266/api"
+            install(DefaultRequest) {
+                host= "http://localhost:5266/api"
             }
 
-            install(DefaultRequest) {
-                contentType(ContentType.Application.Json)
-                accept(ContentType.Application.Json)
-                url("")
-            }
             install(Logging) {
                 logger = object : Logger {
                     override fun log(message: String) {
@@ -61,7 +57,6 @@ class GeneralModule {
                     isLenient = true
                 })
             }
-
 
         }
     }
