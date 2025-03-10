@@ -45,6 +45,7 @@ import com.example.hotel_mobile.Modle.Screens
 import java.nio.file.WatchEvent
 
 
+
 @Composable
 fun LoginPage(
     nav: NavHostController,
@@ -54,7 +55,7 @@ fun LoginPage(
 
     val userNameOrEmail = remember { mutableStateOf(TextFieldValue("")) }
     val password = remember { mutableStateOf(TextFieldValue("")) }
-    Scaffold {
+    Scaffold{
         it.calculateTopPadding()
         it.calculateBottomPadding()
 

@@ -3,6 +3,7 @@ package com.example.hotel_mobile.Di
 import android.content.Context
 import android.util.Log
 import androidx.multidex.BuildConfig
+import com.example.hotel_mobile.Util.General
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -37,9 +38,6 @@ class GeneralModule {
                 connectTimeout = 60_000
             }
 
-            install(DefaultRequest) {
-                host= "http://localhost:5266/api"
-            }
 
             install(Logging) {
                 logger = object : Logger {
