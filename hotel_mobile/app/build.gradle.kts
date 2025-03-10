@@ -86,7 +86,7 @@ dependencies {
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.ktor.loggin)
     implementation(libs.ktor.auth)
-//    implementation(libs.ktor.cio)
+    implementation(libs.ktor.cio)
 
 
     // Kotlinx Serialization JSON

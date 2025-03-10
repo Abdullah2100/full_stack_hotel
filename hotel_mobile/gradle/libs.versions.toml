@@ -53,7 +53,7 @@ ktor-client-content-negotiation = { group = "io.ktor",name="ktor-client-content-
 ktor-serialization-kotlinx-json = { group = "io.ktor",name="ktor-serialization-kotlinx-json", version.ref = "ktor" }
 ktor-loggin = {group="io.ktor",name = "ktor-client-logging-jvm",version.ref="ktor"}
 ktor-auth ={group="io.ktor",name="ktor-client-auth",version.ref="ktor"}
-#ktor-cio = {group="io.ktor",name="ktor-client-cio",version.ref = "ktor"}
+ktor-cio = {group="io.ktor",name="ktor-client-cio",version.ref = "ktor"}
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx",name="kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx",name="kotlinx-coroutines-android", version.ref = "coroutines" }
 
