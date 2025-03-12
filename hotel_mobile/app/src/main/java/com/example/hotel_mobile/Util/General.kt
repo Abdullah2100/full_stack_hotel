@@ -4,7 +4,8 @@ import java.util.Date
 
 object General {
 
-    val BASED_URL = "http://192.168.20.138:5266/api"
+    val BASED_URL = "http://10.0.2.2:5266/api"
+   // val BASED_URL = "http://10.0.2.2:7224/api"
     fun String.toDate(): Date {
         var date = Date()
         val stringDateToList = this.split("/")

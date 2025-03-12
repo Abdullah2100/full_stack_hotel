@@ -96,6 +96,10 @@ public class UserController : Controller
     public ActionResult adminSignIn( LoginRequestDto loginData )
     {
 
+        return StatusCode(400, "email is already in use");
+
+        
+        
         var data = UserBuissnes.getUserByUserNameAndPassword(loginData.userNameOrEmail, clsUtil.hashingText(loginData.password));
 
         if (data == null)

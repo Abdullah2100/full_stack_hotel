@@ -21,6 +21,8 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import javax.inject.Singleton
 import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.request.header
+import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
@@ -53,8 +55,13 @@ class GeneralModule {
                 json(Json {
                     prettyPrint = true
                     isLenient = true
+                    ignoreUnknownKeys = true
                 })
             }
+
+//            install(DefaultRequest) {
+//                header(HttpHeaders.ContentType, ContentType.Application.FormUrlEncoded)
+//            }
 
         }
     }

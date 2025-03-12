@@ -20,7 +20,7 @@ data class SingUpDto(
     val userName: String, val password: String,
 
     @Transient
-    val brithDay: Date?=null,
+    val brithDay: String?=null,
 
     val isVip: Boolean,
 
