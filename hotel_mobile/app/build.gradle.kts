@@ -100,4 +100,18 @@ dependencies {
 
     //constrain
     implementation(libs.compose.constrin)
+
+
+    //room
+    implementation(libs.room.runtime)
+    ksp(libs.room.compiler)
+    annotationProcessor(libs.room.compiler)
+    implementation(libs.room.ktx)
+    implementation(libs.room.guava)
+    testImplementation(libs.room.testing)
+
+    //secureDataBase
+    implementation (libs.android.database.sqlcipher)
+    implementation (libs.sqlLight.android)
+
 }
