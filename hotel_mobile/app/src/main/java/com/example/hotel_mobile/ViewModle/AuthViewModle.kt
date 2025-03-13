@@ -1,6 +1,7 @@
 package com.example.hotel_mobile.ViewModle
 
 import android.util.Log
+import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
 import com.example.hotel_mobile.Dto.LoginDto
 import com.example.hotel_mobile.Modle.enNetworkStatus
@@ -36,7 +37,10 @@ class AuthViewModle @Inject constructor(
         }
     }
 
-    private suspend fun validationInputSignUp(userDto: SingUpDto) {
+    private suspend fun validationInputSignUp(
+        userDto: SingUpDto,
+        snackbarHostState: SnackbarHostState
+    ): Boolean {
         var message = ""
         val emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$".toRegex()
         val passwordContainCharCapitaRegex = "^(?=(.*[A-Z].*[A-Z])).*$".toRegex()
@@ -58,7 +62,7 @@ class AuthViewModle @Inject constructor(
             message = "الايميل لا يمكن ان يكون فارغا"
         else if (userDto.phone.length > 10 || userDto.phone.isEmpty())
             message = "رقم الهاتف لا يمكن ان يكون فارغا او اكثر من 10"
-        else if (userDto.brithDay.isNullOrEmpty()||userDto.brithDay=="لم يتم اختيار اي تاريخ")
+        else if (userDto.brithDay.isNullOrEmpty() || userDto.brithDay == "لم يتم اختيار اي تاريخ")
             message = "تاريخ الميلاد لا يمكن ان يكون فارغا"
         else if (userDto.address.isEmpty())
             message = " العنوان لا يمكن ان يكون فارغا"
@@ -78,77 +82,86 @@ class AuthViewModle @Inject constructor(
             message = "لا بد ان تحتوي كلمة المرور على رمزين"
         if (message.isNotEmpty()) {
             statusChange.emit(enNetworkStatus.None)
-//            snackbarHostState.showSnackbar(message)
-            throw Exception(message)
+            snackbarHostState.showSnackbar(message)
+            return false
         }
+        return true;
 
     }
 
-    private suspend fun validationInputSign(userDto: LoginDto) {
+    private suspend fun validationInputSign(
+        userDto: LoginDto,
+        snackbarHostState: SnackbarHostState
+    ): Boolean {
 
         var message = ""
-
         if (userDto.userNameOrEmail.isEmpty()) {
             message = "الاسم المستخدم / الايميل  لا يمكن ان يكون فارغا"
-        }
-        else if (userDto.password.isEmpty())
+        } else if (userDto.password.isEmpty())
             message = "كلمة المرور لا يمكن ان تكون فارغة"
 
         if (message.isNotEmpty()) {
             statusChange.emit(enNetworkStatus.None)
-            throw Exception(message)
+            snackbarHostState.showSnackbar(message)
+            return false
         }
-
+        return true;
     }
 
 
-    fun loginUser(userDto: LoginDto) {
+    fun loginUser(userDto: LoginDto, snackbarHostState: SnackbarHostState) {
         statusChange.update { enNetworkStatus.Loading }
         viewModelScope.launch(Dispatchers.Main + errorHandling) {
 
-            validationInputSign(userDto)
+            val resultValidation = validationInputSign(userDto, snackbarHostState)
+            Log.d("theisResultFromValidation","the validation is ${resultValidation}")
+            if (resultValidation) {
+                delay(1000L)
+                when (val result = authRepository.loginUser(userDto)) {
+                    is NetworkCallHandler.Successful<*> -> {
+                        var authData = result.data as AuthResultDto
+                        statusChange.update { enNetworkStatus.Complate }
+                    }
 
-            delay(1000L)
-            when (val result = authRepository.loginUser(userDto)) {
-                is NetworkCallHandler.Successful<*> -> {
-                    var authData = result.data as AuthResultDto
-                    statusChange.update { enNetworkStatus.Complate }
+                    is NetworkCallHandler.Error -> {
+                        throw Exception(result.data);
+                    }
+
+                    else -> {
+                        throw Exception("unexpected Stat");
+
+                    }
                 }
 
-                is NetworkCallHandler.Error -> {
-                    throw Exception(result.data);
-                }
-
-                else -> {
-                    throw Exception("unexpected Stat");
-
-                }
             }
 
+
         }
     }
 
-    fun signUpUser(userDto: SingUpDto) {
+    fun signUpUser(userDto: SingUpDto, snackbarHostState: SnackbarHostState) {
         statusChange.update { enNetworkStatus.Loading }
         viewModelScope.launch(Dispatchers.Main + errorHandling) {
 
-            validationInputSignUp(userDto)
+            val resultValidatoin = validationInputSignUp(userDto, snackbarHostState)
+            if (resultValidatoin) {
+                delay(1000L)
+                when (val result = authRepository.createNewUser(userDto)) {
+                    is NetworkCallHandler.Successful<*> -> {
+                        var authData = result.data as AuthResultDto
+                        statusChange.update { enNetworkStatus.Complate }
+                    }
 
-            delay(1000L)
-            when (val result = authRepository.createNewUser(userDto)) {
-                is NetworkCallHandler.Successful<*> -> {
-                    var authData = result.data as AuthResultDto
-                    statusChange.update { enNetworkStatus.Complate }
+                    is NetworkCallHandler.Error -> {
+                        throw Exception(result.data);
+                    }
+
+                    else -> {
+                        throw Exception("unexpected Stat");
+
+                    }
                 }
 
-                is NetworkCallHandler.Error -> {
-                    throw Exception(result.data);
-                }
-
-                else -> {
-                    throw Exception("unexpected Stat");
-
-                }
             }
 
         }
