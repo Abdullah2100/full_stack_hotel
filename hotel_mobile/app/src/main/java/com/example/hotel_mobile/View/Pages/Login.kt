@@ -58,8 +58,8 @@ fun LoginPage(
     val keyboardController = LocalSoftwareKeyboardController.current
     val snackbarHostState = remember { SnackbarHostState() }
 
-    val userNameOrEmail = remember { mutableStateOf(TextFieldValue("")) }
-    val password = remember { mutableStateOf(TextFieldValue("")) }
+    val userNameOrEmail = remember { mutableStateOf(TextFieldValue("fackkk@gmail.com")) }
+    val password = remember { mutableStateOf(TextFieldValue("as!@AS23")) }
 
     val errorMessage = finalScreenViewModel.errorMessage.collectAsState()
 

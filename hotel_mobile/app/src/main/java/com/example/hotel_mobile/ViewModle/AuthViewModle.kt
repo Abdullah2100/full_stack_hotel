@@ -11,13 +11,16 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
+import com.example.hotel_mobile.Data.Room.AuthModleEntity
 import com.example.hotel_mobile.Dto.AuthResultDto
 import com.example.hotel_mobile.Dto.SingUpDto
 import com.example.hotel_mobile.Modle.NetworkCallHandler
+import com.example.hotel_mobile.Util.General
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json.Default.decodeFromString
 
 @HiltViewModel
 class AuthViewModle @Inject constructor(
@@ -114,12 +117,18 @@ class AuthViewModle @Inject constructor(
         viewModelScope.launch(Dispatchers.Main + errorHandling) {
 
             val resultValidation = validationInputSign(userDto, snackbarHostState)
-            Log.d("theisResultFromValidation","the validation is ${resultValidation}")
+            Log.d("theisResultFromValidation", "the validation is ${resultValidation}")
             if (resultValidation) {
                 delay(1000L)
                 when (val result = authRepository.loginUser(userDto)) {
                     is NetworkCallHandler.Successful<*> -> {
-                        var authData = result.data as AuthResultDto
+                        val authData = decodeFromString<AuthResultDto>(result.data.toString())
+                        General.authDataBase.value?.fileDo()?.saveAuthData(
+                            AuthModleEntity(
+                                token = authData.accessToken,
+                                refreshToken = authData.refreshToken
+                            )
+                        )
                         statusChange.update { enNetworkStatus.Complate }
                     }
 
@@ -148,7 +157,13 @@ class AuthViewModle @Inject constructor(
                 delay(1000L)
                 when (val result = authRepository.createNewUser(userDto)) {
                     is NetworkCallHandler.Successful<*> -> {
-                        var authData = result.data as AuthResultDto
+                        val authData = decodeFromString<AuthResultDto>(result.data.toString())
+                        General.authDataBase.value?.fileDo()?.saveAuthData(
+                            AuthModleEntity(
+                                token = authData.accessToken,
+                                refreshToken = authData.refreshToken
+                            )
+                        )
                         statusChange.update { enNetworkStatus.Complate }
                     }
 

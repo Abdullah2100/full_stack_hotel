@@ -86,12 +86,12 @@ fun SignUpPage(
 
     val isShownPassword = remember { mutableStateOf(false) }
 
-    val email = remember { mutableStateOf(TextFieldValue("")) }
-    val userName = remember { mutableStateOf(TextFieldValue("")) }
-    val name = remember { mutableStateOf(TextFieldValue("")) }
-    val address = remember { mutableStateOf(TextFieldValue("")) }
-    val phone = remember { mutableStateOf(TextFieldValue("")) }
-    val password = remember { mutableStateOf(TextFieldValue("")) }
+    val email = remember { mutableStateOf(TextFieldValue("fackkk@gmail.com")) }
+    val userName = remember { mutableStateOf(TextFieldValue("ffffff")) }
+    val name = remember { mutableStateOf(TextFieldValue("mosaaa")) }
+    val address = remember { mutableStateOf(TextFieldValue("adsfasdf")) }
+    val phone = remember { mutableStateOf(TextFieldValue("778537385")) }
+    val password = remember { mutableStateOf(TextFieldValue("as!@AS23")) }
 
     val brithDay = remember(selectedDateInMillis) {
         selectedDateInMillis?.let {
