@@ -72,6 +72,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 // Enable HTTPS and map controllers
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
+
 app.MapControllers();
 app.Run();

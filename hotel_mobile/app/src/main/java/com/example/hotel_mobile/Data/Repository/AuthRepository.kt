@@ -13,9 +13,11 @@ import io.ktor.client.request.forms.formData
 import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.ktor.http.headers
 import io.ktor.utils.io.errors.IOException
@@ -27,11 +29,18 @@ class AuthRepository @Inject constructor(val httpClient: HttpClient) {
 
     suspend fun loginUser(loginData: LoginDto): NetworkCallHandler {
         return try {
-            val result = httpClient.post("${General.BASED_URL}/signIn") {
+            val result = httpClient.post("${General.BASED_URL}/user/signIn") {
                 setBody(loginData)
                 contentType(ContentType.Application.Json)
             }
-            NetworkCallHandler.Successful(result.body<AuthResultDto>())
+
+            if (result.status == HttpStatusCode.OK) {
+                NetworkCallHandler.Successful(result.body<String>())
+            } else {
+
+                NetworkCallHandler.Error(result.body())
+            }
+
         } catch (e: UnknownHostException) {
 
             return NetworkCallHandler.Error(e.message)
@@ -51,7 +60,7 @@ class AuthRepository @Inject constructor(val httpClient: HttpClient) {
         return try {
 
             val result = httpClient
-                .post("${General.BASED_URL}/signUp") {
+                .post("${General.BASED_URL}/user/signUp") {
                     setBody(MultiPartFormDataContent(
                         formData {
                             append("name", userData.name)
@@ -61,12 +70,23 @@ class AuthRepository @Inject constructor(val httpClient: HttpClient) {
                             append("userName", userData.userName)
                             append("password", userData.password)
                             append("brithDay", userData.brithDay.toString())
-
+                            append("isVip", false)
                         }
                     ))
                 }
 
-            NetworkCallHandler.Successful(result.body<AuthResultDto>())
+
+            if (result.status == HttpStatusCode.OK) {
+
+                NetworkCallHandler.Successful(result.body<String>())
+
+            } else {
+
+                NetworkCallHandler.Error(result.body())
+
+            }
+
+
         } catch (e: UnknownHostException) {
 
             return NetworkCallHandler.Error(e.message)

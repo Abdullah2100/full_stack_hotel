@@ -8,13 +8,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -32,28 +30,29 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavHostController
 import com.example.hotel_mobile.ViewModle.AuthViewModle
@@ -62,10 +61,10 @@ import com.example.hotel_mobile.Dto.SingUpDto
 import com.example.hotel_mobile.Modle.Screens
 import com.example.hotel_mobile.Modle.enNetworkStatus
 import com.example.hotel_mobile.R
-import com.example.hotel_mobile.Util.General.toDate
-import java.nio.file.WatchEvent
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -74,10 +73,18 @@ fun SignUpPage(
     nav: NavHostController,
     finalScreenViewModel: AuthViewModle = hiltViewModel()
 ) {
+    val errorMessage = finalScreenViewModel.errorMessage.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
 
 
     val loadingStatus = finalScreenViewModel.statusChange.collectAsState()
+
+    val snackbarHostState = remember { SnackbarHostState() }
+    val datePickerState = rememberDatePickerState()
+    val showDatePicker = remember { mutableStateOf(false) }
+    val selectedDateInMillis = datePickerState.selectedDateMillis
+
+    val isShownPassword = remember { mutableStateOf(false) }
 
     val email = remember { mutableStateOf(TextFieldValue("")) }
     val userName = remember { mutableStateOf(TextFieldValue("")) }
@@ -85,16 +92,28 @@ fun SignUpPage(
     val address = remember { mutableStateOf(TextFieldValue("")) }
     val phone = remember { mutableStateOf(TextFieldValue("")) }
     val password = remember { mutableStateOf(TextFieldValue("")) }
-    val brithDay = remember { mutableStateOf(TextFieldValue("")) }
 
-    val isShownPassword = remember { mutableStateOf(false) }
+    val brithDay = remember(selectedDateInMillis) {
+        selectedDateInMillis?.let {
+            val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            sdf.format(Date(it))
+        } ?: "لم يتم اختيار اي تاريخ"
+    }
 
-    val datePickerState = rememberDatePickerState()
-    val showDatePicker = remember { mutableStateOf(false) }
+    val currotine = rememberCoroutineScope()
 
+    LaunchedEffect(errorMessage.value) {
+        currotine.launch {
+            if (!errorMessage.value.isNullOrEmpty())
+                snackbarHostState.showSnackbar(errorMessage.value!!)
+        }
+    }
 
-
-    Scaffold {
+    Scaffold(
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        }
+    ) {
         it.calculateTopPadding()
         it.calculateBottomPadding()
 
@@ -137,7 +156,7 @@ fun SignUpPage(
                     .fillMaxHeight(0.9f)
                     .fillMaxWidth()
                     .padding(top = 50.dp)
-                    .verticalScroll(rememberScrollState()) ,
+                    .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -151,15 +170,6 @@ fun SignUpPage(
                         confirmButton = {
                             Button(
                                 onClick = {
-
-                                    datePickerState.selectedDateMillis.let { it ->
-                                        val selectedDate = SimpleDateFormat("dd/MM/yyyy")
-                                            .format(it)
-
-                                        brithDay.value = TextFieldValue(selectedDate)
-                                    }
-
-
                                     showDatePicker.value = false
                                 },
                                 colors = ButtonDefaults.buttonColors(
@@ -271,9 +281,15 @@ fun SignUpPage(
                     colors = OutlinedTextFieldDefaults.colors(
                         unfocusedBorderColor = Color.Gray.copy(alpha = 0.46f),
                     ),
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                    keyboardActions = KeyboardActions(onDone = {
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Next,
+                        keyboardType = KeyboardType.Number
+                    ),
+                    keyboardActions = KeyboardActions(onNext = {
+                        showDatePicker.value = true
+
                     }),
+
 
                     )
 
@@ -305,9 +321,9 @@ fun SignUpPage(
                                 text = "تاريخ الميلاد",
                                 color = Color.Gray.copy(alpha = 0.66f)
                             )
-                            if (brithDay.value.text.length > 0)
+                            if (brithDay.length > 0)
                                 Text(
-                                    text = brithDay.value.text,
+                                    text = brithDay,
                                     color = Color.Gray.copy(alpha = 0.66f)
                                 )
                         }
@@ -375,7 +391,7 @@ fun SignUpPage(
                                 address = address.value.toString(),
                                 password = password.value.toString(),
                                 isVip = false,
-                                brithDay = brithDay.value.text.toDate(),
+                                brithDay = brithDay,
                                 imagePath = null,
                                 userName = userName.value.toString()
                             )
@@ -391,10 +407,12 @@ fun SignUpPage(
                         IconButton(onClick = {
                             isShownPassword.value = !isShownPassword.value
                         }) {
-                            Image(painterResource(iconName), contentDescription = "",
+                            Image(
+                                painterResource(iconName), contentDescription = "",
                                 colorFilter = ColorFilter.tint(
-                                    color =Color.Gray.copy(alpha = 0.46f)
-                                ))
+                                    color = Color.Gray.copy(alpha = 0.46f)
+                                )
+                            )
                         }
                     }
 
@@ -403,17 +421,18 @@ fun SignUpPage(
                 Button(
                     enabled = loadingStatus.value != enNetworkStatus.Loading,
                     onClick = {
+                        keyboardController?.hide();
                         finalScreenViewModel.signUpUser(
                             SingUpDto(
-                                name = name.value.toString(),
-                                email = email.value.toString(),
-                                phone = phone.value.toString(),
-                                address = address.value.toString(),
-                                password = password.value.toString(),
+                                name = name.value.text,
+                                email = email.value.text,
+                                phone = phone.value.text,
+                                address = address.value.text,
+                                password = password.value.text,
                                 isVip = false,
-                                brithDay = brithDay.value.text.toDate(),
+                                brithDay = brithDay,
                                 imagePath = null,
-                                userName = userName.value.toString()
+                                userName = userName.value.text
                             )
                         )
                     },

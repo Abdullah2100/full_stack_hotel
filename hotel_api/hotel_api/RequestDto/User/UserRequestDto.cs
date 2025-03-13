@@ -12,7 +12,6 @@ public class UserRequestDto
 
     [Required]
     [MaxLength(10)]
-    //[MinLength(10)]
     public string phone { get; set; } = "";
 
      public string? address { get; set; } = null;
