@@ -394,7 +394,9 @@ fun SignUpPage(
                                 brithDay = brithDay,
                                 imagePath = null,
                                 userName = userName.value.toString()
-                            )
+                            ),
+                            snackbarHostState =snackbarHostState
+
                         )
                     }),
 
@@ -433,7 +435,9 @@ fun SignUpPage(
                                 brithDay = brithDay,
                                 imagePath = null,
                                 userName = userName.value.text
-                            )
+                            ),
+                            snackbarHostState =snackbarHostState
+
                         )
                     },
                     modifier = Modifier

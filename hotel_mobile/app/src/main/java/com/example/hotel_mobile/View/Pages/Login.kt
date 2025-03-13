@@ -1,5 +1,6 @@
 package com.example.hotel_mobile.View.Pages
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,6 +20,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -62,16 +64,15 @@ fun LoginPage(
     val errorMessage = finalScreenViewModel.errorMessage.collectAsState()
 
 
-    val currotine = rememberCoroutineScope()
 
-    LaunchedEffect(errorMessage) {
-        if (!errorMessage.value.isNullOrEmpty())
-            currotine.launch {
-                snackbarHostState.showSnackbar(errorMessage.value!!)
-            }
-    }
 
-    Scaffold {
+
+    Scaffold (
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        }
+    ){
+
         it.calculateTopPadding()
         it.calculateBottomPadding()
 
@@ -164,8 +165,9 @@ fun LoginPage(
                         finalScreenViewModel.loginUser(
                             LoginDto(
                                 userNameOrEmail = userNameOrEmail.value.text,
-                                password = password.value.text
-                            )
+                                password = password.value.text,
+                            ),
+                            snackbarHostState =snackbarHostState
                         )
                     })
 
@@ -181,6 +183,9 @@ fun LoginPage(
                                 userNameOrEmail = userNameOrEmail.value.text,
                                 password = password.value.text
                             )
+                            ,
+                            snackbarHostState =snackbarHostState
+
                         )
                     },
                     modifier = Modifier
