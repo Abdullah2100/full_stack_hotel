@@ -17,14 +17,13 @@ import kotlinx.serialization.Serializable
 
 
 @Composable
-fun NavController(navController: NavHostController)
+fun NavController(navController: NavHostController,isLogin:Boolean?)
 {
-    val authData = General.authData.collectAsState()
 
     NavHost(
         navController = navController,
-        startDestination =if(authData.value!=null)
-            Screens.home
+        startDestination =if(isLogin==true)
+            Screens.homeGraph
             else  Screens.authGraph
     ){
 

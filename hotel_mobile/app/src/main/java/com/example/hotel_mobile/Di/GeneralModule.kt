@@ -3,6 +3,9 @@ package com.example.hotel_mobile.Di
 import android.content.Context
 import android.util.Log
 import androidx.multidex.BuildConfig
+import androidx.room.Room
+import com.example.hotel_mobile.Data.Room.AuthDao
+import com.example.hotel_mobile.Data.Room.AuthDataBase
 import com.example.hotel_mobile.Util.General
 import dagger.Module
 import dagger.Provides
@@ -33,6 +36,13 @@ import javax.inject.Qualifier
 @Retention(AnnotationRetention.BINARY)
 @Qualifier
 annotation class IoDispatcher
+
+
+
+@Retention(AnnotationRetention.BINARY)
+@Qualifier
+annotation class MainDispatcher
+
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -80,12 +90,30 @@ class GeneralModule {
     }
 
 
+    @IoDispatcher
+    @Provides
+    fun providesIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
+
+    @MainDispatcher
+    @Provides
+    fun providesMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+
 
     @Provides
-    @IoDispatcher
-    fun provideIoDispatcher() : CoroutineDispatcher = Dispatchers.IO
-
-
-
+    @Singleton
+    fun createAuthDataBase(context: Context): AuthDataBase {
+      return  Room.databaseBuilder(
+            context,
+            AuthDataBase::class.java, "authDB.db"
+        )
+            .openHelperFactory(General.encryptionFactory("authDB.db"))
+            .fallbackToDestructiveMigration()
+            .build()
+    }
+    @Provides
+    @Singleton
+    fun authDataBase (authDataBase: AuthDataBase): AuthDao {
+        return authDataBase.fileDo()
+    }
 
 }

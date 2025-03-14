@@ -20,6 +20,7 @@ hilt-nav = "1.2.0"
 constrain-compose = "1.0.1"
 sqlLight="2.1.0"
 androidDatabaseSqlcipher = "4.5.3"
+splash = "1.0.0-beta02"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -62,7 +63,7 @@ kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx",name="kotlinx-cor
 compose-constrin = {group = "androidx.constraintlayout",name = "constraintlayout-compose",version.ref="constrain-compose"}
 
 #material icon
-material-icon-compose = {group = "androidx.compose.material",name = "material-icons-extended",version.ref = "activityCompose"}
+#material-icon-compose = {group = "androidx.compose.material",name = "material-icons-extended",version.ref = "activityCompose"}
 
 
 
@@ -79,6 +80,9 @@ room-ktx = { group = "androidx.room",name="room-ktx", version.ref = "room" }
 room-guava = { group = "androidx.room",name="room-guava", version.ref = "room" }
 room-testing = { group = "androidx.room",name="room-testing", version.ref = "room" }
 
+
+#splash
+splash-android = {group="androidx.core",name="core-splashscreen",version.ref="splash"}
 
 
 [plugins]

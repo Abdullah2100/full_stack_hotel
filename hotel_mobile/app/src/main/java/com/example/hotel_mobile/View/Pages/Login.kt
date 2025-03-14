@@ -168,6 +168,7 @@ fun LoginPage(
                                 password = password.value.text,
                             ),
                             snackbarHostState =snackbarHostState
+                            , navController = nav
                         )
                     })
 
@@ -185,6 +186,8 @@ fun LoginPage(
                             )
                             ,
                             snackbarHostState =snackbarHostState
+                                                       , navController = nav
+
 
                         )
                     },

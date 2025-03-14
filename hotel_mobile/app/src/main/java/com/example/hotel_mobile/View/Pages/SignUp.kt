@@ -395,7 +395,9 @@ fun SignUpPage(
                                 imagePath = null,
                                 userName = userName.value.toString()
                             ),
-                            snackbarHostState =snackbarHostState
+                            snackbarHostState =snackbarHostState,
+                             navController = nav
+
 
                         )
                     }),
@@ -437,6 +439,8 @@ fun SignUpPage(
                                 userName = userName.value.text
                             ),
                             snackbarHostState =snackbarHostState
+                            , navController = nav
+
 
                         )
                     },
