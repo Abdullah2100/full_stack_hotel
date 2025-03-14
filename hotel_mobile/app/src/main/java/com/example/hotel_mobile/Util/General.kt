@@ -12,7 +12,7 @@ import net.sqlcipher.database.SupportFactory
 import java.util.Date
 
 object General {
-    var authDataBase = MutableStateFlow<AuthDataBase?>(null)
+
     var authData = MutableStateFlow<AuthModleEntity?>(null)
 
     val BASED_URL = "http://10.0.2.2:5266/api"

@@ -114,4 +114,7 @@ dependencies {
     implementation (libs.android.database.sqlcipher)
     implementation (libs.sqlLight.android)
 
+    //splash Screen
+    implementation(libs.splash.android)
+
 }

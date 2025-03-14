@@ -2,4 +2,11 @@
 <resources>
 
     <style name="Theme.Hotel_mobile" parent="android:Theme.Material.Light.NoActionBar" />
+
+
+    <style name="Theme.Vixacare.StartingScreen" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/white</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/logo</item>
+        <item name="postSplashScreenTheme">@android:style/Theme.Material.NoActionBar</item>
+    </style>
 </resources>

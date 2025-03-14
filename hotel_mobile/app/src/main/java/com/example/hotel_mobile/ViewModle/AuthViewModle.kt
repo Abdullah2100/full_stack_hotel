@@ -12,7 +12,11 @@ import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
+import com.example.hotel_mobile.Data.Room.AuthDao
+import com.example.hotel_mobile.Data.Room.AuthDataBase
 import com.example.hotel_mobile.Data.Room.AuthModleEntity
+import com.example.hotel_mobile.Di.IoDispatcher
+import com.example.hotel_mobile.Di.MainDispatcher
 import com.example.hotel_mobile.Dto.AuthResultDto
 import com.example.hotel_mobile.Dto.SingUpDto
 import com.example.hotel_mobile.Modle.NetworkCallHandler
@@ -23,21 +27,26 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json.Default.decodeFromString
+import kotlin.coroutines.CoroutineContext
 
 @HiltViewModel
 class AuthViewModle @Inject constructor(
     val authRepository: AuthRepository,
-    val dispatcher: CoroutineDispatcher=Dispatchers.IO
+    @MainDispatcher private val ioDispatcher: CoroutineDispatcher,
+    private val authDao: AuthDao
+) : ViewModel() {
 
-    ) : ViewModel() {
+    private  val _isLogin = MutableStateFlow<Boolean?>(null)
+    val isLogin = _isLogin.asStateFlow()
 
     private val _statusChange = MutableStateFlow<enNetworkStatus>(enNetworkStatus.None)
-    val statusChange: StateFlow<enNetworkStatus> = _statusChange
+    val statusChange: StateFlow<enNetworkStatus> = _statusChange.asStateFlow()
 
-    private  val _errorMessage = MutableStateFlow<String?>(null)
-    val errorMessage:StateFlow<String?> = _errorMessage
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
 
     val errorHandling = CoroutineExceptionHandler { _, ex ->
         Log.d("AuthError", ex.message ?: "")
@@ -47,6 +56,11 @@ class AuthViewModle @Inject constructor(
                 ex.message
             }
         }
+    }
+
+
+    init {
+            getAuthData()
     }
 
     private suspend fun validationInputSignUp(
@@ -123,10 +137,9 @@ class AuthViewModle @Inject constructor(
         userDto: LoginDto,
         snackbarHostState: SnackbarHostState,
         navController: NavHostController
-
-        ) {
-        viewModelScope.launch(dispatcher + errorHandling) {
-            _statusChange.emit( enNetworkStatus.Loading )
+    ) {
+        viewModelScope.launch(ioDispatcher + errorHandling) {
+            _statusChange.emit(enNetworkStatus.Loading)
 
             val resultValidation = validationInputSign(userDto, snackbarHostState)
 
@@ -135,7 +148,7 @@ class AuthViewModle @Inject constructor(
                 when (val result = authRepository.loginUser(userDto)) {
                     is NetworkCallHandler.Successful<*> -> {
                         val authData = decodeFromString<AuthResultDto>(result.data.toString())
-                        General.authDataBase.value?.fileDo()?.saveAuthData(
+                        authDao.saveAuthData(
                             AuthModleEntity(
                                 token = authData.accessToken,
                                 refreshToken = authData.refreshToken
@@ -166,9 +179,9 @@ class AuthViewModle @Inject constructor(
         snackbarHostState: SnackbarHostState,
         navController: NavHostController
     ) {
-        viewModelScope.launch(dispatcher + errorHandling) {
+        viewModelScope.launch(ioDispatcher + errorHandling) {
 
-            _statusChange.emit( enNetworkStatus.Loading )
+            _statusChange.emit(enNetworkStatus.Loading)
 
             val resultValidatoin = validationInputSignUp(userDto, snackbarHostState)
             if (resultValidatoin) {
@@ -176,7 +189,7 @@ class AuthViewModle @Inject constructor(
                 when (val result = authRepository.createNewUser(userDto)) {
                     is NetworkCallHandler.Successful<*> -> {
                         val authData = decodeFromString<AuthResultDto>(result.data.toString())
-                        General.authDataBase.value?.fileDo()?.saveAuthData(
+                        authDao.saveAuthData(
                             AuthModleEntity(
                                 token = authData.accessToken,
                                 refreshToken = authData.refreshToken
@@ -201,5 +214,13 @@ class AuthViewModle @Inject constructor(
         }
     }
 
+
+     fun getAuthData ()  {
+        viewModelScope.launch {
+            val result =  authDao.getAuthData();
+            _isLogin.emit(result!=null)
+
+        }
+    }
 
 }

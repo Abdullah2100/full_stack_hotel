@@ -25,7 +25,7 @@ public class UserController : Controller
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public IActionResult adminSignUp(
+    public IActionResult userSignUp(
         UserRequestDto userRequestData
     )
     {
@@ -93,7 +93,7 @@ public class UserController : Controller
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public ActionResult adminSignIn( LoginRequestDto loginData )
+    public ActionResult userSignIn( LoginRequestDto loginData )
     {
         
         var data = UserBuissnes.getUserByUserNameAndPassword(loginData.userNameOrEmail, clsUtil.hashingText(loginData.password));
