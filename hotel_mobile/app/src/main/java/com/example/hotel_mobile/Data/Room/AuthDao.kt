@@ -7,10 +7,10 @@ import androidx.room.Query
 
 @Dao
 interface AuthDao {
-    @Insert(onConflict = OnConflictStrategy.NONE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveAuthData(authData :AuthModleEntity)
 
     @Query("SELECT * FROM AuthModleEntity limit 1")
-    suspend  fun getAuthData():AuthModleEntity
+    suspend  fun getAuthData():AuthModleEntity?
 
 }

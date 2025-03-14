@@ -24,9 +24,15 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.header
 import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.serialization.json.Json
+import javax.inject.Qualifier
 
 
+@Retention(AnnotationRetention.BINARY)
+@Qualifier
+annotation class IoDispatcher
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -72,6 +78,14 @@ class GeneralModule {
     fun generalContext(@ApplicationContext context: Context): Context {
         return context
     }
+
+
+
+    @Provides
+    @IoDispatcher
+    fun provideIoDispatcher() : CoroutineDispatcher = Dispatchers.IO
+
+
 
 
 }

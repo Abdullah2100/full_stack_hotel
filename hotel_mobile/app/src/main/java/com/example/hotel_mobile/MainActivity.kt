@@ -15,6 +15,7 @@ import com.example.hotel_mobile.View.navigation.NavController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -23,15 +24,20 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         CoroutineScope(Dispatchers.IO).launch {
-            General.authDataBase.emit(
-                Room.databaseBuilder(
-                    applicationContext,
-                    AuthDataBase::class.java, "authDB.db"
+            withContext(Dispatchers.IO){
+                General.authDataBase.emit(
+                    Room.databaseBuilder(
+                        applicationContext,
+                        AuthDataBase::class.java, "authDB.db"
+                    )
+                        .openHelperFactory(General.encryptionFactory("authDB.db"))
+                        .fallbackToDestructiveMigration()
+                        .build()
                 )
-                    .openHelperFactory(General.encryptionFactory("authDB.db"))
-                    .fallbackToDestructiveMigration()
-                    .build()
-            )
+
+                General.authData.emit(General.authDataBase.value?.fileDo()?.getAuthData())
+
+            }
         }
 
 

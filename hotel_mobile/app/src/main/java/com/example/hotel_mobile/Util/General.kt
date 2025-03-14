@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.hotel_mobile.Data.Room.AuthDataBase
+import com.example.hotel_mobile.Data.Room.AuthModleEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import net.sqlcipher.database.SQLiteDatabase
 import net.sqlcipher.database.SupportFactory
@@ -12,6 +13,7 @@ import java.util.Date
 
 object General {
     var authDataBase = MutableStateFlow<AuthDataBase?>(null)
+    var authData = MutableStateFlow<AuthModleEntity?>(null)
 
     val BASED_URL = "http://10.0.2.2:5266/api"
 
