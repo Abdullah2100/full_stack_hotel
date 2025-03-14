@@ -11,30 +11,39 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
 import com.example.hotel_mobile.Data.Room.AuthModleEntity
 import com.example.hotel_mobile.Dto.AuthResultDto
 import com.example.hotel_mobile.Dto.SingUpDto
 import com.example.hotel_mobile.Modle.NetworkCallHandler
+import com.example.hotel_mobile.Modle.Screens
 import com.example.hotel_mobile.Util.General
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json.Default.decodeFromString
 
 @HiltViewModel
 class AuthViewModle @Inject constructor(
     val authRepository: AuthRepository,
+    val dispatcher: CoroutineDispatcher=Dispatchers.IO
 
     ) : ViewModel() {
 
-    val statusChange = MutableStateFlow<enNetworkStatus>(enNetworkStatus.None)
-    val errorMessage = MutableStateFlow<String?>(null)
+    private val _statusChange = MutableStateFlow<enNetworkStatus>(enNetworkStatus.None)
+    val statusChange: StateFlow<enNetworkStatus> = _statusChange
+
+    private  val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage:StateFlow<String?> = _errorMessage
+
     val errorHandling = CoroutineExceptionHandler { _, ex ->
         Log.d("AuthError", ex.message ?: "")
         viewModelScope.launch {
-            statusChange.emit(enNetworkStatus.Error)
-            errorMessage.update {
+            _statusChange.emit(enNetworkStatus.Error)
+            _errorMessage.update {
                 ex.message
             }
         }
@@ -54,8 +63,6 @@ class AuthViewModle @Inject constructor(
                    ^(?=(.*[!@#\\${'$'}%^&*()_+|/?<>:;'\\"-].*[!@#\\${'$'}%^&*()_+|/?<>:;'\\"-])).*${'$'}
         """.trimIndent()
             .toRegex()
-
-
 
         if (userDto.name.length < 1) {
             message = "الاسم لا يمكن ان يكون فارغا"
@@ -84,7 +91,7 @@ class AuthViewModle @Inject constructor(
         else if (!userDto.password.matches(passwordContainSpicialCharecterRegex))
             message = "لا بد ان تحتوي كلمة المرور على رمزين"
         if (message.isNotEmpty()) {
-            statusChange.emit(enNetworkStatus.None)
+            _statusChange.emit(enNetworkStatus.None)
             snackbarHostState.showSnackbar(message)
             return false
         }
@@ -104,7 +111,7 @@ class AuthViewModle @Inject constructor(
             message = "كلمة المرور لا يمكن ان تكون فارغة"
 
         if (message.isNotEmpty()) {
-            statusChange.emit(enNetworkStatus.None)
+            _statusChange.emit(enNetworkStatus.None)
             snackbarHostState.showSnackbar(message)
             return false
         }
@@ -112,12 +119,17 @@ class AuthViewModle @Inject constructor(
     }
 
 
-    fun loginUser(userDto: LoginDto, snackbarHostState: SnackbarHostState) {
-        statusChange.update { enNetworkStatus.Loading }
-        viewModelScope.launch(Dispatchers.Main + errorHandling) {
+    fun loginUser(
+        userDto: LoginDto,
+        snackbarHostState: SnackbarHostState,
+        navController: NavHostController
+
+        ) {
+        viewModelScope.launch(dispatcher + errorHandling) {
+            _statusChange.emit( enNetworkStatus.Loading )
 
             val resultValidation = validationInputSign(userDto, snackbarHostState)
-            Log.d("theisResultFromValidation", "the validation is ${resultValidation}")
+
             if (resultValidation) {
                 delay(1000L)
                 when (val result = authRepository.loginUser(userDto)) {
@@ -129,7 +141,8 @@ class AuthViewModle @Inject constructor(
                                 refreshToken = authData.refreshToken
                             )
                         )
-                        statusChange.update { enNetworkStatus.Complate }
+                        _statusChange.update { enNetworkStatus.Complate }
+                        navController.navigate(Screens.homeGraph)
                     }
 
                     is NetworkCallHandler.Error -> {
@@ -148,9 +161,14 @@ class AuthViewModle @Inject constructor(
         }
     }
 
-    fun signUpUser(userDto: SingUpDto, snackbarHostState: SnackbarHostState) {
-        statusChange.update { enNetworkStatus.Loading }
-        viewModelScope.launch(Dispatchers.Main + errorHandling) {
+    fun signUpUser(
+        userDto: SingUpDto,
+        snackbarHostState: SnackbarHostState,
+        navController: NavHostController
+    ) {
+        viewModelScope.launch(dispatcher + errorHandling) {
+
+            _statusChange.emit( enNetworkStatus.Loading )
 
             val resultValidatoin = validationInputSignUp(userDto, snackbarHostState)
             if (resultValidatoin) {
@@ -164,7 +182,8 @@ class AuthViewModle @Inject constructor(
                                 refreshToken = authData.refreshToken
                             )
                         )
-                        statusChange.update { enNetworkStatus.Complate }
+                        _statusChange.update { enNetworkStatus.Complate }
+                        navController.navigate(Screens.homeGraph)
                     }
 
                     is NetworkCallHandler.Error -> {
