@@ -26,6 +26,9 @@ export default async function apiClient({
     const fullUrl = import.meta.env.VITE_BASE_URL + endPoint;
     const token = tryNumber === 1 ? jwtValue : jwtRefresh;
     const headers = handleHeaders(isRequireAuth, isFormData, token);
+    generalMessage(`this the parameters ${JSON.stringify(parameters)}
+    this the header ${JSON.stringify(headers)}
+    `)
 
  
     try {
@@ -36,7 +39,7 @@ export default async function apiClient({
             headers: headers,
         });
 
-         generalMessage(`this shown the token from user ${token}`)
+
         return response;
     } catch (error) {
         if (error?.response?.status === 401 && tryNumber === 1) {

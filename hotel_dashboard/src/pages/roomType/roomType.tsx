@@ -138,7 +138,7 @@ const RoomType = () => {
         isRequireAuth: true,
         jwtValue: jwtToken ?? undefined,
         jwtRefresh: jwtRefreshToken ?? undefined,
-        isFormData: data != undefined
+        isFormData: true
         , tryNumber: 1
       }),
     onSuccess: (data) => {

@@ -699,12 +699,7 @@ CREATE OR REPLACE FUNCTION fn_room_insert_new(
     ) RETURNS INT AS $$
 DECLARE roomid_holder UUID;
 is_hasPermission_to_delete BOOLEAN;
-BEGIN -- Check if the user has permission to delete
--- is_hasPermission_to_delete := isAdminOrSomeOneHasPersmission(modifiBy);
--- IF is_hasPermission_to_delete = FALSE THEN
---     RAISE EXCEPTION 'You do not have permission to perform this action';
---     RETURN 0;  -- You might want to return a specific error code
--- END IF;
+BEGIN  
 -- Insert the new room
 INSERT INTO rooms(
         roomid,
@@ -726,11 +721,14 @@ VALUES (
     )
 RETURNING roomid INTO roomid_holder;
 -- Check if the insertion was successful
-IF roomid_holder IS NOT NULL THEN RETURN 1;
--- Return a success code
--- Return failure if roomid is NULL
+IF roomid_holder IS NOT NULL THEN 
+
+RETURN 1;
+
 END IF;
+
 RETURN 0;
+
 EXCEPTION
 WHEN OTHERS THEN RAISE EXCEPTION 'Something went wrong: %',
 SQLERRM;
@@ -739,20 +737,40 @@ END;
 $$ LANGUAGE PLPGSQL;
 ---
 ---
-CREATE OR REPLACE FUNCTION fn_room_insert() RETURNS TRIGGER AS $$
-DECLARE isUserDeleted BOOLEAN;
+CREATE OR REPLACE FUNCTION fn_room_insert() 
+RETURNS TRIGGER 
+AS $$
+DECLARE 
+    isUserDeleted BOOLEAN;
+    is_hasPermission_to_create BOOLEAN;
 BEGIN
-SELECT isdeleted INTO isUserDeleted
-FROM users
-WHERE userid = NEW.userid;
-IF isUserDeleted IS NOT NULL
-AND isUserDeleted = TRUE THEN RETURN NEW;
-END IF;
-RETURN NULL;
+    -- Check if the user has permission to create a room
+    is_hasPermission_to_create := isAdminOrSomeOneHasPersmission(NEW.belongto);
+
+    -- Check if the user (belongto) is deleted
+    SELECT isdeleted INTO isUserDeleted
+    FROM users
+    WHERE userid = NEW.belongto; -- Use 'userid' to match the users table
+
+        RAISE NOTICE 'this shown the  ishas permission %',is_hasPermission_to_create;
+
+    -- If the user is deleted or does not have permission, block the insert
+    IF isUserDeleted IS NOT NULL AND isUserDeleted = TRUE THEN 
+        RAISE NOTICE 'this shown the condition is pass';
+        RETURN NEW; -- Allow the insert
+    ELSIF is_hasPermission_to_create  THEN
+                RAISE NOTICE 'this shown from else if %,%',NEW,isUserDeleted;
+
+        RETURN NEW;
+    ELSE 
+        RAISE NOTICE 'this shown the condition is not pass';
+        RETURN NULL; -- Block the insert
+    END IF;
+
 EXCEPTION
-WHEN OTHERS THEN RAISE EXCEPTION 'Something went wrong: %',
-SQLERRM;
-RETURN NULL;
+    WHEN OTHERS THEN 
+        RAISE EXCEPTION 'Something went wrong: %', SQLERRM;
+        RETURN NULL; -- Block the insert in case of an error
 END;
 $$ LANGUAGE plpgsql;
 ---

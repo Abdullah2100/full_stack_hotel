@@ -700,6 +700,7 @@ namespace hotel_api.controller
                 );
             }
 
+                    // Upload the file
             saveImage(imageHolderPath, roomId);
 
             var roomHolder = new RoomBuisness(
@@ -730,7 +731,7 @@ namespace hotel_api.controller
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> getRooms
+        public IActionResult getRooms
             (int pageNumber)
         {
             try
@@ -963,11 +964,12 @@ namespace hotel_api.controller
                             imagePath: imagePath,
                             belongTo: (Guid)id,
                             imagePathId: null,
-                            isThumnail: imageHolder.isThumnail));
+                            isThumnail: imageHolder?.isThumnail?? false));
                 imageHolder.save();
             }
         }
 
+        
         private void saveImage(
             List<ImageRequestDto>? imagePath,
             Guid id
@@ -982,7 +984,7 @@ namespace hotel_api.controller
                             imagePath: path.fileName,
                             belongTo: id,
                             imagePathId: null,
-                            isThumnail: path.isThumnail)
+                            isThumnail: path?.isThumnail??false)
                     );
                     imageHolder.save();
                 }

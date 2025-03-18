@@ -5,6 +5,7 @@ import ImageHolder from "../imageHolder"
 import { generalMessage } from "../../util/generalPrint"
 import { iImageHolder } from "../../module/IImageHolder"
 import { ChevronLeftIcon } from "@heroicons/react/16/solid"
+import { General } from "../../util/general"
 
 interface iUserProps {
     images: iImageHolder[] | undefined,
@@ -44,7 +45,8 @@ const ImagesPlay = ({ images = undefined, setImagesToNull }: iUserProps) => {
                 </button>
                 <div>
                     <ImageHolder
-                        src={images === undefined ? undefined : `${import.meta.env.VITE_MINIO_ENDPOINT}/room/${images[index].path}`}
+                        //src={images === undefined ? undefined : `${import.meta.env.VITE_MINIO_ENDPOINT}/room/${images[index].path}`}
+                        src={images === undefined ? undefined : `${General.minio_server}/room/${images[index].path}`}
                         style='flex flex-row h-24 w-24 '
                         isFromTop={true} />
                 </div>

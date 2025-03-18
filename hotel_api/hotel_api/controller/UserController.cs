@@ -26,7 +26,7 @@ public class UserController : Controller
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public IActionResult userSignUp(
-        UserRequestDto userRequestData
+    [FromBody]    UserRequestDto userRequestData
     )
     {
         string? validateRequeset = clsValidation.validateInput(phone: userRequestData.phone,
@@ -127,4 +127,29 @@ public class UserController : Controller
         return StatusCode(500, "Something went wrong");
     }
     
+    
+    
+    //rooms
+    
+    [Authorize]
+    [HttpGet("room/{pageNumber:int}")]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public IActionResult getRooms
+        (int pageNumber)
+    {
+        try
+        {
+            var rooms = RoomBuisness.getAllRooms(pageNumber, 25);
+
+            return Ok(rooms);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "Something went wrong");
+        }
+    }
+
 }

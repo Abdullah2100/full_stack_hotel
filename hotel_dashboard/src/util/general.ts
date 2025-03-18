@@ -1,6 +1,8 @@
 import { enStatsu } from "../module/enStatsu";
 
 export class General{
+    static minio_server= "http://192.168.1.41:9000"
+    //static minio_server= "http://172.19.0.1:9000"
 
     static convetNumberToEnStatus(statusNumber:number){
         switch(statusNumber){

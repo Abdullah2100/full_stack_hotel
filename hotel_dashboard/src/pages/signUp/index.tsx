@@ -46,9 +46,9 @@ const SignUp = () => {
             apiClient({
                 enType: enApiType.POST,
                 endPoint: import.meta.env.VITE_SINGUP,
-                prameters: userData
-
-
+                parameters: userData,
+                isFormData:false,
+                isRequireAuth:false
             }),
         onSuccess: (data) => {
             setState(enStatus.complate)
@@ -124,12 +124,12 @@ const SignUp = () => {
         }
         setState(enStatus.loading)
         const data = {
+            "userName": userAuth.username,
+            "password": userAuth.password,
             "name": userAuth.name,
             "email": userAuth.email,
             "phone": userAuth.phone,
             "address": userAuth.address,
-            "userName": userAuth.username,
-            "password": userAuth.password,
         }
         await singup.mutate(data)
 

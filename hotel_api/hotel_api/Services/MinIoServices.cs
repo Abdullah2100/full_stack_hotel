@@ -155,19 +155,6 @@ namespace hotel_api.Services
                         await _createNewBucket(minioClient, bucketNameStr);
                     }
 
-                    /*   if (previuseFileName != null)
-                       {
-                           foreach (var se in previuseFileName)
-                           {
-                               bool isExist = await isFileExist(minioClient, se.path, bucketNameStr);
-                               if (!isExist)
-                               {
-                                   await deleteFile(minioClient, se.path, bucketNameStr);
-                               }
-                           }
-                       }
-   */
-                    // Upload the file
                     if (formFile.data != null)
                     {
                         using (var fileStream = formFile.data.OpenReadStream())
