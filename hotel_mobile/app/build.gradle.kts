@@ -22,6 +22,7 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        multiDexEnabled = true
     }
 
     buildTypes {
@@ -33,6 +34,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
+        isCoreLibraryDesugaringEnabled = true
     }
     kotlinOptions {
         jvmTarget = "1.8"
@@ -117,4 +119,10 @@ dependencies {
     //splash Screen
     implementation(libs.splash.android)
 
+
+    //dateSerialize plugin
+    implementation(libs.date.serialize)
+
+    //prevent minRequrire api gradle
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
 }

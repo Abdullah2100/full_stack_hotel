@@ -75,9 +75,52 @@ class GeneralModule {
                 })
             }
 
+<<<<<<< Updated upstream
 //            install(DefaultRequest) {
 //                header(HttpHeaders.ContentType, ContentType.Application.FormUrlEncoded)
 //            }
+=======
+            install(Auth) {
+                bearer {
+
+                    loadTokens {
+                       val authData = authDao.getAuthData()
+
+                       authData.let { it->
+                           BearerTokens(it!!.token, it.refreshToken)
+                       }
+
+                    }
+
+                    refreshTokens {
+                        try {
+
+                            val response = client.post("${General.BASED_URL}/refreshToken/refresh") {
+                                setBody(mapOf("refreshToken" to General.authData?.refreshToken))
+                                contentType(ContentType.Application.Json)
+                            }
+
+                            if (response.status.value == 200) {
+                                val newTokenData = response.body<AuthResultDto>()
+
+                                authDao.saveAuthData(AuthModleEntity(0,newTokenData.accessToken,newTokenData.refreshToken))
+
+                                return@refreshTokens BearerTokens(
+                                    accessToken = newTokenData.accessToken,
+                                    refreshToken = newTokenData.refreshToken
+                                )
+                            }
+                        } catch (e: Exception) {
+                            Log.e("Auth", "Failed to refresh token: ${e.message}")
+                        }
+                        null
+                    }
+
+
+
+                }
+            }
+>>>>>>> Stashed changes
 
         }
     }

@@ -114,17 +114,17 @@ public class UserController : Controller
     }
 
 
-    [Authorize]
-    [HttpGet("{page:int}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public IActionResult getUserByPage(int page)
-    {
-        var users = UserBuissnes.getAllUsers(page);
-        if (users != null)
-            return Ok(users);
-        return StatusCode(500, "Something went wrong");
-    }
+    // [Authorize]
+    // [HttpGet("{page:int}")]
+    // [ProducesResponseType(StatusCodes.Status200OK)]
+    // [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    // [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    // public IActionResult getUserByPage(int page)
+    // {
+    //     var users = UserBuissnes.getAllUsers(page);
+    //     if (users != null)
+    //         return Ok(users);
+    //     return StatusCode(500, "Something went wrong");
+    // }
     
 }
