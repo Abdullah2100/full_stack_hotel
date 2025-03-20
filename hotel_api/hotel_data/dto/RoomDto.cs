@@ -38,7 +38,7 @@ public class RoomDto
             this.user = userData;
         }
 
-        this.roomData = RoomTypeData.getRoomType(roomId);
+        this.roomTypeData = RoomTypeData.getRoomType(roomId);
         this.images = images;
     }
 
@@ -55,7 +55,7 @@ public class RoomDto
     public bool isDeleted { get; set; } = false;
 
     public UserDto? user { get; set; } = null;
-    public RoomTypeDto? roomData { get; set; } = null;
+    public RoomTypeDto? roomTypeData { get; set; } = null;
 
     public List<ImagesTbDto>? images { get; set; } 
 }
