@@ -18,6 +18,8 @@ import com.example.hotel_mobile.Modle.NetworkCallHandler
 import com.example.hotel_mobile.Modle.RoomModel
 import com.example.hotel_mobile.Modle.Screens
 import com.example.hotel_mobile.Modle.enNetworkStatus
+import com.example.hotel_mobile.Util.DtoToModule.toRoomModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.delay
@@ -30,13 +32,14 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json.Default.decodeFromString
 import javax.inject.Inject
 
+@HiltViewModel
 class HomeViewModle @Inject constructor(
     val homeRepository: HotelRepository,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 
     ) : ViewModel() {
 
-    private val _rooms = MutableStateFlow<MutableStateFlow<RoomModel>?>(null)
+    private val _rooms = MutableStateFlow<MutableList<RoomModel>?>(null)
     val rooms = _rooms.asStateFlow()
 
 
@@ -54,6 +57,9 @@ class HomeViewModle @Inject constructor(
     }
 
 
+    init {
+        getRooms(1)
+    }
 
     fun getRooms(pageNumber: Int = 1) {
 
@@ -63,7 +69,8 @@ class HomeViewModle @Inject constructor(
                 is NetworkCallHandler.Successful<*> -> {
                     val roomData = decodeFromString<List<RoomDto>>(result.data.toString())
 
-                    _rooms.emitAll()
+                    val roomModles = roomData.map { it->it.toRoomModel() }.toList()
+                    _rooms.emit(roomModles.toMutableList())
                 }
 
                 is NetworkCallHandler.Error -> {

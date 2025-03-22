@@ -8,8 +8,7 @@ import java.util.UUID
 
 @Serializable
 data class PersonDto(
-    @Serializable(with = UUIDKserialize::class)
-    val personID: UUID? = null,
+    val personID: String? = null,
     val name: String,
     val email: String,
     val phone: String,

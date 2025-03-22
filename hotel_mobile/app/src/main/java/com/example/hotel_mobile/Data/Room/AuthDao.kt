@@ -10,7 +10,7 @@ interface AuthDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveAuthData(authData :AuthModleEntity)
 
-    @Query("SELECT * FROM AuthModleEntity limit 1")
+    @Query("SELECT * FROM AuthModleEntity")
     suspend  fun getAuthData():AuthModleEntity?
 
 }

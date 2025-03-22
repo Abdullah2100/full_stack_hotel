@@ -218,6 +218,7 @@ class AuthViewModle @Inject constructor(
      fun getAuthData ()  {
         viewModelScope.launch {
             val result =  authDao.getAuthData();
+            General.authData = result;
             _isLogin.emit(result!=null)
 
         }

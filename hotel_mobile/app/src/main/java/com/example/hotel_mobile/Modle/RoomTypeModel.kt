@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 import java.util.UUID
 
 data class RoomTypeModel(
-    val roomTypeID: UUID?,
+    val roomTypeID: String?,
     val roomTypeName: String,
     val imagePath: String? = null,
     val createdBy: String,
