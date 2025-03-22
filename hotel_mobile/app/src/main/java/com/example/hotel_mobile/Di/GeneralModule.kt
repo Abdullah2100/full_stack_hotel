@@ -2,10 +2,10 @@ package com.example.hotel_mobile.Di
 
 import android.content.Context
 import android.util.Log
-import androidx.multidex.BuildConfig
 import androidx.room.Room
 import com.example.hotel_mobile.Data.Room.AuthDao
 import com.example.hotel_mobile.Data.Room.AuthDataBase
+import com.example.hotel_mobile.Data.Room.AuthModleEntity
 import com.example.hotel_mobile.Util.General
 import dagger.Module
 import dagger.Provides
@@ -13,24 +13,31 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import io.ktor.client.HttpClient
+import io.ktor.client.call.body
 import io.ktor.client.engine.android.Android
-import io.ktor.client.plugins.DefaultRequest
+import io.ktor.client.plugins.auth.Auth
+import io.ktor.client.plugins.auth.providers.BearerTokens
+import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
-import io.ktor.client.request.accept
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import javax.inject.Singleton
 import io.ktor.client.plugins.logging.Logging
-import io.ktor.client.request.header
-import io.ktor.http.HttpHeaders
+import io.ktor.client.request.post
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.serialization.json.Json
 import javax.inject.Qualifier
+import com.example.hotel_mobile.Dto.AuthResultDto
+import io.ktor.client.request.forms.submitForm
+import io.ktor.client.request.get
+import io.ktor.client.request.parameter
+import io.ktor.client.request.setBody
+import io.ktor.client.request.url
+import io.ktor.http.Parameters
 
 
 @Retention(AnnotationRetention.BINARY)
@@ -49,7 +56,7 @@ annotation class MainDispatcher
 class GeneralModule {
     @Singleton
     @Provides
-    fun provideHttpClient(): HttpClient {
+    fun provideHttpClient(authDao:AuthDao): HttpClient {
         return HttpClient(Android) {
 
             engine {
@@ -75,53 +82,37 @@ class GeneralModule {
                 })
             }
 
-<<<<<<< Updated upstream
-//            install(DefaultRequest) {
-//                header(HttpHeaders.ContentType, ContentType.Application.FormUrlEncoded)
-//            }
-=======
+
             install(Auth) {
                 bearer {
-
                     loadTokens {
-                       val authData = authDao.getAuthData()
-
-                       authData.let { it->
-                           BearerTokens(it!!.token, it.refreshToken)
-                       }
-
+                        BearerTokens(
+                            General.authData?.token?:"",
+                            General.authData?.refreshToken ?:""
+                        )
                     }
 
                     refreshTokens {
-                        try {
-
-                            val response = client.post("${General.BASED_URL}/refreshToken/refresh") {
-                                setBody(mapOf("refreshToken" to General.authData?.refreshToken))
-                                contentType(ContentType.Application.Json)
+                        val refreshToken = client.
+                            use{
+                                client->client.post("${General.BASED_URL}/refreshToken/refresh") {
+                                    url {
+                                        parameters.append("tokenHolder", General.authData?.refreshToken ?: "")
+                                    }
+                                }.body<AuthResultDto>()
                             }
 
-                            if (response.status.value == 200) {
-                                val newTokenData = response.body<AuthResultDto>()
 
-                                authDao.saveAuthData(AuthModleEntity(0,newTokenData.accessToken,newTokenData.refreshToken))
+                        // Update saved tokens
+                        General.updateSavedToken(authDao, refreshToken)
 
-                                return@refreshTokens BearerTokens(
-                                    accessToken = newTokenData.accessToken,
-                                    refreshToken = newTokenData.refreshToken
-                                )
-                            }
-                        } catch (e: Exception) {
-                            Log.e("Auth", "Failed to refresh token: ${e.message}")
-                        }
-                        null
+                        BearerTokens(
+                            accessToken = refreshToken.accessToken,
+                            refreshToken = refreshToken.refreshToken
+                        )
                     }
-
-
-
                 }
             }
->>>>>>> Stashed changes
-
         }
     }
 

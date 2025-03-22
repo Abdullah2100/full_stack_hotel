@@ -1,6 +1,5 @@
 package com.example.hotel_mobile.Data.Repository
 
-import com.example.hotel_mobile.Dto.AuthResultDto
 import com.example.hotel_mobile.Dto.LoginDto
 import com.example.hotel_mobile.Dto.SingUpDto
 import com.example.hotel_mobile.Modle.NetworkCallHandler
@@ -8,31 +7,30 @@ import com.example.hotel_mobile.Util.General
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.forms.MultiPartFormDataContent
-import io.ktor.client.request.forms.append
 import io.ktor.client.request.forms.formData
-import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
-import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
-import io.ktor.http.Headers
-import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
-import io.ktor.http.headers
 import io.ktor.utils.io.errors.IOException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
 
-class AuthRepository @Inject constructor(val httpClient: HttpClient) {
+class AuthRepository @Inject constructor(private val httpClient: HttpClient) {
 
     suspend fun loginUser(loginData: LoginDto): NetworkCallHandler {
         return try {
-            val result = httpClient.post("${General.BASED_URL}/user/signIn") {
-                setBody(loginData)
-                contentType(ContentType.Application.Json)
-            }
+            val result = httpClient
+                .use {
+                    client ->
+                    client.post("${General.BASED_URL}/user/signIn") {
+                        setBody(loginData)
+                        contentType(ContentType.Application.Json)
+                    }
+                }
+
 
             if (result.status == HttpStatusCode.OK) {
                 NetworkCallHandler.Successful(result.body<String>())
@@ -60,21 +58,24 @@ class AuthRepository @Inject constructor(val httpClient: HttpClient) {
         return try {
 
             val result = httpClient
-                .post("${General.BASED_URL}/user/signUp") {
-                    setBody(MultiPartFormDataContent(
-                        formData {
-                            append("name", userData.name)
-                            append("email", userData.email)
-                            append("phone", userData.phone)
-                            append("address", userData.address)
-                            append("userName", userData.userName)
-                            append("password", userData.password)
-                            append("brithDay", userData.brithDay.toString())
-                            append("isVip", false)
-                        }
-                    ))
-                }
+                .use {
+                    client->
+                    client.post("${General.BASED_URL}/user/signUp") {
+                        setBody(MultiPartFormDataContent(
+                            formData {
+                                append("name", userData.name)
+                                append("email", userData.email)
+                                append("phone", userData.phone)
+                                append("address", userData.address)
+                                append("userName", userData.userName)
+                                append("password", userData.password)
+                                append("brithDay", userData.brithDay.toString())
+                                append("isVip", false)
+                            }
+                        ))
+                    }
 
+                }
 
             if (result.status == HttpStatusCode.OK) {
 
@@ -98,6 +99,9 @@ class AuthRepository @Inject constructor(val httpClient: HttpClient) {
         } catch (e: Exception) {
 
             return NetworkCallHandler.Error(e.message)
+        }
+        finally {
+            httpClient.close()
         }
     }
 

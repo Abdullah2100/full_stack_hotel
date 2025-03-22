@@ -8,8 +8,7 @@ import java.util.UUID
 
 @Serializable
 data class RoomTypeDto(
-    @Serializable(with = UUIDKserialize::class)
-    val roomTypeID: UUID?,
+    val roomTypeID: String?,
     val roomTypeName: String,
     val imagePath: String? = null,
     val createdBy: String,

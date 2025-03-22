@@ -4,7 +4,7 @@ import kotlinx.datetime.LocalDateTime
 import java.util.UUID
 
 data class PersonModel(
-    val personID: UUID? = null,
+    val personID: String? = null,
     val name: String,
     val email: String,
     val phone: String,

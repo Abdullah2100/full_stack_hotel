@@ -3,10 +3,12 @@ package com.example.hotel_mobile.Util
 import com.example.hotel_mobile.Dto.ImageDto
 import com.example.hotel_mobile.Dto.PersonDto
 import com.example.hotel_mobile.Dto.RoomDto
+import com.example.hotel_mobile.Dto.RoomTypeDto
 import com.example.hotel_mobile.Dto.UserDto
 import com.example.hotel_mobile.Modle.ImageModel
 import com.example.hotel_mobile.Modle.PersonModel
 import com.example.hotel_mobile.Modle.RoomModel
+import com.example.hotel_mobile.Modle.RoomTypeModel
 import com.example.hotel_mobile.Modle.UserModel
 
 object DtoToModule {
@@ -46,7 +48,16 @@ object DtoToModule {
         )
     }
 
-    fun
+    fun RoomTypeDto.toRoomTypeModel():RoomTypeModel{
+        return RoomTypeModel(
+            imagePath = this.imagePath,
+            createdAt = this.createdAt,
+            roomTypeName = this.roomTypeName,
+            roomTypeID = this.roomTypeID,
+            isDeleted = this.isDeleted ,
+            createdBy = this.createdBy
+        )
+    }
 
     fun RoomDto.toRoomModel():RoomModel{
         return RoomModel(
@@ -63,7 +74,7 @@ object DtoToModule {
             beglongTo = this.beglongTo,
             pricePerNight = this.pricePerNight,
             roomtypeid = this.roomtypeid,
-
+            roomTypeModel = this.roomTypeData?.toRoomTypeModel()
         )
     }
 }

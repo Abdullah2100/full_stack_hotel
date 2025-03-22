@@ -115,6 +115,28 @@ public class UserController : Controller
 
 
     // [Authorize]
+    [HttpGet("room/{pageNumber:int}")]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> getRooms
+        (int pageNumber)
+    {
+        try
+        {
+            var rooms = RoomBuisness.getAllRooms(pageNumber, 25);
+
+            return Ok(rooms);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "Something went wrong");
+        }
+    }
+
+
+    // [Authorize]
     // [HttpGet("{page:int}")]
     // [ProducesResponseType(StatusCodes.Status200OK)]
     // [ProducesResponseType(StatusCodes.Status401Unauthorized)]

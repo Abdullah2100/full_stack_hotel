@@ -8,10 +8,8 @@ import java.util.UUID
 
 @Serializable
 data class UserDto(
-    @Serializable(with = UUIDKserialize::class)
-    val userId: UUID? = null,
-    @Serializable(with = UUIDKserialize::class)
-    val addBy: UUID? = null,  // Nullable UUID
+    val userId: String? = null,
+    val addBy: String? = null,  // Nullable UUID
     @Serializable(with = LocalDateTimeKserialize::class)
     val brithDay: LocalDateTime? = null,
     val isVip: Boolean? = false,
