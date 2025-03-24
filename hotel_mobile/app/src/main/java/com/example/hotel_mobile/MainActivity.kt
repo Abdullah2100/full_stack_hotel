@@ -19,7 +19,6 @@ import com.example.hotel_mobile.Util.General
 import com.example.hotel_mobile.View.navigation.NavController
 import com.example.hotel_mobile.ViewModle.AuthViewModle
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint

@@ -2,13 +2,14 @@ package com.example.hotel_mobile.Dto
 
 import com.example.hotel_mobile.services.kSerializeChanger.LocalDateTimeKserialize
 import com.example.hotel_mobile.services.kSerializeChanger.UUIDKserialize
-import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
+import java.time.LocalDateTime
 import java.util.UUID
 
 @Serializable
 data class PersonDto(
-    val personID: String? = null,
+    @Serializable(with = UUIDKserialize::class)
+    val personID: UUID? = null,
     val name: String,
     val email: String,
     val phone: String,

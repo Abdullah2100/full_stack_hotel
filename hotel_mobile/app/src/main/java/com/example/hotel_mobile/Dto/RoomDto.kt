@@ -6,14 +6,17 @@ import java.util.UUID
 
 @Serializable
 data class RoomDto(
-    var roomId: String? = null,
+    @Serializable(with = UUIDKserialize::class)
+    var roomId: UUID? = null,
     var status: Int? = null,
-    var pricePerNight: Int? = null,
+    var pricePerNight: Float? = null,
     var capacity: Int? = null,
-    var roomtypeid: String? = null,
+    @Serializable(with = UUIDKserialize::class)
+    var roomtypeid: UUID? = null,
     var createdAt: String? = null,
     var bedNumber: Int? = null,
-    var beglongTo: String? = null,
+    @Serializable(with = UUIDKserialize::class)
+    var beglongTo: UUID? = null,
     var isBlock: Boolean? = null,
     var isDeleted: Boolean? = null,
     var user: UserDto? = null,

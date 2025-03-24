@@ -1,5 +1,6 @@
 package com.example.hotel_mobile.View.Pages
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -53,6 +54,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavHostController
 import com.example.hotel_mobile.ViewModle.AuthViewModle
@@ -61,6 +63,7 @@ import com.example.hotel_mobile.Dto.SingUpDto
 import com.example.hotel_mobile.Modle.Screens
 import com.example.hotel_mobile.Modle.enNetworkStatus
 import com.example.hotel_mobile.R
+import com.example.hotel_mobile.Util.General
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -121,30 +124,7 @@ fun SignUpPage(
         ConstraintLayout {
             val (goToReiginster, form) = createRefs();
 
-            Box(modifier = Modifier
-                .constrainAs(goToReiginster) {
-                    bottom.linkTo(parent.bottom)
-                    end.linkTo(parent.end)
-                    start.linkTo(parent.start)
-                }
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text(text = "لديك  حساب")
-                    Box(
-                        modifier = Modifier
-                            .padding(start = 5.dp)
-                            .clickable {
-                                nav.navigate(Screens.login)
-                            }
-                    ) {
-                        Text(text = "دخول", color = Color.Blue)
 
-                    }
-                }
-            }
             Column(
                 modifier = Modifier
                     .constrainAs(form) {
@@ -391,7 +371,7 @@ fun SignUpPage(
                                 address = address.value.toString(),
                                 password = password.value.toString(),
                                 isVip = false,
-                                brithDay = brithDay,
+                                brithDay = General.convertMilisecondToLocalDateTime(selectedDateInMillis) ,
                                 imagePath = null,
                                 userName = userName.value.toString()
                             ),
@@ -434,7 +414,7 @@ fun SignUpPage(
                                 address = address.value.text,
                                 password = password.value.text,
                                 isVip = false,
-                                brithDay = brithDay,
+                                brithDay = General.convertMilisecondToLocalDateTime(selectedDateInMillis),
                                 imagePath = null,
                                 userName = userName.value.text
                             ),
@@ -472,6 +452,36 @@ fun SignUpPage(
                 }
             }
 
+            Box(modifier = Modifier
+                .constrainAs(goToReiginster) {
+                    bottom.linkTo(parent.bottom)
+                    end.linkTo(parent.end)
+                    start.linkTo(parent.start)
+                }
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(text = "لديك  حساب")
+                    Box(
+                        modifier = Modifier
+                            .zIndex(20f)
+                            .padding(start = 5.dp)
+                            .clickable {
+                                Log.d("clikedLoginButton","loginButton isClieing ")
+                                nav.navigate(Screens.login) {
+                                    popUpTo(Screens.login) { inclusive = true }
+                                }
+
+
+                            }
+                    ) {
+                        Text(text = "دخول", color = Color.Blue)
+
+                    }
+                }
+            }
 
         }
 

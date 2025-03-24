@@ -1,11 +1,11 @@
 package com.example.hotel_mobile.Modle
 
-import kotlinx.datetime.LocalDateTime
+import java.time.LocalDateTime
 import java.util.UUID
 
 data class UserModel(
-    var userId: String? = null,
-    var addBy: String? = null,  // Nullable UUID
+    var userId: UUID? = null,
+    var addBy: UUID? = null,  // Nullable UUID
     var brithDay: LocalDateTime? = null,
     var isVip: Boolean? = false,
     var personData: PersonModel,

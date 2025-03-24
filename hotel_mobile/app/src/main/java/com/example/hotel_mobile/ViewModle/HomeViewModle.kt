@@ -67,10 +67,10 @@ class HomeViewModle @Inject constructor(
 
             when (val result = homeRepository.getRooms(pageNumber)) {
                 is NetworkCallHandler.Successful<*> -> {
-                    val roomData = decodeFromString<List<RoomDto>>(result.data.toString())
-
-                    val roomModles = roomData.map { it->it.toRoomModel() }.toList()
-                    _rooms.emit(roomModles.toMutableList())
+                    //val roomData = decodeFromString<List<RoomDto>>(result.data.toString())
+                    val roomData = result.data as List<RoomDto>
+                    val roomDataToMutale = roomData.map { it->it.toRoomModel() }.toMutableList()
+                    _rooms.emit(roomDataToMutale)
                 }
 
                 is NetworkCallHandler.Error -> {
