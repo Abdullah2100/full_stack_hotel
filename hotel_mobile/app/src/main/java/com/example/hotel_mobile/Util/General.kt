@@ -10,14 +10,17 @@ import com.example.hotel_mobile.Data.Room.AuthModleEntity
 import com.example.hotel_mobile.Dto.AuthResultDto
 import net.sqlcipher.database.SQLiteDatabase
 import net.sqlcipher.database.SupportFactory
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
 import java.util.Date
 
 object General {
 
 
-       var authData:AuthModleEntity?=null;
+    var authData: AuthModleEntity? = null;
 
-    val BASED_URL = "http://10.0.2.2:5266/api"
+    const val BASED_URL = "http://10.0.2.2:5266/api"
 
 
     fun encryptionFactory(databaseName: String): SupportFactory {
@@ -33,19 +36,30 @@ object General {
         val day = stringDateToList[0].toInt()
 
 
-           date.date = day
-           date.month = month
-           date.year = year
+        date.date = day
+        date.month = month
+        date.year = year
 
-           return date
-       }
+        return date
+    }
 
-    suspend fun updateSavedToken (ado:AuthDao, authData:AuthResultDto){
-        val authDataHolder = AuthModleEntity(0,authData.accessToken,authData.refreshToken)
-        if(authData.accessToken.length>0){
+    suspend fun updateSavedToken(ado: AuthDao, authData: AuthResultDto) {
+        val authDataHolder = AuthModleEntity(0, authData.accessToken, authData.refreshToken)
+        if (authData.accessToken.length > 0) {
             ado.saveAuthData(authDataHolder)
-            General.authData=authDataHolder;
+            General.authData = authDataHolder;
         }
     }
 
+    fun convertMilisecondToLocalDateTime(miliSecond: Long?): LocalDateTime? {
+
+        return when {
+            miliSecond == null -> null;
+            else -> {
+                return Instant.ofEpochMilli(miliSecond)
+                    .atZone(ZoneId.systemDefault())  // Adjust to system's timezone
+                    .toLocalDateTime()
+            }
+        }
+    }
 }

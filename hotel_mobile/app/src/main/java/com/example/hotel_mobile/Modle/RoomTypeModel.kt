@@ -1,16 +1,13 @@
 package com.example.hotel_mobile.Modle
 
-import com.example.hotel_mobile.services.kSerializeChanger.LocalDateTimeKserialize
-import com.example.hotel_mobile.services.kSerializeChanger.UUIDKserialize
-import kotlinx.datetime.LocalDateTime
-import kotlinx.serialization.Serializable
+import java.time.LocalDateTime
 import java.util.UUID
 
 data class RoomTypeModel(
-    val roomTypeID: String?,
+    val roomTypeID: UUID?,
     val roomTypeName: String,
     val imagePath: String? = null,
-    val createdBy: String,
+    val createdBy: UUID,
     val createdAt: LocalDateTime,
     val isDeleted: Boolean
 )

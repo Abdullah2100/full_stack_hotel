@@ -2,16 +2,18 @@ package com.example.hotel_mobile.Dto
 
 import com.example.hotel_mobile.services.kSerializeChanger.LocalDateTimeKserialize
 import com.example.hotel_mobile.services.kSerializeChanger.UUIDKserialize
-import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
+import java.time.LocalDateTime
 import java.util.UUID
 
 @Serializable
 data class RoomTypeDto(
-    val roomTypeID: String?,
+    @Serializable(with = UUIDKserialize::class)
+    val roomTypeID: UUID?,
     val roomTypeName: String,
     val imagePath: String? = null,
-    val createdBy: String,
+    @Serializable(with = UUIDKserialize::class)
+    val createdBy: UUID,
     @Serializable(with = LocalDateTimeKserialize::class)
     val createdAt: LocalDateTime,
     val isDeleted: Boolean

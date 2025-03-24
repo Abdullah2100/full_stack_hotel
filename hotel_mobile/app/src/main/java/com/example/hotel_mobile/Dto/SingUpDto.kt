@@ -1,8 +1,10 @@
 package com.example.hotel_mobile.Dto
 
+import com.example.hotel_mobile.services.kSerializeChanger.LocalDateTimeKserialize
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import java.io.File
+import java.time.LocalDateTime
 import java.util.Calendar
 import java.util.Date
 
@@ -19,8 +21,8 @@ data class SingUpDto(
 
     val userName: String, val password: String,
 
-    @Transient
-    val brithDay: String?=null,
+    @Serializable(with=LocalDateTimeKserialize::class)
+    val brithDay: LocalDateTime?=null,
 
     val isVip: Boolean,
 

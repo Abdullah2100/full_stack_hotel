@@ -34,7 +34,7 @@ import kotlin.coroutines.CoroutineContext
 
 @HiltViewModel
 class AuthViewModle @Inject constructor(
-    val authRepository: AuthRepository,
+    private val authRepository: AuthRepository,
     @MainDispatcher private val ioDispatcher: CoroutineDispatcher,
     private val authDao: AuthDao
 ) : ViewModel() {
@@ -86,7 +86,7 @@ class AuthViewModle @Inject constructor(
             message = "الايميل لا يمكن ان يكون فارغا"
         else if (userDto.phone.length > 10 || userDto.phone.isEmpty())
             message = "رقم الهاتف لا يمكن ان يكون فارغا او اكثر من 10"
-        else if (userDto.brithDay.isNullOrEmpty() || userDto.brithDay == "لم يتم اختيار اي تاريخ")
+        else if (userDto.brithDay==null)
             message = "تاريخ الميلاد لا يمكن ان يكون فارغا"
         else if (userDto.address.isEmpty())
             message = " العنوان لا يمكن ان يكون فارغا"

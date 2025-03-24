@@ -4,9 +4,9 @@ import java.util.UUID
 
 data class ImageModel
     (
-    var id: String? = null,
+    var id: UUID? = null,
     var path: String? = null,
-    var belongTo: String? = null,
+    var belongTo: UUID? = null,
     var isDeleted: Boolean? = null,
     var isThumnail: Boolean? = null
 

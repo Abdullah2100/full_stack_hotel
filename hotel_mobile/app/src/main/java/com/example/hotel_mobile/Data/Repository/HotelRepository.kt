@@ -4,6 +4,7 @@ import com.example.hotel_mobile.Dto.LoginDto
 import com.example.hotel_mobile.Dto.RoomDto
 import com.example.hotel_mobile.Modle.NetworkCallHandler
 import com.example.hotel_mobile.Util.General
+import dagger.Provides
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.forms.formData
@@ -20,6 +21,9 @@ import java.io.IOException
 import java.lang.reflect.Parameter
 import java.net.UnknownHostException
 import javax.inject.Inject
+import javax.inject.Singleton
+
+
 
 class HotelRepository  @Inject constructor(private val httpClient: HttpClient) {
 

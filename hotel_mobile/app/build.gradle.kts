@@ -121,8 +121,12 @@ dependencies {
 
 
     //dateSerialize plugin
-    implementation(libs.date.serialize)
+//    implementation(libs.date.serialize)
 
     //prevent minRequrire api gradle
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
+
+    //coil
+    implementation(libs.coil.compose)
+    implementation(libs.coil.okhttp)
 }

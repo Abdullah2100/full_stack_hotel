@@ -7,9 +7,11 @@ import java.util.UUID
 @Serializable
 data class ImageDto
     (
-    var id: String? = null,
+    @Serializable(with = UUIDKserialize::class)
+    var id: UUID? = null,
     var path: String? = null,
-    var belongTo: String? = null,
+    @Serializable(with = UUIDKserialize::class)
+    var belongTo: UUID? = null,
     var isDeleted: Boolean? = null,
     var isThumnail: Boolean? = null
 

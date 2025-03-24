@@ -1,5 +1,5 @@
 [versions]
-agp = "8.5.2"
+agp = "8.8.2"
 kotlin = "1.9.0"
 coreKtx = "1.15.0"
 junit = "4.13.2"
@@ -22,6 +22,7 @@ sqlLight="2.1.0"
 androidDatabaseSqlcipher = "4.5.3"
 splash = "1.0.0-beta02"
 date-serialize = "0.3.2"
+coil-version = "3.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -88,8 +89,11 @@ splash-android = {group="androidx.core",name="core-splashscreen",version.ref="sp
 
 #dateSerialize
 
-date-serialize = {group = "org.jetbrains.kotlinx" , name="kotlinx-datetime",version.ref="date-serialize"}
+#date-serialize = {group = "org.jetbrains.kotlinx" , name="kotlinx-datetime",version.ref="date-serialize"}
 
+#coil
+coil-compose = {group = "io.coil-kt.coil3",name ="coil-compose",version.ref = "coil-version"}
+coil-okhttp = {group = "io.coil-kt.coil3",name ="coil-network-okhttp",version.ref = "coil-version"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

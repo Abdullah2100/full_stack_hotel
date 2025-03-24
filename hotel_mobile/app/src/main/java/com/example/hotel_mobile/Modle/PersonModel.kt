@@ -1,10 +1,10 @@
 package com.example.hotel_mobile.Modle
 
-import kotlinx.datetime.LocalDateTime
+import java.time.LocalDateTime
 import java.util.UUID
 
 data class PersonModel(
-    val personID: String? = null,
+    val personID: UUID? = null,
     val name: String,
     val email: String,
     val phone: String,

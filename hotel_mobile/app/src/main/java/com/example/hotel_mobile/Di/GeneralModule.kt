@@ -54,6 +54,32 @@ annotation class MainDispatcher
 @Module
 @InstallIn(SingletonComponent::class)
 class GeneralModule {
+
+
+    @Provides
+    @Singleton
+    fun generalContext(@ApplicationContext context: Context): Context {
+        return context
+    }
+
+
+    @Provides
+    @Singleton
+    fun createAuthDataBase(context: Context): AuthDataBase {
+        return  Room.databaseBuilder(
+            context,
+            AuthDataBase::class.java, "authDB.db"
+        )
+            .openHelperFactory(General.encryptionFactory("authDB.db"))
+            .fallbackToDestructiveMigration()
+            .build()
+    }
+    @Provides
+    @Singleton
+    fun authDataBase (authDataBase: AuthDataBase): AuthDao {
+        return authDataBase.fileDo()
+    }
+
     @Singleton
     @Provides
     fun provideHttpClient(authDao:AuthDao): HttpClient {
@@ -94,13 +120,13 @@ class GeneralModule {
 
                     refreshTokens {
                         val refreshToken = client.
-                            use{
+                        use{
                                 client->client.post("${General.BASED_URL}/refreshToken/refresh") {
-                                    url {
-                                        parameters.append("tokenHolder", General.authData?.refreshToken ?: "")
-                                    }
-                                }.body<AuthResultDto>()
+                            url {
+                                parameters.append("tokenHolder", General.authData?.refreshToken ?: "")
                             }
+                        }.body<AuthResultDto>()
+                        }
 
 
                         // Update saved tokens
@@ -117,12 +143,6 @@ class GeneralModule {
     }
 
 
-    @Provides
-    @Singleton
-    fun generalContext(@ApplicationContext context: Context): Context {
-        return context
-    }
-
 
     @IoDispatcher
     @Provides
@@ -133,21 +153,6 @@ class GeneralModule {
     fun providesMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
 
-    @Provides
-    @Singleton
-    fun createAuthDataBase(context: Context): AuthDataBase {
-      return  Room.databaseBuilder(
-            context,
-            AuthDataBase::class.java, "authDB.db"
-        )
-            .openHelperFactory(General.encryptionFactory("authDB.db"))
-            .fallbackToDestructiveMigration()
-            .build()
-    }
-    @Provides
-    @Singleton
-    fun authDataBase (authDataBase: AuthDataBase): AuthDao {
-        return authDataBase.fileDo()
-    }
+
 
 }
