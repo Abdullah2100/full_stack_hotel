@@ -159,7 +159,7 @@ class AuthViewModle @Inject constructor(
                     }
 
                     is NetworkCallHandler.Error -> {
-                        throw Exception(result.data);
+                        throw Exception(result.data?.replace("\"",""));
                     }
 
                     else -> {
@@ -198,9 +198,8 @@ class AuthViewModle @Inject constructor(
                         _statusChange.update { enNetworkStatus.Complate }
                         navController.navigate(Screens.homeGraph)
                     }
-
                     is NetworkCallHandler.Error -> {
-                        throw Exception(result.data);
+                        throw Exception(result.data?.replace("\"",""));
                     }
 
                     else -> {
@@ -224,4 +223,9 @@ class AuthViewModle @Inject constructor(
         }
     }
 
+
+
+    suspend fun clearErrorMessage(){
+        _errorMessage.emit("")
+    }
 }

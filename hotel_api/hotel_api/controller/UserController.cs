@@ -40,13 +40,13 @@ public class UserController : Controller
             isPersonExistByEmailAndPhone(userRequestData.email,userRequestData.phone);
 
         if (isExistEmail)
-            return StatusCode(400, "email is already in use");
+            return StatusCode(400, "email or phone already in use");
 
-        
-        var data = UserBuissnes.getUserByUserNameAndPassword(userRequestData.userName,
-            clsUtil.hashingText(userRequestData.password));
+
+        var data = UserBuissnes.getUserByUserName(userRequestData.userName);
+       
         if (data != null)
-            return StatusCode(409, "amdin already exist");
+            return StatusCode(409, "userName is already exist");
 
 
         var userId = Guid.NewGuid();
@@ -114,7 +114,7 @@ public class UserController : Controller
     }
 
 
-    [Authorize]
+   // [Authorize]
     [HttpGet("room/{pageNumber:int}")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]

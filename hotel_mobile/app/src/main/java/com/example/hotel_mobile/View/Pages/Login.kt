@@ -44,6 +44,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.hotel_mobile.Dto.LoginDto
 import com.example.hotel_mobile.Modle.Screens
 import com.example.hotel_mobile.Modle.enNetworkStatus
+import com.example.hotel_mobile.View.component.CustomErrorSnackBar
 import kotlinx.coroutines.launch
 
 
@@ -66,165 +67,172 @@ fun LoginPage(
 
 
 
-
-    Scaffold (
-        snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState)
-        }
-    ){
-
-        it.calculateTopPadding()
-        it.calculateBottomPadding()
-
-
-        ConstraintLayout {
-            val (goToReiginster, form) = createRefs();
-
-            Box(modifier = Modifier
-                .constrainAs(goToReiginster) {
-                    bottom.linkTo(parent.bottom)
-                    end.linkTo(parent.end)
-                    start.linkTo(parent.start)
+    CustomErrorSnackBar(
+       authViewModel = finalScreenViewModel,
+        homeViewModel = null,
+        page = {
+            Scaffold (
+                snackbarHost = {
+                    SnackbarHost(hostState = snackbarHostState)
                 }
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text(text = "ليس لديك حساب")
-                    Box(
-                        modifier = Modifier
-                            .padding(start = 5.dp)
-                            .clickable {
-                                nav.navigate(Screens.signUp)
-                            }
+            ){
+
+                it.calculateTopPadding()
+                it.calculateBottomPadding()
+
+
+                ConstraintLayout {
+                    val (goToReiginster, form) = createRefs();
+
+                    Box(modifier = Modifier
+                        .constrainAs(goToReiginster) {
+                            bottom.linkTo(parent.bottom)
+                            end.linkTo(parent.end)
+                            start.linkTo(parent.start)
+                        }
                     ) {
-                        Text(text = "انشاء", color = Color.Blue)
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text(text = "ليس لديك حساب")
+                            Box(
+                                modifier = Modifier
+                                    .padding(start = 5.dp)
+                                    .clickable {
+                                        nav.navigate(Screens.signUp)
+                                    }
+                            ) {
+                                Text(text = "انشاء", color = Color.Blue)
 
+                            }
+                        }
                     }
-                }
-            }
-            Column(
-                modifier = Modifier
-                    .constrainAs(form) {
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                    }
-                    .fillMaxHeight(0.9f)
-                    .fillMaxWidth()
-                    .padding(top = 50.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
+                    Column(
+                        modifier = Modifier
+                            .constrainAs(form) {
+                                top.linkTo(parent.top)
+                                bottom.linkTo(parent.bottom)
+                                start.linkTo(parent.start)
+                                end.linkTo(parent.end)
+                            }
+                            .fillMaxHeight(0.9f)
+                            .fillMaxWidth()
+                            .padding(top = 50.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
 
-                OutlinedTextField(
-                    maxLines = 1,
-                    value = userNameOrEmail.value,
-                    onValueChange = { userNameOrEmail.value = it },
-                    placeholder = {
-                        Text(
-                            "اسم المستخدم / ايميل",
-                            color = Color.Gray.copy(alpha = 0.66f)
-                        )
-                    },
-                    modifier = Modifier
-                        .padding(top = 10.dp)
-                        .padding(horizontal = 50.dp)
-                        .fillMaxWidth(),
-                    shape = RoundedCornerShape(19.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedBorderColor = Color.Gray.copy(alpha = 0.46f)
-                    ),
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                )
-
-
-                OutlinedTextField(
-                    maxLines = 1,
-                    value = password.value,
-                    onValueChange = { password.value = it },
-                    placeholder = {
-                        Text(
-                            "كملة المرور",
-                            color = Color.Gray.copy(alpha = 0.66f)
-                        )
-                    },
-                    modifier = Modifier
-                        .padding(top = 10.dp)
-                        .padding(horizontal = 50.dp)
-                        .fillMaxWidth(),
-                    shape = RoundedCornerShape(19.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedBorderColor = Color.Gray.copy(alpha = 0.46f),
-                    ),
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(onDone = {
-                        keyboardController?.hide()
-                        finalScreenViewModel.loginUser(
-                            LoginDto(
-                                userNameOrEmail = userNameOrEmail.value.text,
-                                password = password.value.text,
+                        OutlinedTextField(
+                            maxLines = 1,
+                            value = userNameOrEmail.value,
+                            onValueChange = { userNameOrEmail.value = it },
+                            placeholder = {
+                                Text(
+                                    "اسم المستخدم / ايميل",
+                                    color = Color.Gray.copy(alpha = 0.66f)
+                                )
+                            },
+                            modifier = Modifier
+                                .padding(top = 10.dp)
+                                .padding(horizontal = 50.dp)
+                                .fillMaxWidth(),
+                            shape = RoundedCornerShape(19.dp),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                unfocusedBorderColor = Color.Gray.copy(alpha = 0.46f)
                             ),
-                            snackbarHostState =snackbarHostState
-                            , navController = nav
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                         )
-                    })
 
-                )
 
-                Button(
-                    enabled = loadingStatus.value != enNetworkStatus.Loading,
-
-                    onClick = {
-                        keyboardController?.hide();
-                        finalScreenViewModel.loginUser(
-                            LoginDto(
-                                userNameOrEmail = userNameOrEmail.value.text,
-                                password = password.value.text
-                            )
-                            ,
-                            snackbarHostState =snackbarHostState
-                                                       , navController = nav
-
+                        OutlinedTextField(
+                            maxLines = 1,
+                            value = password.value,
+                            onValueChange = { password.value = it },
+                            placeholder = {
+                                Text(
+                                    "كملة المرور",
+                                    color = Color.Gray.copy(alpha = 0.66f)
+                                )
+                            },
+                            modifier = Modifier
+                                .padding(top = 10.dp)
+                                .padding(horizontal = 50.dp)
+                                .fillMaxWidth(),
+                            shape = RoundedCornerShape(19.dp),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                unfocusedBorderColor = Color.Gray.copy(alpha = 0.46f),
+                            ),
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                            keyboardActions = KeyboardActions(onDone = {
+                                keyboardController?.hide()
+                                finalScreenViewModel.loginUser(
+                                    LoginDto(
+                                        userNameOrEmail = userNameOrEmail.value.text,
+                                        password = password.value.text,
+                                    ),
+                                    snackbarHostState =snackbarHostState
+                                    , navController = nav
+                                )
+                            })
 
                         )
-                    },
-                    modifier = Modifier
-                        .padding(top = 15.dp)
-                        .padding(horizontal = 50.dp)
-                        .fillMaxWidth()
-                        .height(35.dp)
-                ) {
-                    when (loadingStatus.value) {
-                        enNetworkStatus.Loading -> {
-                            CircularProgressIndicator(
-                                color = Color.Blue, modifier = Modifier
-                                    .offset(y = -3.dp)
-                                    .height(25.dp)
-                                    .width(25.dp)
-                            )
-                        }
 
-                        else -> {
-                            Text(
-                                "دخول",
-                                color = Color.White,
-                                fontSize = 16.sp
-                            )
+                        Button(
+                            enabled = loadingStatus.value != enNetworkStatus.Loading,
+
+                            onClick = {
+                                keyboardController?.hide();
+                                finalScreenViewModel.loginUser(
+                                    LoginDto(
+                                        userNameOrEmail = userNameOrEmail.value.text,
+                                        password = password.value.text
+                                    )
+                                    ,
+                                    snackbarHostState =snackbarHostState
+                                    , navController = nav
+
+
+                                )
+                            },
+                            modifier = Modifier
+                                .padding(top = 15.dp)
+                                .padding(horizontal = 50.dp)
+                                .fillMaxWidth()
+                                .height(35.dp)
+                        ) {
+                            when (loadingStatus.value) {
+                                enNetworkStatus.Loading -> {
+                                    CircularProgressIndicator(
+                                        color = Color.Blue, modifier = Modifier
+                                            .offset(y = -3.dp)
+                                            .height(25.dp)
+                                            .width(25.dp)
+                                    )
+                                }
+
+                                else -> {
+                                    Text(
+                                        "دخول",
+                                        color = Color.White,
+                                        fontSize = 16.sp
+                                    )
+                                }
+                            }
+
+
                         }
                     }
 
 
                 }
-            }
 
+
+            }
 
         }
+    )
 
-
-    }
 
 
 }
