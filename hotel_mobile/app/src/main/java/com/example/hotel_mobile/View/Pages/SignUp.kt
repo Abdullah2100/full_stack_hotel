@@ -64,6 +64,7 @@ import com.example.hotel_mobile.Modle.Screens
 import com.example.hotel_mobile.Modle.enNetworkStatus
 import com.example.hotel_mobile.R
 import com.example.hotel_mobile.Util.General
+import com.example.hotel_mobile.View.component.CustomErrorSnackBar
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -103,390 +104,388 @@ fun SignUpPage(
         } ?: "لم يتم اختيار اي تاريخ"
     }
 
-    val currotine = rememberCoroutineScope()
-
-    LaunchedEffect(errorMessage.value) {
-        currotine.launch {
-            if (!errorMessage.value.isNullOrEmpty())
-                snackbarHostState.showSnackbar(errorMessage.value!!)
-        }
-    }
-
-    Scaffold(
-        snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState)
-        }
-    ) {
-        it.calculateTopPadding()
-        it.calculateBottomPadding()
 
 
-        ConstraintLayout {
-            val (goToReiginster, form) = createRefs();
 
-
-            Column(
-                modifier = Modifier
-                    .constrainAs(form) {
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                    }
-                    .fillMaxHeight(0.9f)
-                    .fillMaxWidth()
-                    .padding(top = 50.dp)
-                    .verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+    CustomErrorSnackBar(
+        authViewModel = finalScreenViewModel,
+        page = {
+            Scaffold(
+                snackbarHost = {
+                    SnackbarHost(hostState = snackbarHostState)
+                }
             ) {
+                it.calculateTopPadding()
+                it.calculateBottomPadding()
 
-                if (showDatePicker.value)
-                    DatePickerDialog(
-                        onDismissRequest = {
-                            showDatePicker.value = false
 
-                        },
-                        confirmButton = {
-                            Button(
-                                onClick = {
-                                    showDatePicker.value = false
-                                },
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color.Transparent
-                                )
-                            ) {
+                ConstraintLayout {
+                    val (goToReiginster, form) = createRefs();
 
-                                Text("تم", color = Color.Black)
+
+                    Column(
+                        modifier = Modifier
+                            .constrainAs(form) {
+                                top.linkTo(parent.top)
+                                bottom.linkTo(parent.bottom)
+                                start.linkTo(parent.start)
+                                end.linkTo(parent.end)
                             }
-                        },
-                        dismissButton = {
-                            Button(
-                                onClick = {
-                                    showDatePicker.value = false
-                                },
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color.Transparent
-                                )
-                            ) {
-                                Text("الغاء", color = Color.Black)
-                            }
-                        },
-                    )
-                    {
-                        DatePicker(state = datePickerState)
-
-                    }
-
-                OutlinedTextField(
-                    maxLines = 1,
-                    value = name.value,
-                    onValueChange = { name.value = it },
-                    placeholder = {
-                        Text(
-                            "الاسم",
-                            color = Color.Gray.copy(alpha = 0.66f)
-                        )
-                    },
-                    modifier = Modifier
-                        .padding(top = 10.dp)
-                        .padding(horizontal = 50.dp)
-                        .fillMaxWidth(),
-                    shape = RoundedCornerShape(19.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedBorderColor = Color.Gray.copy(alpha = 0.46f)
-                    ),
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                )
-                OutlinedTextField(
-                    maxLines = 1,
-                    value = userName.value,
-                    onValueChange = { userName.value = it },
-                    placeholder = {
-                        Text(
-                            "اسم المستخدم",
-                            color = Color.Gray.copy(alpha = 0.66f)
-                        )
-                    },
-                    modifier = Modifier
-                        .padding(top = 10.dp)
-                        .padding(horizontal = 50.dp)
-                        .fillMaxWidth(),
-                    shape = RoundedCornerShape(19.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedBorderColor = Color.Gray.copy(alpha = 0.46f)
-                    ),
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                )
-
-                OutlinedTextField(
-                    maxLines = 1,
-                    value = email.value,
-                    onValueChange = { email.value = it },
-                    placeholder = {
-                        Text(
-                            "الايميل",
-                            color = Color.Gray.copy(alpha = 0.66f)
-                        )
-                    },
-                    modifier = Modifier
-                        .padding(top = 10.dp)
-                        .padding(horizontal = 50.dp)
-                        .fillMaxWidth(),
-                    shape = RoundedCornerShape(19.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedBorderColor = Color.Gray.copy(alpha = 0.46f),
-                    ),
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                    keyboardActions = KeyboardActions(onDone = {
-
-                    })
-                )
-
-                OutlinedTextField(
-                    maxLines = 1,
-                    value = phone.value,
-                    onValueChange = { phone.value = it },
-                    placeholder = {
-                        Text(
-                            "رقم الهاتف",
-                            color = Color.Gray.copy(alpha = 0.66f)
-                        )
-                    },
-                    modifier = Modifier
-                        .padding(top = 10.dp)
-                        .padding(horizontal = 50.dp)
-                        .fillMaxWidth(),
-                    shape = RoundedCornerShape(19.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedBorderColor = Color.Gray.copy(alpha = 0.46f),
-                    ),
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Next,
-                        keyboardType = KeyboardType.Number
-                    ),
-                    keyboardActions = KeyboardActions(onNext = {
-                        showDatePicker.value = true
-
-                    }),
-
-
-                    )
-
-                Button(
-
-                    modifier = Modifier
-                        .padding(top = 10.dp)
-                        .padding(horizontal = 50.dp)
-                        .fillMaxWidth()
-                        .border(
-                            1.dp,
-                            color = Color.Gray.copy(alpha = 0.46f),
-                            shape = RoundedCornerShape(19.dp)
-                        ),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Transparent
-                    ), onClick = {
-                        showDatePicker.value = true
-                    }) {
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                            .fillMaxHeight(0.9f)
+                            .fillMaxWidth()
+                            .padding(top = 50.dp)
+                            .verticalScroll(rememberScrollState()),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
                     ) {
 
-                        Column {
-                            Text(
-                                text = "تاريخ الميلاد",
-                                color = Color.Gray.copy(alpha = 0.66f)
+                        if (showDatePicker.value)
+                            DatePickerDialog(
+                                onDismissRequest = {
+                                    showDatePicker.value = false
+
+                                },
+                                confirmButton = {
+                                    Button(
+                                        onClick = {
+                                            showDatePicker.value = false
+                                        },
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = Color.Transparent
+                                        )
+                                    ) {
+
+                                        Text("تم", color = Color.Black)
+                                    }
+                                },
+                                dismissButton = {
+                                    Button(
+                                        onClick = {
+                                            showDatePicker.value = false
+                                        },
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = Color.Transparent
+                                        )
+                                    ) {
+                                        Text("الغاء", color = Color.Black)
+                                    }
+                                },
                             )
-                            if (brithDay.length > 0)
+                            {
+                                DatePicker(state = datePickerState)
+
+                            }
+
+                        OutlinedTextField(
+                            maxLines = 1,
+                            value = name.value,
+                            onValueChange = { name.value = it },
+                            placeholder = {
                                 Text(
-                                    text = brithDay,
+                                    "الاسم",
                                     color = Color.Gray.copy(alpha = 0.66f)
                                 )
-                        }
-                        Image(
-                            imageVector = Icons.Default.DateRange,
-                            contentDescription = "",
-                            colorFilter = ColorFilter.tint(
-                                color = Color.Gray.copy(alpha = 0.66f)
-                            )
-                        )
-                    }
-
-                }
-                OutlinedTextField(
-                    maxLines = 1,
-                    value = address.value,
-                    onValueChange = { address.value = it },
-                    placeholder = {
-                        Text(
-                            "العنوان",
-                            color = Color.Gray.copy(alpha = 0.66f)
-                        )
-                    },
-                    modifier = Modifier
-                        .padding(top = 10.dp)
-                        .padding(horizontal = 50.dp)
-                        .fillMaxWidth(),
-                    shape = RoundedCornerShape(19.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedBorderColor = Color.Gray.copy(alpha = 0.46f),
-                    ),
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                    keyboardActions = KeyboardActions(onDone = {
-
-                    })
-                )
-
-
-
-                OutlinedTextField(
-                    maxLines = 1,
-                    value = password.value,
-                    onValueChange = { password.value = it },
-                    placeholder = {
-                        Text(
-                            "كملة المرور",
-                            color = Color.Gray.copy(alpha = 0.66f)
-                        )
-                    },
-                    modifier = Modifier
-                        .padding(top = 10.dp)
-                        .padding(horizontal = 50.dp)
-                        .fillMaxWidth(),
-                    shape = RoundedCornerShape(19.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedBorderColor = Color.Gray.copy(alpha = 0.46f),
-                    ),
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(onDone = {
-                        finalScreenViewModel.signUpUser(
-                            SingUpDto(
-                                name = name.value.toString(),
-                                email = email.value.toString(),
-                                phone = phone.value.toString(),
-                                address = address.value.toString(),
-                                password = password.value.toString(),
-                                isVip = false,
-                                brithDay = General.convertMilisecondToLocalDateTime(selectedDateInMillis) ,
-                                imagePath = null,
-                                userName = userName.value.toString()
+                            },
+                            modifier = Modifier
+                                .padding(top = 10.dp)
+                                .padding(horizontal = 50.dp)
+                                .fillMaxWidth(),
+                            shape = RoundedCornerShape(19.dp),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                unfocusedBorderColor = Color.Gray.copy(alpha = 0.46f)
                             ),
-                            snackbarHostState =snackbarHostState,
-                             navController = nav
-
-
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                         )
-                    }),
-
-                    visualTransformation = if (isShownPassword.value) VisualTransformation.None else PasswordVisualTransformation(),
-                    trailingIcon =
-                    {
-                        val iconName = if (!isShownPassword.value) R.drawable.baseline_visibility_24
-                        else R.drawable.visibility_off
-
-                        IconButton(onClick = {
-                            isShownPassword.value = !isShownPassword.value
-                        }) {
-                            Image(
-                                painterResource(iconName), contentDescription = "",
-                                colorFilter = ColorFilter.tint(
-                                    color = Color.Gray.copy(alpha = 0.46f)
+                        OutlinedTextField(
+                            maxLines = 1,
+                            value = userName.value,
+                            onValueChange = { userName.value = it },
+                            placeholder = {
+                                Text(
+                                    "اسم المستخدم",
+                                    color = Color.Gray.copy(alpha = 0.66f)
                                 )
-                            )
-                        }
-                    }
-
-                )
-
-                Button(
-                    enabled = loadingStatus.value != enNetworkStatus.Loading,
-                    onClick = {
-                        keyboardController?.hide();
-                        finalScreenViewModel.signUpUser(
-                            SingUpDto(
-                                name = name.value.text,
-                                email = email.value.text,
-                                phone = phone.value.text,
-                                address = address.value.text,
-                                password = password.value.text,
-                                isVip = false,
-                                brithDay = General.convertMilisecondToLocalDateTime(selectedDateInMillis),
-                                imagePath = null,
-                                userName = userName.value.text
+                            },
+                            modifier = Modifier
+                                .padding(top = 10.dp)
+                                .padding(horizontal = 50.dp)
+                                .fillMaxWidth(),
+                            shape = RoundedCornerShape(19.dp),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                unfocusedBorderColor = Color.Gray.copy(alpha = 0.46f)
                             ),
-                            snackbarHostState =snackbarHostState
-                            , navController = nav
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                        )
 
+                        OutlinedTextField(
+                            maxLines = 1,
+                            value = email.value,
+                            onValueChange = { email.value = it },
+                            placeholder = {
+                                Text(
+                                    "الايميل",
+                                    color = Color.Gray.copy(alpha = 0.66f)
+                                )
+                            },
+                            modifier = Modifier
+                                .padding(top = 10.dp)
+                                .padding(horizontal = 50.dp)
+                                .fillMaxWidth(),
+                            shape = RoundedCornerShape(19.dp),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                unfocusedBorderColor = Color.Gray.copy(alpha = 0.46f),
+                            ),
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions(onDone = {
+
+                            })
+                        )
+
+                        OutlinedTextField(
+                            maxLines = 1,
+                            value = phone.value,
+                            onValueChange = { phone.value = it },
+                            placeholder = {
+                                Text(
+                                    "رقم الهاتف",
+                                    color = Color.Gray.copy(alpha = 0.66f)
+                                )
+                            },
+                            modifier = Modifier
+                                .padding(top = 10.dp)
+                                .padding(horizontal = 50.dp)
+                                .fillMaxWidth(),
+                            shape = RoundedCornerShape(19.dp),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                unfocusedBorderColor = Color.Gray.copy(alpha = 0.46f),
+                            ),
+                            keyboardOptions = KeyboardOptions(
+                                imeAction = ImeAction.Next,
+                                keyboardType = KeyboardType.Number
+                            ),
+                            keyboardActions = KeyboardActions(onNext = {
+                                showDatePicker.value = true
+
+                            }),
+
+
+                            )
+
+                        Button(
+
+                            modifier = Modifier
+                                .padding(top = 10.dp)
+                                .padding(horizontal = 50.dp)
+                                .fillMaxWidth()
+                                .border(
+                                    1.dp,
+                                    color = Color.Gray.copy(alpha = 0.46f),
+                                    shape = RoundedCornerShape(19.dp)
+                                ),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.Transparent
+                            ), onClick = {
+                                showDatePicker.value = true
+                            }) {
+
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+
+                                Column {
+                                    Text(
+                                        text = "تاريخ الميلاد",
+                                        color = Color.Gray.copy(alpha = 0.66f)
+                                    )
+                                    if (brithDay.length > 0)
+                                        Text(
+                                            text = brithDay,
+                                            color = Color.Gray.copy(alpha = 0.66f)
+                                        )
+                                }
+                                Image(
+                                    imageVector = Icons.Default.DateRange,
+                                    contentDescription = "",
+                                    colorFilter = ColorFilter.tint(
+                                        color = Color.Gray.copy(alpha = 0.66f)
+                                    )
+                                )
+                            }
+
+                        }
+                        OutlinedTextField(
+                            maxLines = 1,
+                            value = address.value,
+                            onValueChange = { address.value = it },
+                            placeholder = {
+                                Text(
+                                    "العنوان",
+                                    color = Color.Gray.copy(alpha = 0.66f)
+                                )
+                            },
+                            modifier = Modifier
+                                .padding(top = 10.dp)
+                                .padding(horizontal = 50.dp)
+                                .fillMaxWidth(),
+                            shape = RoundedCornerShape(19.dp),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                unfocusedBorderColor = Color.Gray.copy(alpha = 0.46f),
+                            ),
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions(onDone = {
+
+                            })
+                        )
+
+
+
+                        OutlinedTextField(
+                            maxLines = 1,
+                            value = password.value,
+                            onValueChange = { password.value = it },
+                            placeholder = {
+                                Text(
+                                    "كملة المرور",
+                                    color = Color.Gray.copy(alpha = 0.66f)
+                                )
+                            },
+                            modifier = Modifier
+                                .padding(top = 10.dp)
+                                .padding(horizontal = 50.dp)
+                                .fillMaxWidth(),
+                            shape = RoundedCornerShape(19.dp),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                unfocusedBorderColor = Color.Gray.copy(alpha = 0.46f),
+                            ),
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                            keyboardActions = KeyboardActions(onDone = {
+                                finalScreenViewModel.signUpUser(
+                                    SingUpDto(
+                                        name = name.value.toString(),
+                                        email = email.value.toString(),
+                                        phone = phone.value.toString(),
+                                        address = address.value.toString(),
+                                        password = password.value.toString(),
+                                        isVip = false,
+                                        brithDay = General.convertMilisecondToLocalDateTime(selectedDateInMillis) ,
+                                        imagePath = null,
+                                        userName = userName.value.toString()
+                                    ),
+                                    snackbarHostState =snackbarHostState,
+                                    navController = nav
+
+
+                                )
+                            }),
+
+                            visualTransformation = if (isShownPassword.value) VisualTransformation.None else PasswordVisualTransformation(),
+                            trailingIcon =
+                            {
+                                val iconName = if (!isShownPassword.value) R.drawable.baseline_visibility_24
+                                else R.drawable.visibility_off
+
+                                IconButton(onClick = {
+                                    isShownPassword.value = !isShownPassword.value
+                                }) {
+                                    Image(
+                                        painterResource(iconName), contentDescription = "",
+                                        colorFilter = ColorFilter.tint(
+                                            color = Color.Gray.copy(alpha = 0.46f)
+                                        )
+                                    )
+                                }
+                            }
 
                         )
-                    },
-                    modifier = Modifier
-                        .padding(top = 15.dp)
-                        .padding(horizontal = 50.dp)
-                        .fillMaxWidth()
-                        .height(35.dp)
-                ) {
-                    when (loadingStatus.value) {
-                        enNetworkStatus.Loading -> {
-                            CircularProgressIndicator(
-                                color = Color.Blue, modifier = Modifier
-                                    .offset(y = -3.dp)
-                                    .height(25.dp)
-                                    .width(25.dp)
-                            )
-                        }
 
-                        else -> {
-                            Text(
-                                "تسجيل",
-                                color = Color.White,
-                                fontSize = 16.sp
-                            )
-                        }
-                    }
+                        Button(
+                            enabled = loadingStatus.value != enNetworkStatus.Loading,
+                            onClick = {
+                                keyboardController?.hide();
+                                finalScreenViewModel.signUpUser(
+                                    SingUpDto(
+                                        name = name.value.text,
+                                        email = email.value.text,
+                                        phone = phone.value.text,
+                                        address = address.value.text,
+                                        password = password.value.text,
+                                        isVip = false,
+                                        brithDay = General.convertMilisecondToLocalDateTime(selectedDateInMillis),
+                                        imagePath = null,
+                                        userName = userName.value.text
+                                    ),
+                                    snackbarHostState =snackbarHostState
+                                    , navController = nav
 
-                }
-            }
 
-            Box(modifier = Modifier
-                .constrainAs(goToReiginster) {
-                    bottom.linkTo(parent.bottom)
-                    end.linkTo(parent.end)
-                    start.linkTo(parent.start)
-                }
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text(text = "لديك  حساب")
-                    Box(
-                        modifier = Modifier
-                            .zIndex(20f)
-                            .padding(start = 5.dp)
-                            .clickable {
-                                Log.d("clikedLoginButton","loginButton isClieing ")
-                                nav.navigate(Screens.login) {
-                                    popUpTo(Screens.login) { inclusive = true }
+                                )
+                            },
+                            modifier = Modifier
+                                .padding(top = 15.dp)
+                                .padding(horizontal = 50.dp)
+                                .fillMaxWidth()
+                                .height(35.dp)
+                        ) {
+                            when (loadingStatus.value) {
+                                enNetworkStatus.Loading -> {
+                                    CircularProgressIndicator(
+                                        color = Color.Blue, modifier = Modifier
+                                            .offset(y = -3.dp)
+                                            .height(25.dp)
+                                            .width(25.dp)
+                                    )
                                 }
 
+                                else -> {
+                                    Text(
+                                        "تسجيل",
+                                        color = Color.White,
+                                        fontSize = 16.sp
+                                    )
+                                }
+                            }
+
+                        }
+                    }
+
+                    Box(modifier = Modifier
+                        .constrainAs(goToReiginster) {
+                            bottom.linkTo(parent.bottom)
+                            end.linkTo(parent.end)
+                            start.linkTo(parent.start)
+                        }
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text(text = "لديك  حساب")
+                            Box(
+                                modifier = Modifier
+                                    .zIndex(20f)
+                                    .padding(start = 5.dp)
+                                    .clickable {
+                                        Log.d("clikedLoginButton","loginButton isClieing ")
+                                        nav.navigate(Screens.login) {
+                                            popUpTo(Screens.login) { inclusive = true }
+                                        }
+
+
+                                    }
+                            ) {
+                                Text(text = "دخول", color = Color.Blue)
 
                             }
-                    ) {
-                        Text(text = "دخول", color = Color.Blue)
-
+                        }
                     }
+
                 }
+
+
             }
-
         }
-
-
-    }
-
+    )
 
 }

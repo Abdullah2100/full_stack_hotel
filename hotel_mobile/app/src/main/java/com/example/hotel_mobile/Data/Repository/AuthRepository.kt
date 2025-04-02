@@ -23,14 +23,18 @@ class AuthRepository @Inject constructor(private val httpClient: HttpClient) {
     suspend fun loginUser(loginData: LoginDto): NetworkCallHandler {
         return try {
             val result = httpClient
-                .use {
-                    client ->
-                    client.post("${General.BASED_URL}/user/signIn") {
+//                .use {
+//                    client ->
+//                    client
+//                    .post("${General.BASED_URL}/user/signIn") {
+//                        setBody(loginData)
+//                        contentType(ContentType.Application.Json)
+//                    }
+//                }
+                    .post("${General.BASED_URL}/user/signIn") {
                         setBody(loginData)
                         contentType(ContentType.Application.Json)
                     }
-                }
-
 
             if (result.status == HttpStatusCode.OK) {
                 NetworkCallHandler.Successful(result.body<String>())
@@ -58,9 +62,7 @@ class AuthRepository @Inject constructor(private val httpClient: HttpClient) {
         return try {
 
             val result = httpClient
-                .use {
-                    client->
-                    client.post("${General.BASED_URL}/user/signUp") {
+                .post("${General.BASED_URL}/user/signUp") {
                         setBody(MultiPartFormDataContent(
                             formData {
                                 append("name", userData.name)
@@ -73,14 +75,10 @@ class AuthRepository @Inject constructor(private val httpClient: HttpClient) {
                                 append("isVip", false)
                             }
                         ))
-                    }
-
                 }
 
-            if (result.status == HttpStatusCode.OK) {
-
+            if (result.status == HttpStatusCode.Created) {
                 NetworkCallHandler.Successful(result.body<String>())
-
             } else {
 
                 NetworkCallHandler.Error(result.body())
@@ -100,9 +98,9 @@ class AuthRepository @Inject constructor(private val httpClient: HttpClient) {
 
             return NetworkCallHandler.Error(e.message)
         }
-        finally {
-            httpClient.close()
-        }
+//        finally {
+//            httpClient.close()
+//        }
     }
 
 }

@@ -99,4 +99,8 @@ class HomeViewModle @Inject constructor(
     }
 
 
+    suspend fun clearErrorMessage(){
+        _errorMessage.emit("")
+    }
+
 }

@@ -23,6 +23,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.resolveDefaults
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.SubcomposeAsyncImage
@@ -48,6 +51,9 @@ fun RoomShape(
     nav: NavHostController
 ){
     val context = LocalContext.current
+    val isHasThumnail = remember {
+        mutableStateOf(roomModel.images?.firstOrNull{it->it.isThumnail==true}!=null)
+    }
 
     Column(
         modifier = Modifier
@@ -60,8 +66,10 @@ fun RoomShape(
             .padding(horizontal = 9.dp, vertical = 10.dp)
             .clickable {
                 nav.navigate(Screens.Room(roomModel.toRoomDto()))
-            }
+            },
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        if(isHasThumnail.value)
         SubcomposeAsyncImage(
             contentScale = ContentScale.FillWidth,
             modifier = Modifier
@@ -71,7 +79,7 @@ fun RoomShape(
             model =
             ImageRequest.Builder(context)
                 .data(
-                   roomModel.images!!.first { img -> img.isThumnail == true }.path
+                   roomModel.images?.firstOrNull { img -> img.isThumnail == true }?.path
                 )
                 .build(),
             contentDescription = "",
@@ -88,6 +96,13 @@ fun RoomShape(
                 }
             },
         )
+        else 
+            Image(
+                painter = painterResource(R.drawable.photo),
+                contentDescription =""
+            ,
+                modifier = Modifier.size(250.dp))
+
         Row(
             modifier = Modifier
 
