@@ -90,12 +90,42 @@ class GeneralModule {
             }
 
 
+            install(Auth) {
+                bearer {
+//                    sendWithoutRequest { true }
+                    loadTokens {
+                        BearerTokens(
+                            General.authData.value?.token?:"",
+                            General.authData.value?.refreshToken ?:""
+                        )
+                    }
+
+                    refreshTokens {
+                        val refreshToken = client.
+                        use{
+                                client->client.post("${General.BASED_URL}/refreshToken/refresh") {
+                            url {
+                                parameters.append("tokenHolder", General.authData.value?.refreshToken ?: "")
+                            }
+                        }.body<AuthResultDto>()
+                        }
+
+                        // Update saved tokens
+                        General.updateSavedToken(authDao, refreshToken)
+
+                        BearerTokens(
+                            accessToken = refreshToken.accessToken,
+                            refreshToken = refreshToken.refreshToken
+                        )
+                    }
+                }
+            }
+
             install(Logging) {
                 logger = object : Logger {
                     override fun log(message: String) {
                         Log.v("Logger Ktor =>", message)
                     }
-
                 }
                 level = LogLevel.ALL
             }
@@ -109,36 +139,6 @@ class GeneralModule {
             }
 
 
-            install(Auth) {
-                bearer {
-                    loadTokens {
-                        BearerTokens(
-                            General.authData?.token?:"",
-                            General.authData?.refreshToken ?:""
-                        )
-                    }
-
-                    refreshTokens {
-                        val refreshToken = client.
-                        use{
-                                client->client.post("${General.BASED_URL}/refreshToken/refresh") {
-                            url {
-                                parameters.append("tokenHolder", General.authData?.refreshToken ?: "")
-                            }
-                        }.body<AuthResultDto>()
-                        }
-
-
-                        // Update saved tokens
-                        General.updateSavedToken(authDao, refreshToken)
-
-                        BearerTokens(
-                            accessToken = refreshToken.accessToken,
-                            refreshToken = refreshToken.refreshToken
-                        )
-                    }
-                }
-            }
         }
     }
 

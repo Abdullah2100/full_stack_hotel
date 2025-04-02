@@ -74,7 +74,7 @@ import java.util.Locale
 @Composable
 fun SignUpPage(
     nav: NavHostController,
-    finalScreenViewModel: AuthViewModle = hiltViewModel()
+    finalScreenViewModel: AuthViewModle
 ) {
     val errorMessage = finalScreenViewModel.errorMessage.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current

@@ -149,7 +149,7 @@ public class ImagesData
 
         return image;
     }
-    public static List<ImagesTbDto> images(Guid? belongto)
+    public static List<ImagesTbDto> images(Guid? belongto,string? minioEndPoint=null)
     {
         if (belongto == null) return null;
         List<ImagesTbDto>? images = new List<ImagesTbDto>();
@@ -170,7 +170,7 @@ public class ImagesData
                             {
                                 var imageHolder = new ImagesTbDto(
                                     imagePathId: (Guid)reader["imageid"],
-                                    imagePath: (string)reader["name"],
+                                    imagePath:(minioEndPoint??"")+ (string)reader["name"],
                                     belongTo: (Guid)reader["belongto"]
                                     , isThumnail:reader["isthumnail"]==DBNull.Value?false: (bool)reader["isthumnail"]
 

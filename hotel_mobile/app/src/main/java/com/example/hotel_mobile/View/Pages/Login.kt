@@ -50,7 +50,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun LoginPage(
     nav: NavHostController,
-    finalScreenViewModel: AuthViewModle = hiltViewModel()
+    finalScreenViewModel: AuthViewModle
 ) {
     val loadingStatus = finalScreenViewModel.statusChange.collectAsState()
 

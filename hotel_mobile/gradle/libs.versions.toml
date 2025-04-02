@@ -21,8 +21,7 @@ constrain-compose = "1.0.1"
 sqlLight="2.1.0"
 androidDatabaseSqlcipher = "4.5.3"
 splash = "1.0.0-beta02"
-date-serialize = "0.3.2"
-coil-version = "3.0.0"
+#coil-version = "2.4.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -51,6 +50,7 @@ hilt-nav = {group="androidx.hilt",name="hilt-navigation-compose",version.ref="hi
 
 
 
+#ktor
 ktor-client-core = { group = "io.ktor",name="ktor-client-core", version.ref = "ktor" }
 ktor-client-android = { group = "io.ktor",name="ktor-client-android", version.ref = "ktor" }
 ktor-client-content-negotiation = { group = "io.ktor",name="ktor-client-content-negotiation", version.ref = "ktor" }
@@ -58,7 +58,13 @@ ktor-serialization-kotlinx-json = { group = "io.ktor",name="ktor-serialization-k
 ktor-loggin = {group="io.ktor",name = "ktor-client-logging-jvm",version.ref="ktor"}
 ktor-auth ={group="io.ktor",name="ktor-client-auth",version.ref="ktor"}
 ktor-cio = {group="io.ktor",name="ktor-client-cio",version.ref = "ktor"}
+
+
+#serialization
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx",name="kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+
+
+#coroutines
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx",name="kotlinx-coroutines-android", version.ref = "coroutines" }
 
 #constrin layout
@@ -92,8 +98,7 @@ splash-android = {group="androidx.core",name="core-splashscreen",version.ref="sp
 #date-serialize = {group = "org.jetbrains.kotlinx" , name="kotlinx-datetime",version.ref="date-serialize"}
 
 #coil
-coil-compose = {group = "io.coil-kt.coil3",name ="coil-compose",version.ref = "coil-version"}
-coil-okhttp = {group = "io.coil-kt.coil3",name ="coil-network-okhttp",version.ref = "coil-version"}
+#coil-compose = {module = "io.coil-kt.coil3:coil-compose",version.ref = "coil-version"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
