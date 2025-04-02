@@ -189,7 +189,10 @@ public class RoomData
         return isUpdate;
     }
 
-     public static List<RoomDto> getRoomByPage(int pageNumber = 1, int numberOfRoom = 20)
+     public static List<RoomDto> getRoomByPage(
+         int pageNumber = 1,
+         int numberOfRoom = 20,
+         string? minioUrl=null)
         {
             List<RoomDto> rooms = new List<RoomDto>();
             try
@@ -221,7 +224,7 @@ public class RoomData
                                         beglongTo:(Guid)reader["belongto"],
                                         createdAt: (DateTime)reader["createdat"],
                                         isBlock: (bool)reader["isblock"],
-                                        images:ImagesData.images(roomid),
+                                        images:ImagesData.images(roomid,minioUrl),
                                         isDeleted:(bool)reader["isdeleted"]
                                     );
 

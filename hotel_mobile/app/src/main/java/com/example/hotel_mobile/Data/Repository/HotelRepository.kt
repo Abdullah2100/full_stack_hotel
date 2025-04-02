@@ -14,8 +14,10 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.utils.EmptyContent.contentType
 import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
+import io.ktor.http.headers
 import io.ktor.http.parameters
 import java.io.IOException
 import java.lang.reflect.Parameter
@@ -34,9 +36,13 @@ class HotelRepository  @Inject constructor(private val httpClient: HttpClient) {
 
     suspend fun getRooms(pageNumber:Int): NetworkCallHandler {
         return try {
-            val result = httpClient.get("${General.BASED_URL}/user/room/${pageNumber}") {
-//                    contentType(ContentType.Application.Json)
+            val result = httpClient.get("${General.BASED_URL}/user/room/${pageNumber}")
+            {
+                headers {
+                    append(HttpHeaders.Authorization, "Bearer ${General.authData.value?.refreshToken}")
                 }
+            }
+
             if (result.status == HttpStatusCode.OK) {
                 val resultData = result.body<List<RoomDto>>();
                 NetworkCallHandler.Successful(resultData)

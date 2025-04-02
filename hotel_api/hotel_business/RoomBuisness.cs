@@ -81,9 +81,12 @@ public class RoomBuisness
     }
 
 
-    public static List<RoomDto> getAllRooms(int pagenumber, int limitPerPage)
+    public static List<RoomDto> getAllRooms(int pagenumber, int limitPerPage,string? minioEndPoint=null)
     {
-        return RoomData.getRoomByPage(pagenumber, limitPerPage);
+        return RoomData.getRoomByPage(
+            pagenumber, 
+            limitPerPage,
+            minioEndPoint);
     }
 
     public static RoomBuisness? getRoom(Guid roomId)

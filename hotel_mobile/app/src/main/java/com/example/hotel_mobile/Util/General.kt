@@ -1,13 +1,12 @@
 package com.example.hotel_mobile.Util
 
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.runtime.mutableStateOf
-import androidx.room.Room
-import androidx.room.RoomDatabase
+import android.R.string
+import androidx.compose.ui.graphics.Color
 import com.example.hotel_mobile.Data.Room.AuthDao
-import com.example.hotel_mobile.Data.Room.AuthDataBase
 import com.example.hotel_mobile.Data.Room.AuthModleEntity
 import com.example.hotel_mobile.Dto.AuthResultDto
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import net.sqlcipher.database.SQLiteDatabase
 import net.sqlcipher.database.SupportFactory
 import java.time.Instant
@@ -15,10 +14,11 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.Date
 
+
 object General {
 
 
-    var authData: AuthModleEntity? = null;
+    var authData = MutableStateFlow<AuthModleEntity?>(null);
 
     const val BASED_URL = "http://10.0.2.2:5266/api"
 
@@ -47,7 +47,7 @@ object General {
         val authDataHolder = AuthModleEntity(0, authData.accessToken, authData.refreshToken)
         if (authData.accessToken.length > 0) {
             ado.saveAuthData(authDataHolder)
-            General.authData = authDataHolder;
+            General.authData.emit(authDataHolder)// = authDataHolder;
         }
     }
 
@@ -62,4 +62,33 @@ object General {
             }
         }
     }
+     fun convertRoomStateToText(status: Int): String {
+        return when (status) {
+            0 -> {
+                "متاح"
+            }
+
+            1-> {
+                "محظور"
+            }
+
+            else -> "تحت الصيانة"
+        }
+    }
+
+    fun convertRoomStateToColor(status: Int): Color {
+        return when (status) {
+            0 -> {
+                Color.Green
+            }
+
+            1-> {
+                Color.Red
+            }
+
+            else -> Color.Yellow
+        }
+    }
+
+
 }

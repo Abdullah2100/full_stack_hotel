@@ -114,7 +114,7 @@ public class UserController : Controller
     }
 
 
-    // [Authorize]
+    [Authorize]
     [HttpGet("room/{pageNumber:int}")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -125,8 +125,8 @@ public class UserController : Controller
     {
         try
         {
-            var rooms = RoomBuisness.getAllRooms(pageNumber, 25);
-
+            string minioEndPoint ="http://"+ _config.getKey("minio_end_point")+"/room/"; 
+            var rooms = RoomBuisness.getAllRooms(pageNumber, 25,minioEndPoint);
             return Ok(rooms);
         }
         catch (Exception ex)

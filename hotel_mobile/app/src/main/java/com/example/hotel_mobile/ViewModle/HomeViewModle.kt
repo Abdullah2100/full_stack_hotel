@@ -57,29 +57,41 @@ class HomeViewModle @Inject constructor(
     }
 
 
-    init {
-        getRooms(1)
-    }
-
     fun getRooms(pageNumber: Int = 1) {
-
         viewModelScope.launch(ioDispatcher + errorHandling) {
 
             when (val result = homeRepository.getRooms(pageNumber)) {
                 is NetworkCallHandler.Successful<*> -> {
-                    //val roomData = decodeFromString<List<RoomDto>>(result.data.toString())
-                    val roomData = result.data as List<RoomDto>
-                    val roomDataToMutale = roomData.map { it->it.toRoomModel() }.toMutableList()
-                    _rooms.emit(roomDataToMutale)
+                    val roomData = result.data as List<RoomDto>?
+                    if(!roomData.isNullOrEmpty()){
+                        Log.d("thisRoomData", "${roomData.size}")
+                        val roomDataToMutale = roomData
+                            .map { listData -> listData.toRoomModel() }
+                            .toMutableList()
+
+                            _rooms.emit(roomDataToMutale)
+                    }else{
+                        Log.d("roomDataGettinError", "${result.data}")
+
+                        if (_rooms.value == null)
+                                _rooms.emit(mutableListOf<RoomModel>())
+                    }
                 }
 
                 is NetworkCallHandler.Error -> {
+                    Log.d("roomDataGettinError", "${result.data}")
+                    if (_rooms.value == null)
+                        _rooms.emit(mutableListOf<RoomModel>())
+
                     throw Exception(result.data);
                 }
 
                 else -> {
-                    throw Exception("unexpected Stat");
+                    Log.d("roomDataGettinError", "no error found")
+                    if (_rooms.value == null)
+                        _rooms.emit(mutableListOf<RoomModel>())
 
+                    throw Exception("unexpected Stat");
                 }
             }
 

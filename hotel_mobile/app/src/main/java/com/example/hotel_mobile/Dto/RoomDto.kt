@@ -21,6 +21,6 @@ data class RoomDto(
     var isDeleted: Boolean? = null,
     var user: UserDto? = null,
     var roomData: String? = null,
-    var images: ArrayList<ImageDto>? = null,
+    var images: List<ImageDto>? = null,
     var roomTypeData:RoomTypeDto?=null
 )
