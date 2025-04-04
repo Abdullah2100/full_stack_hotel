@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import net.sqlcipher.database.SQLiteDatabase
 import net.sqlcipher.database.SupportFactory
 import java.time.Instant
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.Date
@@ -42,6 +43,12 @@ object General {
 
         return date
     }
+    fun Long.toLocalDate(): LocalDate {
+        return Instant.ofEpochMilli(this)
+            .atZone(ZoneId.systemDefault())
+            .toLocalDate()
+    }
+
 
     suspend fun updateSavedToken(ado: AuthDao, authData: AuthResultDto) {
         val authDataHolder = AuthModleEntity(0, authData.accessToken, authData.refreshToken)
