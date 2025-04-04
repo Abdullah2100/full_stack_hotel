@@ -148,12 +148,14 @@ class AuthViewModle @Inject constructor(
                 when (val result = authRepository.loginUser(userDto)) {
                     is NetworkCallHandler.Successful<*> -> {
                         val authData = decodeFromString<AuthResultDto>(result.data.toString())
-                        authDao.saveAuthData(
-                            AuthModleEntity(
-                                token = authData.accessToken,
-                                refreshToken = authData.refreshToken
-                            )
+                        val authEntityData = AuthModleEntity(
+                            token = authData.accessToken,
+                            refreshToken = authData.refreshToken
                         )
+                        authDao.saveAuthData(
+                            authEntityData
+                        )
+                        General.authData.update { authEntityData }
                         _statusChange.update { enNetworkStatus.Complate }
                         navController.navigate(Screens.homeGraph)
                     }
@@ -189,12 +191,14 @@ class AuthViewModle @Inject constructor(
                 when (val result = authRepository.createNewUser(userDto)) {
                     is NetworkCallHandler.Successful<*> -> {
                         val authData = decodeFromString<AuthResultDto>(result.data.toString())
-                        authDao.saveAuthData(
-                            AuthModleEntity(
-                                token = authData.accessToken,
-                                refreshToken = authData.refreshToken
-                            )
+                        val authEntityData = AuthModleEntity(
+                            token = authData.accessToken,
+                            refreshToken = authData.refreshToken
                         )
+                        authDao.saveAuthData(
+                            authEntityData
+                        )
+                        General.authData.update { authEntityData }
                         _statusChange.update { enNetworkStatus.Complate }
                         navController.navigate(Screens.homeGraph)
                     }

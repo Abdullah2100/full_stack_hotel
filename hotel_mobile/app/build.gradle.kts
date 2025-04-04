@@ -120,16 +120,12 @@ dependencies {
     implementation(libs.splash.android)
 
 
-    //dateSerialize plugin
-//    implementation(libs.date.serialize)
-
     //prevent minRequrire api gradle
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
+    coreLibraryDesugaring(libs.tools.desugar.jdk.libs)
 
     //coil
-    implementation ("io.coil-kt:coil-compose:2.4.0")
-//    implementation(libs.coil.compose)
-//    implementation(libs.coil.okhttp)
+    implementation (libs.coil.compose)
+
 
 
 }
