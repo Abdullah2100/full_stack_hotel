@@ -57,6 +57,7 @@ fun RoomShape(
 
     Column(
         modifier = Modifier
+            .padding(bottom = 5.dp)
             .background(
                 Color.White,
                 RoundedCornerShape(8.dp)
