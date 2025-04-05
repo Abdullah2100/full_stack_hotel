@@ -7,6 +7,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -118,9 +119,8 @@ fun HomePage(
                                 modifier = Modifier
                                     .padding(top = 5.dp)
                                     .padding(horizontal = 15.dp)
-                                    .fillMaxSize()
-
-
+                                    .fillMaxSize(),
+//                                contentPadding = PaddingValues(bottom = 15.dp)
                             ) {
                                 items(roomData.value!!.size) { index ->
                                     RoomShape(

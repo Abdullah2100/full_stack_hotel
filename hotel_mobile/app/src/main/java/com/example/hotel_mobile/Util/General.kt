@@ -98,4 +98,16 @@ object General {
     }
 
 
+    fun convertDayToNumber(day: String): Int {
+        return when(day.lowercase()) {
+            "monday" -> 1
+            "tuesday" -> 2
+            "wednesday" -> 3
+            "thursday" -> 4
+            "friday" -> 5
+            "saturday" -> 6
+            "sunday" -> 7
+            else -> 0
+        }
+    }
 }

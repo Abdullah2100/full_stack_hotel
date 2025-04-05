@@ -3,6 +3,7 @@ package com.example.hotel_mobile.View.Pages
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
@@ -53,11 +54,16 @@ import androidx.compose.ui.unit.sp
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.example.hotel_mobile.Dto.RoomDto
+import com.example.hotel_mobile.Modle.enDropDownType
+import com.example.hotel_mobile.View.component.CustomDropDownShape
+import com.example.hotel_mobile.View.component.CustomSizer
+import com.example.hotel_mobile.View.component.MonthDayWithBookingDialog
 import com.example.hotel_mobile.View.component.RoomStateShape
 import com.example.hotel_mobile.ViewModle.HomeViewModle
 import kotlinx.coroutines.delay
 import java.time.LocalDate
 import java.util.Calendar
+import kotlin.random.Random
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -66,6 +72,10 @@ fun RoomPage(
     roomData: RoomDto,
     homeViewModle: HomeViewModle
 ) {
+
+    val calendar = Calendar.getInstance()
+
+    val currentYear = calendar.get(Calendar.YEAR)
 
     val context = LocalContext.current;
     val images = roomData.images?.filter { result -> result.isThumnail == false }
@@ -77,17 +87,19 @@ fun RoomPage(
 
     val sheetState = rememberModalBottomSheetState()
     var showBottomSheet = remember { mutableStateOf(false) }
+    var isShowDialog = remember { mutableStateOf(false) }
 
 
-    val bookingYear = remember { mutableStateOf(Calendar.YEAR) }
-//    val isDropDownExpanded = remember { MutableTransitionState(false) }
+    val bookingStartYear = remember { mutableStateOf(currentYear) }
+    val bookingStartMonth = remember { mutableStateOf(1) }
 
-    var isDropDownExpanded   = remember { MutableTransitionState(initialState = false) }
+    var dropDownType = remember { mutableStateOf(enDropDownType.Year) }
 
-    val visableYear = (Calendar.YEAR..Calendar.YEAR+5)
+    val visableYears = (currentYear..currentYear + 4).toList()
+    val visableMonths = (1..12).toList()
+
+
     LaunchedEffect(timer.value) {
-        Log.d("counterIsCalled", "${currentImageIndex.value}")
-
         delay(3000L)
         when (currentImageIndex.value + 1 == images!!.size) {
             true -> currentImageIndex.value = 0;
@@ -245,6 +257,7 @@ fun RoomPage(
                         fontWeight = FontWeight.Bold
                     )
                 }
+
                 Text(
                     "عدد السرائر", fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
@@ -325,102 +338,47 @@ fun RoomPage(
                         fontSize = 19.sp,
                         fontWeight = FontWeight.Bold
                     )
+                    CustomSizer(height = 10.dp)
 
-                    Column (
-                       modifier = Modifier
-                           .padding(top = 4.dp)
-                           .padding(horizontal = 20.dp)
-                           .fillMaxWidth()
 
-                   ) {
+                    CustomDropDownShape(
+                        listData = visableYears,
+                        selectedValue =bookingStartYear,
+                        title = "بداية سنة الحجز",
+                        dropDownType = enDropDownType.Year,
+                        selectedDropType = dropDownType
+                    )
 
-                        Row(
-                            modifier = Modifier
-                                .height(50.dp)
-                                .fillMaxWidth()
-                                .clickable {
-                                    isDropDownExpanded.targetState =true
-                                }
-                            ,
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(bookingYear.value.toString())
-                            Text("سنة الحجز")
+                    CustomSizer(height = 5.dp)
 
-                        }
+                    CustomDropDownShape(
+                        listData = visableMonths,
+                        selectedValue =bookingStartMonth,
+                        title = "بداية شهر الحجز"
+                        ,dropDownType = enDropDownType.Month,
+                        selectedDropType = dropDownType
+                    )
+                    CustomSizer(height = 5.dp)
 
-                    }
-
-                    AnimatedVisibility(
-                        visibleState = isDropDownExpanded
-                    ) {
-                        LazyColumn {
-                            items(visableYear.count()){year->
-
-                                Box(
-                                    modifier = Modifier.fillMaxWidth()
-                                        .height(20.dp)
-                                        .clickable {
-//                                            bookingYear.value=visableYear[year];
-                                            isDropDownExpanded.targetState=false
-                                        },
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text(year.toString())
-                                }
+                    Box(
+                        modifier =  Modifier
+                            .height(50.dp)
+                            .fillMaxWidth()
+                            .border(
+                                1.dp,
+                                Color.Black.copy(0.16f)
+                                    , RoundedCornerShape(16.dp)
+                            ).clickable {
+                                isShowDialog.value = !isShowDialog.value
                             }
-                        }
-
-
-                    }
-
-                    /*Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth()
+                        , contentAlignment = Alignment.Center
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .padding(top = 16.dp)
-                                .height(50.dp)
-                                .width(150.dp)
-                                .border(
-                                    1.dp,
-                                    Color.Black.copy(0.16f),
-                                    RoundedCornerShape(16.dp)
-                                )
-                                .clickable {
-//                                    datePickerState.
-                                    isStartDate.value = true
-                                },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(startBookingDate.value)
-                        }
-                        Text("الى")
-                        Box(
-                            modifier = Modifier
-                                .padding(top = 16.dp)
-                                .height(50.dp)
-                                .width(150.dp)
-                                .border(
-                                    1.dp,
-                                    Color.Black.copy(0.16f),
-                                    RoundedCornerShape(16.dp)
-                                )
-                                .clickable {
-                                    isStartDate.value = false
-                                }
-                                .clip(
-                                    RoundedCornerShape(16.dp)
-                                ),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(endBookingDate.value)
-                        }
+                        Text(
+                            "بداية يوم الحجز",
+                            fontSize = 19.sp,
+                            fontWeight = FontWeight.Bold
+                        )
                     }
-                    */
 
                 }
             }
