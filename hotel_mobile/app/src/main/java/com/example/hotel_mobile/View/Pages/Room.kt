@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -51,8 +52,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
+import com.example.hotel_mobile.CustomDatePicker.vsnappy1.datepicker.DatePicker
 import com.example.hotel_mobile.Dto.RoomDto
 import com.example.hotel_mobile.Modle.enDropDownType
 import com.example.hotel_mobile.View.component.CustomDropDownShape
@@ -86,8 +89,9 @@ fun RoomPage(
     val timer = remember { mutableStateOf(0) }
 
     val sheetState = rememberModalBottomSheetState()
-    var showBottomSheet = remember { mutableStateOf(false) }
-    var isShowDialog = remember { mutableStateOf(false) }
+    val showBottomSheet = remember { mutableStateOf(false) }
+    val isExpanded = remember { mutableStateOf(false) }
+    val isOpenDialog = remember { mutableStateOf(false) }
 
 
     val bookingStartYear = remember { mutableStateOf(currentYear) }
@@ -343,7 +347,7 @@ fun RoomPage(
 
                     CustomDropDownShape(
                         listData = visableYears,
-                        selectedValue =bookingStartYear,
+                        selectedValue = bookingStartYear,
                         title = "بداية سنة الحجز",
                         dropDownType = enDropDownType.Year,
                         selectedDropType = dropDownType
@@ -353,25 +357,23 @@ fun RoomPage(
 
                     CustomDropDownShape(
                         listData = visableMonths,
-                        selectedValue =bookingStartMonth,
-                        title = "بداية شهر الحجز"
-                        ,dropDownType = enDropDownType.Month,
+                        selectedValue = bookingStartMonth,
+                        title = "بداية شهر الحجز", dropDownType = enDropDownType.Month,
                         selectedDropType = dropDownType
                     )
                     CustomSizer(height = 5.dp)
 
                     Box(
-                        modifier =  Modifier
+                        modifier = Modifier
                             .height(50.dp)
                             .fillMaxWidth()
                             .border(
                                 1.dp,
-                                Color.Black.copy(0.16f)
-                                    , RoundedCornerShape(16.dp)
-                            ).clickable {
-                                isShowDialog.value = !isShowDialog.value
-                            }
-                        , contentAlignment = Alignment.Center
+                                Color.Black.copy(0.16f), RoundedCornerShape(16.dp)
+                            )
+                            .clickable {
+                                isOpenDialog.value = true
+                            }, contentAlignment = Alignment.Center
                     ) {
                         Text(
                             "بداية يوم الحجز",
@@ -379,6 +381,29 @@ fun RoomPage(
                             fontWeight = FontWeight.Bold
                         )
                     }
+                    if (isOpenDialog.value)
+                        Dialog(onDismissRequest = {
+                            isOpenDialog.value = false
+                        }) {
+                            Box(
+                                modifier = Modifier
+                                    .wrapContentSize()
+                                    .background(
+                                        Color.White,
+                                        RoundedCornerShape(17.dp)
+                                    )
+                            ) {
+
+                                DatePicker(
+                                    month = bookingStartMonth.value,
+                                    year = bookingStartYear.value,
+                                    modifier = Modifier.padding(16.dp),
+                                    onDateSelected = { year, month, day ->
+                                       // isOpenDialog.value=false
+                                    }
+                                )
+                            }
+                        }
 
                 }
             }

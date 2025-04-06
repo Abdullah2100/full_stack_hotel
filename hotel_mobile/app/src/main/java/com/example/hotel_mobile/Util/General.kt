@@ -13,11 +13,26 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.util.Calendar
 import java.util.Date
 
 
 object General {
 
+    fun getCalener(): Calendar {
+        return  Calendar.getInstance();
+    }
+    fun getCurrentYear():Int{
+       return getCalener().get(Calendar.YEAR)
+    }
+
+    fun getCurrentMonth():Int{
+        return getCalener().get(Calendar.MONTH)
+    }
+
+    fun getCurrentStartDayAtMonth():Int{
+        return getCalener().get(Calendar.DAY_OF_MONTH)
+    }
 
     var authData = MutableStateFlow<AuthModleEntity?>(null);
 
