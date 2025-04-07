@@ -72,7 +72,6 @@ fun NavController(
             ) {
                  result ->
                 val args = result.toRoute<Screens.Room>()
-                Log.d("routingRoomData",args.toString())
                 RoomPage(
                     args.roomdata,
                     homeViewModle

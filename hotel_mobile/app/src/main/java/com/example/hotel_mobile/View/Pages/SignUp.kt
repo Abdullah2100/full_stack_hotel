@@ -467,7 +467,6 @@ fun SignUpPage(
                                     .zIndex(20f)
                                     .padding(start = 5.dp)
                                     .clickable {
-                                        Log.d("clikedLoginButton","loginButton isClieing ")
                                         nav.navigate(Screens.login) {
                                             popUpTo(Screens.login) { inclusive = true }
                                         }

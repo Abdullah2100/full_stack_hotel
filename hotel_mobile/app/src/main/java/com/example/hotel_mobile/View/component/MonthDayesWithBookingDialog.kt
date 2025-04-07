@@ -41,7 +41,6 @@ fun MonthDayWithBookingDialog(
 
     val startDayAt = General.convertDayToNumber(startDayOfWeek.name)
 
-    Log.d("counterIsCalled", "${startDayAt}")
 
     val dayesList = listOf(
         "السبت",

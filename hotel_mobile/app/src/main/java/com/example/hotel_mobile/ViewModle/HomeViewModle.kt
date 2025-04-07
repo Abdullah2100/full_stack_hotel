@@ -48,7 +48,6 @@ class HomeViewModle @Inject constructor(
 
 
     val errorHandling = CoroutineExceptionHandler { _, ex ->
-        Log.d("AuthError", ex.message ?: "")
         viewModelScope.launch {
             _errorMessage.update {
                 ex.message
@@ -64,14 +63,12 @@ class HomeViewModle @Inject constructor(
                 is NetworkCallHandler.Successful<*> -> {
                     val roomData = result.data as List<RoomDto>?
                     if(!roomData.isNullOrEmpty()){
-                        Log.d("thisRoomData", "${roomData.size}")
                         val roomDataToMutale = roomData
                             .map { listData -> listData.toRoomModel() }
                             .toMutableList()
 
                             _rooms.emit(roomDataToMutale)
                     }else{
-                        Log.d("roomDataGettinError", "${result.data}")
 
                         if (_rooms.value == null)
                                 _rooms.emit(mutableListOf<RoomModel>())
@@ -79,7 +76,6 @@ class HomeViewModle @Inject constructor(
                 }
 
                 is NetworkCallHandler.Error -> {
-                    Log.d("roomDataGettinError", "${result.data}")
                     if (_rooms.value == null)
                         _rooms.emit(mutableListOf<RoomModel>())
 
@@ -87,7 +83,6 @@ class HomeViewModle @Inject constructor(
                 }
 
                 else -> {
-                    Log.d("roomDataGettinError", "no error found")
                     if (_rooms.value == null)
                         _rooms.emit(mutableListOf<RoomModel>())
 

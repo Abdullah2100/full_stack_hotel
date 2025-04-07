@@ -5,10 +5,11 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,13 +20,12 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.KeyboardArrowLeft
-import androidx.compose.material.icons.rounded.KeyboardArrowRight
-import androidx.compose.material3.Icon
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -38,6 +38,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -54,9 +55,11 @@ import  com.example.hotel_mobile.CustomDatePicker.vsnappy1.datepicker.enums.Days
 import  com.example.hotel_mobile.CustomDatePicker.vsnappy1.datepicker.ui.model.DatePickerUiState
 import  com.example.hotel_mobile.CustomDatePicker.vsnappy1.datepicker.ui.viewmodel.DatePickerViewModel
 import com.example.hotel_mobile.CustomDatePicker.vsnappy1.extension.noRippleClickable
+import com.example.hotel_mobile.CustomDatePicker.vsnappy1.extension.spToDp
 import com.example.hotel_mobile.CustomDatePicker.vsnappy1.extension.toDp
 import com.example.hotel_mobile.CustomDatePicker.vsnappy1.theme.Size.medium
 import com.example.hotel_mobile.Util.General
+import com.example.hotel_mobile.View.component.CustomSizer
 import kotlinx.coroutines.launch
 import kotlin.math.ceil
 
@@ -65,88 +68,290 @@ import kotlin.math.ceil
 fun DatePicker(
     modifier: Modifier = Modifier,
     onDateSelected: (Int, Int, Int) -> Unit,
-    date: DatePickerDate = DefaultDate.defaultDate,
     selectionLimiter: SelectionLimiter = SelectionLimiter(),
     configuration: DatePickerConfiguration = DatePickerConfiguration.Builder().build(),
-    id: Int = 1,
     month: Int = General.getCurrentMonth(),
     year: Int = General.getCurrentYear(),
-    alreadyBookedList: Map<Int, Int> = mapOf(1 to 1)
+    alreadyBookedList: Map<Int, Int> = mapOf(1 to 1),
+    isYear: Boolean = false,
+    isMonth: Boolean = false,
+    dialogState:MutableState<Boolean> = mutableStateOf(false)
 ) {
-    date.year = year;
-    date.month = month-1;
-    if(!(year==General.getCurrentYear()&&month==General.getCurrentMonth()))
-        date.day=0
+    val isShownDay = isMonth == false && isYear == false;
+
+    val dateHolder = DatePickerDate(year, month, 0);
+    val currentMonth = Constant.getMonths(year)[month];
 
 
-
-    val viewModel: DatePickerViewModel = viewModel(key = "DatePickerViewModel$id")
+    val viewModel: DatePickerViewModel = viewModel()
     val uiState by viewModel.uiState.observeAsState(
         DatePickerUiState(
             selectedYear = year,
-            selectedMonth = Constant.getMonths(date.year)[month-1],
-            selectedDayOfMonth = if(year==General.getCurrentYear()&&month==General.getCurrentMonth()) date.day else 0
+            selectedMonth = currentMonth ,
+            selectedDayOfMonth = 0
         )
     )
-    Log.d("selectedNumber","${date}")
 
     // Key is Unit because I want this to run only once not every time when is composable is recomposed.
-    LaunchedEffect(key1 = Unit) { viewModel.setDate(date) }
+    LaunchedEffect(key1 = Unit) {
+        viewModel.setDate(
+            dateHolder
+        )
+    }
+
+
 
     var height by remember { mutableStateOf(configuration.height) }
-    Box(modifier = modifier.onGloballyPositioned {
-        if (it.size.height == 0) return@onGloballyPositioned
-        height = it.size.height.toDp() - configuration.headerHeight// Update the height
-    }) {
-        // TODO add sliding effect when next or previous arrow is pressed
-        CalendarHeader(
-            title = "${uiState.currentVisibleMonth.name} ${uiState.selectedYear}",
-            onMonthYearClick = { viewModel.toggleIsMonthYearViewVisible() },
-            onNextClick = { viewModel.moveToNextMonth() },
-            onPreviousClick = { viewModel.moveToPreviousMonth() },
-            isPreviousNextVisible = !uiState.isMonthYearViewVisible,
-            themeColor = configuration.selectedDateBackgroundColor,
-            configuration = configuration,
-        )
-        Box(
-            modifier = Modifier
-                .padding(top = configuration.headerHeight)
-                .height(height)
-        ) {
-            AnimatedFadeVisibility(
-                visible = !uiState.isMonthYearViewVisible
+    Column(
+        horizontalAlignment = Alignment.End
+    ) {
+        Box(modifier = modifier.onGloballyPositioned {
+            if (it.size.height == 0) return@onGloballyPositioned
+            height = it.size.height.toDp() - configuration.headerHeight// Update the height
+        })
+        {
+
+            // TODO add sliding effect when next or previous arrow is pressed
+            CalendarHeader(
+                title = "${uiState.currentVisibleMonth.name} ${uiState.selectedYear}",
+                isPreviousNextVisible = false,// !uiState?.isMonthYearViewVisible,
+                themeColor = configuration.selectedDateBackgroundColor,
+                configuration = configuration,
+            )
+            Box(
+                modifier = Modifier
+                    .padding(top = configuration.headerHeight)
+                    .height(height)
             ) {
-                DateView(
-                    currentVisibleMonth = uiState.currentVisibleMonth,
-                    selectedYear = uiState.selectedYear,
-                    selectedMonth = uiState.selectedMonth,
-                    selectedDayOfMonth = uiState.selectedDayOfMonth,
-                    selectionLimiter = selectionLimiter,
-                    height = height,
-                    onDaySelected = {
-                        viewModel.updateSelectedDayAndMonth(
-                               it
-                        )
-                        onDateSelected(
-                            uiState.selectedYear,
-                            uiState.selectedMonth.number,
-                            uiState.selectedDayOfMonth
-                        )
-                    },
-                    configuration = configuration,
-                    alreadyBookedList = alreadyBookedList,
-                    date = date
+                AnimatedFadeVisibility(
+                    visible = isShownDay// !uiState.isMonthYearViewVisible
+                ) {
+                    DateView(
+                        currentVisibleMonth = uiState.currentVisibleMonth,
+                        selectedYear = uiState.selectedYear,
+                        selectedMonth = uiState.selectedMonth,
+                        selectedDayOfMonth = uiState.selectedDayOfMonth,
+                        selectionLimiter = selectionLimiter,
+                        height = height,
+                        onDaySelected = {
+                            viewModel.updateSelectedDayAndMonth(
+                                it
+                            )
+                        },
+                        configuration = configuration,
+                        alreadyBookedList = alreadyBookedList,
+                        date = dateHolder
+                    )
+                }
+
+                AnimatedFadeVisibility(
+                    visible = !isShownDay // uiState.isMonthYearViewVisible
+                ) {
+
+                    MonthAndYearView(
+                        modifier = Modifier.align(Alignment.Center),
+                        selectedMonth = uiState.selectedMonthIndex,
+                        onMonthChange = {
+                            viewModel.updateSelectedMonthIndex(it)
+                        },
+                        selectedYear = uiState.selectedYearIndex,
+                        onYearChange = {
+                            viewModel.updateSelectedYearIndex(it)
+                        },
+                        years = uiState.years,
+                        months = Constant.getMonths(year).map { it.name } ,
+                        height = height,
+                        configuration = configuration,
+                        isYear = isYear,
+                    )
+                }
+            }
+        }
+
+        Row(
+            modifier=Modifier
+                .padding(horizontal = 19.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.End,
+
+
+        ) {
+
+
+            Button(onClick = {
+                dialogState.value=false
+            },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Red
+                )) {
+                Text(text = "الغاء")
+            }
+            CustomSizer(width = 10.dp)
+
+            Button(onClick = {
+                onDateSelected(
+                    if(isYear)uiState.selectedYear else 0,
+                    uiState.selectedMonthIndex,
+                    if(uiState.selectedDayOfMonth!=0)uiState.selectedDayOfMonth else 0
                 )
+            },
+            ) {
+                Text(text = "تم")
+            }
+        }
+
+
+    }
+   }
+
+@Composable
+private fun MonthAndYearView(
+    modifier: Modifier = Modifier,
+    selectedMonth: Int,
+    onMonthChange: (Int) -> Unit,
+    selectedYear: Int,
+    onYearChange: (Int) -> Unit,
+    years: List<String>,
+    months: List<String>,
+    height: Dp,
+    configuration: DatePickerConfiguration,
+    isYear: Boolean = false,
+) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier
+            .fillMaxSize(),
+    ) {
+        Box(
+            modifier = modifier
+                .padding(horizontal = medium)
+                .fillMaxWidth()
+                .height(configuration.selectedMonthYearAreaHeight)
+                .background(
+                    color = configuration.selectedMonthYearAreaColor,
+                    shape = configuration.selectedMonthYearAreaShape
+                )
+        )
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            when (isYear) {
+                true -> {
+                    SwipeLazyColumn(
+                        modifier = Modifier.weight(0.5f),
+                        selectedIndex = selectedYear,
+                        onSelectedIndexChange = onYearChange,
+                        items = years,
+                        height = height,
+                        configuration = configuration
+                    )
+                }
+
+
+                else -> {
+                    SwipeLazyColumn(
+                        modifier = Modifier.weight(0.5f),
+                        selectedIndex = selectedMonth,
+                        onSelectedIndexChange = onMonthChange,
+                        items = months,
+                        height = height,
+                        configuration = configuration
+                    )
+                }
             }
         }
     }
-    // Call onDateSelected when composition is completed
-    LaunchedEffect(key1 = Unit) {
-        onDateSelected(
-            uiState.selectedYear,
-            uiState.selectedMonth.number,
-            uiState.selectedDayOfMonth
-        )
+}
+
+@Composable
+private fun SwipeLazyColumn(
+    modifier: Modifier = Modifier,
+    selectedIndex: Int,
+    onSelectedIndexChange: (Int) -> Unit,
+    items: List<String>,
+    configuration: DatePickerConfiguration,
+    height: Dp,
+
+    ) {
+    val coroutineScope = rememberCoroutineScope()
+    var isAutoScrolling by remember { mutableStateOf(false) }
+    val listState = rememberLazyListState(selectedIndex)
+    com.example.hotel_mobile.CustomDatePicker.vsnappy1.component.SwipeLazyColumn(
+        modifier = modifier,
+        selectedIndex = selectedIndex,
+        onSelectedIndexChange = onSelectedIndexChange,
+        isAutoScrolling = isAutoScrolling,
+        height = height,
+        numberOfRowsDisplayed = configuration.numberOfMonthYearRowsDisplayed,
+        listState = listState,
+        onScrollingStopped = {}
+    ) {
+        // I add some empty rows at the beginning and end of list to make it feel that it is a center focused list
+        val count = items.size + configuration.numberOfMonthYearRowsDisplayed - 1
+        items(count) {
+            SliderItem(
+                value = it,
+                selectedIndex = selectedIndex,
+                items = items,
+                configuration = configuration,
+                height = height,
+                onItemClick = { index ->
+                    onSelectedIndexChange(index)
+                    coroutineScope.launch {
+                        isAutoScrolling = true
+                        onSelectedIndexChange(index)
+                        listState.animateScrollToItem(index)
+                        isAutoScrolling = false
+                    }
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun SliderItem(
+    value: Int,
+    selectedIndex: Int,
+    items: List<String>,
+    onItemClick: (Int) -> Unit,
+    configuration: DatePickerConfiguration,
+    height: Dp,
+) {
+    // this gap variable helps in maintaining list as center focused list
+    val gap = configuration.numberOfMonthYearRowsDisplayed / 2
+    val isSelected = value == selectedIndex + gap
+    val scale by animateFloatAsState(targetValue = if (isSelected) configuration.selectedMonthYearScaleFactor else 1f)
+    Box(
+        modifier = Modifier
+            .height(height / (configuration.numberOfMonthYearRowsDisplayed))
+    ) {
+        if (value >= gap && value < items.size + gap) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .noRippleClickable {
+                        onItemClick(value - gap)
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                configuration.selectedMonthYearTextStyle.fontSize
+                Box(
+                    modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = items[value - gap],
+                        modifier = Modifier
+                            //.align(alignment)
+                            .scale(scale),
+                        style = if (isSelected) configuration.selectedMonthYearTextStyle
+                        else configuration.monthYearTextStyle
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -219,17 +424,19 @@ private fun DateViewBodyItem(
     Box(
         contentAlignment = Alignment.Center
     ) {
-//
         val day = value - currentVisibleMonth.firstDayOfMonth.number + 2
 
-        val isSelected = day == selectedDayOfMonth  && selectedMonth == currentVisibleMonth
+        val isSelected = day == selectedDayOfMonth // && selectedMonth == currentVisibleMonth
 
+        val isInTheSameYearAndMonth = General.getCurrentYear() == date.year &&
+                General.getCurrentMonth() == date.month
 
-
-
-        val canSelectDate = General.getCurrentYear()<= date.year &&
-                General.getCurrentMonth()<=date.month &&
-                day > General.getCurrentStartDayAtMonth()-1
+        val canSelectDate = General.getCurrentYear() <= date.year &&
+                General.getCurrentMonth() <= date.month &&
+                (if (!isInTheSameYearAndMonth) day >= 0
+                else
+                    day > General.getCurrentStartDayAtMonth() - 1)
+                      //  )
 
         val isWithinRange = selectionLimiter.isWithinRange(
             DatePickerDate(
@@ -243,9 +450,10 @@ private fun DateViewBodyItem(
                 .padding(top = if (value < 7) 0.dp else topPaddingForItem) // I don't want first row to have any padding
                 .size(configuration.selectedDateBackgroundSize)
                 .clip(configuration.selectedDateBackgroundShape)
-                .noRippleClickable(enabled = isWithinRange) {
-                    if (!alreadyBookedList.containsKey(day)&&canSelectDate)
-                        onDaySelected(day)
+                .noRippleClickable (enabled =isWithinRange ) {
+
+                    if (!alreadyBookedList.containsKey(day) && canSelectDate){
+                        onDaySelected(day)}
                 }
                 .background(
                     if (isSelected) configuration.selectedDateBackgroundColor
@@ -259,22 +467,18 @@ private fun DateViewBodyItem(
                 textAlign = TextAlign.Center,
                 style =
                 if (isSelected) configuration.selectedDateTextStyle
-                    .copy(color =
-                    if (canSelectDate) configuration.selectedDateTextStyle.color
-                    else configuration.disabledDateColor
+                    .copy(
+                        color =
+                        if (canSelectDate) configuration.selectedDateTextStyle.color
+                        else configuration.disabledDateColor
                     )
-
                 else
                     configuration.dateTextStyle.copy(
-                    color =//if (isWithinRange) {
-//                        if (value % 7 == 0) configuration.sundayTextColor
-                         if (alreadyBookedList.containsKey(day)||isSelected) Color.White
-                        else if(!canSelectDate)Color.Gray.copy(0.80f)
+                        color =
+                        if (alreadyBookedList.containsKey(day) || isSelected) Color.White
+                        else if (!canSelectDate) Color.Gray.copy(0.80f)
                         else configuration.dateTextStyle.color
-                    //} else {
-                   //     configuration.disabledDateColor
-                   // }
-                ),
+                    ),
             )
         }
 
@@ -317,9 +521,6 @@ private fun getTopPaddingForItem(
 private fun CalendarHeader(
     modifier: Modifier = Modifier,
     title: String,
-    onNextClick: () -> Unit,
-    onPreviousClick: () -> Unit,
-    onMonthYearClick: () -> Unit,
     isPreviousNextVisible: Boolean,
     configuration: DatePickerConfiguration,
     themeColor: Color
