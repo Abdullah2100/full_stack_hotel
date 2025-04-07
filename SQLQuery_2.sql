@@ -888,27 +888,28 @@ FOR EACH ROW EXECUTE FUNCTION fn_room_delete_tr();
 ----
 CREATE TABLE Bookings (
     BookingID BIGSERIAL PRIMARY KEY,
-    RoomID UUID  NOT NULL REFERENCES Rooms (roomid),
+    RoomID UUID NOT NULL REFERENCES Rooms (roomid),
+    bookingStartYear Int Not Null Check(bookingStartYear >= YEAR(CURDATE())),
+    bookingStartMonth Int Not Null Check(bookingStartMonth >= MONTH(CURDATE())),
+    bookingStartDay Int Not Null Check(bookingStartDay >= Day(CURDATE())),
+    bookingEndYear Int Not Null Check(bookingStartYear >= YEAR(CURDATE())),
+    bookingEndMonth Int Not Null Check(bookingStartMonth >= MONTH(CURDATE())),
+    bookingEndDay Int Not Null Check(bookingStartDay >= Day(CURDATE())),
     Dayes INT NOT NULL,
     BookingStatus VARCHAR(50) CHECK (
         BookingStatus IN ('Pending', 'Confirmed', 'Cancelled')
     ) DEFAULT 'Pending',
     TotalPrice NUMERIC(10, 2),
-    FristPayment NUMERIC(10, 2) NOT NULL CHECK(
-        FristPayment=TotalPrice/3
-    ),
+    -- FristPayment NUMERIC(10, 2) NOT NULL CHECK(FristPayment = TotalPrice / 3),
     ServicePayment NUMERIC(10, 2) DEFAULT 0,
     MaintincePayment NUMERIC(10, 2) DEFAULT 0,
-    -- PaymentStatus VARCHAR(50) CHECK (PaymentStatus IN ('Paid', 'Unpaid', 'Partial')) DEFAULT 'Unpaid',
-    excpectedLeaveDate TIMESTAMP NOT NULL,
-    LeaveDate TIMESTAMP DEFAULT NULL,
-    belongTo  UUID NOT NULL ,
-    -- ExpectedBy BIGINT NOT NULL REFERENCES Employees (EmployeeID),
-    -- CreatedBy BIGINT NOT NULL REFERENCES Users (UserID),
-    -- DeletedBy BIGINT NULL REFERENCES Employees (EmployeeID),
+    PaymentStatus VARCHAR(50) CHECK (PaymentStatus IN ('Paid', 'Unpaid'
+    --, 'Partial'
+    )) DEFAULT 'Unpaid',
+    -- excpectedLeaveDate TIMESTAMP NOT NULL,
+    -- LeaveDate TIMESTAMP DEFAULT NULL,
+    userID UUID NOT NULL,
     CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    -- DeletedAt TIMESTAMP NULL,
-    -- ExcptedAt TIMESTAMP NULL,
 );
 ----
 ----
