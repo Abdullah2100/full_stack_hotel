@@ -42,15 +42,13 @@ internal object Constant {
 
     fun getMonths(): List<String> {
         val list = mutableListOf<String>()
-        for (i in 1..repeatCount) {
+        for (i in 1..13) {
             list.addAll(monthNames)
         }
         return list
     }
 
-    fun getMiddleOfMonth(): Int {
-        return 12 * (repeatCount / 2)
-    }
+
 
     fun getMonths(year: Int): List<Month> {
 
@@ -76,5 +74,5 @@ internal object Constant {
         return Days.get(calendar[Calendar.DAY_OF_WEEK])
     }
 
-    val years = List(200) { it + Calendar.getInstance()[Calendar.YEAR] - 100 }
+    val years = List(4) { it + Calendar.getInstance()[Calendar.YEAR] }
 }

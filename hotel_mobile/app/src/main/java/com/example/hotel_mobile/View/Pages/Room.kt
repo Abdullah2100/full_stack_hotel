@@ -1,8 +1,6 @@
 package com.example.hotel_mobile.View.Pages
 
 import android.util.Log
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -18,30 +16,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -57,16 +44,13 @@ import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.example.hotel_mobile.CustomDatePicker.vsnappy1.datepicker.DatePicker
 import com.example.hotel_mobile.Dto.RoomDto
+import com.example.hotel_mobile.Modle.BookingModel
 import com.example.hotel_mobile.Modle.enDropDownType
-import com.example.hotel_mobile.View.component.CustomDropDownShape
+import com.example.hotel_mobile.Util.General
 import com.example.hotel_mobile.View.component.CustomSizer
-import com.example.hotel_mobile.View.component.MonthDayWithBookingDialog
 import com.example.hotel_mobile.View.component.RoomStateShape
 import com.example.hotel_mobile.ViewModle.HomeViewModle
 import kotlinx.coroutines.delay
-import java.time.LocalDate
-import java.util.Calendar
-import kotlin.random.Random
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -76,9 +60,7 @@ fun RoomPage(
     homeViewModle: HomeViewModle
 ) {
 
-    val calendar = Calendar.getInstance()
 
-    val currentYear = calendar.get(Calendar.YEAR)
 
     val context = LocalContext.current;
     val images = roomData.images?.filter { result -> result.isThumnail == false }
@@ -90,17 +72,98 @@ fun RoomPage(
 
     val sheetState = rememberModalBottomSheetState()
     val showBottomSheet = remember { mutableStateOf(false) }
-    val isExpanded = remember { mutableStateOf(false) }
     val isOpenDialog = remember { mutableStateOf(false) }
 
+    val currentYear = General.getCurrentYear()
+    val currentMonth = General.getCurrentMonth()
+    val currentDay = General.getCurrentStartDayAtMonth()
+    val bookingData = remember { mutableStateOf(
+        BookingModel(
+            startYear = currentYear,
+            startMonth = currentMonth,
+            startDay = currentDay,
+            startTime = "",
+            endYear = currentYear,
+            endMonth = currentMonth,
+            endDay = currentDay,
+            endTime = ""
+        )
+    ) }
 
-    val bookingStartYear = remember { mutableStateOf(currentYear) }
-    val bookingStartMonth = remember { mutableStateOf(1) }
+    val dropDownType = remember { mutableStateOf(enDropDownType.YearStartBooking) }
 
-    var dropDownType = remember { mutableStateOf(enDropDownType.Year) }
 
-    val visableYears = (currentYear..currentYear + 4).toList()
-    val visableMonths = (1..12).toList()
+    fun handlTheSelectionDialog(day:Int,month:Int,year:Int){
+        when(dropDownType.value){
+            enDropDownType.YearStartBooking->{
+                bookingData.value.startYear=year
+            }
+            enDropDownType.MonthStartBooking->{
+                bookingData.value.startMonth = month
+            }
+            enDropDownType.DayStartBooking->{
+                bookingData.value.startDay= day
+            }
+            enDropDownType.YearEndBooking->{
+                bookingData.value.endYear=year
+            }
+            enDropDownType.MonthEndBooking->{
+                bookingData.value.endMonth = month
+            }
+            enDropDownType.DayEndBooking->{
+                bookingData.value.endDay= day
+            }
+        }
+    }
+
+    fun handlMonthForDialog(): Int {
+        when(dropDownType.value){
+            enDropDownType.YearStartBooking->{
+                return bookingData.value.startMonth
+            }
+            enDropDownType.MonthStartBooking->{
+                return bookingData.value.startMonth
+            }
+            enDropDownType.DayStartBooking->{
+                return bookingData.value.startMonth
+            }
+            enDropDownType.YearEndBooking->{
+                return bookingData.value.endMonth
+            }
+            enDropDownType.MonthEndBooking->{
+                return bookingData.value.endMonth
+            }
+            enDropDownType.DayEndBooking->{
+                return bookingData.value.endMonth
+            }
+        }
+    }
+
+
+    fun handlYearForDialog(): Int {
+        when(dropDownType.value){
+            enDropDownType.YearStartBooking->{
+                return bookingData.value.startYear
+            }
+            enDropDownType.MonthStartBooking->{
+                return bookingData.value.startYear
+            }
+            enDropDownType.DayStartBooking->{
+                return bookingData.value.startYear
+            }
+            enDropDownType.YearEndBooking->{
+                return bookingData.value.endYear
+            }
+            enDropDownType.MonthEndBooking->{
+                return bookingData.value.endYear
+            }
+            enDropDownType.DayEndBooking->{
+                return bookingData.value.endYear
+            }
+        }
+    }
+
+
 
 
     LaunchedEffect(timer.value) {
@@ -338,32 +401,47 @@ fun RoomPage(
                     horizontalAlignment = Alignment.End
                 ) {
                     Text(
-                        "معلومات الحجز",
+                        "معلومات بداية الحجز",
                         fontSize = 19.sp,
                         fontWeight = FontWeight.Bold
                     )
                     CustomSizer(height = 10.dp)
 
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .height(50.dp)
+                            .fillMaxWidth()
 
-                    CustomDropDownShape(
-                        listData = visableYears,
-                        selectedValue = bookingStartYear,
-                        title = "بداية سنة الحجز",
-                        dropDownType = enDropDownType.Year,
-                        selectedDropType = dropDownType
-                    )
+                            .border(
+                                1.dp,
+                                Color.Black.copy(0.16f), RoundedCornerShape(16.dp)
+                            )
+                            .clickable {
+                                dropDownType.value = enDropDownType.YearStartBooking
+                                isOpenDialog.value = true
+                            }
+                            .padding(horizontal = 15.dp)
+
+                        ,horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            bookingData.value.startYear.toString(),
+                            fontSize = 19.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            "بداية سنة الحجز",
+                            fontSize = 19.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+
+                    }
+
 
                     CustomSizer(height = 5.dp)
 
-                    CustomDropDownShape(
-                        listData = visableMonths,
-                        selectedValue = bookingStartMonth,
-                        title = "بداية شهر الحجز", dropDownType = enDropDownType.Month,
-                        selectedDropType = dropDownType
-                    )
-                    CustomSizer(height = 5.dp)
-
-                    Box(
+                    Row(
                         modifier = Modifier
                             .height(50.dp)
                             .fillMaxWidth()
@@ -372,15 +450,169 @@ fun RoomPage(
                                 Color.Black.copy(0.16f), RoundedCornerShape(16.dp)
                             )
                             .clickable {
+                                dropDownType.value = enDropDownType.MonthStartBooking
                                 isOpenDialog.value = true
-                            }, contentAlignment = Alignment.Center
+                            }
+                            .padding(horizontal = 15.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+
+
+                        ) {
+
+                        Text(
+                           General.convertMonthToName(
+                               bookingData.value.startMonth,
+                                       bookingData.value.startYear),
+                            fontSize = 19.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            "بداية شهر الحجز",
+                            fontSize = 19.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+
+              CustomSizer(height = 5.dp)
+
+                    Row(
+                        modifier = Modifier
+                            .height(50.dp)
+                            .fillMaxWidth()
+                            .border(
+                                1.dp,
+                                Color.Black.copy(0.16f), RoundedCornerShape(16.dp)
+                            )
+                            .clickable {
+                                dropDownType.value = enDropDownType.DayStartBooking
+                                isOpenDialog.value = true
+                            }
+                            .padding(horizontal = 15.dp)
+                        ,verticalAlignment = Alignment.CenterVertically,
+
+                        horizontalArrangement = Arrangement.SpaceBetween
+
                     ) {
+
+                        Text(
+                            bookingData.value.startDay.toString(),
+                            fontSize = 19.sp,
+                            fontWeight = FontWeight.Bold
+                        )
                         Text(
                             "بداية يوم الحجز",
                             fontSize = 19.sp,
                             fontWeight = FontWeight.Bold
                         )
                     }
+                    CustomSizer(height = 20.dp)
+
+                    Text(
+                        "معلومات نهاية الحجز",
+                        fontSize = 19.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    CustomSizer(height = 10.dp)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .height(50.dp)
+                            .fillMaxWidth()
+
+                            .border(
+                                1.dp,
+                                Color.Black.copy(0.16f), RoundedCornerShape(16.dp)
+                            )
+                            .clickable {
+                                dropDownType.value = enDropDownType.YearEndBooking
+                                isOpenDialog.value = true
+                            }
+                            .padding(horizontal = 15.dp)
+
+                        ,horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            bookingData.value.endYear.toString(),
+                            fontSize = 19.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            "نهاية سنة الحجز",
+                            fontSize = 19.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+
+                    }
+
+
+                    CustomSizer(height = 5.dp)
+
+                    Row(
+                        modifier = Modifier
+                            .height(50.dp)
+                            .fillMaxWidth()
+                            .border(
+                                1.dp,
+                                Color.Black.copy(0.16f), RoundedCornerShape(16.dp)
+                            )
+                            .clickable {
+                                dropDownType.value = enDropDownType.MonthEndBooking
+                                isOpenDialog.value = true
+                            }
+                            .padding(horizontal = 15.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+
+
+                        ) {
+
+                        Text(
+                            General.convertMonthToName(
+                                bookingData.value.endMonth,
+                                bookingData.value.endYear),
+                            fontSize = 19.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            "نهاية شهر الحجز",
+                            fontSize = 19.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                    CustomSizer(height = 5.dp)
+
+                    Row(
+                        modifier = Modifier
+                            .height(50.dp)
+                            .fillMaxWidth()
+                            .border(
+                                1.dp,
+                                Color.Black.copy(0.16f), RoundedCornerShape(16.dp)
+                            )
+                            .clickable {
+                                dropDownType.value = enDropDownType.DayEndBooking
+                                isOpenDialog.value = true
+                            }
+                            .padding(horizontal = 15.dp)
+                        ,verticalAlignment = Alignment.CenterVertically,
+
+                        horizontalArrangement = Arrangement.SpaceBetween
+
+                    ) {
+
+                        Text(
+                            bookingData.value.endDay.toString(),
+                            fontSize = 19.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            "بداية يوم الحجز",
+                            fontSize = 19.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+
                     if (isOpenDialog.value)
                         Dialog(onDismissRequest = {
                             isOpenDialog.value = false
@@ -395,11 +627,37 @@ fun RoomPage(
                             ) {
 
                                 DatePicker(
-                                    month = bookingStartMonth.value,
-                                    year = bookingStartYear.value,
+                                    dialogState=isOpenDialog,
+                                    isMonth = dropDownType.value== enDropDownType.MonthEndBooking ||dropDownType.value== enDropDownType.MonthStartBooking,
+                                    isYear = dropDownType.value== enDropDownType.YearStartBooking ||dropDownType.value== enDropDownType.YearEndBooking,
+                                    month =handlMonthForDialog(),
+                                    year = handlYearForDialog(),
                                     modifier = Modifier.padding(16.dp),
                                     onDateSelected = { year, month, day ->
-                                       // isOpenDialog.value=false
+
+                                        isOpenDialog.value=false
+                                        when(dropDownType.value){
+                                            enDropDownType.YearStartBooking->{
+                                                bookingData.value.startYear=year
+                                            }
+                                            enDropDownType.MonthStartBooking->{
+                                                bookingData.value.startMonth = month
+                                                Log.d("mothiisLength",month.toString())
+
+                                            }
+                                            enDropDownType.DayStartBooking->{
+                                                bookingData.value.startDay= day
+                                            }
+                                            enDropDownType.YearEndBooking->{
+                                                bookingData.value.endYear=year
+                                            }
+                                            enDropDownType.MonthEndBooking->{
+                                                bookingData.value.endMonth = month
+                                            }
+                                            enDropDownType.DayEndBooking->{
+                                                bookingData.value.endDay= day
+                                            }
+                                        }
                                     }
                                 )
                             }

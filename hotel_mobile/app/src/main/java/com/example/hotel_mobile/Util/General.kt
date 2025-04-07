@@ -2,6 +2,7 @@ package com.example.hotel_mobile.Util
 
 import android.R.string
 import androidx.compose.ui.graphics.Color
+import com.example.hotel_mobile.CustomDatePicker.vsnappy1.datepicker.data.Constant
 import com.example.hotel_mobile.Data.Room.AuthDao
 import com.example.hotel_mobile.Data.Room.AuthModleEntity
 import com.example.hotel_mobile.Dto.AuthResultDto
@@ -20,17 +21,18 @@ import java.util.Date
 object General {
 
     fun getCalener(): Calendar {
-        return  Calendar.getInstance();
-    }
-    fun getCurrentYear():Int{
-       return getCalener().get(Calendar.YEAR)
+        return Calendar.getInstance();
     }
 
-    fun getCurrentMonth():Int{
+    fun getCurrentYear(): Int {
+        return getCalener().get(Calendar.YEAR)
+    }
+
+    fun getCurrentMonth(): Int {
         return getCalener().get(Calendar.MONTH)
     }
 
-    fun getCurrentStartDayAtMonth():Int{
+    fun getCurrentStartDayAtMonth(): Int {
         return getCalener().get(Calendar.DAY_OF_MONTH)
     }
 
@@ -58,6 +60,7 @@ object General {
 
         return date
     }
+
     fun Long.toLocalDate(): LocalDate {
         return Instant.ofEpochMilli(this)
             .atZone(ZoneId.systemDefault())
@@ -84,13 +87,14 @@ object General {
             }
         }
     }
-     fun convertRoomStateToText(status: Int): String {
+
+    fun convertRoomStateToText(status: Int): String {
         return when (status) {
             0 -> {
                 "متاح"
             }
 
-            1-> {
+            1 -> {
                 "محظور"
             }
 
@@ -104,7 +108,7 @@ object General {
                 Color.Green
             }
 
-            1-> {
+            1 -> {
                 Color.Red
             }
 
@@ -112,9 +116,12 @@ object General {
         }
     }
 
+    fun convertMonthToName(monthNumber: Int,year:Int): String {
+        return Constant.getMonths(year)[monthNumber].name
+    }
 
     fun convertDayToNumber(day: String): Int {
-        return when(day.lowercase()) {
+        return when (day.lowercase()) {
             "monday" -> 1
             "tuesday" -> 2
             "wednesday" -> 3

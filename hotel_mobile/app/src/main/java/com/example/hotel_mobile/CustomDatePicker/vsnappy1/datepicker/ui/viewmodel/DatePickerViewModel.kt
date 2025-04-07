@@ -20,10 +20,17 @@ internal class DatePickerViewModel : ViewModel() {
     val uiState: LiveData<DatePickerUiState> = _uiState
     private lateinit var availableMonths: List<Month>
 
+    private var _availableMonths: MutableLiveData<List<Month>> = MutableLiveData(emptyList())
 
-    init {
-        uiState.value?.let {
-            availableMonths = Constant.getMonths(it.selectedYear)
+
+    override fun onCleared() {
+        updateSelectedDayAndMonth(0)
+        super.onCleared()
+    }
+
+    private fun updateVisibleMonth(months: List<Month>) {
+        _availableMonths.value?.apply {
+            _availableMonths.value = months
         }
     }
 
@@ -31,21 +38,25 @@ internal class DatePickerViewModel : ViewModel() {
         _uiState.value?.apply {
             _uiState.value = this.copy(
                 currentVisibleMonth = availableMonths[month],
-                selectedMonthIndex = getAdjustedSelectedMonthIndex(month)
+//                selectedMonthIndex = getAdjustedSelectedMonthIndex(month)
+                selectedMonthIndex = month
             )
         }
     }
 
     fun updateSelectedMonthIndex(index: Int) {
+        Log.d("selectedMonthIs", "${index}")
+
         _uiState.value?.apply {
             _uiState.value = this.copy(
                 selectedMonthIndex = index,
-                currentVisibleMonth = availableMonths[index % 12]
+                currentVisibleMonth = _availableMonths.value!![index % 12]
             )
         }
     }
 
     fun updateSelectedDayAndMonth(day: Int) {
+
         _uiState.value = _uiState.value?.let {
             _uiState.value?.copy(
                 selectedDayOfMonth = day,
@@ -54,55 +65,7 @@ internal class DatePickerViewModel : ViewModel() {
         }
     }
 
-    fun moveToNextMonth(currentYear:Int=General.getCurrentYear(),currentMonth:Int=1) {
-        _uiState.value?.apply {
-           /* if((currentVisibleMonth.number>=1&&currentVisibleMonth.number>=12))
-            if (currentVisibleMonth.number == 11) { // if it is December
-                val nextYearIndex = selectedYearIndex + 1
-                if (nextYearIndex == years.size) return
-                val nextYear = years[nextYearIndex].toInt()
-                availableMonths = Constant.getMonths(nextYear)
-                _uiState.value = _uiState.value?.copy(
-                    selectedYear = nextYear,
-                    selectedYearIndex = nextYearIndex,
-                    selectedMonthIndex = getAdjustedSelectedMonthIndex(selectedMonthIndex + 1),
-                    currentVisibleMonth = availableMonths[0]
-                )
-            } else
-            */
-            if(currentVisibleMonth.number+1!=13){
-                _uiState.value = _uiState.value?.copy(
-                    currentVisibleMonth = availableMonths[currentVisibleMonth.number + 1],
-                    selectedMonthIndex = getAdjustedSelectedMonthIndex(selectedMonthIndex + 1),
-                )
-            }
-        }
-    }
 
-    fun moveToPreviousMonth() {
-        _uiState.value?.apply {
-           /* if (currentVisibleMonth.number == 0) { // if it is January
-                val previousYearIndex = selectedYearIndex - 1
-                if (previousYearIndex == -1) return
-                val previousYear = years[previousYearIndex].toInt()
-                availableMonths = Constant.getMonths(previousYear)
-                _uiState.value = _uiState.value?.copy(
-                    selectedYear = previousYear,
-                    selectedYearIndex = previousYearIndex,
-                    selectedMonthIndex = getAdjustedSelectedMonthIndex(selectedMonthIndex - 1),
-                    currentVisibleMonth = availableMonths[11]
-                )
-            } else*/
-            if(currentVisibleMonth.number!=0){
-                _uiState.value = _uiState.value?.copy(
-                    currentVisibleMonth = availableMonths[currentVisibleMonth.number - 1],
-                    selectedMonthIndex = getAdjustedSelectedMonthIndex(selectedMonthIndex - 1),
-                )
-            }
-        }
-    }
-
-    private fun getAdjustedSelectedMonthIndex(index: Int) = Constant.getMiddleOfMonth() + index % 12
 
     fun updateSelectedYearIndex(index: Int) {
         availableMonths = Constant.getMonths(Constant.years[index])
@@ -113,27 +76,6 @@ internal class DatePickerViewModel : ViewModel() {
         )
     }
 
-    fun toggleIsMonthYearViewVisible() {
-        if (_uiState.value?.isMonthYearViewVisible == true) {
-            viewModelScope.launch {
-                delay(250)
-                _uiState.value = _uiState.value?.let {
-                    it.copy(
-                        selectedMonthIndex = getAdjustedSelectedMonthIndex(it.selectedMonthIndex)
-                    )
-                }
-            }
-        }
-        _uiState.value = _uiState.value?.let {
-            it.copy(
-                isMonthYearViewVisible = !it.isMonthYearViewVisible,
-            )
-        }
-    }
-
-    fun updateUiState(uiState: DatePickerUiState) {
-        _uiState.value = uiState
-    }
 
     fun setDate(
         date: DatePickerDate,
@@ -153,9 +95,8 @@ internal class DatePickerViewModel : ViewModel() {
         calendar[Calendar.MONTH] = date.month
 
         val maxDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
-        if(date.day==0)
-            return
-        if (date.day < 1) {
+        if (date.day == 0) {
+        } else if (date.day < 1) {
             throw IllegalArgumentException("Invalid day: ${date.day}, The day value must be greater than zero.")
         }
         if (date.day > maxDays) {
@@ -166,5 +107,8 @@ internal class DatePickerViewModel : ViewModel() {
         updateSelectedYearIndex(index)
         updateCurrentVisibleMonth(date.month)
         updateSelectedDayAndMonth(date.day)
+        val months = Constant.getMonths(date.year)
+        updateVisibleMonth(months)
+
     }
 }

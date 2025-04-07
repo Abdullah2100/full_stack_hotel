@@ -1,6 +1,10 @@
 package com.example.hotel_mobile.Modle
 
 enum class enDropDownType {
-    Year,
-    Month
+    YearStartBooking,
+    MonthStartBooking,
+    DayStartBooking,
+    YearEndBooking,
+    MonthEndBooking,
+    DayEndBooking,
 }

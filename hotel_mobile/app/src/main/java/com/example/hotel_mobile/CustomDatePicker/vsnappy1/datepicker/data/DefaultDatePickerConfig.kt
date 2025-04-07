@@ -65,7 +65,7 @@ class DefaultDatePickerConfig private constructor() {
             fontWeight = FontWeight.W600,
             color = black.copy(alpha = 1f)
         )
-        const val numberOfMonthYearRowsDisplayed: Int = 7
+        const val numberOfMonthYearRowsDisplayed: Int =5
         const val selectedMonthYearScaleFactor: Float = 1.2f
         val selectedMonthYearAreaHeight: Dp = 35.dp
         val selectedMonthYearAreaColor: Color = grayLight.copy(alpha = 0.2f)
