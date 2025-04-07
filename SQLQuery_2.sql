@@ -886,30 +886,27 @@ FOR EACH ROW EXECUTE FUNCTION fn_room_delete_tr();
 
 ----
 ----
+
 CREATE TABLE Bookings (
-    BookingID BIGSERIAL PRIMARY KEY,
-    RoomID UUID NOT NULL REFERENCES Rooms (roomid),
-    bookingStartYear Int Not Null Check(bookingStartYear >= YEAR(CURDATE())),
-    bookingStartMonth Int Not Null Check(bookingStartMonth >= MONTH(CURDATE())),
-    bookingStartDay Int Not Null Check(bookingStartDay >= Day(CURDATE())),
-    bookingEndYear Int Not Null Check(bookingStartYear >= YEAR(CURDATE())),
-    bookingEndMonth Int Not Null Check(bookingStartMonth >= MONTH(CURDATE())),
-    bookingEndDay Int Not Null Check(bookingStartDay >= Day(CURDATE())),
-    Dayes INT NOT NULL,
-    BookingStatus VARCHAR(50) CHECK (
-        BookingStatus IN ('Pending', 'Confirmed', 'Cancelled')
+    bookingID BIGSERIAL PRIMARY KEY,
+    roomID UUID NOT NULL REFERENCES Rooms(roomid),
+    booking_start TIMESTAMP NOT NULL  CHECK (booking_start >= CURRENT_TIMESTAMP) ,
+    booking_end TIMESTAMP NOT NULL  CHECK (booking_end > booking_start)  ,
+    duration INTERVAL GENERATED ALWAYS AS (booking_end - booking_start) STORED,
+    bookingStatus VARCHAR(50) CHECK (
+        bookingStatus IN ('Pending', 'Confirmed', 'Cancelled')
     ) DEFAULT 'Pending',
-    TotalPrice NUMERIC(10, 2),
-    -- FristPayment NUMERIC(10, 2) NOT NULL CHECK(FristPayment = TotalPrice / 3),
-    ServicePayment NUMERIC(10, 2) DEFAULT 0,
-    MaintincePayment NUMERIC(10, 2) DEFAULT 0,
-    PaymentStatus VARCHAR(50) CHECK (PaymentStatus IN ('Paid', 'Unpaid'
-    --, 'Partial'
-    )) DEFAULT 'Unpaid',
-    -- excpectedLeaveDate TIMESTAMP NOT NULL,
-    -- LeaveDate TIMESTAMP DEFAULT NULL,
-    userID UUID NOT NULL,
-    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    totalPrice NUMERIC(10, 2) CHECK (totalPrice > 0),
+    servicePayment NUMERIC(10, 2) DEFAULT 0 CHECK (servicePayment >= 0),
+    maintenancePayment NUMERIC(10, 2) DEFAULT 0 CHECK (maintenancePayment >= 0),
+    paymentStatus VARCHAR(50) CHECK (
+        paymentStatus IN ('Paid', 'Unpaid')
+    ) DEFAULT 'Unpaid',
+    userID UUID NOT NULL REFERENCES users(userid),
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    cancelledAt TIMESTAMP,
+    cancellationReason TEXT,
+    actualCheckOut TIMESTAMP
 );
 ----
 ----
