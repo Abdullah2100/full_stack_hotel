@@ -1,4 +1,5 @@
 using hotel_api_.RequestDto;
+using hotel_api_.RequestDto.Booking;
 using hotel_api.Services;
 using hotel_api.util;
 using hotel_business;
@@ -136,17 +137,79 @@ public class UserController : Controller
     }
 
 
-    // [Authorize]
-    // [HttpGet("{page:int}")]
-    // [ProducesResponseType(StatusCodes.Status200OK)]
-    // [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    // [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    // public IActionResult getUserByPage(int page)
-    // {
-    //     var users = UserBuissnes.getAllUsers(page);
-    //     if (users != null)
-    //         return Ok(users);
-    //     return StatusCode(500, "Something went wrong");
-    // }
+    [Authorize]
+        [HttpDelete("booking")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> createBooking
+        ([FromBody] BookingRequestDto bookingData
+        )
+        {
+            var authorizationHeader = HttpContext.Request.Headers["Authorization"];
+            var id = AuthinticationServices.GetPayloadFromToken("id",
+                authorizationHeader.ToString().Replace("Bearer ", ""));
+            Guid? userID = null;
+            if (Guid.TryParse(id.Value.ToString(), out Guid outID))
+            {
+                userID = outID;
+            }
+
+            if (userID == null)
+            {
+                return StatusCode(401, "you not have Permission");
+            }
+
+            var isHasPermissionToCurd = AdminBuissnes.isAdminExist(userID ?? Guid.Empty);
+
+
+            if (!isHasPermissionToCurd)
+            {
+                return StatusCode(401, "you not have Permission");
+            }
+
+
+            var isVisibleBooking = BookingBuiseness.isVisibleBooking(bookingData.bookingStart, bookingData.bookingEnd);
+            if (!isVisibleBooking)
+                return BadRequest("not visible booking");
+
+            double? bookingDayes = (bookingData.bookingStart - bookingData.bookingEnd).TotalDays;
+
+            if (bookingDayes == null)
+            {
+                return BadRequest("not valide booking");
+ 
+            }
+            
+            var  room = RoomBuisness.getRoom(bookingData.roomId);
+
+            var totalPriceHolder = (Convert.ToDecimal(bookingDayes) * room.pricePerNight);
+            var bookingDataHolder = new BookingDto(
+                bookingId:null,
+                roomId:bookingData.roomId,
+                userId:(Guid)userID,
+                bookingStart:bookingData.bookingStart,
+                bookingEnd:bookingData.bookingEnd,
+                bookingStatus:null,
+                totalPrice: totalPriceHolder,
+                servicePayment:null,
+                maintenancePayment:null,
+                paymentStatus:null,
+                createdAt: DateTime.Now,
+                cancelledAt: null,
+                cancellationReason:null,
+                actualCheckOut: null
+            );
+            var bookingHolder = new BookingBuiseness(bookingDataHolder);
+
+            var result = bookingHolder.save();
+
+            if (result == false)
+                return StatusCode(500, "some thing wrong");
+            return StatusCode(200, new { message = "booking created seccessfully" });
+        }
+
+ 
     
 }
