@@ -884,7 +884,7 @@ namespace hotel_api.controller
 
 
         [Authorize]
-        [HttpDelete("room")]
+        [HttpDelete("booking")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -896,18 +896,18 @@ namespace hotel_api.controller
             var authorizationHeader = HttpContext.Request.Headers["Authorization"];
             var id = AuthinticationServices.GetPayloadFromToken("id",
                 authorizationHeader.ToString().Replace("Bearer ", ""));
-            Guid? adminid = null;
+            Guid? adminId = null;
             if (Guid.TryParse(id.Value.ToString(), out Guid outID))
             {
-                adminid = outID;
+                adminId = outID;
             }
 
-            if (adminid == null)
+            if (adminId == null)
             {
                 return StatusCode(401, "you not have Permission");
             }
 
-            var isHasPermissionToCurd = AdminBuissnes.isAdminExist(adminid ?? Guid.Empty);
+            var isHasPermissionToCurd = AdminBuissnes.isAdminExist(adminId ?? Guid.Empty);
 
 
             if (!isHasPermissionToCurd)
@@ -916,24 +916,35 @@ namespace hotel_api.controller
             }
 
 
-            var isThereAnyConfirmBookingByRoomID = BookingBuiseness.getBookingConfirmByRoomID(bookingData.roomid);
+            var isVisibleBooking = BookingBuiseness.isVisibleBooking(bookingData.bookingStart, bookingData.bookingEnd);
+            if (!isVisibleBooking)
+                return BadRequest("not visible booking");
 
-            if (isThereAnyConfirmBookingByRoomID == true)
-                return StatusCode(400, "room already is confirming booking");
+            double? bookingDayes = (bookingData.bookingStart - bookingData.bookingEnd).TotalDays;
 
+            if (bookingDayes == null)
+            {
+                return BadRequest("not valide booking");
+            }
+            
+            var  room = RoomBuisness.getRoom(bookingData.roomId);
+
+            var totalPriceHolder = (Convert.ToDecimal(bookingDayes) * room.pricePerNight);
             var bookingDataHolder = new BookingDto(
-                id: null,
-                roomid: bookingData.roomid,
-                userId: adminid.Value,
-                days: bookingData.days,
-                bookingStatus: BookingDto.convertBookingStatus(bookingData.enBookingStatus),
-                totalPrice: bookingData.totalPrice,
-                firstPaymen: bookingData.firstPaymen,
-                servicePayemen: 0,
-                maintainPayment: 0,
-                excpectedleavedAt: bookingData.excpectedleavedAt,
-                leavedAt: null,
-                createdAt: DateTime.Now
+                bookingId:null,
+                roomId:bookingData.roomId,
+                userId:(Guid)adminId,
+                bookingStart:bookingData.bookingStart,
+                bookingEnd:bookingData.bookingEnd,
+                bookingStatus:null,
+                totalPrice: totalPriceHolder,
+                servicePayment:null,
+                maintenancePayment:null,
+                paymentStatus:null,
+                createdAt: DateTime.Now,
+                cancelledAt: null,
+                cancellationReason:null,
+                actualCheckOut: null
             );
             var bookingHolder = new BookingBuiseness(bookingDataHolder);
 
@@ -941,9 +952,10 @@ namespace hotel_api.controller
 
             if (result == false)
                 return StatusCode(500, "some thing wrong");
-            return StatusCode(200, new { message = "deleted seccessfully" });
+            return StatusCode(200, new { message = "booking created seccessfully" });
         }
 
+ 
         private void saveImage(
             string? imagePath,
             Guid? id

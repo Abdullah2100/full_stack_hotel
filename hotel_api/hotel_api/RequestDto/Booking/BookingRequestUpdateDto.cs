@@ -5,19 +5,13 @@ namespace hotel_api_.RequestDto.Booking;
 
 public class BookingRequestUpdateDto
 {
-    public string enBookingStatus { get; set; }
-    [Required] public Guid? ID { get; set; }
-
-    [Required] public Guid roomid { get; set; }
-    //[Required] public Guid userID { get; set; }
-
-    public int? days { get; set; }
-
-    public BookingDto.enBookingStatus? bookingStatus { get; set; }
-
-    public decimal? servicePayemen { get; set; }
-
-    public decimal? maintainPayment { get; set; }
-
-    public DateTime? leavedAt { get; set; }
+    [Required]  public Guid? bookingId { get; set; }
+    [Required]  public Guid roomId { get; set; }
+    [Required] public Guid userId { get; set; }
+    public DateTime? bookingStart { get; set; }
+    public DateTime? bookingEnd { get; set; }
+    [Required] public string bookingStatus { get; set; }
+    [Required] public DateTime? createdAt { get; set; }
+    public DateTime? cancelledAt { get; set; }
+    public string? cancellationReason { get; set; }
 }

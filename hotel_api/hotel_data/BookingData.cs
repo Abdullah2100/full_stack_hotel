@@ -30,20 +30,6 @@ public class BookingData
 
                     using (var cmd = new NpgsqlCommand(query, con))
                     {
-                      
-                            cmd.Parameters.AddWithValue("@RoomID_",bookingData.roomid);
-                            cmd.Parameters.AddWithValue("@Dayes_",bookingData.days);
-                            cmd.Parameters.AddWithValue("@Dayes_",bookingData.days);
-                            cmd.Parameters.AddWithValue("@BookingStatus_",BookingDto.convertBookingStatus(bookingData.bookingStatus));
-                            cmd.Parameters.AddWithValue("@TotalPrice_",bookingData.totalPrice);
-                            cmd.Parameters.AddWithValue("@FristPayment_",bookingData.firstPaymen);
-                            cmd.Parameters.AddWithValue("@ServicePayment_",bookingData.servicePayemen>0?bookingData.servicePayemen:0);
-                            cmd.Parameters.AddWithValue("@MaintincePayment_",bookingData.maintainPayment>0?bookingData.maintainPayment:0);
-                            cmd.Parameters.AddWithValue("@MaintincePayment_",bookingData.excpectedleavedAt);
-                            cmd.Parameters.AddWithValue("@userid_",bookingData.userID);
-                            
-
-
                         var result = cmd.ExecuteScalar();
 
                         if (result != null && bool.TryParse(result?.ToString(), out bool isCreatedOutpu))
@@ -60,87 +46,41 @@ public class BookingData
 
             return isCreated;
         }
-        
-/*
-        public static bool updateUser(UserDto userData)
+       
+       
+        public static bool createBooking(DateTime startBookingDate, DateTime endBookingDate)
         {
-            bool isCreated = false;
+            bool isVisibleBooking = false;
             try
             {
                 using (var con = new NpgsqlConnection(connectionUr))
                 {
                     con.Open();
-                    string query = @"SELECT * FROM fn_user_update ( 
-                                  @userId_u , 
-                                  @name::VARCHAR, 
-                                  @phone::VARCHAR ,
-                                  @address::TEXT, 
-                                  @username::VARCHAR, 
-                                  @password::TEXT, 
-                                  @IsVIP::BOOLEAN, 
-                                   @personid_u,
-                                   @brithday_u::DATE
-                                 
-                                    ) ";
+                    string query = @"SELECT * FROM fn_isValid_booking(
+                                   startBookingDate::TIMESTAMP,
+                                  endBookingDate::TIMESTAMP 
+                                    ); ";
+
                     using (var cmd = new NpgsqlCommand(query, con))
                     {
-                        cmd.Parameters.AddWithValue("@userId_u", userData.userId);
-                        cmd.Parameters.AddWithValue("@name", userData.personData.name);
-                        cmd.Parameters.AddWithValue("@phone", userData.personData.phone);
-                        cmd.Parameters.AddWithValue("@address", userData.personData.address);
-                        cmd.Parameters.AddWithValue("@username", userData.userName);
-                        cmd.Parameters.AddWithValue("@password", userData.password);
-                        cmd.Parameters.AddWithValue("@IsVIP", userData.isVip);
-                        cmd.Parameters.AddWithValue("@personid_u", userData.personData.personID);
-                        cmd.Parameters.AddWithValue("@brithday_u", userData.brithDay);
-                      
+
                         var result = cmd.ExecuteScalar();
-                        if (result != null && int.TryParse(result?.ToString(), out int userId))
+
+                        if (result != null && bool.TryParse(result?.ToString(), out bool isVisibleBookingResult))
                         {
-                            isCreated = userId > 0;
+                            isVisibleBooking = isVisibleBookingResult;
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("this from create user error {0}", ex);
+                Console.WriteLine("this from check if the booking is visible error {0}", ex);
             }
 
-            return isCreated;
+            return isVisibleBooking;
         }
- */
 
-       public static bool getBookingConfirmByRoomID(Guid roomID)
-        {
-            bool isExist = false;
-            try
-            {
-                using (var con = new NpgsqlConnection(connectionUr))
-                {
-                    con.Open();
-                    string query = @"SELECT isExist =COUNT(*)>0 FROM Bookings WHERE RoomID = @roomid AND BookingStatus='Confirmed'";
+    
 
-                    using (var cmd = new NpgsqlCommand(query, con))
-                    {
-
-                        cmd.Parameters.AddWithValue("@roomid", roomID);
-                        
-                        var result = cmd.ExecuteScalar();
-
-                        if (result != null && bool.TryParse(result?.ToString(), out bool isCreatedOutpu))
-                        {
-                            isExist = isCreatedOutpu;
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("this from create user error {0}", ex);
-            }
-
-            return isExist;
-        }
-  
 }

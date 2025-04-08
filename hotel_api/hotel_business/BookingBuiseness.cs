@@ -5,76 +5,83 @@ namespace hotel_business;
 
 public class BookingBuiseness
 {
-   
     enMode mode = enMode.add;
- 
     public Guid? ID { get; set; }
-    public Guid roomid { get; set; }
-    public Guid userID { get; set; }
-    public int days { get; set; }
-    public BookingDto.enBookingStatus bookingStatus { get; set; }
+    public Guid roomId { get; set; }
+    public Guid userId { get; set; }
+    public DateTime bookingStart { get; set; }
+    public DateTime bookingEnd { get; set; }
+    public string bookingStatus { get; set; }
     public decimal totalPrice { get; set; }
-    public decimal firstPaymen { get; set; }
-    public decimal servicePayemen { get; set; }
-    public decimal maintainPayment { get; set; }
-    public DateTime excpectedleavedAt { get; set; }
-    public DateTime? leavedAt { get; set; }
-    public DateTime? createdAt { get; set; }=DateTime.Now;
-    
-    public BookingDto booking { get
+    public decimal? servicePayment { get; set; }
+    public decimal? maintenancePayment { get; set; }
+    public string? paymentStatus { get; set; }
+    public DateTime? createdAt { get; set; }
+    public DateTime? cancelledAt { get; set; }
+    public string? cancellationReason { get; set; }
+    public DateTime? actualCheckOut { get; set; }
+
+    public BookingDto booking
     {
-        return new BookingDto(
-            id: this.ID,
-            roomid: this.roomid,
-            userId: this.userID,
-            days: this.days,
-            bookingStatus: this.bookingStatus,
-            totalPrice: this.totalPrice,
-            firstPaymen: this.firstPaymen,
-            servicePayemen: this.servicePayemen,
-            maintainPayment: this.maintainPayment,
-            excpectedleavedAt: this.excpectedleavedAt,
-            leavedAt: this.leavedAt,
-            createdAt: this.createdAt
-        );
-    }}
-    
-    
+        get
+        {
+            return new BookingDto(
+                bookingId: this.ID,
+                roomId: this.roomId,
+                userId: this.userId,
+                bookingStart: this.bookingStart,
+                bookingEnd: this.bookingEnd,
+                bookingStatus: this.bookingStatus,
+                totalPrice: this.totalPrice,
+                servicePayment: this.servicePayment,
+                maintenancePayment: this.maintenancePayment,
+                paymentStatus: this.paymentStatus,
+                createdAt: this.createdAt,
+                cancelledAt: this.cancelledAt,
+                cancellationReason: this.cancellationReason,
+                actualCheckOut: this.actualCheckOut);
+        }
+    }
+
+
     public BookingBuiseness(
-        BookingDto booking
+        BookingDto booking,
+        enMode mode = enMode.add
     )
     {
-        ID = booking.ID;
-        this.roomid = booking.roomid;
-        userID = booking.userID;
-        this.days = booking.days;
+        this.ID = booking.bookingId;
+        this.roomId = booking.roomId;
+        this.userId = booking.userId;
+        this.bookingStart = booking.bookingStart;
+        this.bookingEnd = booking.bookingEnd;
         this.bookingStatus = booking.bookingStatus;
         this.totalPrice = booking.totalPrice;
-        this.firstPaymen = booking.firstPaymen;
-        this.servicePayemen = booking.servicePayemen;
-        this.maintainPayment = booking.maintainPayment;
-        this.excpectedleavedAt = booking.excpectedleavedAt;
-        this.leavedAt = booking.leavedAt;
-        this.createdAt = booking.createdAt;
+        this.servicePayment = booking.servicePayment;
+        this.maintenancePayment = booking.maintenancePayment;
+        this.paymentStatus = booking.paymentStatus;
+        this.createdAt = booking.createdAt ?? DateTime.Now;
+        this.cancelledAt = booking.cancelledAt ?? null;
+        this.cancellationReason = booking.cancellationReason ?? null;
+        this.actualCheckOut = booking.actualCheckOut ?? null;
     }
 
     private bool _createBooking()
     {
         return BookingData.createBooking(this.booking);
     }
-
+    
+    
     public bool save()
     {
         switch (mode)
         {
             case enMode.add: return _createBooking();
             default: return false;
-        } 
+        }
     }
 
-    public static bool getBookingConfirmByRoomID(Guid roomId)
+    public static bool isVisibleBooking(DateTime startBookingDate, DateTime endBookingDate)
     {
-        return BookingData.getBookingConfirmByRoomID(roomId);
+        return BookingData.createBooking(startBookingDate: startBookingDate, endBookingDate: endBookingDate);
     }
- 
 }

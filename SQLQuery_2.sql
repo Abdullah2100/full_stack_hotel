@@ -890,6 +890,7 @@ FOR EACH ROW EXECUTE FUNCTION fn_room_delete_tr();
 CREATE TABLE Bookings (
     bookingID BIGSERIAL PRIMARY KEY,
     roomID UUID NOT NULL REFERENCES Rooms(roomid),
+    userID UUID NOT NULL REFERENCES users(userid),
     booking_start TIMESTAMP NOT NULL  CHECK (booking_start >= CURRENT_TIMESTAMP) ,
     booking_end TIMESTAMP NOT NULL  CHECK (booking_end > booking_start)  ,
     duration INTERVAL GENERATED ALWAYS AS (booking_end - booking_start) STORED,
@@ -902,13 +903,45 @@ CREATE TABLE Bookings (
     paymentStatus VARCHAR(50) CHECK (
         paymentStatus IN ('Paid', 'Unpaid')
     ) DEFAULT 'Unpaid',
-    userID UUID NOT NULL REFERENCES users(userid),
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     cancelledAt TIMESTAMP,
-    cancellationReason TEXT,
+    cancellationReason TEXT DEFAULT NULL,
     actualCheckOut TIMESTAMP
 );
 ----
+---
+
+CREATE OR REPLACE FUNCTION fn_isValid_booking(startBooking TIMESTAMP,endBooking TIMESTAMP)
+RETURNS BOOLEAN AS $$
+DECLARE
+isValid BOOLEAN := FALSE;
+BEGIN
+ IF startBooking IS NULL OR endBooking IS NULL THEN
+RAISE EXCEPTION 'Start and end booking dates cannot be NULL';
+RETURN FALSE;
+END IF;
+
+IF startBooking >= endBooking THEN
+RAISE EXCEPTION 'Start booking date must be before end booking date';
+RETURN FALSE;
+END IF;
+
+SELECT COUNT(*) > 0 INTO isValid 
+FROM bookings b
+WHERE (startBooking, endBooking) OVERLAPS (b.booking_start, b.booking_end)  ;
+RETURN isValid;
+EXCEPTION
+WHEN OTHERS THEN RAISE EXCEPTION 'Something went wrong: %',
+SQLERRM;
+RETURN FALSE;
+END;
+$$ LANGUAGE plpgsql;
+---
+---
+
+
+
+---
 ----
 CREATE OR REPLACE FUNCTION fn_bookin_insert(
     RoomID_ UUID  ,
