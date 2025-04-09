@@ -1,5 +1,6 @@
 package com.example.hotel_mobile.Data.Repository
 
+import android.util.Log
 import com.example.hotel_mobile.Dto.LoginDto
 import com.example.hotel_mobile.Dto.SingUpDto
 import com.example.hotel_mobile.Modle.NetworkCallHandler
@@ -23,14 +24,6 @@ class AuthRepository @Inject constructor(private val httpClient: HttpClient) {
     suspend fun loginUser(loginData: LoginDto): NetworkCallHandler {
         return try {
             val result = httpClient
-//                .use {
-//                    client ->
-//                    client
-//                    .post("${General.BASED_URL}/user/signIn") {
-//                        setBody(loginData)
-//                        contentType(ContentType.Application.Json)
-//                    }
-//                }
                     .post("${General.BASED_URL}/user/signIn") {
                         setBody(loginData)
                         contentType(ContentType.Application.Json)
@@ -78,6 +71,7 @@ class AuthRepository @Inject constructor(private val httpClient: HttpClient) {
                 }
 
             if (result.status == HttpStatusCode.Created) {
+
                 NetworkCallHandler.Successful(result.body<String>())
             } else {
 
@@ -98,9 +92,7 @@ class AuthRepository @Inject constructor(private val httpClient: HttpClient) {
 
             return NetworkCallHandler.Error(e.message)
         }
-//        finally {
-//            httpClient.close()
-//        }
+
     }
 
 }

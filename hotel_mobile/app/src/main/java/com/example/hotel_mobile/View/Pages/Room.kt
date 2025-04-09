@@ -40,12 +40,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.example.hotel_mobile.CustomDatePicker.vsnappy1.datepicker.DatePicker
+import com.example.hotel_mobile.CustomDatePicker.vsnappy1.timepicker.TimePicker
 import com.example.hotel_mobile.Dto.RoomDto
 import com.example.hotel_mobile.Modle.BookingModel
-import com.example.hotel_mobile.Modle.enDropDownType
+import com.example.hotel_mobile.Modle.enDropDownDateType
 import com.example.hotel_mobile.Util.General
 import com.example.hotel_mobile.View.component.CustomSizer
 import com.example.hotel_mobile.View.component.RoomStateShape
@@ -57,9 +59,8 @@ import kotlinx.coroutines.delay
 @Composable
 fun RoomPage(
     roomData: RoomDto,
-    homeViewModle: HomeViewModle
+    homeViewModle:   HomeViewModle = hiltViewModel()
 ) {
-
 
 
     val context = LocalContext.current;
@@ -72,93 +73,145 @@ fun RoomPage(
 
     val sheetState = rememberModalBottomSheetState()
     val showBottomSheet = remember { mutableStateOf(false) }
-    val isOpenDialog = remember { mutableStateOf(false) }
+    val isOpenDateDialog = remember { mutableStateOf(false) }
+    val isOpenTimeDialog = remember { mutableStateOf(false) }
 
     val currentYear = General.getCurrentYear()
     val currentMonth = General.getCurrentMonth()
     val currentDay = General.getCurrentStartDayAtMonth()
-    val bookingData = remember { mutableStateOf(
-        BookingModel(
-            startYear = currentYear,
-            startMonth = currentMonth,
-            startDay = currentDay,
-            startTime = "",
-            endYear = currentYear,
-            endMonth = currentMonth,
-            endDay = currentDay,
-            endTime = ""
+    val currentTime = General.getCurrentCurrentTime()
+    val bookingData = remember {
+        mutableStateOf(
+            BookingModel(
+                startYear = currentYear,
+                startMonth = currentMonth,
+                startDay = currentDay,
+                startTime = currentTime,
+                endYear = currentYear,
+                endMonth = currentMonth,
+                endDay = currentDay,
+                endTime = currentTime,
+                roomId = roomData.roomId!!
+            )
         )
-    ) }
+    }
 
-    val dropDownType = remember { mutableStateOf(enDropDownType.YearStartBooking) }
+    val dropDownType = remember { mutableStateOf(enDropDownDateType.YearStartBooking) }
 
 
-    fun handlTheSelectionDialog(day:Int,month:Int,year:Int){
-        when(dropDownType.value){
-            enDropDownType.YearStartBooking->{
-                bookingData.value.startYear=year
+    fun handlTheSelectionDialog(day: Int, month: Int, year: Int, hour: Int? = 0, minit: Int? = 0) {
+        when (dropDownType.value) {
+            enDropDownDateType.YearStartBooking -> {
+                Log.d("timeResultData","1")
+
+                bookingData.value.startYear = year
             }
-            enDropDownType.MonthStartBooking->{
+
+            enDropDownDateType.MonthStartBooking -> {
+                Log.d("timeResultData","2")
                 bookingData.value.startMonth = month
             }
-            enDropDownType.DayStartBooking->{
-                bookingData.value.startDay= day
+
+            enDropDownDateType.DayStartBooking -> {
+                Log.d("timeResultData","3")
+
+                bookingData.value.startDay = day
             }
-            enDropDownType.YearEndBooking->{
-                bookingData.value.endYear=year
+
+            enDropDownDateType.TimeStartBooking -> {
+                Log.d("timeResultData","4")
+
+                bookingData.value.startTime = "$hour:$minit"
             }
-            enDropDownType.MonthEndBooking->{
+
+            enDropDownDateType.YearEndBooking -> {
+                Log.d("timeResultData","5")
+
+                bookingData.value.endYear = year
+            }
+
+            enDropDownDateType.MonthEndBooking -> {
+                Log.d("timeResultData","6")
+
                 bookingData.value.endMonth = month
             }
-            enDropDownType.DayEndBooking->{
-                bookingData.value.endDay= day
+
+            enDropDownDateType.DayEndBooking -> {
+                Log.d("timeResultData","7")
+
+                bookingData.value.endDay = day
+            }
+
+            enDropDownDateType.TimeEndBooking -> {
+                Log.d("timeResultData","8")
+
+                bookingData.value.endTime = "$hour:$minit"
             }
         }
     }
 
     fun handlMonthForDialog(): Int {
-        when(dropDownType.value){
-            enDropDownType.YearStartBooking->{
+        when (dropDownType.value) {
+            enDropDownDateType.YearStartBooking -> {
                 return bookingData.value.startMonth
             }
-            enDropDownType.MonthStartBooking->{
+
+            enDropDownDateType.MonthStartBooking -> {
+
                 return bookingData.value.startMonth
             }
-            enDropDownType.DayStartBooking->{
+
+            enDropDownDateType.DayStartBooking -> {
                 return bookingData.value.startMonth
             }
-            enDropDownType.YearEndBooking->{
+
+            enDropDownDateType.YearEndBooking -> {
                 return bookingData.value.endMonth
             }
-            enDropDownType.MonthEndBooking->{
+
+            enDropDownDateType.MonthEndBooking -> {
                 return bookingData.value.endMonth
             }
-            enDropDownType.DayEndBooking->{
+
+            enDropDownDateType.DayEndBooking -> {
                 return bookingData.value.endMonth
+            }
+
+            else -> {
+                return -1;
             }
         }
     }
 
 
     fun handlYearForDialog(): Int {
-        when(dropDownType.value){
-            enDropDownType.YearStartBooking->{
+        when (dropDownType.value) {
+            enDropDownDateType.YearStartBooking -> {
                 return bookingData.value.startYear
             }
-            enDropDownType.MonthStartBooking->{
+
+            enDropDownDateType.MonthStartBooking -> {
                 return bookingData.value.startYear
             }
-            enDropDownType.DayStartBooking->{
+
+            enDropDownDateType.DayStartBooking -> {
                 return bookingData.value.startYear
             }
-            enDropDownType.YearEndBooking->{
+
+            enDropDownDateType.YearEndBooking -> {
                 return bookingData.value.endYear
             }
-            enDropDownType.MonthEndBooking->{
+
+            enDropDownDateType.MonthEndBooking -> {
                 return bookingData.value.endYear
             }
-            enDropDownType.DayEndBooking->{
+
+            enDropDownDateType.DayEndBooking -> {
                 return bookingData.value.endYear
+            }
+
+            else -> {
+                return -1;
             }
         }
     }
@@ -418,12 +471,11 @@ fun RoomPage(
                                 Color.Black.copy(0.16f), RoundedCornerShape(16.dp)
                             )
                             .clickable {
-                                dropDownType.value = enDropDownType.YearStartBooking
-                                isOpenDialog.value = true
+                                dropDownType.value = enDropDownDateType.YearStartBooking
+                                isOpenDateDialog.value = true
                             }
-                            .padding(horizontal = 15.dp)
-
-                        ,horizontalArrangement = Arrangement.SpaceBetween
+                            .padding(horizontal = 15.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
                             bookingData.value.startYear.toString(),
@@ -450,20 +502,21 @@ fun RoomPage(
                                 Color.Black.copy(0.16f), RoundedCornerShape(16.dp)
                             )
                             .clickable {
-                                dropDownType.value = enDropDownType.MonthStartBooking
-                                isOpenDialog.value = true
+                                dropDownType.value = enDropDownDateType.MonthStartBooking
+                                isOpenDateDialog.value = true
                             }
                             .padding(horizontal = 15.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
+                        horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically,
 
 
                         ) {
 
                         Text(
-                           General.convertMonthToName(
-                               bookingData.value.startMonth,
-                                       bookingData.value.startYear),
+                            General.convertMonthToName(
+                                bookingData.value.startMonth,
+                                bookingData.value.startYear
+                            ),
                             fontSize = 19.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -474,7 +527,7 @@ fun RoomPage(
                         )
                     }
 
-              CustomSizer(height = 5.dp)
+                    CustomSizer(height = 5.dp)
 
                     Row(
                         modifier = Modifier
@@ -485,14 +538,12 @@ fun RoomPage(
                                 Color.Black.copy(0.16f), RoundedCornerShape(16.dp)
                             )
                             .clickable {
-                                dropDownType.value = enDropDownType.DayStartBooking
-                                isOpenDialog.value = true
+                                dropDownType.value = enDropDownDateType.DayStartBooking
+                                isOpenDateDialog.value = true
                             }
-                            .padding(horizontal = 15.dp)
-                        ,verticalAlignment = Alignment.CenterVertically,
-
+                            .padding(horizontal = 15.dp),
+                        verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
-
                     ) {
 
                         Text(
@@ -506,6 +557,39 @@ fun RoomPage(
                             fontWeight = FontWeight.Bold
                         )
                     }
+
+                    CustomSizer(height = 5.dp)
+
+                    Row(
+                        modifier = Modifier
+                            .height(50.dp)
+                            .fillMaxWidth()
+                            .border(
+                                1.dp,
+                                Color.Black.copy(0.16f), RoundedCornerShape(16.dp)
+                            )
+                            .clickable {
+                                dropDownType.value = enDropDownDateType.TimeStartBooking
+
+                                isOpenTimeDialog.value = true
+                            }
+                            .padding(horizontal = 15.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+
+                        Text(
+                            bookingData.value.startTime,
+                            fontSize = 19.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            "بداية وقت الحجز",
+                            fontSize = 19.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+
                     CustomSizer(height = 20.dp)
 
                     Text(
@@ -525,12 +609,11 @@ fun RoomPage(
                                 Color.Black.copy(0.16f), RoundedCornerShape(16.dp)
                             )
                             .clickable {
-                                dropDownType.value = enDropDownType.YearEndBooking
-                                isOpenDialog.value = true
+                                dropDownType.value = enDropDownDateType.YearEndBooking
+                                isOpenDateDialog.value = true
                             }
-                            .padding(horizontal = 15.dp)
-
-                        ,horizontalArrangement = Arrangement.SpaceBetween
+                            .padding(horizontal = 15.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
                             bookingData.value.endYear.toString(),
@@ -557,8 +640,8 @@ fun RoomPage(
                                 Color.Black.copy(0.16f), RoundedCornerShape(16.dp)
                             )
                             .clickable {
-                                dropDownType.value = enDropDownType.MonthEndBooking
-                                isOpenDialog.value = true
+                                dropDownType.value = enDropDownDateType.MonthEndBooking
+                                isOpenDateDialog.value = true
                             }
                             .padding(horizontal = 15.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -570,7 +653,8 @@ fun RoomPage(
                         Text(
                             General.convertMonthToName(
                                 bookingData.value.endMonth,
-                                bookingData.value.endYear),
+                                bookingData.value.endYear
+                            ),
                             fontSize = 19.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -591,11 +675,11 @@ fun RoomPage(
                                 Color.Black.copy(0.16f), RoundedCornerShape(16.dp)
                             )
                             .clickable {
-                                dropDownType.value = enDropDownType.DayEndBooking
-                                isOpenDialog.value = true
+                                dropDownType.value = enDropDownDateType.DayEndBooking
+                                isOpenDateDialog.value = true
                             }
-                            .padding(horizontal = 15.dp)
-                        ,verticalAlignment = Alignment.CenterVertically,
+                            .padding(horizontal = 15.dp),
+                        verticalAlignment = Alignment.CenterVertically,
 
                         horizontalArrangement = Arrangement.SpaceBetween
 
@@ -613,9 +697,73 @@ fun RoomPage(
                         )
                     }
 
-                    if (isOpenDialog.value)
+                    CustomSizer(height = 5.dp)
+
+                    Row(
+                        modifier = Modifier
+                            .height(50.dp)
+                            .fillMaxWidth()
+                            .border(
+                                1.dp,
+                                Color.Black.copy(0.16f), RoundedCornerShape(16.dp)
+                            )
+                            .clickable {
+                                dropDownType.value = enDropDownDateType.TimeEndBooking
+
+                                isOpenTimeDialog.value = true
+                            }
+                            .padding(horizontal = 15.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+
+                        Text(
+                            bookingData.value.endTime,
+                            fontSize = 19.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            "نهاية وقت الحجز",
+                            fontSize = 19.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .padding(top = 10.dp)
+                            .fillMaxWidth()
+                            .clickable {
+                                homeViewModle.createBooking(bookingData.value)
+                            }
+                    ) {
+                        Text("انشاء حجز جديد")
+                    }
+                    if (isOpenTimeDialog.value) {
                         Dialog(onDismissRequest = {
-                            isOpenDialog.value = false
+                            isOpenTimeDialog.value = false
+                        }) {
+                            Box(
+                                modifier = Modifier
+                                    .wrapContentSize()
+                                    .background(
+                                        Color.White,
+                                        RoundedCornerShape(17.dp)
+                                    )
+                            ) {
+                                TimePicker(
+                                    onTimeSelected = { hour, minit ->
+                                        handlTheSelectionDialog(0, 0, 0, hour, minit)
+                                        isOpenTimeDialog.value = false
+                                    }
+                                )
+                            }
+                        }
+                    }
+
+                    if (isOpenDateDialog.value)
+                        Dialog(onDismissRequest = {
+                            isOpenDateDialog.value = false
                         }) {
                             Box(
                                 modifier = Modifier
@@ -627,37 +775,16 @@ fun RoomPage(
                             ) {
 
                                 DatePicker(
-                                    dialogState=isOpenDialog,
-                                    isMonth = dropDownType.value== enDropDownType.MonthEndBooking ||dropDownType.value== enDropDownType.MonthStartBooking,
-                                    isYear = dropDownType.value== enDropDownType.YearStartBooking ||dropDownType.value== enDropDownType.YearEndBooking,
-                                    month =handlMonthForDialog(),
+                                    dialogState = isOpenDateDialog,
+                                    isMonth = dropDownType.value == enDropDownDateType.MonthEndBooking || dropDownType.value == enDropDownDateType.MonthStartBooking,
+                                    isYear = dropDownType.value == enDropDownDateType.YearStartBooking || dropDownType.value == enDropDownDateType.YearEndBooking,
+                                    month = handlMonthForDialog(),
                                     year = handlYearForDialog(),
                                     modifier = Modifier.padding(16.dp),
                                     onDateSelected = { year, month, day ->
 
-                                        isOpenDialog.value=false
-                                        when(dropDownType.value){
-                                            enDropDownType.YearStartBooking->{
-                                                bookingData.value.startYear=year
-                                            }
-                                            enDropDownType.MonthStartBooking->{
-                                                bookingData.value.startMonth = month
-                                                Log.d("mothiisLength",month.toString())
-
-                                            }
-                                            enDropDownType.DayStartBooking->{
-                                                bookingData.value.startDay= day
-                                            }
-                                            enDropDownType.YearEndBooking->{
-                                                bookingData.value.endYear=year
-                                            }
-                                            enDropDownType.MonthEndBooking->{
-                                                bookingData.value.endMonth = month
-                                            }
-                                            enDropDownType.DayEndBooking->{
-                                                bookingData.value.endDay= day
-                                            }
-                                        }
+                                        isOpenDateDialog.value = false
+                                        handlTheSelectionDialog(year, month, day)
                                     }
                                 )
                             }

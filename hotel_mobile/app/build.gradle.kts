@@ -128,5 +128,7 @@ dependencies {
     implementation (libs.coil.compose)
 
 
+    //kotlin datetime
+    implementation(libs.kotlinx.datetime)
 
 }

@@ -182,6 +182,8 @@ CREATE TABLE Users (
 );
 --
 
+--
+
 CREATE OR REPLACE FUNCTION fn_user_insert() RETURNS TRIGGER AS $$
 DECLARE isCanAdd BOOLEAN := FALSE;
 BEGIN IF New.addby IS NOT NULL THEN isCanAdd := isAdminOrSomeOneHasPersmission(NEW.addBy);
@@ -412,22 +414,18 @@ $$LANGUAGE plpgsql;
 --
 CREATE OR REPLACE FUNCTION isExistById(id UUID)
 RETURNS BOOLEAN AS $$
-DECLARE email VARCHAR(100);
-personid UUID;
+DECLARE isExist BOOLEAN;
+
 BEGIN
 SELECT EXISTS(
-        SELECT 1
-        FROM persons per
-            INNER JOIN admins ad ON per.personid = ad.personid
-        WHERE ad.adminid = id
+        SELECT 1 FROM persons   WHERE personid = id
         UNION ALL
-        SELECT 1
-        FROM persons per
-            INNER JOIN users us ON per.personid = us.personid
-        WHERE us.userid = id
-    ) INTO email;
-RETURN email;
-RETURN is_exist_id;
+        SELECT 1 FROM  users WHERE  userid = id
+        UNION ALL
+        SELECT 1 FROM admins  WHERE adminid = id
+    ) INTO isExist;
+RETURN isExist;
+ 
 EXCEPTION
 WHEN OTHERS THEN RAISE EXCEPTION 'Something went wrong: %',
 SQLERRM;
@@ -467,7 +465,9 @@ CREATE TABLE RoomTypes (
     Name VARCHAR(50) NOT NULL,
     CreatedBy UUID NOT NULL,
     CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    IsDeleted bool DEFAULT FALSE
+    IsDeleted bool DEFAULT FALSE,
+    CONSTRAINT CHACK_IS_VALID_CREATION_ID CHECK(isExistById(CreatedBy)=TRUE)
+
 );
 -----
 ----
@@ -604,7 +604,8 @@ CREATE TABLE Rooms (
     belongTo UUID,
     updateAt TIMESTAMP NULL,
     isBlock BOOLEAN DEFAULT FALSE,
-    isDeleted BOOLEAN DEFAULT FALSE
+    isDeleted BOOLEAN DEFAULT FALSE,
+     CONSTRAINT CHACK_IS_VALID_CREATION_ID CHECK(isExistById(belongTo)=TRUE)
 );
 --
 
@@ -883,14 +884,27 @@ FOR EACH ROW EXECUTE FUNCTION fn_room_delete_tr();
 ----
 ----
 
-
+CREATE OR REPLACE FUNCTION fun_validRoomId(room_id UUID)
+RETURNS BOOLEAN AS $$
+DECLARE
+isValId BOOLEAN:=0;
+BEGIN
+SELECT COUNT(*) > 0 INTO isValId
+FROM rooms WHERE roomid = room_id;
+return isValId;
+EXCEPTION
+WHEN OTHERS THEN RAISE EXCEPTION 'Something went wrong: %',
+SQLERRM;
+RETURN FALSE;
+END
+$$LANGUAGE plpgsql;
 ----
 ----
 
 CREATE TABLE Bookings (
     bookingID BIGSERIAL PRIMARY KEY,
     roomID UUID NOT NULL REFERENCES Rooms(roomid),
-    userID UUID NOT NULL REFERENCES users(userid),
+    belongTo UUID NOT NULL REFERENCES users(userid),
     booking_start TIMESTAMP NOT NULL  CHECK (booking_start >= CURRENT_TIMESTAMP) ,
     booking_end TIMESTAMP NOT NULL  CHECK (booking_end > booking_start)  ,
     duration INTERVAL GENERATED ALWAYS AS (booking_end - booking_start) STORED,
@@ -906,7 +920,10 @@ CREATE TABLE Bookings (
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     cancelledAt TIMESTAMP,
     cancellationReason TEXT DEFAULT NULL,
-    actualCheckOut TIMESTAMP
+    actualCheckOut TIMESTAMP,
+        CONSTRAINT CHACK_IS_VALID_CREATION_ID CHECK(isExistById(belongTo)=TRUE),
+        CONSTRAINT CHACK_IS_VALID_ROOMID_ID CHECK(fun_validRoomId(roomID)=TRUE)
+
 );
 ----
 ---
@@ -938,7 +955,6 @@ END;
 $$ LANGUAGE plpgsql;
 ---
 ---
-
 
 
 ---

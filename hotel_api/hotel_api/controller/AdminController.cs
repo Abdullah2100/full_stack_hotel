@@ -884,7 +884,7 @@ namespace hotel_api.controller
 
 
         [Authorize]
-        [HttpDelete("booking")]
+        [HttpPost("booking")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -916,11 +916,11 @@ namespace hotel_api.controller
             }
 
 
-            var isVisibleBooking = BookingBuiseness.isVisibleBooking(bookingData.bookingStart, bookingData.bookingEnd);
+            var isVisibleBooking = BookingBuiseness.isVisibleBooking(bookingData.bookingStartDateTime, bookingData.bookingEndDateTime);
             if (!isVisibleBooking)
                 return BadRequest("not visible booking");
 
-            double? bookingDayes = (bookingData.bookingStart - bookingData.bookingEnd).TotalDays;
+            double? bookingDayes = (bookingData.bookingStartDateTime - bookingData.bookingEndDateTime).TotalDays;
 
             if (bookingDayes == null)
             {
@@ -934,8 +934,8 @@ namespace hotel_api.controller
                 bookingId:null,
                 roomId:bookingData.roomId,
                 userId:(Guid)adminId,
-                bookingStart:bookingData.bookingStart,
-                bookingEnd:bookingData.bookingEnd,
+                bookingStart:bookingData.bookingStartDateTime,
+                bookingEnd:bookingData.bookingEndDateTime,
                 bookingStatus:null,
                 totalPrice: totalPriceHolder,
                 servicePayment:null,

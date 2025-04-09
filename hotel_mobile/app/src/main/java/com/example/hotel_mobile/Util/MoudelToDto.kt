@@ -1,16 +1,19 @@
 package com.example.hotel_mobile.Util
 
+import com.example.hotel_mobile.Dto.BookingDto
 import com.example.hotel_mobile.Dto.ImageDto
 import com.example.hotel_mobile.Dto.PersonDto
 import com.example.hotel_mobile.Dto.RoomDto
 import com.example.hotel_mobile.Dto.RoomTypeDto
 import com.example.hotel_mobile.Dto.UserDto
+import com.example.hotel_mobile.Modle.BookingModel
 import com.example.hotel_mobile.Modle.ImageModel
 import com.example.hotel_mobile.Modle.PersonModel
 import com.example.hotel_mobile.Modle.RoomModel
 import com.example.hotel_mobile.Modle.RoomTypeModel
 import com.example.hotel_mobile.Modle.UserModel
 import com.example.hotel_mobile.Util.MoudelToDto.toUserDto
+import java.time.LocalDateTime
 
 object MoudelToDto {
     fun PersonModel.toPersonDto(): PersonDto {
@@ -24,7 +27,7 @@ object MoudelToDto {
         )
     }
 
-    fun UserModel.toUserDto():UserDto  {
+    fun UserModel.toUserDto(): UserDto {
         return UserDto(
             isUser = this.isUser,
             userId = this.userId,
@@ -38,6 +41,7 @@ object MoudelToDto {
             isDeleted = this.isDeleted,
         )
     }
+
     fun ImageModel.toImageDto(): ImageDto {
         return ImageDto(
             isDeleted = this.isDeleted,
@@ -54,7 +58,7 @@ object MoudelToDto {
             createdAt = this.createdAt,
             roomTypeName = this.roomTypeName,
             roomTypeID = this.roomTypeID,
-            isDeleted = this.isDeleted ,
+            isDeleted = this.isDeleted,
             createdBy = this.createdBy
         )
     }
@@ -66,7 +70,7 @@ object MoudelToDto {
             roomId = this.roomId,
             roomData = this.roomData,
             user = this.user?.toUserDto(),
-            images =this.images?.map { images->images.toImageDto() } ?: emptyList(),
+            images = this.images?.map { images -> images.toImageDto() } ?: emptyList(),
             status = this.status,
             capacity = this.capacity,
             isBlock = this.isBlock,
@@ -75,6 +79,28 @@ object MoudelToDto {
             pricePerNight = this.pricePerNight,
             roomtypeid = this.roomtypeid,
             roomTypeData = this.roomTypeModel?.toRoomTypeDto()
+        )
+    }
+
+    fun BookingModel.toBookingDto(): BookingDto {
+        val startTimeList = this.startTime.split(":");
+        val endTimeList = this.endTime.split(":");
+        return BookingDto(
+            bookingStartDateTime = LocalDateTime.of(
+                this.startYear,
+                this.startMonth,
+                this.startDay,
+                startTimeList[1].toInt(),
+                startTimeList[2].toInt()
+            ),
+            bookingEndDateTime = LocalDateTime.of(
+                this.endYear,
+                this.endMonth,
+                this.endDay,
+                endTimeList[1].toInt(),
+                endTimeList[2].toInt()
+            ),
+            roomId = this.roomId
         )
     }
 }

@@ -14,11 +14,13 @@ import com.example.hotel_mobile.Di.MainDispatcher
 import com.example.hotel_mobile.Dto.AuthResultDto
 import com.example.hotel_mobile.Dto.LoginDto
 import com.example.hotel_mobile.Dto.RoomDto
+import com.example.hotel_mobile.Modle.BookingModel
 import com.example.hotel_mobile.Modle.NetworkCallHandler
 import com.example.hotel_mobile.Modle.RoomModel
 import com.example.hotel_mobile.Modle.Screens
 import com.example.hotel_mobile.Modle.enNetworkStatus
 import com.example.hotel_mobile.Util.DtoToModule.toRoomModel
+import com.example.hotel_mobile.Util.MoudelToDto.toBookingDto
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -62,16 +64,16 @@ class HomeViewModle @Inject constructor(
             when (val result = homeRepository.getRooms(pageNumber)) {
                 is NetworkCallHandler.Successful<*> -> {
                     val roomData = result.data as List<RoomDto>?
-                    if(!roomData.isNullOrEmpty()){
-                        val roomDataToMutale = roomData
+                    if (!roomData.isNullOrEmpty()) {
+                        var roomDataToMutale = roomData
                             .map { listData -> listData.toRoomModel() }
                             .toMutableList()
 
-                            _rooms.emit(roomDataToMutale)
-                    }else{
+                        _rooms.emit(roomDataToMutale)
+                    } else {
 
                         if (_rooms.value == null)
-                                _rooms.emit(mutableListOf<RoomModel>())
+                            _rooms.emit(mutableListOf<RoomModel>())
                     }
                 }
 
@@ -93,8 +95,47 @@ class HomeViewModle @Inject constructor(
         }
     }
 
+    fun createBooking(bookingData: BookingModel) {
+        viewModelScope.launch(ioDispatcher + errorHandling) {
+            Log.d("bookingErrorIs","start calling  booking end point")
 
-    suspend fun clearErrorMessage(){
+            when (val result = homeRepository.createBooking(bookingData.toBookingDto())) {
+                is NetworkCallHandler.Successful<*> -> {
+//                    val roomData = result.data `as List<RoomDto>?
+                    /*  if(!roomData.isNullOrEmpty()){
+                          var roomDataToMutale = roomData
+                              .map { listData -> listData.toRoomModel() }
+                              .toMutableList()
+
+                          _rooms.emit(roomDataToMutale)
+                      }else{
+
+                          if (_rooms.value == null)
+                              _rooms.emit(mutableListOf<RoomModel>())
+                      }
+                      */
+                }
+
+
+                is NetworkCallHandler.Error -> {
+                    if (_rooms.value == null)
+                        _rooms.emit(mutableListOf<RoomModel>())
+
+                    throw Exception(result.data);
+                }
+
+                else -> {
+                    if (_rooms.value == null)
+                        _rooms.emit(mutableListOf<RoomModel>())
+
+                    throw Exception("unexpected Stat");
+                }
+            }
+
+        }
+    }
+
+    suspend fun clearErrorMessage() {
         _errorMessage.emit("")
     }
 

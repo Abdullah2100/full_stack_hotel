@@ -74,7 +74,7 @@ fun NavController(
                 val args = result.toRoute<Screens.Room>()
                 RoomPage(
                     args.roomdata,
-                    homeViewModle
+//                    homeViewModle
                 )
             }
         }
