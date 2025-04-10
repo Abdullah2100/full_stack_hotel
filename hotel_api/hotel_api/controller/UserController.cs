@@ -37,15 +37,14 @@ public class UserController : Controller
             return StatusCode(400, validateRequeset);
 
 
-        bool isExistEmail = PersonBuisness.
-            isPersonExistByEmailAndPhone(userRequestData.email,userRequestData.phone);
+        bool isExistEmail = PersonBuisness.isPersonExistByEmailAndPhone(userRequestData.email, userRequestData.phone);
 
         if (isExistEmail)
             return StatusCode(400, "email or phone already in use");
 
 
         var data = UserBuissnes.getUserByUserName(userRequestData.userName);
-       
+
         if (data != null)
             return StatusCode(409, "userName is already exist");
 
@@ -57,10 +56,10 @@ public class UserController : Controller
             email: userRequestData.email,
             name: userRequestData.name,
             phone: userRequestData.phone,
-            address: userRequestData.address??""
-            );
+            address: userRequestData.address ?? ""
+        );
 
-   
+
         data = new UserBuissnes(new UserDto(
             userId: userId,
             brithDay: userRequestData.brithDay,
@@ -94,18 +93,17 @@ public class UserController : Controller
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public ActionResult userSignIn( LoginRequestDto loginData )
+    public ActionResult userSignIn(LoginRequestDto loginData)
     {
-        
-        var data = UserBuissnes.getUserByUserNameAndPassword(loginData.userNameOrEmail, clsUtil.hashingText(loginData.password));
+        var data = UserBuissnes.getUserByUserNameAndPassword(loginData.userNameOrEmail,
+            clsUtil.hashingText(loginData.password));
 
         if (data == null)
             return StatusCode(409, "user not exist");
 
         string accesstoken = "", refreshToken = "";
 
-        accesstoken = AuthinticationServices.
-            generateToken(data.ID, data.personData.email, _config,
+        accesstoken = AuthinticationServices.generateToken(data.ID, data.personData.email, _config,
             AuthinticationServices.enTokenMode.AccessToken);
         refreshToken = AuthinticationServices.generateToken(data.ID, data.personData.email, _config,
             AuthinticationServices.enTokenMode.RefreshToken);
@@ -115,7 +113,7 @@ public class UserController : Controller
     }
 
 
-   // [Authorize]
+    // [Authorize]
     [HttpGet("room/{pageNumber:int}")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -126,8 +124,8 @@ public class UserController : Controller
     {
         try
         {
-            string minioEndPoint ="http://"+ _config.getKey("minio_end_point")+"/room/"; 
-            var rooms = RoomBuisness.getAllRooms(pageNumber, 25,minioEndPoint);
+            string minioEndPoint = "http://" + _config.getKey("minio_end_point") + "/room/";
+            var rooms = RoomBuisness.getAllRooms(pageNumber, 25, minioEndPoint);
             return Ok(rooms);
         }
         catch (Exception ex)
@@ -138,78 +136,74 @@ public class UserController : Controller
 
 
     [Authorize]
-        [HttpDelete("booking")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> createBooking
-        ([FromBody] BookingRequestDto bookingData
-        )
+    [HttpPost("booking")]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public IActionResult createBooking
+    (BookingRequestDto bookingData)
+    {
+        var authorizationHeader = HttpContext.Request.Headers["Authorization"];
+        var id = AuthinticationServices.GetPayloadFromToken("id",
+            authorizationHeader.ToString().Replace("Bearer ", ""));
+        Guid? userID = null;
+        if (Guid.TryParse(id.Value.ToString(), out Guid outID))
         {
-            var authorizationHeader = HttpContext.Request.Headers["Authorization"];
-            var id = AuthinticationServices.GetPayloadFromToken("id",
-                authorizationHeader.ToString().Replace("Bearer ", ""));
-            Guid? userID = null;
-            if (Guid.TryParse(id.Value.ToString(), out Guid outID))
-            {
-                userID = outID;
-            }
-
-            if (userID == null)
-            {
-                return StatusCode(401, "you not have Permission");
-            }
-
-            var isHasPermissionToCurd = AdminBuissnes.isAdminExist(userID ?? Guid.Empty);
-
-
-            if (!isHasPermissionToCurd)
-            {
-                return StatusCode(401, "you not have Permission");
-            }
-
-
-            var isVisibleBooking = BookingBuiseness.isVisibleBooking(bookingData.bookingStart, bookingData.bookingEnd);
-            if (!isVisibleBooking)
-                return BadRequest("not visible booking");
-
-            double? bookingDayes = (bookingData.bookingStart - bookingData.bookingEnd).TotalDays;
-
-            if (bookingDayes == null)
-            {
-                return BadRequest("not valide booking");
- 
-            }
-            
-            var  room = RoomBuisness.getRoom(bookingData.roomId);
-
-            var totalPriceHolder = (Convert.ToDecimal(bookingDayes) * room.pricePerNight);
-            var bookingDataHolder = new BookingDto(
-                bookingId:null,
-                roomId:bookingData.roomId,
-                userId:(Guid)userID,
-                bookingStart:bookingData.bookingStart,
-                bookingEnd:bookingData.bookingEnd,
-                bookingStatus:null,
-                totalPrice: totalPriceHolder,
-                servicePayment:null,
-                maintenancePayment:null,
-                paymentStatus:null,
-                createdAt: DateTime.Now,
-                cancelledAt: null,
-                cancellationReason:null,
-                actualCheckOut: null
-            );
-            var bookingHolder = new BookingBuiseness(bookingDataHolder);
-
-            var result = bookingHolder.save();
-
-            if (result == false)
-                return StatusCode(500, "some thing wrong");
-            return StatusCode(200, new { message = "booking created seccessfully" });
+            userID = outID;
         }
 
- 
-    
+        if (userID == null)
+        {
+            return StatusCode(401, "you not have Permission");
+        }
+
+        var isHasPermissionToCurd = AdminBuissnes.isAdminExist(userID ?? Guid.Empty);
+
+
+        if (!isHasPermissionToCurd)
+        {
+            return StatusCode(401, "you not have Permission");
+        }
+
+
+        var isVisibleBooking =
+            BookingBuiseness.isVisibleBooking(bookingData.bookingStartDateTime, bookingData.bookingEndDateTime);
+        if (!isVisibleBooking)
+            return BadRequest("not visible booking");
+
+        double? bookingDayes = (bookingData.bookingStartDateTime - bookingData.bookingEndDateTime).TotalDays;
+
+        if (bookingDayes == null)
+        {
+            return BadRequest("not valide booking");
+        }
+
+        var room = RoomBuisness.getRoom(bookingData.roomId);
+
+        var totalPriceHolder = (Convert.ToDecimal(bookingDayes) * room.pricePerNight);
+        var bookingDataHolder = new BookingDto(
+            bookingId: null,
+            roomId: bookingData.roomId,
+            userId: (Guid)userID,
+            bookingStart: bookingData.bookingStartDateTime,
+            bookingEnd: bookingData.bookingEndDateTime,
+            bookingStatus: null,
+            totalPrice: totalPriceHolder,
+            servicePayment: null,
+            maintenancePayment: null,
+            paymentStatus: null,
+            createdAt: DateTime.Now,
+            cancelledAt: null,
+            cancellationReason: null,
+            actualCheckOut: null
+        );
+        var bookingHolder = new BookingBuiseness(bookingDataHolder);
+
+        var result = bookingHolder.save();
+
+        if (result == false)
+            return StatusCode(500, "some thing wrong");
+        return StatusCode(200, new { message = "booking created seccessfully" });
+    }
 }

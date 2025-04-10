@@ -173,11 +173,7 @@ fun DatePicker(
                 .padding(horizontal = 19.dp)
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.End,
-
-
         ) {
-
-
             Button(onClick = {
                 dialogState.value=false
             },

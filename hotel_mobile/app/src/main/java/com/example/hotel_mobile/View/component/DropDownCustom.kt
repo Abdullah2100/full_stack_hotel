@@ -20,18 +20,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.hotel_mobile.Modle.enDropDownType
+import com.example.hotel_mobile.Modle.enDropDownDateType
 
 
 @Composable
 fun CustomDropDownShape(
-   listData:List<Int>,
-   selectedValue: MutableState<Int>,
-   title:String,
-   dropDownType: enDropDownType,
-   selectedDropType:MutableState<enDropDownType>,
+    listData:List<Int>,
+    selectedValue: MutableState<Int>,
+    title:String,
+    dropDownType: enDropDownDateType,
+    selectedDropType:MutableState<enDropDownDateType>,
 
-){
+    ){
     var isDropDownExpanded = remember { MutableTransitionState(initialState = false) }
 
     Row(

@@ -36,6 +36,12 @@ object General {
         return getCalener().get(Calendar.DAY_OF_MONTH)
     }
 
+    fun getCurrentCurrentTime(): String {
+        val currentHour =getCalener().get(Calendar.HOUR_OF_DAY)
+        val currentMinute =getCalener().get(Calendar.MINUTE)
+        return "${currentHour}:${currentMinute}"
+    }
+
     var authData = MutableStateFlow<AuthModleEntity?>(null);
 
     const val BASED_URL = "http://10.0.2.2:5266/api"

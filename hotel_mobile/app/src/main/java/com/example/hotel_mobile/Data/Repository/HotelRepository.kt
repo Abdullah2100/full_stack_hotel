@@ -1,9 +1,13 @@
 package com.example.hotel_mobile.Data.Repository
 
+import android.util.Log
+import com.example.hotel_mobile.Dto.BookingDto
 import com.example.hotel_mobile.Dto.LoginDto
 import com.example.hotel_mobile.Dto.RoomDto
+import com.example.hotel_mobile.Modle.BookingModel
 import com.example.hotel_mobile.Modle.NetworkCallHandler
 import com.example.hotel_mobile.Util.General
+import com.example.hotel_mobile.services.kSerializeChanger.LocalDateTimeKserialize
 import dagger.Provides
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -19,9 +23,12 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.ktor.http.headers
 import io.ktor.http.parameters
+import kotlinx.serialization.Serializable
 import java.io.IOException
 import java.lang.reflect.Parameter
 import java.net.UnknownHostException
+import java.time.LocalDateTime
+import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -63,9 +70,56 @@ class HotelRepository  @Inject constructor(private val httpClient: HttpClient) {
 
             return NetworkCallHandler.Error(e.message)
         }
-        finally {
-            httpClient.close()
-        }
+
 
     }
+
+    suspend fun createBooking (bookingModle: BookingDto): NetworkCallHandler {
+        Log.d("bookingErrorIs","start calling  booking end point")
+
+        return try {
+
+            val result = httpClient
+                .post("${General.BASED_URL}/user/booking")
+            {
+                contentType(ContentType.Application.Json)
+                headers {
+                    append(HttpHeaders.Authorization, "Bearer ${General.authData.value?.refreshToken}")
+                }
+
+                setBody(bookingModle)
+            }
+
+
+            if (result.status == HttpStatusCode.OK) {
+                Log.d("bookingErrorIs",result.status.toString())
+
+                val resultData = result.body<List<RoomDto>>();
+                NetworkCallHandler.Successful(resultData)
+            } else {
+                Log.d("bookingErrorIs",result.body())
+
+                NetworkCallHandler.Error(result.body())
+            }
+
+        } catch (e: UnknownHostException) {
+            Log.d("bookingErrorIs",e.message.toString())
+
+            return NetworkCallHandler.Error(e.message)
+
+        } catch (e: IOException) {
+            Log.d("bookingErrorIs",e.message.toString())
+
+            return NetworkCallHandler.Error(e.message)
+
+        } catch (e: Exception) {
+            Log.d("bookingErrorIs",e.message.toString())
+
+            return NetworkCallHandler.Error(e.message)
+        }
+
+
+    }
+
+
 }

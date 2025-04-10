@@ -5,15 +5,19 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -23,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
@@ -38,6 +43,7 @@ import com.example.hotel_mobile.CustomDatePicker.vsnappy1.timepicker.data.model.
 import com.example.hotel_mobile.CustomDatePicker.vsnappy1.timepicker.enums.MinuteGap
 import com.example.hotel_mobile.CustomDatePicker.vsnappy1.timepicker.ui.model.TimePickerConfiguration
 import com.example.hotel_mobile.CustomDatePicker.vsnappy1.timepicker.ui.viewmodel.TimePickerViewModel
+import com.example.hotel_mobile.View.component.CustomSizer
 import kotlinx.coroutines.launch
 
 @Composable
@@ -48,7 +54,9 @@ fun TimePicker(
     minuteGap: MinuteGap = MinuteGap.ONE,
     time: TimePickerTime? = null,
     configuration: TimePickerConfiguration = TimePickerConfiguration.Builder().build(),
-    id: Int = 1
+    id: Int = 1,
+    isOpenTimeDialog: MutableState<Boolean> = mutableStateOf(false)
+
 ) {
     val viewModel: TimePickerViewModel = viewModel(key = "TimePickerViewModel$id")
     val timePickerTime = time ?: TimePickerTime.getTime()
@@ -56,32 +64,68 @@ fun TimePicker(
     val timePickerUiState = viewModel.getUiStateTimeProvided(timePickerTime, minuteGap, is24)
     val uiState by viewModel.uiState.observeAsState(timePickerUiState)
     LaunchedEffect(key1 = Unit) { viewModel.updateUiState(timePickerTime, minuteGap, is24) }
+    Column {
 
-    TimePickerView(
-        modifier = modifier,
-        hours = uiState.hours,
-        selectedHourIndex = uiState.selectedHourIndex,
-        onSelectedHourIndexChange = {
-            viewModel.updateSelectedHourIndex(it)
-        },
-        minutes = uiState.minutes,
-        selectedMinuteIndex = uiState.selectedMinuteIndex,
-        onSelectedMinuteIndexChange = {
-            viewModel.updateSelectedMinuteIndex(it)
-        },
-        timesOfDay = uiState.timesOfDay,
-        selectedTimeOfDayIndex = uiState.selectedTimeOfDayIndex,
-        onSelectedTimeOfDayIndexChange = {
-            viewModel.updateSelectedTimeOfDayIndex(it)
-        },
-        is24Hour = uiState.is24Hour,
-        configuration = configuration,
-        onScrollingStopped = {
-            viewModel.getSelectedTime()?.apply {
-                onTimeSelected(hour, minute)
+        TimePickerView(
+            modifier = modifier,
+            hours = uiState.hours,
+            selectedHourIndex = uiState.selectedHourIndex,
+            onSelectedHourIndexChange = {
+                viewModel.updateSelectedHourIndex(it)
+            },
+            minutes = uiState.minutes,
+            selectedMinuteIndex = uiState.selectedMinuteIndex,
+            onSelectedMinuteIndexChange = {
+                viewModel.updateSelectedMinuteIndex(it)
+            },
+            timesOfDay = uiState.timesOfDay,
+            selectedTimeOfDayIndex = uiState.selectedTimeOfDayIndex,
+            onSelectedTimeOfDayIndexChange = {
+                viewModel.updateSelectedTimeOfDayIndex(it)
+            },
+            is24Hour = uiState.is24Hour,
+            configuration = configuration,
+            onScrollingStopped = {
+//            viewModel.getSelectedTime()?.apply {
+//                onTimeSelected(hour, minute)
+//            }
+            }
+        )
+
+        Row(
+            modifier = Modifier
+                .padding(horizontal = 19.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.End,
+        ) {
+            Button(
+                onClick = {
+                    isOpenTimeDialog.value = false
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Red
+                )
+            ) {
+                Text(text = "الغاء")
+
+            }
+            CustomSizer(width = 10.dp)
+
+            Button(
+                enabled = viewModel.getSelectedTime() != null,
+                onClick = {
+                    onTimeSelected(
+                        viewModel.getSelectedTime()?.hour!!,
+                        viewModel.getSelectedTime()?.minute!!
+                    )
+                },
+            ) {
+                Text(text = "تم")
             }
         }
-    )
+
+    }
+
 }
 
 @Composable
