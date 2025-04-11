@@ -1,6 +1,7 @@
 package com.example.hotel_mobile.Util
 
 import android.R.string
+import android.util.Log
 import androidx.compose.ui.graphics.Color
 import com.example.hotel_mobile.CustomDatePicker.vsnappy1.datepicker.data.Constant
 import com.example.hotel_mobile.Data.Room.AuthDao
@@ -65,6 +66,17 @@ object General {
         date.year = year
 
         return date
+    }
+
+    fun LocalDateTime.toCustomString():String{
+        val year = this.year;
+        val month = this.monthValue;
+        val day = this.dayOfMonth;
+        val hour = this.hour
+        val minit = this.minute;
+        val localDateTimeString = "$day-$month-$year $hour:$minit:00 ${if(hour<=12)"AM" else "PM"}"
+        Log.d("customStringDate","$this")
+        return localDateTimeString;
     }
 
     fun Long.toLocalDate(): LocalDate {

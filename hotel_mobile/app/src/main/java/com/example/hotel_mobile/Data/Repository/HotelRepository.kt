@@ -7,7 +7,9 @@ import com.example.hotel_mobile.Dto.RoomDto
 import com.example.hotel_mobile.Modle.BookingModel
 import com.example.hotel_mobile.Modle.NetworkCallHandler
 import com.example.hotel_mobile.Util.General
+import com.example.hotel_mobile.Util.General.toCustomString
 import com.example.hotel_mobile.services.kSerializeChanger.LocalDateTimeKserialize
+import com.example.hotel_mobile.services.kSerializeChanger.UUIDKserialize
 import dagger.Provides
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -35,10 +37,6 @@ import javax.inject.Singleton
 
 
 class HotelRepository  @Inject constructor(private val httpClient: HttpClient) {
-
-
-
-
 
 
     suspend fun getRooms(pageNumber:Int): NetworkCallHandler {
@@ -74,8 +72,8 @@ class HotelRepository  @Inject constructor(private val httpClient: HttpClient) {
 
     }
 
-    suspend fun createBooking (bookingModle: BookingDto): NetworkCallHandler {
-        Log.d("bookingErrorIs","start calling  booking end point")
+    suspend fun createBooking (bookingModle:BookingDto): NetworkCallHandler {
+
 
         return try {
 
@@ -84,21 +82,20 @@ class HotelRepository  @Inject constructor(private val httpClient: HttpClient) {
             {
                 contentType(ContentType.Application.Json)
                 headers {
-                    append(HttpHeaders.Authorization, "Bearer ${General.authData.value?.refreshToken}")
+                    append(
+                        HttpHeaders.Authorization,
+                        "Bearer ${General.authData.value?.refreshToken}"
+                    )
                 }
 
                 setBody(bookingModle)
             }
 
 
-            if (result.status == HttpStatusCode.OK) {
-                Log.d("bookingErrorIs",result.status.toString())
-
-                val resultData = result.body<List<RoomDto>>();
+            if (result.status == HttpStatusCode.Created) {
+                val resultData = result.body<String>();
                 NetworkCallHandler.Successful(resultData)
             } else {
-                Log.d("bookingErrorIs",result.body())
-
                 NetworkCallHandler.Error(result.body())
             }
 
@@ -123,3 +120,4 @@ class HotelRepository  @Inject constructor(private val httpClient: HttpClient) {
 
 
 }
+

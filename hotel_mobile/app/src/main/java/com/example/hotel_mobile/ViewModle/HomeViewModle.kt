@@ -1,37 +1,24 @@
 package com.example.hotel_mobile.ViewModle
 
-import android.util.Log
-import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavHostController
-import com.example.hotel_mobile.Data.Repository.AuthRepository
 import com.example.hotel_mobile.Data.Repository.HotelRepository
-import com.example.hotel_mobile.Data.Room.AuthDao
-import com.example.hotel_mobile.Data.Room.AuthModleEntity
 import com.example.hotel_mobile.Di.IoDispatcher
-import com.example.hotel_mobile.Di.MainDispatcher
-import com.example.hotel_mobile.Dto.AuthResultDto
-import com.example.hotel_mobile.Dto.LoginDto
 import com.example.hotel_mobile.Dto.RoomDto
 import com.example.hotel_mobile.Modle.BookingModel
 import com.example.hotel_mobile.Modle.NetworkCallHandler
 import com.example.hotel_mobile.Modle.RoomModel
-import com.example.hotel_mobile.Modle.Screens
 import com.example.hotel_mobile.Modle.enNetworkStatus
 import com.example.hotel_mobile.Util.DtoToModule.toRoomModel
 import com.example.hotel_mobile.Util.MoudelToDto.toBookingDto
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json.Default.decodeFromString
 import javax.inject.Inject
 
 @HiltViewModel
@@ -43,6 +30,10 @@ class HomeViewModle @Inject constructor(
 
     private val _rooms = MutableStateFlow<MutableList<RoomModel>?>(null)
     val rooms = _rooms.asStateFlow()
+
+    private val _statusChange = MutableStateFlow<enNetworkStatus>(enNetworkStatus.None)
+    val statusChange: StateFlow<enNetworkStatus> = _statusChange.asStateFlow()
+
 
 
     private val _errorMessage = MutableStateFlow<String?>(null)
@@ -81,7 +72,8 @@ class HomeViewModle @Inject constructor(
                     if (_rooms.value == null)
                         _rooms.emit(mutableListOf<RoomModel>())
 
-                    throw Exception(result.data);
+
+                    throw Exception(result.data?.replace("\"",""));
                 }
 
                 else -> {
@@ -97,36 +89,22 @@ class HomeViewModle @Inject constructor(
 
     fun createBooking(bookingData: BookingModel) {
         viewModelScope.launch(ioDispatcher + errorHandling) {
-            Log.d("bookingErrorIs","start calling  booking end point")
+            _statusChange.emit(enNetworkStatus.Loading)
+            val result = homeRepository.createBooking(
+               bookingData.toBookingDto()
+            )
 
-            when (val result = homeRepository.createBooking(bookingData.toBookingDto())) {
+            when (result) {
                 is NetworkCallHandler.Successful<*> -> {
-//                    val roomData = result.data `as List<RoomDto>?
-                    /*  if(!roomData.isNullOrEmpty()){
-                          var roomDataToMutale = roomData
-                              .map { listData -> listData.toRoomModel() }
-                              .toMutableList()
 
-                          _rooms.emit(roomDataToMutale)
-                      }else{
-
-                          if (_rooms.value == null)
-                              _rooms.emit(mutableListOf<RoomModel>())
-                      }
-                      */
+                    _statusChange.emit(enNetworkStatus.Complate)
                 }
-
-
                 is NetworkCallHandler.Error -> {
-                    if (_rooms.value == null)
-                        _rooms.emit(mutableListOf<RoomModel>())
-
-                    throw Exception(result.data);
+                    _statusChange.emit(enNetworkStatus.Error)
+                    throw Exception(result.data?.replace("\"",""));
                 }
-
                 else -> {
-                    if (_rooms.value == null)
-                        _rooms.emit(mutableListOf<RoomModel>())
+                    _statusChange.emit(enNetworkStatus.Error)
 
                     throw Exception("unexpected Stat");
                 }

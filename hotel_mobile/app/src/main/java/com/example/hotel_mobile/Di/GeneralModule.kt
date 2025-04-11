@@ -92,7 +92,7 @@ class GeneralModule {
 
             install(Auth) {
                 bearer {
-                  sendWithoutRequest { true }
+//                  sendWithoutRequest { true }
                     loadTokens {
                         BearerTokens(
                             General.authData.value?.token?:"",
@@ -107,10 +107,8 @@ class GeneralModule {
                                 parameters.append("tokenHolder", General.authData.value?.refreshToken ?: "")
                             }
                         }.body<AuthResultDto>()
-
                         // Update saved tokens
                         General.updateSavedToken(authDao, refreshToken)
-
                         BearerTokens(
                             accessToken = refreshToken.accessToken,
                             refreshToken = refreshToken.refreshToken

@@ -113,7 +113,7 @@ public class UserController : Controller
     }
 
 
-    // [Authorize]
+    [Authorize]
     [HttpGet("room/{pageNumber:int}")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -144,6 +144,7 @@ public class UserController : Controller
     public IActionResult createBooking
     (BookingRequestDto bookingData)
     {
+        
         var authorizationHeader = HttpContext.Request.Headers["Authorization"];
         var id = AuthinticationServices.GetPayloadFromToken("id",
             authorizationHeader.ToString().Replace("Bearer ", ""));
@@ -157,31 +158,25 @@ public class UserController : Controller
         {
             return StatusCode(401, "you not have Permission");
         }
-
-        var isHasPermissionToCurd = AdminBuissnes.isAdminExist(userID ?? Guid.Empty);
-
-
-        if (!isHasPermissionToCurd)
-        {
-            return StatusCode(401, "you not have Permission");
-        }
-
+        
 
         var isVisibleBooking =
-            BookingBuiseness.isVisibleBooking(bookingData.bookingStartDateTime, bookingData.bookingEndDateTime);
+            BookingBuiseness.isValidBooking(bookingData.bookingStartDateTime, bookingData.bookingEndDateTime);
         if (!isVisibleBooking)
-            return BadRequest("not visible booking");
+            return BadRequest("هناك حجز ضمن الفترة المختارة");
 
-        double? bookingDayes = (bookingData.bookingStartDateTime - bookingData.bookingEndDateTime).TotalDays;
+        var  bookingFullDate = (bookingData.bookingEndDateTime-bookingData.bookingStartDateTime);
 
-        if (bookingDayes == null)
+        if (bookingFullDate.Days==0)
         {
-            return BadRequest("not valide booking");
+            return BadRequest("booking at least one day is required");
         }
+
+        var bookingDayes = Convert.ToDecimal(bookingFullDate.Days);
 
         var room = RoomBuisness.getRoom(bookingData.roomId);
 
-        var totalPriceHolder = (Convert.ToDecimal(bookingDayes) * room.pricePerNight);
+        var totalPriceHolder = (bookingDayes * room.pricePerNight);
         var bookingDataHolder = new BookingDto(
             bookingId: null,
             roomId: bookingData.roomId,
@@ -204,6 +199,8 @@ public class UserController : Controller
 
         if (result == false)
             return StatusCode(500, "some thing wrong");
-        return StatusCode(200, new { message = "booking created seccessfully" });
+        
+        return StatusCode(201, new { message = "booking created seccessfully" });
+
     }
 }

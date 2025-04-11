@@ -23,6 +23,7 @@ public class RefreshTokenController : Controller
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public ActionResult generateRefreshToken(string tokenHolder)
     {
+        Console.Write($"{DateTime.Now}");
         if (!clsTokenUtil.isValidToken(tokenHolder, _config))
             return Unauthorized("Invalid token");
         
