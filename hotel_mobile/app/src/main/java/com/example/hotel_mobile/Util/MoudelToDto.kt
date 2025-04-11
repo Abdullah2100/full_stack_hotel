@@ -1,5 +1,6 @@
 package com.example.hotel_mobile.Util
 
+import android.util.Log
 import com.example.hotel_mobile.Dto.BookingDto
 import com.example.hotel_mobile.Dto.ImageDto
 import com.example.hotel_mobile.Dto.PersonDto
@@ -85,21 +86,29 @@ object MoudelToDto {
     fun BookingModel.toBookingDto(): BookingDto {
         val startTimeList = this.startTime.split(":");
         val endTimeList = this.endTime.split(":");
+        val startBookingDate  = LocalDateTime.of(
+            this.startYear,
+            this.startMonth+1,
+            this.startDay,
+            startTimeList[0].toInt(),
+            startTimeList[1].toInt()
+        )
+        val endBookingDate =  LocalDateTime.of(
+            this.endYear,
+            this.endMonth+1,
+            this.endDay,
+            endTimeList[0].toInt(),
+            endTimeList[1].toInt()
+        )
+
+        Log.d("toBookingDto","""
+            ${this}
+            ${startBookingDate}
+            ${endBookingDate}
+        """.trimIndent())
         return BookingDto(
-            bookingStartDateTime = LocalDateTime.of(
-                this.startYear,
-                this.startMonth,
-                this.startDay,
-                startTimeList[1].toInt(),
-                startTimeList[2].toInt()
-            ),
-            bookingEndDateTime = LocalDateTime.of(
-                this.endYear,
-                this.endMonth,
-                this.endDay,
-                endTimeList[1].toInt(),
-                endTimeList[2].toInt()
-            ),
+            bookingStartDateTime=  startBookingDate   ,
+           bookingEndDateTime =  endBookingDate,
             roomId = this.roomId
         )
     }

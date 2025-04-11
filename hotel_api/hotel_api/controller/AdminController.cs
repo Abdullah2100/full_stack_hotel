@@ -883,7 +883,12 @@ namespace hotel_api.controller
         }
 
 
-        [Authorize]
+        /// <summary>
+        /// /
+        /// </summary>
+        /// <param name="bookingData"></param>
+        /// <returns></returns>
+     /*   [Authorize]
         [HttpPost("booking")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -954,7 +959,7 @@ namespace hotel_api.controller
                 return StatusCode(500, "some thing wrong");
             return StatusCode(200, new { message = "booking created seccessfully" });
         }
-
+*/
  
         private void saveImage(
             string? imagePath,

@@ -420,7 +420,7 @@ BEGIN
 SELECT EXISTS(
         SELECT 1 FROM persons   WHERE personid = id
         UNION ALL
-        SELECT 1 FROM  users WHERE  userid = id
+        SELECT 1 FROM  users WHERE  userid = id AND isdeleted  =  false
         UNION ALL
         SELECT 1 FROM admins  WHERE adminid = id
     ) INTO isExist;
@@ -761,6 +761,9 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER tr_roomt_insert BEFORE
 INSERT ON rooms FOR EACH ROW EXECUTE FUNCTION fn_room_insert();
 ---
+---
+
+---
 ----
 CREATE OR REPLACE FUNCTION fn_room_update_new (
         roomid_ UUID,
@@ -788,7 +791,7 @@ SET Status = CASE
         AND roomtypeid_ IS NOT NULL THEN roomtypeid_
         ELSE  roomtypeid
     END,
-    capacity = CASE
+    capacity = CASFE
         WHEN capacity_ <>  capacity
         AND capacity_ IS NOT NULL THEN capacity_
         ELSE  capacity
@@ -902,32 +905,30 @@ $$LANGUAGE plpgsql;
 ----
 
 CREATE TABLE Bookings (
-    bookingID BIGSERIAL PRIMARY KEY,
-    roomID UUID NOT NULL REFERENCES Rooms(roomid),
-    belongTo UUID NOT NULL REFERENCES users(userid),
+    bookingID UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    roomID UUID NOT NULL ,
+    belongTo UUID NOT NULL ,
     booking_start TIMESTAMP NOT NULL  CHECK (booking_start >= CURRENT_TIMESTAMP) ,
     booking_end TIMESTAMP NOT NULL  CHECK (booking_end > booking_start)  ,
-    duration INTERVAL GENERATED ALWAYS AS (booking_end - booking_start) STORED,
-    bookingStatus VARCHAR(50) CHECK (
+    bookingStatus VARCHAR(50) NOT NULL CHECK (
         bookingStatus IN ('Pending', 'Confirmed', 'Cancelled')
     ) DEFAULT 'Pending',
-    totalPrice NUMERIC(10, 2) CHECK (totalPrice > 0),
-    servicePayment NUMERIC(10, 2) DEFAULT 0 CHECK (servicePayment >= 0),
-    maintenancePayment NUMERIC(10, 2) DEFAULT 0 CHECK (maintenancePayment >= 0),
+    totalPrice NUMERIC(10, 2) NOT NULL CHECK (totalPrice > 0),
+    servicePayment NUMERIC(10, 2) NOT NULL DEFAULT 0 CHECK (servicePayment >= 0),
+    maintenancePayment NUMERIC(10, 2) NOT NULL DEFAULT 0 CHECK (maintenancePayment >= 0),
     paymentStatus VARCHAR(50) CHECK (
         paymentStatus IN ('Paid', 'Unpaid')
     ) DEFAULT 'Unpaid',
-    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    cancelledAt TIMESTAMP,
+    createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    cancelledAt TIMESTAMP  DEFAULT NULL,
     cancellationReason TEXT DEFAULT NULL,
-    actualCheckOut TIMESTAMP,
+    actualCheckOut TIMESTAMP DEFAULT Null,
         CONSTRAINT CHACK_IS_VALID_CREATION_ID CHECK(isExistById(belongTo)=TRUE),
         CONSTRAINT CHACK_IS_VALID_ROOMID_ID CHECK(fun_validRoomId(roomID)=TRUE)
 
 );
 ----
 ---
-
 CREATE OR REPLACE FUNCTION fn_isValid_booking(startBooking TIMESTAMP,endBooking TIMESTAMP)
 RETURNS BOOLEAN AS $$
 DECLARE
@@ -938,15 +939,19 @@ RAISE EXCEPTION 'Start and end booking dates cannot be NULL';
 RETURN FALSE;
 END IF;
 
-IF startBooking >= endBooking THEN
-RAISE EXCEPTION 'Start booking date must be before end booking date';
-RETURN FALSE;
-END IF;
+IF (startBooking >= CURRENT_TIMESTAMP) = false THEN
+        RAISE EXCEPTION 'Booking start date cannot be in the past';
+        RETURN FALSE;
+    END IF;
 
+    IF (endBooking::date - startBooking::date) <1 THEN
+      RAISE EXCEPTION 'Booking must at least one day ';
+      RETURN FALSE;
+    END IF;
 SELECT COUNT(*) > 0 INTO isValid 
 FROM bookings b
 WHERE (startBooking, endBooking) OVERLAPS (b.booking_start, b.booking_end)  ;
-RETURN isValid;
+RETURN isValid=false;
 EXCEPTION
 WHEN OTHERS THEN RAISE EXCEPTION 'Something went wrong: %',
 SQLERRM;
@@ -954,52 +959,47 @@ RETURN FALSE;
 END;
 $$ LANGUAGE plpgsql;
 ---
----
 
 
 ---
 ----
 CREATE OR REPLACE FUNCTION fn_bookin_insert(
-    RoomID_ UUID  ,
-    Dayes_ INT,
-    BookingStatus_ VARCHAR(50) ,
-    TotalPrice_ NUMERIC(10, 2),
-    FristPayment_ NUMERIC(10, 2) ,
-    ServicePayment_ NUMERIC(10, 2) ,
-    MaintincePayment_ NUMERIC(10, 2) ,
-     excpectedLeaveDate_ TIMESTAMP  ,
-    userid_  UUID
-     
-)RETURNS BOOLEAN AS $$
+    roomid_ UUID,
+    totalprice_ NUMERIC(10, 2),
+    userid_ UUID,
+    startbookindate_ TIMESTAMP,
+    endbookingdate_ TIMESTAMP
+) RETURNS BOOLEAN AS $$
 DECLARE
-isNotDeletion Boolean;
+    isNotDeletion Boolean;
 BEGIN
 
-SELECT isdeleted INTO isNotDeletion FROM user WHERE userid = userid_;
+IF startbookindate_ < CURRENT_TIMESTAMP THEN
+        RAISE EXCEPTION 'Booking start date cannot be in the past';
+        RETURN FALSE;
+    END IF;
+
+SELECT isdeleted INTO  isNotDeletion  FROM users WHERE userid = userid_ And isdeleted=false;
+
 IF isNotDeletion = TRUE THEN
 RAISE EXCEPTION 'The user is deleted';
 RETURN FALSE;
 END IF;
-INSERT INTO Bookings(
-    RoomID,
-    Dayes,
-    BookingStatus,
-    TotalPrice,
-    FristPayment,
-    ServicePayment,
-    MaintincePayment,
-    excpectedLeaveDate,
-    belongTo
+
+
+INSERT INTO bookings(
+    roomid,
+    belongto,
+    totalprice,
+	booking_start,
+	booking_end
+	
 ) VALUES(
-    RoomID_,
-    Dayes_,
-    BookingStatus_,
-    TotalPrice_,
-    FristPayment_,
-    ServicePayment_,
-    MaintincePayment_,
-    excpectedLeaveDate_,
-    userid_
+    roomid_,
+    userid_,
+    totalprice_,
+    startbookindate_ ,
+    endbookingdate_
 );
 
 
@@ -1012,7 +1012,50 @@ END;
 $$ LANGUAGE plpgsql;
 ---
 ---
+CREATE OR REPLACE FUNCTION fun_get_list_of_booking_at_specific_month_and_year
+(
+year_ INT,
+month_ INT
+)
+RETURNS Table (dayNumber INT)
+AS $$
+DECLARE
+startAt_ INT :=0;
+maxDayAtMon_ INT:=0;
+temp_date DATE;
+isInBetween BOOLEAN :=FALSE;
+BEGIN
 
+CREATE TEMP TABLE bookingDayAtMonthOfYear(
+eomonthdayNum INT
+)ON COMMIT DROP;
+ 
+SELECT 
+EXTRACT(DAY FROM (MAKE_DATE(year_, month_, 1) - INTERVAL '1 day')::DATE)
+INTO maxDayAtMon_ ;
+
+FOR counter in 1..maxDayAtMon_ LOOP
+  temp_date := MAKE_DATE(year_,month_counter);
+  SELECT COUNT(*)>0 INTO isInBetween FROM bookings b WHERE 
+  temp_date BETWEEN b.booking_start::DATE AND b.booking_end::DATE;
+
+  IF isInBetween = TRUE THEN 
+   INSERT INTO bookingDayAtMonthOfYear VALUES (counter);
+  END IF ; 
+END LOOP;
+
+RETURN QUERY  SELECT eomonthdayNum FROM bookingDayAtMonthOfYear;
+
+EXCEPTION
+WHEN OTHERS THEN RAISE EXCEPTION 'Something went wrong: %',
+SQLERRM;
+RETURN QUERY SELECT 0;
+
+
+END;
+$$LANGUAGE plpgsql;
+---
+---
 CREATE OR REPLACE FUNCTION fn_booking_insert_tr()
 RETURNS TRIGGER
 AS $$
@@ -1021,8 +1064,7 @@ isValidId BOOLEAN;
 BEGIN
 isValidId = isExistById(NEW.belongto);
 IF isValidId = FALSE THEN
-RAISE EXCEPTION 'Something went wrong: %',
-SQLERRM;
+RAISE EXCEPTION 'Something went wrong: %';
 RETURN NULL;
 END IF;
 RETURN NEW;

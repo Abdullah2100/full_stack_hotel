@@ -131,4 +131,7 @@ dependencies {
     //kotlin datetime
     implementation(libs.kotlinx.datetime)
 
+    //workder
+    implementation(libs.androidx.work.runtime.ktx)
+
 }

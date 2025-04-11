@@ -80,8 +80,8 @@ public class BookingBuiseness
         }
     }
 
-    public static bool isVisibleBooking(DateTime startBookingDate, DateTime endBookingDate)
+    public static bool isValidBooking(DateTime startBookingDate, DateTime endBookingDate)
     {
-        return BookingData.createBooking(startBookingDate: startBookingDate, endBookingDate: endBookingDate);
+        return BookingData.isValideBookingDate(startBookingDate: startBookingDate, endBookingDate: endBookingDate);
     }
 }
