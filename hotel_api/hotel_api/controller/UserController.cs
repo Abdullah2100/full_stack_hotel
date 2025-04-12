@@ -203,4 +203,22 @@ public class UserController : Controller
         return StatusCode(201, new { message = "booking created seccessfully" });
 
     }
+    
+    
+    [Authorize]
+    [HttpPost("booking/between{year:int}&{month:int}")]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+   // [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public IActionResult getBookingDayAtYearAndMont
+    (int  year, int month)
+    {
+       
+        List<string> bookingDay = BookingBuiseness.getBookingDayesAtMonthAndYearBuissness(year, month);
+       
+        return StatusCode(200, bookingDay??[]);
+        
+
+    }
+
 }

@@ -72,11 +72,13 @@ fun DatePicker(
     configuration: DatePickerConfiguration = DatePickerConfiguration.Builder().build(),
     month: Int = General.getCurrentMonth(),
     year: Int = General.getCurrentYear(),
-    alreadyBookedList: Map<Int, Int> = mapOf(1 to 1),
+    alreadyBookedList: Map<Int, Int>?=null,
     isYear: Boolean = false,
     isMonth: Boolean = false,
     dialogState:MutableState<Boolean> = mutableStateOf(false)
 ) {
+    Log.d("bookedList",alreadyBookedList.toString())
+
     val isShownDay = isMonth == false && isYear == false;
 
     val dateHolder = DatePickerDate(year, month, 0);
@@ -139,7 +141,7 @@ fun DatePicker(
                             )
                         },
                         configuration = configuration,
-                        alreadyBookedList = alreadyBookedList,
+                        alreadyBookedList =if(alreadyBookedList==null) emptyMap() else alreadyBookedList,
                         date = dateHolder
                     )
                 }

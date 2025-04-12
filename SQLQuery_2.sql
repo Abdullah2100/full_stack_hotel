@@ -935,12 +935,12 @@ DECLARE
 isValid BOOLEAN := FALSE;
 BEGIN
  IF startBooking IS NULL OR endBooking IS NULL THEN
-RAISE EXCEPTION 'Start and end booking dates cannot be NULL';
+RAISE NOTICE 'Start and end booking dates cannot be NULL';
 RETURN FALSE;
 END IF;
 
 IF (startBooking >= CURRENT_TIMESTAMP) = false THEN
-        RAISE EXCEPTION 'Booking start date cannot be in the past';
+        RAISE NOTICE 'Booking start date cannot be in the past';
         RETURN FALSE;
     END IF;
 
@@ -950,7 +950,9 @@ IF (startBooking >= CURRENT_TIMESTAMP) = false THEN
     END IF;
 SELECT COUNT(*) > 0 INTO isValid 
 FROM bookings b
-WHERE (startBooking, endBooking) OVERLAPS (b.booking_start, b.booking_end)  ;
+WHERE (startBooking, endBooking) OVERLAPS (b.booking_start, b.booking_end) AND bookingStatus='Confirmed'  ;
+        RAISE NOTICE 'isbookingValide = %',isValid;
+
 RETURN isValid=false;
 EXCEPTION
 WHEN OTHERS THEN RAISE EXCEPTION 'Something went wrong: %',
@@ -962,7 +964,8 @@ $$ LANGUAGE plpgsql;
 
 
 ---
-----
+---- 
+
 CREATE OR REPLACE FUNCTION fn_bookin_insert(
     roomid_ UUID,
     totalprice_ NUMERIC(10, 2),
@@ -986,6 +989,11 @@ RAISE EXCEPTION 'The user is deleted';
 RETURN FALSE;
 END IF;
 
+IF EXISTS (SELECT 1 FROM bookings b
+WHERE (startbookindate_, endbookingdate_) OVERLAPS (b.booking_start, b.booking_end)
+ AND b.bookingStatus='Confirmed')THEN
+RETURN FALSE;
+END IF;
 
 INSERT INTO bookings(
     roomid,
@@ -1017,43 +1025,41 @@ CREATE OR REPLACE FUNCTION fun_get_list_of_booking_at_specific_month_and_year
 year_ INT,
 month_ INT
 )
-RETURNS Table (dayNumber INT)
+RETURNS TEXT
 AS $$
 DECLARE
 startAt_ INT :=0;
 maxDayAtMon_ INT:=0;
 temp_date DATE;
-isInBetween BOOLEAN :=FALSE;
+dayes_ TEXT :='';
 BEGIN
 
-CREATE TEMP TABLE bookingDayAtMonthOfYear(
-eomonthdayNum INT
-)ON COMMIT DROP;
- 
-SELECT 
-EXTRACT(DAY FROM (MAKE_DATE(year_, month_, 1) - INTERVAL '1 day')::DATE)
-INTO maxDayAtMon_ ;
+    maxDayAtMon_ := EXTRACT(DAY FROM 
+        (MAKE_DATE(year_, month_, 1) + INTERVAL '1 month - 1 day'));
 
-FOR counter in 1..maxDayAtMon_ LOOP
-  temp_date := MAKE_DATE(year_,month_counter);
-  SELECT COUNT(*)>0 INTO isInBetween FROM bookings b WHERE 
-  temp_date BETWEEN b.booking_start::DATE AND b.booking_end::DATE;
-
-  IF isInBetween = TRUE THEN 
-   INSERT INTO bookingDayAtMonthOfYear VALUES (counter);
+FOR day_num in 1..maxDayAtMon_ LOOP
+   IF EXISTS (
+  SELECT 1 FROM bookings 
+  WHERE MAKE_DATE(year_, month_, day_num)
+ BETWEEN booking_start::DATE AND booking_end::DATE
+ AND bookingStatus='Confirmed'
+ ) THEN 
+   dayes_ := dayes_ || ', ' || day_num::TEXT;
   END IF ; 
 END LOOP;
 
-RETURN QUERY  SELECT eomonthdayNum FROM bookingDayAtMonthOfYear;
+RETURN  ltrim(dayes_, ',');
 
 EXCEPTION
 WHEN OTHERS THEN RAISE EXCEPTION 'Something went wrong: %',
 SQLERRM;
-RETURN QUERY SELECT 0;
-
-
+RETURN '';
 END;
 $$LANGUAGE plpgsql;
+---
+---
+
+
 ---
 ---
 CREATE OR REPLACE FUNCTION fn_booking_insert_tr()

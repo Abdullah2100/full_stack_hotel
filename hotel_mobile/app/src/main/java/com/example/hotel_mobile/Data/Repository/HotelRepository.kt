@@ -72,6 +72,51 @@ class HotelRepository  @Inject constructor(private val httpClient: HttpClient) {
 
     }
 
+    suspend fun  getBookingDayAtSpecficMonthAndYear(year:Int,month:Int):
+    NetworkCallHandler {
+
+        return try {
+
+            val result = httpClient
+                .post("${General.BASED_URL}/user/booking/between$year&${month+1}")
+                {
+                    contentType(ContentType.Application.Json)
+                    headers {
+                        append(
+                            HttpHeaders.Authorization,
+                            "Bearer ${General.authData.value?.refreshToken}"
+                        )
+                    }
+
+                }
+
+
+            if (result.status == HttpStatusCode.OK) {
+                val resultData = result.body<List<String>>();
+                NetworkCallHandler.Successful(resultData)
+            } else {
+                NetworkCallHandler.Error(result.body())
+            }
+
+        } catch (e: UnknownHostException) {
+            Log.d("bookingErrorIs",e.message.toString())
+
+            return NetworkCallHandler.Error(e.message)
+
+        } catch (e: IOException) {
+            Log.d("bookingErrorIs",e.message.toString())
+
+            return NetworkCallHandler.Error(e.message)
+
+        } catch (e: Exception) {
+            Log.d("bookingErrorIs",e.message.toString())
+
+            return NetworkCallHandler.Error(e.message)
+        }
+
+
+    }
+
     suspend fun createBooking (bookingModle:BookingDto): NetworkCallHandler {
 
 

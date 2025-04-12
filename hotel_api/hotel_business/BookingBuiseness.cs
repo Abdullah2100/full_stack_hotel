@@ -80,8 +80,21 @@ public class BookingBuiseness
         }
     }
 
-    public static bool isValidBooking(DateTime startBookingDate, DateTime endBookingDate)
+    public static bool isValidBooking(
+        DateTime startBookingDate, 
+        DateTime endBookingDate)
     {
         return BookingData.isValideBookingDate(startBookingDate: startBookingDate, endBookingDate: endBookingDate);
     }
+      public static List<string> getBookingDayesAtMonthAndYearBuissness(
+          int year, 
+          int month)
+        {
+            var bookingData =  BookingData.getBookingDayesAtMonthAndYearData(year: year, month: month);
+            switch (bookingData==null)
+            {
+                case false: return bookingData;
+                default: return [];
+            }
+        }
 }
