@@ -8,6 +8,7 @@ import com.example.hotel_mobile.Dto.RoomDto
 import com.example.hotel_mobile.Modle.BookingModel
 import com.example.hotel_mobile.Modle.NetworkCallHandler
 import com.example.hotel_mobile.Modle.RoomModel
+import com.example.hotel_mobile.Modle.enDropDownDateType
 import com.example.hotel_mobile.Modle.enNetworkStatus
 import com.example.hotel_mobile.Util.DtoToModule.toRoomModel
 import com.example.hotel_mobile.Util.MoudelToDto.toBookingDto
@@ -34,6 +35,12 @@ class HomeViewModle @Inject constructor(
     private val _statusChange = MutableStateFlow<enNetworkStatus>(enNetworkStatus.None)
     val statusChange: StateFlow<enNetworkStatus> = _statusChange.asStateFlow()
 
+    private  val _bookedStartBookingDayAtMonthAndYear =MutableStateFlow<Map<Int,Int>?>(null)
+     val bookedStartBookingDayAtMonthAndYear = _bookedStartBookingDayAtMonthAndYear.asStateFlow();
+
+
+    private  val _bookedEndBookingDayAtMonthAndYear =MutableStateFlow<Map<Int,Int>?>(null)
+    val bookedEndBookingDayAtMonthAndYear = _bookedEndBookingDayAtMonthAndYear.asStateFlow();
 
 
     private val _errorMessage = MutableStateFlow<String?>(null)
@@ -110,6 +117,51 @@ class HomeViewModle @Inject constructor(
                 }
             }
 
+        }
+    }
+
+    fun getBookedBookingDayAt(month:Int,year:Int,dropDownType: enDropDownDateType){
+        viewModelScope.launch {
+            val result = homeRepository.getBookingDayAtSpecficMonthAndYear(year = year, month = month)
+           when(result){
+               is NetworkCallHandler.Successful<*> ->{
+                   val bookedDate = result.data as List<String>
+                   val bookedDateToMap = bookedDate.map { it.trim().toInt() to it.trim().toInt()}.toMap()
+                    if(dropDownType == enDropDownDateType.MonthStartBooking){
+                        _bookedStartBookingDayAtMonthAndYear.emit(
+                            if(bookedDateToMap.size>0)bookedDateToMap else emptyMap()
+                        )
+                        _bookedEndBookingDayAtMonthAndYear.emit(null)
+                    }else{
+                        _bookedEndBookingDayAtMonthAndYear.emit(
+                            if(bookedDateToMap.size>0)bookedDateToMap else emptyMap()
+                        )
+                        _bookedStartBookingDayAtMonthAndYear.emit(null)
+                    }
+               }
+               is NetworkCallHandler.Error -> {
+                   _statusChange.emit(enNetworkStatus.Error)
+                   throw Exception(result.data?.replace("\"",""));
+               }
+               else -> {
+                   _statusChange.emit(enNetworkStatus.Error)
+
+                   throw Exception("unexpected Stat");
+               }
+           }
+        }
+    }
+
+     fun clearBookedBookingDate(enDrowType: enDropDownDateType){
+        viewModelScope.launch {
+
+            if(enDrowType==enDropDownDateType.MonthStartBooking){
+                _bookedStartBookingDayAtMonthAndYear.emit(emptyMap())
+            }
+            else{
+                _bookedEndBookingDayAtMonthAndYear.emit(emptyMap())
+
+            }
         }
     }
 

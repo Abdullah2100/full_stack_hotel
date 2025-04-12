@@ -77,31 +77,31 @@ public class BookingData
             return isVisibleBooking;
         }
 
- /*       public static bool getBookingAtMonthAndYear(
+       public static  List<string>? getBookingDayesAtMonthAndYearData(
             int year, 
             int month
             )
-        {
-            bool isVisibleBooking = false;
+       {
+           List<string>? bookingsDayAtYearAndMonth = null;
             try
             {
                 using (var con = new NpgsqlConnection(connectionUr))
                 {
                     con.Open();
-                    string query = @"SELECT * FROM fn_isValid_booking(
-                                   @startBooking,
-                                  @endBooking 
+                    string query = @"SELECT * FROM fun_get_list_of_booking_at_specific_month_and_year(
+                                   @year_,
+                                  @month_ 
                                     );";
 
                     using (var cmd = new NpgsqlCommand(query, con))
                     {
-                        cmd.Parameters.AddWithValue("@startBooking", startBookingDate);
-                        cmd.Parameters.AddWithValue("@endBooking", endBookingDate);
+                        cmd.Parameters.AddWithValue("@year_", year);
+                        cmd.Parameters.AddWithValue("@month_", month);
                         var result = cmd.ExecuteScalar();
 
-                        if (result != null && bool.TryParse(result?.ToString(), out bool isVisibleBookingResult))
+                        if (result != null && result.ToString().Length>0)
                         {
-                            isVisibleBooking = isVisibleBookingResult;
+                            bookingsDayAtYearAndMonth = Convert.ToString(result)?.Split(',').ToList(); 
                         }
                     }
                 }
@@ -111,9 +111,9 @@ public class BookingData
                 Console.WriteLine("this from check if the booking is visible error {0}", ex);
             }
 
-            return isVisibleBooking;
+            return bookingsDayAtYearAndMonth;
         }
-*/
+
 
 
 }

@@ -67,13 +67,15 @@ import kotlinx.coroutines.delay
 @Composable
 fun RoomPage(
     roomData: RoomDto,
-    homeViewModle:   HomeViewModle
+    homeViewModle: HomeViewModle
 ) {
 
 
+    val bookedStartBookingDay = homeViewModle.bookedStartBookingDayAtMonthAndYear.collectAsState();
+    val bookedEndBookingDay = homeViewModle.bookedEndBookingDayAtMonthAndYear.collectAsState();
 
 
-val isLoading = homeViewModle.statusChange.collectAsState();
+    val isLoading = homeViewModle.statusChange.collectAsState();
     val context = LocalContext.current;
     val images = roomData.images?.filter { result -> result.isThumnail == false }
 
@@ -114,48 +116,48 @@ val isLoading = homeViewModle.statusChange.collectAsState();
     fun handlTheSelectionDialog(day: Int, month: Int, year: Int, hour: Int? = 0, minit: Int? = 0) {
         when (dropDownType.value) {
             enDropDownDateType.YearStartBooking -> {
-                Log.d("timeResultData","1")
+                Log.d("timeResultData", "1")
 
                 bookingData.value.startYear = year
             }
 
             enDropDownDateType.MonthStartBooking -> {
-                Log.d("timeResultData","2")
+                Log.d("timeResultData", "2")
                 bookingData.value.startMonth = month
             }
 
             enDropDownDateType.DayStartBooking -> {
-                Log.d("timeResultData","3")
+                Log.d("timeResultData", "3")
 
                 bookingData.value.startDay = day
             }
 
             enDropDownDateType.TimeStartBooking -> {
-                Log.d("timeResultData","4")
+                Log.d("timeResultData", "4")
 
                 bookingData.value.startTime = "$hour:$minit"
             }
 
             enDropDownDateType.YearEndBooking -> {
-                Log.d("timeResultData","5")
+                Log.d("timeResultData", "5")
 
                 bookingData.value.endYear = year
             }
 
             enDropDownDateType.MonthEndBooking -> {
-                Log.d("timeResultData","6")
+                Log.d("timeResultData", "6")
 
                 bookingData.value.endMonth = month
             }
 
             enDropDownDateType.DayEndBooking -> {
-                Log.d("timeResultData","7")
+                Log.d("timeResultData", "7")
 
                 bookingData.value.endDay = day
             }
 
             enDropDownDateType.TimeEndBooking -> {
-                Log.d("timeResultData","8")
+                Log.d("timeResultData", "8")
 
                 bookingData.value.endTime = "$hour:$minit"
             }
@@ -230,8 +232,10 @@ val isLoading = homeViewModle.statusChange.collectAsState();
 
 
 
+    Log.d("bookedList",bookedEndBookingDay.value.toString())
+    Log.d("bookedList",bookedStartBookingDay.value.toString())
     LaunchedEffect(isLoading.value) {
-        if(showBottomSheet.value==true&& isLoading.value==enNetworkStatus.Complate){
+        if (showBottomSheet.value == true && isLoading.value == enNetworkStatus.Complate) {
             showBottomSheet.value = false;
             snackbarHostState.showSnackbar("تم انشاء الحجز بنجاح")
 
@@ -556,37 +560,72 @@ val isLoading = homeViewModle.statusChange.collectAsState();
                             }
 
                             CustomSizer(height = 5.dp)
+                            if (bookedStartBookingDay.value != null) {
+                                Row(
+                                    modifier = Modifier
+                                        .height(50.dp)
+                                        .fillMaxWidth()
+                                        .border(
+                                            1.dp,
+                                            Color.Black.copy(0.16f), RoundedCornerShape(16.dp)
+                                        )
+                                        .clickable {
+                                            dropDownType.value = enDropDownDateType.DayStartBooking
+                                            isOpenDateDialog.value = true
+                                        }
+                                        .padding(horizontal = 15.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
 
-                            Row(
-                                modifier = Modifier
-                                    .height(50.dp)
-                                    .fillMaxWidth()
-                                    .border(
-                                        1.dp,
-                                        Color.Black.copy(0.16f), RoundedCornerShape(16.dp)
+                                    Text(
+                                        bookingData.value.startDay.toString(),
+                                        fontSize = 19.sp,
+                                        fontWeight = FontWeight.Bold
                                     )
-                                    .clickable {
-                                        dropDownType.value = enDropDownDateType.DayStartBooking
-                                        isOpenDateDialog.value = true
-                                    }
-                                    .padding(horizontal = 15.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
+                                    Text(
+                                        "بداية يوم الحجز",
+                                        fontSize = 19.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
 
-                                Text(
-                                    bookingData.value.startDay.toString(),
-                                    fontSize = 19.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
-                                Text(
-                                    "بداية يوم الحجز",
-                                    fontSize = 19.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
+                                CustomSizer(height = 5.dp)
+                            } else {
+                                Button(
+                                    modifier = Modifier
+                                        .height(50.dp)
+                                        .fillMaxWidth()
+//                                        .border(
+//                                            1.dp,
+//                                            Color.Black.copy(0.16f), RoundedCornerShape(16.dp)
+//                                        )
+                                        .padding(horizontal = 15.dp),
+                                    onClick = {
+                                        homeViewModle.getBookedBookingDayAt(
+                                            bookingData.value.startMonth,
+                                            bookingData.value.startYear,
+                                            enDropDownDateType.MonthStartBooking
+                                        )
+                                    }
+                                ) {
+
+                                    Text(
+                                        bookingData.value.startDay.toString(),
+                                        fontSize = 19.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    Text(
+                                        "التحقق من الحجوزات في السنة والشهر",
+                                        fontSize = 19.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+
+                                CustomSizer(height = 5.dp)
+
                             }
 
-                            CustomSizer(height = 5.dp)
 
                             Row(
                                 modifier = Modifier
@@ -694,39 +733,77 @@ val isLoading = homeViewModle.statusChange.collectAsState();
                             }
                             CustomSizer(height = 5.dp)
 
-                            Row(
-                                modifier = Modifier
-                                    .height(50.dp)
-                                    .fillMaxWidth()
-                                    .border(
-                                        1.dp,
-                                        Color.Black.copy(0.16f), RoundedCornerShape(16.dp)
+                            if (bookedEndBookingDay.value != null) {
+                                Row(
+                                    modifier = Modifier
+                                        .height(50.dp)
+                                        .fillMaxWidth()
+                                        .border(
+                                            1.dp,
+                                            Color.Black.copy(0.16f), RoundedCornerShape(16.dp)
+                                        )
+                                        .clickable {
+                                            dropDownType.value = enDropDownDateType.DayEndBooking
+                                            isOpenDateDialog.value = true
+                                        }
+                                        .padding(horizontal = 15.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+
+                                    horizontalArrangement = Arrangement.SpaceBetween
+
+                                ) {
+
+                                    Text(
+                                        bookingData.value.endDay.toString(),
+                                        fontSize = 19.sp,
+                                        fontWeight = FontWeight.Bold
                                     )
-                                    .clickable {
-                                        dropDownType.value = enDropDownDateType.DayEndBooking
-                                        isOpenDateDialog.value = true
+                                    Text(
+                                        "نهاية يوم الحجز",
+                                        fontSize = 19.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+
+                                CustomSizer(height = 5.dp)
+                            } else {
+                                Button(
+
+                                    modifier = Modifier
+                                        .height(50.dp)
+                                        .fillMaxWidth()
+                                        .border(
+                                            1.dp,
+                                            Color.Black.copy(0.16f), RoundedCornerShape(16.dp)
+                                        )
+                                        .clickable {
+                                            dropDownType.value = enDropDownDateType.DayStartBooking
+                                            isOpenDateDialog.value = true
+                                        }
+                                        .padding(horizontal = 15.dp),
+                                    onClick = {
+                                        homeViewModle.getBookedBookingDayAt(
+                                            bookingData.value.endYear, bookingData.value.endMonth,
+                                            enDropDownDateType.MonthStartBooking
+                                        )
                                     }
-                                    .padding(horizontal = 15.dp),
-                                verticalAlignment = Alignment.CenterVertically,
+                                ) {
 
-                                horizontalArrangement = Arrangement.SpaceBetween
+                                    Text(
+                                        bookingData.value.startDay.toString(),
+                                        fontSize = 19.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    Text(
+                                        "بداية يوم الحجز",
+                                        fontSize = 19.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
 
-                            ) {
+                                CustomSizer(height = 5.dp)
 
-                                Text(
-                                    bookingData.value.endDay.toString(),
-                                    fontSize = 19.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
-                                Text(
-                                    "نهاية يوم الحجز",
-                                    fontSize = 19.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
                             }
-
-                            CustomSizer(height = 5.dp)
-
                             Row(
                                 modifier = Modifier
                                     .height(50.dp)
@@ -757,13 +834,12 @@ val isLoading = homeViewModle.statusChange.collectAsState();
                                 )
                             }
 
-                            Button (
+                            Button(
                                 modifier = Modifier
                                     .padding(top = 10.dp)
-                                    .fillMaxWidth()
-                                ,
-                                enabled = isLoading.value!=enNetworkStatus.Loading,
-                                onClick =  {
+                                    .fillMaxWidth(),
+                                enabled = isLoading.value != enNetworkStatus.Loading,
+                                onClick = {
                                     homeViewModle.createBooking(bookingData.value)
                                 }
                             ) {
@@ -778,13 +854,13 @@ val isLoading = homeViewModle.statusChange.collectAsState();
                                     }
 
                                     else -> {
-                                        Text("انشاء حجز جديد",
+                                        Text(
+                                            "انشاء حجز جديد",
                                             color = Color.White,
                                             fontSize = 16.sp
                                         )
                                     }
                                 }
-
 
 
                             }
@@ -830,10 +906,17 @@ val isLoading = homeViewModle.statusChange.collectAsState();
                                             month = handlMonthForDialog(),
                                             year = handlYearForDialog(),
                                             modifier = Modifier.padding(16.dp),
+                                            alreadyBookedList = if(bookedStartBookingDay.value!=null)bookedStartBookingDay.value
+                                            else if(bookedEndBookingDay.value!=null)bookedEndBookingDay.value
+                                            else emptyMap(),
                                             onDateSelected = { year, month, day ->
 
                                                 isOpenDateDialog.value = false
-                                                handlTheSelectionDialog(day = day, month = month, year = year)
+                                                handlTheSelectionDialog(
+                                                    day = day,
+                                                    month = month,
+                                                    year = year
+                                                )
                                             }
                                         )
                                     }
@@ -845,7 +928,6 @@ val isLoading = homeViewModle.statusChange.collectAsState();
 
             }
         })
-
 
 
 }
