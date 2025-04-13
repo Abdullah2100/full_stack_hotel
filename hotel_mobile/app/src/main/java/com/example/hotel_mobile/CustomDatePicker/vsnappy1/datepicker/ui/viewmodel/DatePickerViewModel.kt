@@ -21,6 +21,8 @@ internal class DatePickerViewModel : ViewModel() {
     private lateinit var availableMonths: List<Month>
 
     private var _availableMonths: MutableLiveData<List<Month>> = MutableLiveData(emptyList())
+    private var _mothChanges: MutableLiveData<Boolean?> = MutableLiveData(null)
+
 
 
     override fun onCleared() {
@@ -35,6 +37,7 @@ internal class DatePickerViewModel : ViewModel() {
     }
 
     private fun updateCurrentVisibleMonth(month: Int) {
+
         _uiState.value?.apply {
             _uiState.value = this.copy(
                 currentVisibleMonth = availableMonths[month],
@@ -42,18 +45,20 @@ internal class DatePickerViewModel : ViewModel() {
                 selectedMonthIndex = month
             )
         }
+
+
     }
 
     fun updateSelectedMonthIndex(index: Int) {
-        Log.d("selectedMonthIs", "${index}")
-
         _uiState.value?.apply {
             _uiState.value = this.copy(
                 selectedMonthIndex = index,
                 currentVisibleMonth = _availableMonths.value!![index % 12]
             )
         }
+
     }
+
 
     fun updateSelectedDayAndMonth(day: Int) {
 

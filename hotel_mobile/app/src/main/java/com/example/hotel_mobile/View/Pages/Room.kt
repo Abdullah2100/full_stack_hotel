@@ -17,8 +17,10 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -45,14 +47,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.core.content.ContextCompat
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.zIndex
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.example.hotel_mobile.CustomDatePicker.vsnappy1.datepicker.DatePicker
 import com.example.hotel_mobile.CustomDatePicker.vsnappy1.timepicker.TimePicker
 import com.example.hotel_mobile.Dto.RoomDto
-import com.example.hotel_mobile.Modle.BookingModel
 import com.example.hotel_mobile.Modle.enDropDownDateType
 import com.example.hotel_mobile.Modle.enNetworkStatus
 import com.example.hotel_mobile.Util.General
@@ -89,80 +90,14 @@ fun RoomPage(
     val isOpenDateDialog = remember { mutableStateOf(false) }
     val isOpenTimeDialog = remember { mutableStateOf(false) }
 
-    val currentYear = General.getCurrentYear()
-    val currentMonth = General.getCurrentMonth()
-    val currentDay = General.getCurrentStartDayAtMonth()
-    val currentTime = General.getCurrentCurrentTime()
-    val bookingData = remember {
-        mutableStateOf(
-            BookingModel(
-                startYear = currentYear,
-                startMonth = currentMonth,
-                startDay = currentDay,
-                startTime = currentTime,
-                endYear = currentYear,
-                endMonth = currentMonth,
-                endDay = currentDay,
-                endTime = currentTime,
-                roomId = roomData.roomId!!
-            )
-        )
-    }
+    val bookingData = homeViewModle.bookingData.collectAsState()
 
     val dropDownType = remember { mutableStateOf(enDropDownDateType.YearStartBooking) }
     val snackbarHostState = remember { SnackbarHostState() }
 
+    val isOpenDialog = remember { mutableStateOf(false)}
 
-    fun handlTheSelectionDialog(day: Int, month: Int, year: Int, hour: Int? = 0, minit: Int? = 0) {
-        when (dropDownType.value) {
-            enDropDownDateType.YearStartBooking -> {
-                Log.d("timeResultData", "1")
-
-                bookingData.value.startYear = year
-            }
-
-            enDropDownDateType.MonthStartBooking -> {
-                Log.d("timeResultData", "2")
-                bookingData.value.startMonth = month
-            }
-
-            enDropDownDateType.DayStartBooking -> {
-                Log.d("timeResultData", "3")
-
-                bookingData.value.startDay = day
-            }
-
-            enDropDownDateType.TimeStartBooking -> {
-                Log.d("timeResultData", "4")
-
-                bookingData.value.startTime = "$hour:$minit"
-            }
-
-            enDropDownDateType.YearEndBooking -> {
-                Log.d("timeResultData", "5")
-
-                bookingData.value.endYear = year
-            }
-
-            enDropDownDateType.MonthEndBooking -> {
-                Log.d("timeResultData", "6")
-
-                bookingData.value.endMonth = month
-            }
-
-            enDropDownDateType.DayEndBooking -> {
-                Log.d("timeResultData", "7")
-
-                bookingData.value.endDay = day
-            }
-
-            enDropDownDateType.TimeEndBooking -> {
-                Log.d("timeResultData", "8")
-
-                bookingData.value.endTime = "$hour:$minit"
-            }
-        }
-    }
+    val errorMessage = remember { mutableStateOf<String?>(null) }
 
     fun handlMonthForDialog(): Int {
         when (dropDownType.value) {
@@ -234,6 +169,11 @@ fun RoomPage(
 
     Log.d("bookedList",bookedEndBookingDay.value.toString())
     Log.d("bookedList",bookedStartBookingDay.value.toString())
+
+    LaunchedEffect(key1 = Unit) {
+        homeViewModle.getBookedBookingDayAt()
+    }
+
     LaunchedEffect(isLoading.value) {
         if (showBottomSheet.value == true && isLoading.value == enNetworkStatus.Complate) {
             showBottomSheet.value = false;
@@ -256,14 +196,14 @@ fun RoomPage(
     }
 
 
-
-    CustomErrorSnackBar(
-        authViewModel = null,
-        homeViewModel = homeViewModle,
-        page = {
+//    CustomErrorSnackBar(
+//        authViewModel = null,
+//        homeViewModel = homeViewModle,
+//        page = {
             Scaffold(
                 snackbarHost = {
-                    SnackbarHost(hostState = snackbarHostState)
+                    SnackbarHost(hostState = snackbarHostState,
+                        modifier = Modifier.zIndex(100f))
                 },
                 bottomBar = {
                     BottomAppBar(
@@ -276,6 +216,7 @@ fun RoomPage(
                             Button(
                                 onClick = {
                                     showBottomSheet.value = true
+//                                    isOpenDialog.value = true
                                 },
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -560,8 +501,7 @@ fun RoomPage(
                             }
 
                             CustomSizer(height = 5.dp)
-                            if (bookedStartBookingDay.value != null) {
-                                Row(
+                                   Row(
                                     modifier = Modifier
                                         .height(50.dp)
                                         .fillMaxWidth()
@@ -570,8 +510,11 @@ fun RoomPage(
                                             Color.Black.copy(0.16f), RoundedCornerShape(16.dp)
                                         )
                                         .clickable {
-                                            dropDownType.value = enDropDownDateType.DayStartBooking
-                                            isOpenDateDialog.value = true
+                                            if(bookedStartBookingDay.value != null){
+                                                dropDownType.value = enDropDownDateType.DayStartBooking
+                                                isOpenDateDialog.value = true
+                                            }
+
                                         }
                                         .padding(horizontal = 15.dp),
                                     verticalAlignment = Alignment.CenterVertically,
@@ -579,7 +522,9 @@ fun RoomPage(
                                 ) {
 
                                     Text(
-                                        bookingData.value.startDay.toString(),
+                                        if(bookingData.value.startDay!=null)
+                                            bookingData.value.startDay.toString()
+                                        else "",
                                         fontSize = 19.sp,
                                         fontWeight = FontWeight.Bold
                                     )
@@ -591,41 +536,6 @@ fun RoomPage(
                                 }
 
                                 CustomSizer(height = 5.dp)
-                            } else {
-                                Button(
-                                    modifier = Modifier
-                                        .height(50.dp)
-                                        .fillMaxWidth()
-//                                        .border(
-//                                            1.dp,
-//                                            Color.Black.copy(0.16f), RoundedCornerShape(16.dp)
-//                                        )
-                                        .padding(horizontal = 15.dp),
-                                    onClick = {
-                                        homeViewModle.getBookedBookingDayAt(
-                                            bookingData.value.startMonth,
-                                            bookingData.value.startYear,
-                                            enDropDownDateType.MonthStartBooking
-                                        )
-                                    }
-                                ) {
-
-                                    Text(
-                                        bookingData.value.startDay.toString(),
-                                        fontSize = 19.sp,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                    Text(
-                                        "التحقق من الحجوزات في السنة والشهر",
-                                        fontSize = 19.sp,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                }
-
-                                CustomSizer(height = 5.dp)
-
-                            }
-
 
                             Row(
                                 modifier = Modifier
@@ -713,8 +623,6 @@ fun RoomPage(
                                     .padding(horizontal = 15.dp),
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically,
-
-
                                 ) {
 
                                 Text(
@@ -733,7 +641,6 @@ fun RoomPage(
                             }
                             CustomSizer(height = 5.dp)
 
-                            if (bookedEndBookingDay.value != null) {
                                 Row(
                                     modifier = Modifier
                                         .height(50.dp)
@@ -743,18 +650,20 @@ fun RoomPage(
                                             Color.Black.copy(0.16f), RoundedCornerShape(16.dp)
                                         )
                                         .clickable {
-                                            dropDownType.value = enDropDownDateType.DayEndBooking
-                                            isOpenDateDialog.value = true
+                                            if(bookedEndBookingDay.value != null){
+                                                dropDownType.value = enDropDownDateType.DayEndBooking
+                                                isOpenDateDialog.value = true
+                                            }
+
                                         }
                                         .padding(horizontal = 15.dp),
                                     verticalAlignment = Alignment.CenterVertically,
-
                                     horizontalArrangement = Arrangement.SpaceBetween
-
                                 ) {
-
                                     Text(
-                                        bookingData.value.endDay.toString(),
+                                        if(bookingData.value.endDay!=null)
+                                            bookingData.value.endDay.toString()
+                                        else "",
                                         fontSize = 19.sp,
                                         fontWeight = FontWeight.Bold
                                     )
@@ -766,44 +675,6 @@ fun RoomPage(
                                 }
 
                                 CustomSizer(height = 5.dp)
-                            } else {
-                                Button(
-
-                                    modifier = Modifier
-                                        .height(50.dp)
-                                        .fillMaxWidth()
-                                        .border(
-                                            1.dp,
-                                            Color.Black.copy(0.16f), RoundedCornerShape(16.dp)
-                                        )
-                                        .clickable {
-                                            dropDownType.value = enDropDownDateType.DayStartBooking
-                                            isOpenDateDialog.value = true
-                                        }
-                                        .padding(horizontal = 15.dp),
-                                    onClick = {
-                                        homeViewModle.getBookedBookingDayAt(
-                                            bookingData.value.endYear, bookingData.value.endMonth,
-                                            enDropDownDateType.MonthStartBooking
-                                        )
-                                    }
-                                ) {
-
-                                    Text(
-                                        bookingData.value.startDay.toString(),
-                                        fontSize = 19.sp,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                    Text(
-                                        "بداية يوم الحجز",
-                                        fontSize = 19.sp,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                }
-
-                                CustomSizer(height = 5.dp)
-
-                            }
                             Row(
                                 modifier = Modifier
                                     .height(50.dp)
@@ -821,7 +692,6 @@ fun RoomPage(
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
-
                                 Text(
                                     bookingData.value.endTime,
                                     fontSize = 19.sp,
@@ -840,7 +710,11 @@ fun RoomPage(
                                     .fillMaxWidth(),
                                 enabled = isLoading.value != enNetworkStatus.Loading,
                                 onClick = {
-                                    homeViewModle.createBooking(bookingData.value)
+                                    homeViewModle.createBooking(
+                                        bookingData.value,
+                                        errorMessage,
+                                        isOpenDialog)
+
                                 }
                             ) {
                                 when (isLoading.value) {
@@ -878,7 +752,13 @@ fun RoomPage(
                                     ) {
                                         TimePicker(
                                             onTimeSelected = { hour, minit ->
-                                                handlTheSelectionDialog(0, 0, 0, hour, minit)
+                                                homeViewModle.handlTheSelectionDialog(
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    hour,
+                                                    minit,
+                                                    enDropTyp = dropDownType.value)
                                                 isOpenTimeDialog.value = false
                                             }
                                         )
@@ -906,16 +786,17 @@ fun RoomPage(
                                             month = handlMonthForDialog(),
                                             year = handlYearForDialog(),
                                             modifier = Modifier.padding(16.dp),
-                                            alreadyBookedList = if(bookedStartBookingDay.value!=null)bookedStartBookingDay.value
-                                            else if(bookedEndBookingDay.value!=null)bookedEndBookingDay.value
-                                            else emptyMap(),
+                                            alreadyBookedList = if(dropDownType.value==enDropDownDateType.DayStartBooking)bookedStartBookingDay.value
+                                            else bookedEndBookingDay.value
+                                           ,
                                             onDateSelected = { year, month, day ->
 
                                                 isOpenDateDialog.value = false
-                                                handlTheSelectionDialog(
+                                                homeViewModle.handlTheSelectionDialog(
                                                     day = day,
                                                     month = month,
-                                                    year = year
+                                                    year = year,
+                                                    enDropTyp = dropDownType.value
                                                 )
                                             }
                                         )
@@ -926,8 +807,61 @@ fun RoomPage(
                     }
                 }
 
+                if(isOpenDialog.value)
+                    AlertDialog(onDismissRequest = {
+                            isOpenDialog.value = false
+                            errorMessage.value =null
+                    }, confirmButton = { /*TODO*/ },
+
+                        title = {Text(errorMessage.value?:"",
+                            fontSize = 19.sp)},
+                        dismissButton = {
+                            Button(onClick = {
+                                isOpenDialog.value = false
+                                errorMessage.value =null
+                            }) {
+                                Text("الغاء")
+
+                            }
+                        }
+
+                        )
+//                    Dialog(
+//                        properties = DialogProperties(
+//                            dismissOnClickOutside = true,
+//                            usePlatformDefaultWidth =false
+//                        ),
+//                        onDismissRequest = {
+//                            isOpenDialog.value = false
+//                            errorMessage.value =null
+//                                           },
+//                      )
+//                       {
+//                        Box(
+//                            modifier = Modifier.fillMaxSize()
+//                                .background(Color.Black.copy(0.16f))
+//                                .clickable {
+//                                    isOpenDialog.value = false
+//                                    errorMessage.value =null
+//                                }
+//                            , contentAlignment = Alignment.Center
+//                        ){
+//                          Box(
+//                              modifier=Modifier.fillMaxWidth(0.8f)
+//                                  .height(150.dp)
+//                                  .background(Color.White,
+//                                      shape = RoundedCornerShape(17.dp)
+//                                  )
+//                                  .zIndex(100f)
+//                          ){
+//                              Text(errorMessage.value?:"")
+//                          }
+//                        }
+//
+//                        }
+
             }
-        })
+//        })
 
 
 }

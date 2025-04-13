@@ -15,6 +15,7 @@ import com.example.hotel_mobile.Modle.RoomTypeModel
 import com.example.hotel_mobile.Modle.UserModel
 import com.example.hotel_mobile.Util.MoudelToDto.toUserDto
 import java.time.LocalDateTime
+import java.util.UUID
 
 object MoudelToDto {
     fun PersonModel.toPersonDto(): PersonDto {
@@ -89,14 +90,14 @@ object MoudelToDto {
         val startBookingDate  = LocalDateTime.of(
             this.startYear,
             this.startMonth+1,
-            this.startDay,
+            this.startDay?:0,
             startTimeList[0].toInt(),
             startTimeList[1].toInt()
         )
         val endBookingDate =  LocalDateTime.of(
             this.endYear,
             this.endMonth+1,
-            this.endDay,
+            this.endDay?:0,
             endTimeList[0].toInt(),
             endTimeList[1].toInt()
         )
@@ -109,7 +110,7 @@ object MoudelToDto {
         return BookingDto(
             bookingStartDateTime=  startBookingDate   ,
            bookingEndDateTime =  endBookingDate,
-            roomId = this.roomId
+            roomId = this.roomId?: UUID.randomUUID()
         )
     }
 }

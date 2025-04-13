@@ -22,6 +22,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -107,6 +108,8 @@ fun DatePicker(
     Column(
         horizontalAlignment = Alignment.End
     ) {
+
+
         Box(modifier = modifier.onGloballyPositioned {
             if (it.size.height == 0) return@onGloballyPositioned
             height = it.size.height.toDp() - configuration.headerHeight// Update the height
@@ -114,12 +117,17 @@ fun DatePicker(
         {
 
             // TODO add sliding effect when next or previous arrow is pressed
+
             CalendarHeader(
                 title = "${uiState.currentVisibleMonth.name} ${uiState.selectedYear}",
                 isPreviousNextVisible = false,// !uiState?.isMonthYearViewVisible,
                 themeColor = configuration.selectedDateBackgroundColor,
                 configuration = configuration,
             )
+
+
+
+//            if(viewModel.monthChange.value==true)
             Box(
                 modifier = Modifier
                     .padding(top = configuration.headerHeight)
@@ -169,9 +177,8 @@ fun DatePicker(
                 }
             }
         }
-
         Row(
-            modifier=Modifier
+            modifier= Modifier
                 .padding(horizontal = 19.dp)
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.End,
@@ -448,14 +455,16 @@ private fun DateViewBodyItem(
                 .padding(top = if (value < 7) 0.dp else topPaddingForItem) // I don't want first row to have any padding
                 .size(configuration.selectedDateBackgroundSize)
                 .clip(configuration.selectedDateBackgroundShape)
-                .noRippleClickable (enabled =isWithinRange ) {
+                .noRippleClickable(enabled = isWithinRange) {
 
-                    if (!alreadyBookedList.containsKey(day) && canSelectDate){
-                        onDaySelected(day)}
+                    if (!alreadyBookedList.containsKey(day) && canSelectDate) {
+                        onDaySelected(day)
+                    }
                 }
                 .background(
-                    if (isSelected) configuration.selectedDateBackgroundColor
-                    else if (alreadyBookedList.containsKey(day)) Color.Red
+
+                    if (alreadyBookedList.containsKey(day)) Color.Red
+                    else if (isSelected) configuration.selectedDateBackgroundColor
                     else
                         Color.Transparent
                 )

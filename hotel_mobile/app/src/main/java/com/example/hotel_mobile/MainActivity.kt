@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
@@ -38,18 +39,21 @@ class MainActivity : ComponentActivity() {
 
         enableEdgeToEdge()
         setContent {
-            val navController = rememberNavController()
-            val authViewModle = hiltViewModel<AuthViewModle>()
-            val isLogin = authViewModle.isLogin.collectAsState()
+            MaterialTheme{
+                val navController = rememberNavController()
+                val authViewModle = hiltViewModel<AuthViewModle>()
+                val isLogin = authViewModle.isLogin.collectAsState()
 
-            LaunchedEffect(isLogin.value) {
-                if (isLogin.value != null) {
-                    keepSplash = false
+                LaunchedEffect(isLogin.value) {
+                    if (isLogin.value != null) {
+                        keepSplash = false
+                    }
                 }
+
+                if (isLogin.value != null)
+                    NavController(navController, isLogin.value)
             }
 
-            if (isLogin.value != null)
-                NavController(navController, isLogin.value)
 
         }
     }
