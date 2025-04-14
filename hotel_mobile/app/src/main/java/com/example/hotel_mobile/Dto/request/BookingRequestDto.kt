@@ -1,4 +1,4 @@
-package com.example.hotel_mobile.Dto
+package com.example.hotel_mobile.Dto.request
 
 
 import com.example.hotel_mobile.services.kSerializeChanger.LocalDateTimeKserialize
@@ -9,7 +9,7 @@ import java.util.UUID
 
 
 @Serializable
-data class BookingDto(
+data class BookingRequestDto(
     @Serializable(with = UUIDKserialize::class)
     var roomId: UUID,
     @Serializable(with = LocalDateTimeKserialize::class)

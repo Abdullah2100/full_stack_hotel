@@ -5,6 +5,8 @@ import com.example.hotel_mobile.Dto.PersonDto
 import com.example.hotel_mobile.Dto.RoomDto
 import com.example.hotel_mobile.Dto.RoomTypeDto
 import com.example.hotel_mobile.Dto.UserDto
+import com.example.hotel_mobile.Dto.response.BookingResponseDto
+import com.example.hotel_mobile.Modle.BookingModel
 import com.example.hotel_mobile.Modle.ImageModel
 import com.example.hotel_mobile.Modle.PersonModel
 import com.example.hotel_mobile.Modle.RoomModel
@@ -75,6 +77,25 @@ object DtoToModule {
             pricePerNight = this.pricePerNight,
             roomtypeid = this.roomtypeid,
             roomTypeModel = this.roomTypeData?.toRoomTypeModel()
+        )
+    }
+
+    fun BookingResponseDto.toBookingModel():BookingModel{
+        return BookingModel(
+            bookingId=this.bookingId,
+            roomId = this.roomId,
+         userId= this.userId,
+         bookingStart=this.bookingStart,
+        bookingEnd= this.bookingEnd,
+        bookingStatus = this.bookingStatus,
+        totalPrice=this.totalPrice,
+         servicePayment= this.servicePayment,
+         maintenancePayment= this.maintenancePayment,
+         paymentStatus = this.paymentStatus,
+         createdAt= this.createdAt,
+         cancelledAt= this.cancelledAt,
+         cancellationReason= this.cancellationReason,
+         actualCheckOut= this.actualCheckOut
         )
     }
 }

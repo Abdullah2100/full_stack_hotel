@@ -86,9 +86,6 @@ fun TimePicker(
             is24Hour = uiState.is24Hour,
             configuration = configuration,
             onScrollingStopped = {
-//            viewModel.getSelectedTime()?.apply {
-//                onTimeSelected(hour, minute)
-//            }
             }
         )
 

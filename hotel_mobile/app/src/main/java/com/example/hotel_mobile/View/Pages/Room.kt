@@ -1,7 +1,7 @@
 package com.example.hotel_mobile.View.Pages
 
-import android.content.Intent
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -17,9 +17,10 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.KeyboardArrowLeft
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
@@ -40,6 +41,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -47,8 +49,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.zIndex
+import androidx.navigation.NavHostController
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.example.hotel_mobile.CustomDatePicker.vsnappy1.datepicker.DatePicker
@@ -57,7 +59,6 @@ import com.example.hotel_mobile.Dto.RoomDto
 import com.example.hotel_mobile.Modle.enDropDownDateType
 import com.example.hotel_mobile.Modle.enNetworkStatus
 import com.example.hotel_mobile.Util.General
-import com.example.hotel_mobile.View.component.CustomErrorSnackBar
 import com.example.hotel_mobile.View.component.CustomSizer
 import com.example.hotel_mobile.View.component.RoomStateShape
 import com.example.hotel_mobile.ViewModle.HomeViewModle
@@ -68,7 +69,8 @@ import kotlinx.coroutines.delay
 @Composable
 fun RoomPage(
     roomData: RoomDto,
-    homeViewModle: HomeViewModle
+    homeViewModle: HomeViewModle,
+    navController: NavHostController,
 ) {
 
 
@@ -201,6 +203,24 @@ fun RoomPage(
 //        homeViewModel = homeViewModle,
 //        page = {
             Scaffold(
+                topBar = {
+                    Box(
+                        modifier = Modifier
+                            .padding(top = 40.dp, start = 10.dp)
+                            .height(30.dp)
+                            .width(30.dp)
+                            .background(Color.Blue, shape = RoundedCornerShape(15.dp))
+                            .clickable{
+                                navController.popBackStack()
+                            }) {
+                       Image(
+                           Icons.Outlined.KeyboardArrowLeft,
+                           "",
+                           colorFilter = ColorFilter.tint(color = Color.White),
+                           modifier = Modifier.size(40.dp)
+                       )
+                    }
+                },
                 snackbarHost = {
                     SnackbarHost(hostState = snackbarHostState,
                         modifier = Modifier.zIndex(100f))
@@ -510,8 +530,9 @@ fun RoomPage(
                                             Color.Black.copy(0.16f), RoundedCornerShape(16.dp)
                                         )
                                         .clickable {
-                                            if(bookedStartBookingDay.value != null){
-                                                dropDownType.value = enDropDownDateType.DayStartBooking
+                                            if (bookedStartBookingDay.value != null) {
+                                                dropDownType.value =
+                                                    enDropDownDateType.DayStartBooking
                                                 isOpenDateDialog.value = true
                                             }
 
@@ -650,8 +671,9 @@ fun RoomPage(
                                             Color.Black.copy(0.16f), RoundedCornerShape(16.dp)
                                         )
                                         .clickable {
-                                            if(bookedEndBookingDay.value != null){
-                                                dropDownType.value = enDropDownDateType.DayEndBooking
+                                            if (bookedEndBookingDay.value != null) {
+                                                dropDownType.value =
+                                                    enDropDownDateType.DayEndBooking
                                                 isOpenDateDialog.value = true
                                             }
 
@@ -751,6 +773,7 @@ fun RoomPage(
                                             )
                                     ) {
                                         TimePicker(
+                                            isOpenTimeDialog =  isOpenTimeDialog,
                                             onTimeSelected = { hour, minit ->
                                                 homeViewModle.handlTheSelectionDialog(
                                                     0,
@@ -826,42 +849,7 @@ fun RoomPage(
                         }
 
                         )
-//                    Dialog(
-//                        properties = DialogProperties(
-//                            dismissOnClickOutside = true,
-//                            usePlatformDefaultWidth =false
-//                        ),
-//                        onDismissRequest = {
-//                            isOpenDialog.value = false
-//                            errorMessage.value =null
-//                                           },
-//                      )
-//                       {
-//                        Box(
-//                            modifier = Modifier.fillMaxSize()
-//                                .background(Color.Black.copy(0.16f))
-//                                .clickable {
-//                                    isOpenDialog.value = false
-//                                    errorMessage.value =null
-//                                }
-//                            , contentAlignment = Alignment.Center
-//                        ){
-//                          Box(
-//                              modifier=Modifier.fillMaxWidth(0.8f)
-//                                  .height(150.dp)
-//                                  .background(Color.White,
-//                                      shape = RoundedCornerShape(17.dp)
-//                                  )
-//                                  .zIndex(100f)
-//                          ){
-//                              Text(errorMessage.value?:"")
-//                          }
-//                        }
-//
-//                        }
-
             }
-//        })
 
 
 }

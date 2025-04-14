@@ -912,10 +912,10 @@ CREATE TABLE Bookings (
     booking_end TIMESTAMP NOT NULL  CHECK (booking_end > booking_start)  ,
     bookingStatus VARCHAR(50) NOT NULL CHECK (
         bookingStatus IN ('Pending', 'Confirmed', 'Cancelled')
-    ) DEFAULT 'Pending',
+    ) DEFAULT 'Confirmed',
     totalPrice NUMERIC(10, 2) NOT NULL CHECK (totalPrice > 0),
-    servicePayment NUMERIC(10, 2) NOT NULL DEFAULT 0 CHECK (servicePayment >= 0),
-    maintenancePayment NUMERIC(10, 2) NOT NULL DEFAULT 0 CHECK (maintenancePayment >= 0),
+    servicePayment NUMERIC(10, 2)  NULL DEFAULT 0 CHECK (servicePayment >= 0),
+    maintenancePayment NUMERIC(10, 2)  NULL DEFAULT 0 CHECK (maintenancePayment >= 0),
     paymentStatus VARCHAR(50) CHECK (
         paymentStatus IN ('Paid', 'Unpaid')
     ) DEFAULT 'Unpaid',
@@ -928,7 +928,12 @@ CREATE TABLE Bookings (
 
 );
 ----
----
+----
+
+
+
+----
+----
 CREATE OR REPLACE FUNCTION fn_isValid_booking(startBooking TIMESTAMP,endBooking TIMESTAMP)
 RETURNS BOOLEAN AS $$
 DECLARE
@@ -960,11 +965,11 @@ SQLERRM;
 RETURN FALSE;
 END;
 $$ LANGUAGE plpgsql;
----
+-----
+-----
 
-
----
----- 
+-----
+-----
 
 CREATE OR REPLACE FUNCTION fn_bookin_insert(
     roomid_ UUID,
@@ -1018,8 +1023,12 @@ SQLERRM;
 RETURN FALSE;
 END;
 $$ LANGUAGE plpgsql;
----
----
+-----
+-----
+
+
+-----
+-----
 CREATE OR REPLACE FUNCTION fun_get_list_of_booking_at_specific_month_and_year
 (
 year_ INT,
@@ -1033,17 +1042,32 @@ maxDayAtMon_ INT:=0;
 temp_date DATE;
 dayes_ TEXT :='';
 BEGIN
+   IF month_>12 OR month_<1 THEN 
+   RAISE NOTICE 'month is not valide ';
+   RETURN '';
+   END IF ;
 
     maxDayAtMon_ := EXTRACT(DAY FROM 
         (MAKE_DATE(year_, month_, 1) + INTERVAL '1 month - 1 day'));
 
 FOR day_num in 1..maxDayAtMon_ LOOP
+ 
    IF EXISTS (
   SELECT 1 FROM bookings 
-  WHERE MAKE_DATE(year_, month_, day_num)
- BETWEEN booking_start::DATE AND booking_end::DATE
- AND bookingStatus='Confirmed'
+  WHERE 
+ 	 (
+	  		MAKE_DATE(year_, month_, day_num) = booking_start::DATE OR
+   			MAKE_DATE(year_, month_, day_num) = booking_end::DATE
+	 ) 
+  OR
+    (
+	        MAKE_DATE(year_, month_, day_num)
+            BETWEEN booking_start::DATE AND booking_end::DATE
+		  
+    ) AND bookingStatus='Confirmed'
  ) THEN 
+     RAISE NOTICE 'THIS THE generatedDate =% ',
+   MAKE_DATE(year_, month_, day_num) ;
    dayes_ := dayes_ || ', ' || day_num::TEXT;
   END IF ; 
 END LOOP;
@@ -1056,37 +1080,107 @@ SQLERRM;
 RETURN '';
 END;
 $$LANGUAGE plpgsql;
----
----
+-----
+-----
 
 
----
----
-CREATE OR REPLACE FUNCTION fn_booking_insert_tr()
-RETURNS TRIGGER
+-----
+-----
+
+-- CREATE OR REPLACE FUNCTION fn_booking_insert_tr()
+-- RETURNS TRIGGER
+-- AS $$
+-- DECLARE
+-- isValidId BOOLEAN;
+-- BEGIN
+-- isValidId = isExistById(NEW.belongto);
+-- IF isValidId = FALSE THEN
+-- RAISE EXCEPTION 'Something went wrong: %';
+-- RETURN NULL;
+-- END IF;
+-- RETURN NEW;
+-- EXCEPTION
+-- WHEN OTHERS THEN RAISE EXCEPTION 'Something went wrong: %',
+-- SQLERRM;
+-- RETURN NULL;
+-- END;
+-- $$ LANGUAGE plpgsql;
+
+----
+----
+
+
+----
+----
+
+-- CREATE TRIGGER tr_bookin_insert
+-- BEFORE INSERT ON bookings
+-- FOR EACH ROW EXECUTE FUNCTION fn_booking_insert_tr();
+
+----
+----
+
+CREATE OR REPLACE FUNCTION fun_getBookingPagination(belongId UUID,pageNumber INT, limitNumber INT)
+RETURNS  TABLE (
+     bookingID UUID ,
+    roomID UUID  ,
+    belongTo UUID  ,
+    booking_start TIMESTAMP   ,
+    booking_end TIMESTAMP   ,
+    bookingStatus VARCHAR(50) ,
+    totalPrice NUMERIC(10, 2) ,
+    servicePayment NUMERIC(10, 2) ,
+    maintenancePayment NUMERIC(10, 2)  ,
+    paymentStatus VARCHAR(50)  ,
+    createdAt TIMESTAMP    ,
+    cancelledAt TIMESTAMP  ,
+    cancellationReason TEXT  ,
+    actualCheckOut TIMESTAMP  
+)
 AS $$
-DECLARE
-isValidId BOOLEAN;
 BEGIN
-isValidId = isExistById(NEW.belongto);
-IF isValidId = FALSE THEN
-RAISE EXCEPTION 'Something went wrong: %';
-RETURN NULL;
-END IF;
-RETURN NEW;
+
+RETURN QUERY SELECT 
+    b.bookingID ,
+    b.roomID   ,
+    b.belongTo   ,
+    b.booking_start   ,
+    b.booking_end   ,
+    b.bookingStatus  ,
+    b.totalPrice  ,
+    b.servicePayment ,
+    b.maintenancePayment   ,
+    b.paymentStatus   ,
+    b.createdAt  ,
+    b.cancelledAt   ,
+    b.cancellationReason   ,
+    b.actualCheckOut   
+FROM booking b
+WHERE  (belongId IS NULL AND b.belongTo IS NOT NULL)   OR  b.belongTo = belongId 
+ORDER BY b.createdAt DESC
+LIMIT limitNumber OFFSET limitNumber * (pageNumber - 1);
 EXCEPTION
 WHEN OTHERS THEN RAISE EXCEPTION 'Something went wrong: %',
 SQLERRM;
-RETURN NULL;
+RETURN QUERY 
+SELECT
+    NULL   ,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL;
+
 END;
-$$ LANGUAGE plpgsql;
-----
-----
-CREATE TRIGGER tr_bookin_insert
-BEFORE INSERT ON bookings
-FOR EACH ROW EXECUTE FUNCTION fn_booking_insert_tr();
-----
-----
+$$LANGUAGE plpgsql;
 
 
 

@@ -23,6 +23,10 @@ object Screens {
     object home
 
     @Serializable
+    object booking
+
+
+    @Serializable
     data class Room(
        val roomdata:RoomDto
     )

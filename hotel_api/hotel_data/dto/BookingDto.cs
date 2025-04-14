@@ -12,7 +12,7 @@ public class BookingDto
         decimal totalPrice, 
         decimal? servicePayment, 
         decimal? maintenancePayment, 
-        string? paymentStatus, 
+        string paymentStatus, 
         DateTime? createdAt, 
         DateTime? cancelledAt, 
         string? cancellationReason, 

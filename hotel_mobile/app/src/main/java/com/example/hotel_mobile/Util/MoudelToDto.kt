@@ -1,7 +1,7 @@
 package com.example.hotel_mobile.Util
 
 import android.util.Log
-import com.example.hotel_mobile.Dto.BookingDto
+import com.example.hotel_mobile.Dto.request.BookingRequestDto
 import com.example.hotel_mobile.Dto.ImageDto
 import com.example.hotel_mobile.Dto.PersonDto
 import com.example.hotel_mobile.Dto.RoomDto
@@ -13,7 +13,6 @@ import com.example.hotel_mobile.Modle.PersonModel
 import com.example.hotel_mobile.Modle.RoomModel
 import com.example.hotel_mobile.Modle.RoomTypeModel
 import com.example.hotel_mobile.Modle.UserModel
-import com.example.hotel_mobile.Util.MoudelToDto.toUserDto
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -84,7 +83,7 @@ object MoudelToDto {
         )
     }
 
-    fun BookingModel.toBookingDto(): BookingDto {
+    fun BookingModel.toBookingDto(): BookingRequestDto {
         val startTimeList = this.startTime.split(":");
         val endTimeList = this.endTime.split(":");
         val startBookingDate  = LocalDateTime.of(
@@ -107,7 +106,7 @@ object MoudelToDto {
             ${startBookingDate}
             ${endBookingDate}
         """.trimIndent())
-        return BookingDto(
+        return BookingRequestDto(
             bookingStartDateTime=  startBookingDate   ,
            bookingEndDateTime =  endBookingDate,
             roomId = this.roomId?: UUID.randomUUID()

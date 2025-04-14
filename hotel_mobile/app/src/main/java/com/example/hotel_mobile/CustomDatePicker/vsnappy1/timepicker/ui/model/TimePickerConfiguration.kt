@@ -36,27 +36,6 @@ class TimePickerConfiguration private constructor(
         fun height(height: Dp) =
             apply { this.height = height }
 
-        fun timeTextStyle(textStyle: TextStyle) =
-            apply { this.timeTextStyle = textStyle }
-
-        fun selectedTimeTextStyle(textStyle: TextStyle) =
-            apply { this.selectedTimeTextStyle = textStyle }
-
-        fun selectedTimeScaleFactor(scaleFactor: Float) =
-            apply { this.selectedTimeScaleFactor = scaleFactor }
-
-        fun numberOfTimeRowsDisplayed(count: Int) =
-            apply { this.numberOfTimeRowsDisplayed = count }
-
-        fun selectedTimeAreaHeight(height: Dp) =
-            apply { this.selectedTimeAreaHeight = height }
-
-        fun selectedTimeAreaColor(color: Color) =
-            apply { this.selectedTimeAreaColor = color }
-
-        fun selectedTimeAreaShape(shape: Shape) =
-            apply { this.selectedTimeAreaShape = shape }
-
         fun build(): TimePickerConfiguration {
             return TimePickerConfiguration(
                 height = height,
