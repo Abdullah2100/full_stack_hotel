@@ -22,6 +22,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,8 +47,12 @@ fun HomePage(
     nav: NavHostController,
     homeViewModel: HomeViewModle
 ) {
-    homeViewModel.getRooms(1)
     val roomData = homeViewModel.rooms.collectAsState()
+
+    LaunchedEffect(key1 = Unit) {
+        homeViewModel.getRooms(1)
+    }
+
     Scaffold(
         modifier = Modifier
             .padding(top = 35.dp)
@@ -120,7 +125,6 @@ fun HomePage(
                                     .padding(top = 5.dp)
                                     .padding(horizontal = 15.dp)
                                     .fillMaxSize(),
-//                                contentPadding = PaddingValues(bottom = 15.dp)
                             ) {
                                 items(roomData.value!!.size) { index ->
                                     RoomShape(
