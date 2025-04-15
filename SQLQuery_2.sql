@@ -700,13 +700,7 @@ CREATE OR REPLACE FUNCTION fn_room_insert_new(
     ) RETURNS INT AS $$
 DECLARE roomid_holder UUID;
 is_hasPermission_to_delete BOOLEAN;
-BEGIN -- Check if the user has permission to delete
--- is_hasPermission_to_delete := isAdminOrSomeOneHasPersmission(modifiBy);
--- IF is_hasPermission_to_delete = FALSE THEN
---     RAISE EXCEPTION 'You do not have permission to perform this action';
---     RETURN 0;  -- You might want to return a specific error code
--- END IF;
--- Insert the new room
+BEGIN
 INSERT INTO rooms(
         roomid,
         Status,
@@ -726,10 +720,7 @@ VALUES (
         belongTo_
     )
 RETURNING roomid INTO roomid_holder;
--- Check if the insertion was successful
 IF roomid_holder IS NOT NULL THEN RETURN 1;
--- Return a success code
--- Return failure if roomid is NULL
 END IF;
 RETURN 0;
 EXCEPTION
@@ -1155,7 +1146,7 @@ RETURN QUERY SELECT
     b.cancelledAt   ,
     b.cancellationReason   ,
     b.actualCheckOut   
-FROM booking b
+FROM bookings b
 WHERE  (belongId IS NULL AND b.belongTo IS NOT NULL)   OR  b.belongTo = belongId 
 ORDER BY b.createdAt DESC
 LIMIT limitNumber OFFSET limitNumber * (pageNumber - 1);

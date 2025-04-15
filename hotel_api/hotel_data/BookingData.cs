@@ -119,14 +119,16 @@ public class BookingData
     public static List<BookingDto> getUserBookingData(Guid userId, int pageNumber, int limitSize = 25)
     {
         List<BookingDto> bookingList = new List<BookingDto>();
-        using (var con = new NpgsqlConnection(connectionUr))
+        try
+        {
+            using (var con = new NpgsqlConnection(connectionUr))
         {
             con.Open();
             string query = "SELECT * FROM fun_getBookingPagination(@belongId ,@pageNumber , @limitNumber );";
             using (var cmd = new NpgsqlCommand(query, con))
             {
                 cmd.Parameters.AddWithValue("@belongId", userId);
-                cmd.Parameters.AddWithValue("@pageNumber", pageNumber);
+                cmd.Parameters.AddWithValue("@pageNumber", pageNumber>=1?1:pageNumber);
                 cmd.Parameters.AddWithValue("@limitNumber", limitSize);
                 using (var reader = cmd.ExecuteReader())
                 {
@@ -172,7 +174,12 @@ public class BookingData
                     }
                 }
             }
+        } 
         }
+        catch (Exception ex)
+        {
+            Console.WriteLine("this from check from get bookingList {0}", ex);
+        } 
         
         return bookingList;
     }
