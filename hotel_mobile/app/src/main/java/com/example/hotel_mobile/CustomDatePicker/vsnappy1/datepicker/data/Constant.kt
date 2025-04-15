@@ -13,7 +13,6 @@ import com.example.hotel_mobile.CustomDatePicker.vsnappy1.extension.isLeapYear
 import java.util.Calendar
 
 internal object Constant {
-    private const val repeatCount: Int = 200
 
     val days = listOf(
         SUNDAY,

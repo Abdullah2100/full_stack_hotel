@@ -112,6 +112,11 @@ public class UserController : Controller
         return StatusCode(200, new { accessToken = $"{accesstoken}", refreshToken = $"{refreshToken}" });
     }
 
+    /// <summary>
+    /// this to get room date by page for user
+    /// </summary>
+    /// <param name="pageNumber"></param>
+    /// <returns></returns>
 
     [Authorize]
     [HttpGet("room/{pageNumber:int}")]
@@ -135,6 +140,11 @@ public class UserController : Controller
     }
 
 
+    /// <summary>
+    /// this creating new booking 
+    /// </summary>
+    /// <param name="booking"></param>
+    /// <returns></returns>
     [Authorize]
     [HttpPost("booking")]
     [ProducesResponseType(StatusCodes.Status201Created)]
@@ -208,17 +218,44 @@ public class UserController : Controller
     [Authorize]
     [HttpPost("booking/between{year:int}&{month:int}")]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-   // [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult getBookingDayAtYearAndMont
     (int  year, int month)
     {
-       
         List<string> bookingDay = BookingBuiseness.getBookingDayesAtMonthAndYearBuissness(year, month);
-       
         return StatusCode(200, bookingDay??[]);
-        
-
     }
 
+  
+    [Authorize]
+    [HttpGet("booking/{pageNumber:int}")]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public IActionResult bookings
+    (int pageNumber)
+    {
+        
+        var authorizationHeader = HttpContext.Request.Headers["Authorization"];
+        var id = AuthinticationServices.GetPayloadFromToken("id",
+            authorizationHeader.ToString().Replace("Bearer ", ""));
+        Guid? userID = null;
+        if (Guid.TryParse(id.Value.ToString(), out Guid outID))
+        {
+            userID = outID;
+        }
+
+        if (userID == null)
+        {
+            return StatusCode(401, "you not have Permission");
+        }
+
+        var myBookingListData = BookingBuiseness.getUserBookingList(userID.Value, pageNumber,24);
+
+        
+        return Ok(myBookingListData);
+
+    } 
+   
 }

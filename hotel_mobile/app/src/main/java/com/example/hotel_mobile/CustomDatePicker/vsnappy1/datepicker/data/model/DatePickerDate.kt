@@ -13,7 +13,6 @@ object DefaultDate {
     var defaultDate = DatePickerDate(
         calendar[Calendar.YEAR],
         calendar[Calendar.MONTH],
-//        calendar[Calendar.DAY_OF_MONTH]
         0
     )
 }

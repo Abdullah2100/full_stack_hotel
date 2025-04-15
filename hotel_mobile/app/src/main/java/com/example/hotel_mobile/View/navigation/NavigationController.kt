@@ -1,13 +1,8 @@
 package com.example.hotel_mobile.View.navigation
 
-import android.util.Log
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
-import androidx.navigation.Navigator
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
@@ -15,15 +10,13 @@ import androidx.navigation.toRoute
 import com.example.hotel_mobile.Dto.RoomDto
 import com.example.hotel_mobile.View.Pages.LoginPage
 import com.example.hotel_mobile.Modle.Screens
-import com.example.hotel_mobile.Util.General
 import com.example.hotel_mobile.Util.RoomNavType
+import com.example.hotel_mobile.View.Pages.BookingPage
 import com.example.hotel_mobile.View.Pages.HomePage
 import com.example.hotel_mobile.View.Pages.RoomPage
 import com.example.hotel_mobile.View.Pages.SignUpPage
 import com.example.hotel_mobile.ViewModle.AuthViewModle
 import com.example.hotel_mobile.ViewModle.HomeViewModle
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.serialization.Serializable
 import kotlin.reflect.typeOf
 
 
@@ -65,6 +58,9 @@ fun NavController(
                 HomePage(navController,homeViewModle)
             }
 
+            composable<Screens.booking> {
+                BookingPage(nav = navController, homeViewModel = homeViewModle)
+            }
             composable<Screens.Room>(
                 typeMap = mapOf(
                     typeOf<RoomDto>() to RoomNavType.RoomType
@@ -74,7 +70,8 @@ fun NavController(
                 val args = result.toRoute<Screens.Room>()
                 RoomPage(
                     args.roomdata,
-                    homeViewModle
+                    homeViewModle,
+                    navController
                 )
             }
         }

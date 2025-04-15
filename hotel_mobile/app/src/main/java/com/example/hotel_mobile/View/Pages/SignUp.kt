@@ -77,7 +77,6 @@ fun SignUpPage(
     nav: NavHostController,
     finalScreenViewModel: AuthViewModle
 ) {
-    val errorMessage = finalScreenViewModel.errorMessage.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
 
 

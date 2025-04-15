@@ -97,4 +97,10 @@ public class BookingBuiseness
                 default: return [];
             }
         }
+
+
+        public static List<BookingDto> getUserBookingList(Guid userId, int pageNumber, int limitSize = 25)
+        {
+            return BookingData.getUserBookingData(userId, pageNumber, limitSize);
+        }
 }

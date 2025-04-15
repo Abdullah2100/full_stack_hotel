@@ -10,8 +10,7 @@ class DatePickerConfiguration private constructor(
     val height: Dp,
     val headerHeight: Dp,
     val headerTextStyle: TextStyle,
-    val headerArrowSize: Dp,
-    val headerArrowColor: Color,
+
     val daysNameTextStyle: TextStyle,
     val dateTextStyle: TextStyle,
     val selectedDateTextStyle: TextStyle,
@@ -62,70 +61,13 @@ class DatePickerConfiguration private constructor(
         fun height(height: Dp) =
             apply { this.height = height }
 
-        fun headerHeight(height: Dp) =
-            apply { this.headerHeight = height }
 
-        fun headerTextStyle(textStyle: TextStyle) =
-            apply { this.headerTextStyle = textStyle }
-
-        fun headerArrowSize(size: Dp) =
-            apply { this.headerArrowSize = size }
-
-        fun headerArrowColor(color: Color) =
-            apply { this.headerArrowColor = color }
-
-        fun daysNameTextStyle(textStyle: TextStyle) =
-            apply { this.daysNameTextStyle = textStyle }
-
-        fun dateTextStyle(textStyle: TextStyle) =
-            apply { this.dateTextStyle = textStyle }
-
-        fun selectedDateTextStyle(textStyle: TextStyle) =
-            apply { this.selectedDateTextStyle = textStyle }
-
-        fun sundayTextColor(color: Color) =
-            apply { this.sundayTextColor = color }
-
-        fun disabledDateColor(color: Color) =
-            apply { this.disabledDateColor = color }
-
-        fun selectedDateBackgroundSize(size: Dp) =
-            apply { this.selectedDateBackgroundSize = size }
-
-        fun selectedDateBackgroundColor(color: Color) =
-            apply { this.selectedDateBackgroundColor = color }
-
-        fun selectedDateBackgroundShape(shape: Shape) =
-            apply { this.selectedDateBackgroundShape = shape }
-
-        fun monthYearTextStyle(textStyle: TextStyle) =
-            apply { this.monthYearTextStyle = textStyle }
-
-        fun selectedMonthYearTextStyle(textStyle: TextStyle) =
-            apply { this.selectedMonthYearTextStyle = textStyle }
-
-        fun selectedMonthYearScaleFactor(scaleFactor: Float) =
-            apply { this.selectedMonthYearScaleFactor = scaleFactor }
-
-        fun numberOfMonthYearRowsDisplayed(count: Int) =
-            apply { this.numberOfMonthYearRowsDisplayed = count }
-
-        fun selectedMonthYearAreaHeight(height: Dp) =
-            apply { this.selectedMonthYearAreaHeight = height }
-
-        fun selectedMonthYearAreaColor(color: Color) =
-            apply { this.selectedMonthYearAreaColor = color }
-
-        fun selectedMonthYearAreaShape(shape: Shape) =
-            apply { this.selectedMonthYearAreaShape = shape }
 
         fun build(): DatePickerConfiguration {
             return DatePickerConfiguration(
                 height = height,
                 headerHeight = headerHeight,
                 headerTextStyle = headerTextStyle,
-                headerArrowSize = headerArrowSize,
-                headerArrowColor = headerArrowColor,
                 daysNameTextStyle = daysNameTextStyle,
                 dateTextStyle = dateTextStyle,
                 selectedDateTextStyle = selectedDateTextStyle,

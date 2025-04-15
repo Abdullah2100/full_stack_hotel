@@ -21,7 +21,6 @@ internal class DatePickerViewModel : ViewModel() {
     private lateinit var availableMonths: List<Month>
 
     private var _availableMonths: MutableLiveData<List<Month>> = MutableLiveData(emptyList())
-    private var _mothChanges: MutableLiveData<Boolean?> = MutableLiveData(null)
 
 
 
@@ -41,7 +40,6 @@ internal class DatePickerViewModel : ViewModel() {
         _uiState.value?.apply {
             _uiState.value = this.copy(
                 currentVisibleMonth = availableMonths[month],
-//                selectedMonthIndex = getAdjustedSelectedMonthIndex(month)
                 selectedMonthIndex = month
             )
         }
