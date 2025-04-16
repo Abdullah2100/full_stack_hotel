@@ -20,5 +20,7 @@ data class BookingModel(
    val cancelledAt:LocalDateTime?,
    val cancellationReason:String?,
 
-   val actualCheckOut: LocalDateTime?
+   val actualCheckOut: LocalDateTime?,
+   val room:RoomModel,
+   val user:UserModel
 )

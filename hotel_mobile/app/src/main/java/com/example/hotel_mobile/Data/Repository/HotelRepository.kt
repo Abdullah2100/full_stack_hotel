@@ -163,7 +163,7 @@ class HotelRepository  @Inject constructor(private val httpClient: HttpClient) {
                     }
                 }
 
-            if (result.status == HttpStatusCode.Created) {
+            if (result.status == HttpStatusCode.OK) {
                 val resultData = result.body<List<BookingResponseDto>>();
                 NetworkCallHandler.Successful(resultData)
             } else {

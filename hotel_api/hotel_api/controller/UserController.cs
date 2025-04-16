@@ -129,8 +129,12 @@ public class UserController : Controller
     {
         try
         {
-            string minioEndPoint = "http://" + _config.getKey("minio_end_point") + "/room/";
-            var rooms = RoomBuisness.getAllRooms(pageNumber, 25, minioEndPoint);
+          //  string minioEndPoint = "http://" + _config.getKey("minio_end_point") + "/room/";
+            var rooms = RoomBuisness.getAllRooms(
+                pageNumber, 
+                25//,
+               // minioEndPoint
+                );
             return Ok(rooms);
         }
         catch (Exception ex)

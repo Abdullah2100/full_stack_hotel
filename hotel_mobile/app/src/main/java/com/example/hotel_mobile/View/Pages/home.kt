@@ -29,6 +29,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.hotel_mobile.R
+import com.example.hotel_mobile.View.component.CustomErrorSnackBar
 import com.example.hotel_mobile.View.component.RoomLoaingHolder
 import com.example.hotel_mobile.View.component.RoomShape
 import com.example.hotel_mobile.ViewModle.HomeViewModle
@@ -50,29 +51,17 @@ fun HomePage(
         homeViewModel.getRooms(1)
     }
 
-
+CustomErrorSnackBar(
+    homeViewModel = homeViewModel,
+    authViewModel = null
+) {
     Scaffold(
         modifier = Modifier
             .padding(top = 35.dp)
             .fillMaxWidth()
             .fillMaxHeight()
-,
-        bottomBar = {
-            NavigationBar(
-                content = {
-items.forEachIndexed{index,value->
-    NavigationBarItem(selected =selectedIndex.value==index ,
-        onClick = {
-            selectedIndex.value=index
-        },
-        icon = {
-        })
-}
-                }
-            )
-        }
-
-    ) {
+        ,
+     ) {
         it.calculateTopPadding()
         it.calculateBottomPadding()
 
@@ -155,4 +144,6 @@ items.forEachIndexed{index,value->
             }
         }
     }
+}
+
 }

@@ -1,9 +1,7 @@
 package com.example.hotel_mobile.Modle
 
 import com.example.hotel_mobile.Dto.RoomDto
-import com.example.hotel_mobile.services.kSerializeChanger.UUIDKserialize
 import kotlinx.serialization.Serializable
-import java.util.UUID
 
 object Screens {
 

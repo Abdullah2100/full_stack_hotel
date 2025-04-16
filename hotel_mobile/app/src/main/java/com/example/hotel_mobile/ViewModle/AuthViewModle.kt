@@ -156,6 +156,7 @@ class AuthViewModle @Inject constructor(
                         )
                         General.authData.update { authEntityData }
                         _statusChange.update { enNetworkStatus.Complate }
+                        _isLogin.emit(true)
                         navController.navigate(Screens.homeGraph)
                     }
 
@@ -199,6 +200,7 @@ class AuthViewModle @Inject constructor(
                         )
                         General.authData.update { authEntityData }
                         _statusChange.update { enNetworkStatus.Complate }
+                        _isLogin.emit(true)
                         navController.navigate(Screens.homeGraph)
                     }
                     is NetworkCallHandler.Error -> {

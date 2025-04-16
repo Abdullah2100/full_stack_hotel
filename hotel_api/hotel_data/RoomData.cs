@@ -6,6 +6,7 @@ namespace hotel_data;
 public class RoomData
 {
     static string connectionUr = clsConnnectionUrl.url;
+    private static string minioUrl = clsConnnectionUrl.minIoConnectionUrl + "room/";
 
     public static RoomDto? getRoom(Guid roomID)
     {
@@ -37,7 +38,7 @@ public class RoomData
                                     beglongTo:(Guid)reader["belongto"],
                                     createdAt: (DateTime)reader["createdat"],
                                     isBlock: (bool)reader["isblock"],
-                                    images:ImagesData.images(roomID),
+                                    images:ImagesData.images(roomID,minioUrl),
                                     isDeleted:(bool)reader["isdeleted"]
                                     
                                 );
@@ -191,8 +192,8 @@ public class RoomData
 
      public static List<RoomDto> getRoomByPage(
          int pageNumber = 1,
-         int numberOfRoom = 20,
-         string? minioUrl=null)
+         int numberOfRoom = 20//,string? minioUrl=null
+         )
         {
             List<RoomDto> rooms = new List<RoomDto>();
             try

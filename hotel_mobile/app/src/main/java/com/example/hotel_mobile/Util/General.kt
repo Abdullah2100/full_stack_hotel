@@ -74,7 +74,8 @@ object General {
         val day = this.dayOfMonth;
         val hour = this.hour
         val minit = this.minute;
-        val localDateTimeString = "$day-$month-$year $hour:$minit:00 ${if(hour<=12)"AM" else "PM"}"
+        //val localDateTimeString = "$day-$month-$year $hour:$minit:00 ${if(hour<=12)"AM" else "PM"}"
+        val localDateTimeString = "$day-$month-$year"
         Log.d("customStringDate","$this")
         return localDateTimeString;
     }
@@ -148,6 +149,20 @@ object General {
             "saturday" -> 6
             "sunday" -> 7
             else -> 0
+        }
+    }
+
+    fun handlingBookingStatusBackgroundColor(bookingStatus:String): Color {
+      return  when(bookingStatus){
+             "Pending" -> {
+            Color.Yellow
+             }
+            "Confirmed" ->{
+                return Color.Green
+                 }
+             else->{
+                 return Color.Red
+                 }
         }
     }
 }

@@ -59,6 +59,7 @@ import com.example.hotel_mobile.Dto.RoomDto
 import com.example.hotel_mobile.Modle.enDropDownDateType
 import com.example.hotel_mobile.Modle.enNetworkStatus
 import com.example.hotel_mobile.Util.General
+import com.example.hotel_mobile.View.component.CustomErrorSnackBar
 import com.example.hotel_mobile.View.component.CustomSizer
 import com.example.hotel_mobile.View.component.RoomStateShape
 import com.example.hotel_mobile.ViewModle.HomeViewModle
@@ -198,10 +199,10 @@ fun RoomPage(
     }
 
 
-//    CustomErrorSnackBar(
-//        authViewModel = null,
-//        homeViewModel = homeViewModle,
-//        page = {
+    CustomErrorSnackBar(
+        authViewModel = null,
+        homeViewModel = homeViewModle,
+        page = {
             Scaffold(
                 topBar = {
                     Box(
@@ -210,20 +211,22 @@ fun RoomPage(
                             .height(30.dp)
                             .width(30.dp)
                             .background(Color.Blue, shape = RoundedCornerShape(15.dp))
-                            .clickable{
+                            .clickable {
                                 navController.popBackStack()
                             }) {
-                       Image(
-                           Icons.Outlined.KeyboardArrowLeft,
-                           "",
-                           colorFilter = ColorFilter.tint(color = Color.White),
-                           modifier = Modifier.size(40.dp)
-                       )
+                        Image(
+                            Icons.Outlined.KeyboardArrowLeft,
+                            "",
+                            colorFilter = ColorFilter.tint(color = Color.White),
+                            modifier = Modifier.size(40.dp)
+                        )
                     }
                 },
                 snackbarHost = {
-                    SnackbarHost(hostState = snackbarHostState,
-                        modifier = Modifier.zIndex(100f))
+                    SnackbarHost(
+                        hostState = snackbarHostState,
+                        modifier = Modifier.zIndex(100f)
+                    )
                 },
                 bottomBar = {
                     BottomAppBar(
@@ -521,42 +524,42 @@ fun RoomPage(
                             }
 
                             CustomSizer(height = 5.dp)
-                                   Row(
-                                    modifier = Modifier
-                                        .height(50.dp)
-                                        .fillMaxWidth()
-                                        .border(
-                                            1.dp,
-                                            Color.Black.copy(0.16f), RoundedCornerShape(16.dp)
-                                        )
-                                        .clickable {
-                                            if (bookedStartBookingDay.value != null) {
-                                                dropDownType.value =
-                                                    enDropDownDateType.DayStartBooking
-                                                isOpenDateDialog.value = true
-                                            }
-
+                            Row(
+                                modifier = Modifier
+                                    .height(50.dp)
+                                    .fillMaxWidth()
+                                    .border(
+                                        1.dp,
+                                        Color.Black.copy(0.16f), RoundedCornerShape(16.dp)
+                                    )
+                                    .clickable {
+                                        if (bookedStartBookingDay.value != null) {
+                                            dropDownType.value =
+                                                enDropDownDateType.DayStartBooking
+                                            isOpenDateDialog.value = true
                                         }
-                                        .padding(horizontal = 15.dp),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceBetween
-                                ) {
 
-                                    Text(
-                                        if(bookingData.value.startDay!=null)
-                                            bookingData.value.startDay.toString()
-                                        else "",
-                                        fontSize = 19.sp,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                    Text(
-                                        "بداية يوم الحجز",
-                                        fontSize = 19.sp,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                }
+                                    }
+                                    .padding(horizontal = 15.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
 
-                                CustomSizer(height = 5.dp)
+                                Text(
+                                    if (bookingData.value.startDay != null)
+                                        bookingData.value.startDay.toString()
+                                    else "",
+                                    fontSize = 19.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Text(
+                                    "بداية يوم الحجز",
+                                    fontSize = 19.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+
+                            CustomSizer(height = 5.dp)
 
                             Row(
                                 modifier = Modifier
@@ -577,7 +580,7 @@ fun RoomPage(
                             ) {
 
                                 Text(
-                                    bookingData.value.startTime,
+                                    bookingData.value?.startTime ?: "",
                                     fontSize = 19.sp,
                                     fontWeight = FontWeight.Bold
                                 )
@@ -644,7 +647,7 @@ fun RoomPage(
                                     .padding(horizontal = 15.dp),
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically,
-                                ) {
+                            ) {
 
                                 Text(
                                     General.convertMonthToName(
@@ -662,41 +665,41 @@ fun RoomPage(
                             }
                             CustomSizer(height = 5.dp)
 
-                                Row(
-                                    modifier = Modifier
-                                        .height(50.dp)
-                                        .fillMaxWidth()
-                                        .border(
-                                            1.dp,
-                                            Color.Black.copy(0.16f), RoundedCornerShape(16.dp)
-                                        )
-                                        .clickable {
-                                            if (bookedEndBookingDay.value != null) {
-                                                dropDownType.value =
-                                                    enDropDownDateType.DayEndBooking
-                                                isOpenDateDialog.value = true
-                                            }
-
+                            Row(
+                                modifier = Modifier
+                                    .height(50.dp)
+                                    .fillMaxWidth()
+                                    .border(
+                                        1.dp,
+                                        Color.Black.copy(0.16f), RoundedCornerShape(16.dp)
+                                    )
+                                    .clickable {
+                                        if (bookedEndBookingDay.value != null) {
+                                            dropDownType.value =
+                                                enDropDownDateType.DayEndBooking
+                                            isOpenDateDialog.value = true
                                         }
-                                        .padding(horizontal = 15.dp),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceBetween
-                                ) {
-                                    Text(
-                                        if(bookingData.value.endDay!=null)
-                                            bookingData.value.endDay.toString()
-                                        else "",
-                                        fontSize = 19.sp,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                    Text(
-                                        "نهاية يوم الحجز",
-                                        fontSize = 19.sp,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                }
 
-                                CustomSizer(height = 5.dp)
+                                    }
+                                    .padding(horizontal = 15.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    if (bookingData.value.endDay != null)
+                                        bookingData.value.endDay.toString()
+                                    else "",
+                                    fontSize = 19.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Text(
+                                    "نهاية يوم الحجز",
+                                    fontSize = 19.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+
+                            CustomSizer(height = 5.dp)
                             Row(
                                 modifier = Modifier
                                     .height(50.dp)
@@ -715,7 +718,7 @@ fun RoomPage(
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
                                 Text(
-                                    bookingData.value.endTime,
+                                    bookingData.value.endTime ?: "",
                                     fontSize = 19.sp,
                                     fontWeight = FontWeight.Bold
                                 )
@@ -735,7 +738,9 @@ fun RoomPage(
                                     homeViewModle.createBooking(
                                         bookingData.value,
                                         errorMessage,
-                                        isOpenDialog)
+                                        isOpenDialog,
+                                        roomId = roomData.roomId!!
+                                    )
 
                                 }
                             ) {
@@ -773,7 +778,7 @@ fun RoomPage(
                                             )
                                     ) {
                                         TimePicker(
-                                            isOpenTimeDialog =  isOpenTimeDialog,
+                                            isOpenTimeDialog = isOpenTimeDialog,
                                             onTimeSelected = { hour, minit ->
                                                 homeViewModle.handlTheSelectionDialog(
                                                     0,
@@ -781,7 +786,8 @@ fun RoomPage(
                                                     0,
                                                     hour,
                                                     minit,
-                                                    enDropTyp = dropDownType.value)
+                                                    enDropTyp = dropDownType.value
+                                                )
                                                 isOpenTimeDialog.value = false
                                             }
                                         )
@@ -809,9 +815,8 @@ fun RoomPage(
                                             month = handlMonthForDialog(),
                                             year = handlYearForDialog(),
                                             modifier = Modifier.padding(16.dp),
-                                            alreadyBookedList = if(dropDownType.value==enDropDownDateType.DayStartBooking)bookedStartBookingDay.value
-                                            else bookedEndBookingDay.value
-                                           ,
+                                            alreadyBookedList = if (dropDownType.value == enDropDownDateType.DayStartBooking) bookedStartBookingDay.value
+                                            else bookedEndBookingDay.value,
                                             onDateSelected = { year, month, day ->
 
                                                 isOpenDateDialog.value = false
@@ -830,26 +835,32 @@ fun RoomPage(
                     }
                 }
 
-                if(isOpenDialog.value)
+                if (isOpenDialog.value)
                     AlertDialog(onDismissRequest = {
-                            isOpenDialog.value = false
-                            errorMessage.value =null
+                        isOpenDialog.value = false
+                        errorMessage.value = null
                     }, confirmButton = { /*TODO*/ },
 
-                        title = {Text(errorMessage.value?:"",
-                            fontSize = 19.sp)},
+                        title = {
+                            Text(
+                                errorMessage.value ?: "",
+                                fontSize = 19.sp
+                            )
+                        },
                         dismissButton = {
                             Button(onClick = {
                                 isOpenDialog.value = false
-                                errorMessage.value =null
+                                errorMessage.value = null
                             }) {
                                 Text("الغاء")
 
                             }
                         }
 
-                        )
+                    )
             }
 
+        }
+    )
 
 }
