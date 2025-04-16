@@ -179,8 +179,7 @@ class HomeViewModle @Inject constructor(
     }
 
    suspend fun  settingRoomId(roomId:UUID){
-      val newData = _bookingData.value.copy(roomId = roomId)
-        _bookingData.emit(newData)
+
 
     }
 
@@ -258,7 +257,9 @@ class HomeViewModle @Inject constructor(
 
     ) {
         viewModelScope.launch(mainDispatcher + errorHandling) {
-            settingRoomId(roomId)
+            val newData = _bookingData.value.copy(roomId = roomId)
+            _bookingData.emit(newData)
+
             errorMessage.value = validateBookingCreation(bookingData = bookingData)
             if (errorMessage.value != null) {
                 showBottomSheet.value = true
@@ -292,7 +293,7 @@ class HomeViewModle @Inject constructor(
     }
 
     fun getBookingData(pageNumber: Int = 1) {
-        viewModelScope.launch(ioDispatcher + errorHandling) {
+        viewModelScope.launch(mainDispatcher + errorHandling) {
 
             when (val result = homeRepository.getUserBookings(pageNumber)) {
                 is NetworkCallHandler.Successful<*> -> {

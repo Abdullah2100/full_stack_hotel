@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
@@ -64,6 +65,8 @@ import com.example.hotel_mobile.Modle.enDropDownDateType
 import com.example.hotel_mobile.Modle.enNetworkStatus
 import com.example.hotel_mobile.R
 import com.example.hotel_mobile.Util.General
+import com.example.hotel_mobile.View.component.BookingLoaingHolder
+import com.example.hotel_mobile.View.component.BookingShape
 import com.example.hotel_mobile.View.component.CustomErrorSnackBar
 import com.example.hotel_mobile.View.component.CustomSizer
 import com.example.hotel_mobile.View.component.RoomLoaingHolder
@@ -123,7 +126,7 @@ fun BookingPage(
                         ) {
 
                             (0..4).forEach {
-                                RoomLoaingHolder()
+                                BookingLoaingHolder()
                             }
                         }
                     }
@@ -131,27 +134,47 @@ fun BookingPage(
 
                     else -> {
 
-                        Column(
-                            modifier = Modifier
+                        when (bookings.value.isNullOrEmpty()) {
+                            true -> {
+                                Column(
+                                    modifier = Modifier
 
-                                .fillMaxWidth()
-                                .fillMaxHeight(),
+                                        .fillMaxWidth()
+                                        .fillMaxHeight(),
 
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.DateRange,
-                                contentDescription = "",
-                                modifier = Modifier.size(150.dp)
-                                    ,
-                                tint = Color.Black.copy(0.56f)
-                            )
-                            Text("لا يوجد اي حجوزات",
-                                color =Color.Black.copy(0.56f),
-                                fontWeight = FontWeight.Bold
-                            )
+                                    verticalArrangement = Arrangement.Center,
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.DateRange,
+                                        contentDescription = "",
+                                        modifier = Modifier.size(150.dp),
+                                        tint = Color.Black.copy(0.56f)
+                                    )
+                                    Text(
+                                        "لا يوجد اي حجوزات",
+                                        color = Color.Black.copy(0.56f),
+                                        fontWeight = FontWeight.Bold
+                                    )
 
+                                }
+                            }
+
+                            else -> {
+                                LazyColumn(
+                                    modifier = Modifier
+                                        .padding(top = 5.dp)
+                                        .padding(horizontal = 15.dp)
+                                        .fillMaxSize(),
+                                ) {
+                                    items(bookings.value!!.size) { index ->
+                                        BookingShape(
+                                            bookingData = bookings.value!![index]
+                                        )
+                                    }
+                                }
+
+                            }
                         }
                     }
 

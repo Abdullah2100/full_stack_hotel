@@ -10,6 +10,8 @@ namespace hotel_data
     public class UserData
     {
         static string connectionUr = clsConnnectionUrl.url;
+        private static string minioUrl = clsConnnectionUrl.minIoConnectionUrl + "user/";
+
 
         public static UserDto? getUser
         (
@@ -38,7 +40,7 @@ namespace hotel_data
                                     var personData = PersonData.getPerson((Guid)reader["personid"]);
 
 
-                                    var imageHolder = ImagesData.image(id);
+                                    var imageHolder = ImagesData.image(id,minioUrl);
                                     var userData = new UserDto(
                                         userId: id,
                                         brithDay: (DateTime)reader["dateofbirth"],

@@ -111,7 +111,7 @@ public class ImagesData
         return image;
     }
 
-    public static ImagesTbDto? image(Guid id)
+    public static ImagesTbDto? image(Guid id,string? minioUrl=null)
     {
         ImagesTbDto? image = null;
         try
@@ -129,9 +129,10 @@ public class ImagesData
                         {
                             if (reader.Read())
                             {
+                                string imageHolder = minioUrl!=null ? minioUrl+((string)reader["name"]) : "";
                                 image = new ImagesTbDto(
                                     imagePathId: (Guid)reader["imageid"],
-                                    imagePath: (string)reader["name"],
+                                    imagePath:imageHolder,
                                     belongTo: (Guid)reader["belongto"],
                                      isThumnail:reader["isthumnail"]==DBNull.Value?false: (bool)reader["isthumnail"]
 

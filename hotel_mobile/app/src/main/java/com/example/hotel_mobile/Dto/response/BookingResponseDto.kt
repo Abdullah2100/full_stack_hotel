@@ -1,5 +1,7 @@
 package com.example.hotel_mobile.Dto.response
 
+import com.example.hotel_mobile.Dto.RoomDto
+import com.example.hotel_mobile.Dto.UserDto
 import com.example.hotel_mobile.services.kSerializeChanger.LocalDateTimeKserialize
 import com.example.hotel_mobile.services.kSerializeChanger.UUIDKserialize
 import kotlinx.serialization.Serializable
@@ -30,5 +32,7 @@ data class BookingResponseDto(
     val cancelledAt:LocalDateTime?,
     val cancellationReason:String?,
     @Serializable(with= LocalDateTimeKserialize::class)
-   val actualCheckOut:LocalDateTime?
+   val actualCheckOut:LocalDateTime?,
+    val room:RoomDto,
+    val user:UserDto
 )
