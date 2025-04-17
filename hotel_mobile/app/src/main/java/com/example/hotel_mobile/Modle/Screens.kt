@@ -23,6 +23,8 @@ object Screens {
     @Serializable
     object booking
 
+    @Serializable
+    object myRooms
 
     @Serializable
     data class Room(

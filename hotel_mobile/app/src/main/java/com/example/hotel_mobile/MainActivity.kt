@@ -21,6 +21,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.util.fastForEachIndexed
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -61,6 +63,7 @@ class MainActivity : ComponentActivity() {
                 val pages = listOf(
                     Screens.home,
                     Screens.booking,
+                    Screens.myRooms,
                     Screens.home,
                 )
                 val buttonNavItem = listOf(
@@ -72,6 +75,10 @@ class MainActivity : ComponentActivity() {
                         Icons.Default.DateRange,
                         "الحجوزات"
                     ), ButtonSheetItem(
+                  ImageVector.vectorResource(id = R.drawable.bedroom),
+                        "غرفي"
+                    ),
+                    ButtonSheetItem(
                         Icons.Default.Settings,
                         "الاعدادات"
                     )
@@ -92,6 +99,8 @@ class MainActivity : ComponentActivity() {
                             if (isLogin.value == true &&
                                 (
                                         navBackStackEntry?.destination?.hasRoute(Screens.home::class) == true
+                                                ||
+                                                navBackStackEntry?.destination?.hasRoute(Screens.myRooms::class) == true
                                                 ||
                                         navBackStackEntry?.destination?.hasRoute(Screens.booking::class) == true
                                 )

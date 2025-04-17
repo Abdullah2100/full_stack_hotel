@@ -605,6 +605,8 @@ CREATE TABLE Rooms (
     updateAt TIMESTAMP NULL,
     isBlock BOOLEAN DEFAULT FALSE,
     isDeleted BOOLEAN DEFAULT FALSE,
+    location POINT DEFAULT NULL,
+    place text DEFAULT NULL,
      CONSTRAINT CHACK_IS_VALID_CREATION_ID CHECK(isExistById(belongTo)=TRUE)
 );
 --
@@ -637,7 +639,10 @@ $$LANGUAGE PLPGSQL;
 
 --
 
-CREATE OR REPLACE FUNCTION getRoomsByPage(pageNumber INT, limitNumber INT) RETURNS TABLE(
+CREATE OR REPLACE FUNCTION getRoomsByPage(
+pageNumber INT, 
+limitNumber INT,
+belong_id UUID) RETURNS TABLE(
         RoomID UUID,
         Status VARCHAR(10),
         pricePerNight NUMERIC(10, 2),
@@ -649,6 +654,12 @@ CREATE OR REPLACE FUNCTION getRoomsByPage(pageNumber INT, limitNumber INT) RETUR
         isblock Boolean,
         isDeleted Boolean
     ) AS $$ BEGIN
+
+IF pageNumber<1 THEN
+RAISE EXCEPTION 'the pageNumber is not valide ';
+
+END IF;
+
 RETURN QUERY SELECT
 rom.roomid,
     rom.Status,
@@ -664,7 +675,7 @@ FROM rooms rom
     INNER JOIN roomtypes romt ON rom.roomtypeid = romt.roomtypeid
     LEFT JOIN users usr ON rom.belongto = usr.userid
     LEFT JOIN admins adms ON rom.belongto = adms.adminid
-WHERE rom.isBlock = FALSE
+WHERE rom.isBlock = FALSE AND (belong_id IS NULL OR rom.belongto=belong_id)
 ORDER BY rom.CreatedAt DESC
 LIMIT limitNumber OFFSET limitNumber * (pageNumber - 1);
 EXCEPTION
@@ -684,6 +695,7 @@ SELECT
     NULL;
 END;
 $$ LANGUAGE plpgsql;
+
 ---
 
 
