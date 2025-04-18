@@ -1,16 +1,20 @@
 package com.example.hotel_mobile.Util
 
-import android.R.string
+import android.content.Context
+import android.net.Uri
+import android.provider.MediaStore
 import android.util.Log
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.drawscope.Stroke
 import com.example.hotel_mobile.CustomDatePicker.vsnappy1.datepicker.data.Constant
 import com.example.hotel_mobile.Data.Room.AuthDao
 import com.example.hotel_mobile.Data.Room.AuthModleEntity
 import com.example.hotel_mobile.Dto.AuthResultDto
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import net.sqlcipher.database.SQLiteDatabase
 import net.sqlcipher.database.SupportFactory
+import java.io.File
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -163,6 +167,34 @@ object General {
              else->{
                  return Color.Red
                  }
+        }
+    }
+
+
+   fun dashStrock ()= Stroke(
+    width = 4f,
+    pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
+    )
+
+     fun Uri.toCustomFil(context: Context): File? {
+        var file: File? = null;
+
+        try {
+            val resolver = context.contentResolver;
+            resolver.query(this, null, null, null, null)
+                .use {
+                        cursor->
+                    if(cursor==null) throw Exception("could not accesss Local Storage")
+
+                    cursor.moveToFirst()
+                    val column = arrayOf(MediaStore.Images.Media.DATA)
+                    val filePath = cursor.getColumnIndex(column[0])
+                    file = File(cursor.getString(filePath))
+
+                }
+            return  file;
+        } catch (e: Exception) {
+            throw e;
         }
     }
 }

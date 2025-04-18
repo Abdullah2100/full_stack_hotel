@@ -883,11 +883,6 @@ namespace hotel_api.controller
         }
 
 
-        /// <summary>
-        /// /
-        /// </summary>
-        /// <param name="bookingData"></param>
-        /// <returns></returns>
      /*   [Authorize]
         [HttpPost("booking")]
         [ProducesResponseType(StatusCodes.Status201Created)]

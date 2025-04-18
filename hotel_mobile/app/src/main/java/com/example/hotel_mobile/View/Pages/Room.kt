@@ -170,12 +170,6 @@ fun RoomPage(
 
 
 
-    Log.d("bookedList",bookedEndBookingDay.value.toString())
-    Log.d("bookedList",bookedStartBookingDay.value.toString())
-
-    LaunchedEffect(key1 = Unit) {
-        homeViewModle.getBookedBookingDayAt()
-    }
 
     LaunchedEffect(isLoading.value) {
         if (showBottomSheet.value == true && isLoading.value == enNetworkStatus.Complate) {
@@ -239,7 +233,6 @@ fun RoomPage(
                             Button(
                                 onClick = {
                                     showBottomSheet.value = true
-//                                    isOpenDialog.value = true
                                 },
                                 modifier = Modifier
                                     .fillMaxWidth()

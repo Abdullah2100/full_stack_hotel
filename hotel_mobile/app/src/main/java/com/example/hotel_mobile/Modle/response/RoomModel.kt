@@ -1,4 +1,4 @@
-package com.example.hotel_mobile.Modle
+package com.example.hotel_mobile.Modle.response
 
 import java.util.UUID
 
@@ -16,5 +16,8 @@ data class RoomModel(
     var user: UserModel? = null,
     var roomData: String? = null,
     var images: List<ImageModel>? = null,
-    var roomTypeModel: RoomTypeModel? = null
+    var roomTypeModel: RoomTypeModel? = null,
+    var location:String?,
+    var longitude:Double?,
+    val latitude:Double?
 )

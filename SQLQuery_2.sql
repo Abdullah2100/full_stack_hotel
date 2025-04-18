@@ -640,9 +640,9 @@ $$LANGUAGE PLPGSQL;
 --
 
 CREATE OR REPLACE FUNCTION getRoomsByPage(
-pageNumber INT, 
+pageNumber INT,
 limitNumber INT,
-belong_id UUID) RETURNS TABLE(
+belongId UUID) RETURNS TABLE(
         RoomID UUID,
         Status VARCHAR(10),
         pricePerNight NUMERIC(10, 2),
@@ -675,7 +675,7 @@ FROM rooms rom
     INNER JOIN roomtypes romt ON rom.roomtypeid = romt.roomtypeid
     LEFT JOIN users usr ON rom.belongto = usr.userid
     LEFT JOIN admins adms ON rom.belongto = adms.adminid
-WHERE rom.isBlock = FALSE AND (belong_id IS NULL OR rom.belongto=belong_id)
+WHERE rom.isBlock = FALSE AND (belongId IS  NULL OR rom.belongTo=belongId)
 ORDER BY rom.CreatedAt DESC
 LIMIT limitNumber OFFSET limitNumber * (pageNumber - 1);
 EXCEPTION
@@ -1123,7 +1123,11 @@ $$LANGUAGE plpgsql;
 ----
 ----
 
-CREATE OR REPLACE FUNCTION fun_getBookingPagination(belongId UUID,pageNumber INT, limitNumber INT)
+CREATE OR REPLACE FUNCTION fun_getBookingPagination(
+    belongId UUID,
+    pageNumber INT, 
+    limitNumber INT
+    )
 RETURNS  TABLE (
      bookingID UUID ,
     roomID UUID  ,
@@ -1160,6 +1164,76 @@ RETURN QUERY SELECT
     b.actualCheckOut   
 FROM bookings b
 WHERE  (belongId IS NULL AND b.belongTo IS NOT NULL)   OR  b.belongTo = belongId 
+ORDER BY b.createdAt DESC
+LIMIT limitNumber OFFSET limitNumber * (pageNumber - 1);
+EXCEPTION
+WHEN OTHERS THEN RAISE EXCEPTION 'Something went wrong: %',
+SQLERRM;
+RETURN QUERY 
+SELECT
+    NULL   ,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL;
+
+END;
+$$LANGUAGE plpgsql;
+----
+----
+
+CREATE OR REPLACE FUNCTION fun_getBookingBelongToUserPagination(
+    Userid UUID,
+    pageNumber INT, 
+    limitNumber INT
+    )
+RETURNS  TABLE (
+     bookingID UUID ,
+    roomID UUID  ,
+    belongTo UUID  ,
+    booking_start TIMESTAMP   ,
+    booking_end TIMESTAMP   ,
+    bookingStatus VARCHAR(50) ,
+    totalPrice NUMERIC(10, 2) ,
+    servicePayment NUMERIC(10, 2) ,
+    maintenancePayment NUMERIC(10, 2)  ,
+    paymentStatus VARCHAR(50)  ,
+    createdAt TIMESTAMP    ,
+    cancelledAt TIMESTAMP  ,
+    cancellationReason TEXT  ,
+    actualCheckOut TIMESTAMP  
+)
+AS $$
+BEGIN
+
+RETURN QUERY SELECT 
+    b.bookingID ,
+    b.roomID   ,
+    b.belongTo   ,
+    b.booking_start   ,
+    b.booking_end   ,
+    b.bookingStatus  ,
+    b.totalPrice  ,
+    b.servicePayment ,
+    b.maintenancePayment   ,
+    b.paymentStatus   ,
+    b.createdAt  ,
+    b.cancelledAt   ,
+    b.cancellationReason   ,
+    b.actualCheckOut   
+FROM bookings b
+INNER JOIN rooms ro 
+ON b.roomid = ro.roomid
+WHERE  ro.belongto =  Userid
 ORDER BY b.createdAt DESC
 LIMIT limitNumber OFFSET limitNumber * (pageNumber - 1);
 EXCEPTION

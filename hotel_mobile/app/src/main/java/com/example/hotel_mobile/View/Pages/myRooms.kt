@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material3.FabPosition
@@ -31,6 +32,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.hotel_mobile.Modle.Screens
 import com.example.hotel_mobile.R
 import com.example.hotel_mobile.View.component.CustomErrorSnackBar
 import com.example.hotel_mobile.View.component.RoomLoaingHolder
@@ -42,17 +44,8 @@ fun MyRoom(
     nav: NavHostController,
     homeViewModel: HomeViewModle
 ) {
-    val roomData = homeViewModel.rooms.collectAsState()
+    val roomData = homeViewModel.myRooms.collectAsState()
 
-    val items = listOf("Home", "Booking", "Setting")
-    val selectedIndex = remember{ mutableStateOf(0) }
-
-
-
-
-    LaunchedEffect(key1 = Unit) {
-        homeViewModel.getRooms(1)
-    }
 
 CustomErrorSnackBar(
     homeViewModel = homeViewModel,
@@ -65,10 +58,14 @@ CustomErrorSnackBar(
             .fillMaxHeight()
         ,
         floatingActionButton = {
-            Box{
-                FloatingActionButton(onClick = { /*TODO*/ }) {
-                    Text("انشاء غرفة جديدة")
-                }
+            FloatingActionButton(
+                modifier = Modifier.padding(bottom = 90.dp)
+                    .width(150.dp)
+
+                ,onClick = {
+                    nav.navigate(Screens.createNewRoom)
+                }) {
+                Text("انشاء غرفة جديدة")
             }
         },
         floatingActionButtonPosition = FabPosition.Center

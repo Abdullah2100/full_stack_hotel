@@ -134,4 +134,19 @@ dependencies {
     //workder
     implementation(libs.androidx.work.runtime.ktx)
 
+    //core
+
+    // Java language implementation
+    implementation (libs.androidx.core)
+
+
+   //location
+    implementation(libs.play.services.location)
+
+    //permission
+    implementation(libs.accompanist.permissions)
+
+    //coroutinTask
+    implementation(libs.kotlinx.coroutines.play.services)
+
 }

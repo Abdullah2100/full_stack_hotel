@@ -27,6 +27,12 @@ object Screens {
     object myRooms
 
     @Serializable
+    object createNewRoom
+
+    @Serializable
+    object bookingForMyRoom
+
+    @Serializable
     data class Room(
        val roomdata:RoomDto
     )

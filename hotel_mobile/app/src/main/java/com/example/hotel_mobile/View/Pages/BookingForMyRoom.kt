@@ -76,12 +76,11 @@ import kotlinx.coroutines.delay
 
 
 @Composable
-fun BookingPage(
+fun BookingForMyRoom(
     homeViewModel: HomeViewModle, nav: NavHostController
 ) {
 
-    val bookings = homeViewModel.bookingsList.collectAsState()
-
+    val bookings = homeViewModel.bookingsBelongToMyRoomList.collectAsState()
 
 
     CustomErrorSnackBar(
@@ -146,7 +145,7 @@ fun BookingPage(
                                         tint = Color.Black.copy(0.56f)
                                     )
                                     Text(
-                                        "لا يوجد اي حجوزات",
+                                        "لا يوجد اي حجوزات لغرفي",
                                         color = Color.Black.copy(0.56f),
                                         fontWeight = FontWeight.Bold
                                     )

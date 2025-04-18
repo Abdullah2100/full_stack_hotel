@@ -6,12 +6,12 @@ import com.example.hotel_mobile.Dto.RoomDto
 import com.example.hotel_mobile.Dto.RoomTypeDto
 import com.example.hotel_mobile.Dto.UserDto
 import com.example.hotel_mobile.Dto.response.BookingResponseDto
-import com.example.hotel_mobile.Modle.BookingModel
-import com.example.hotel_mobile.Modle.ImageModel
-import com.example.hotel_mobile.Modle.PersonModel
-import com.example.hotel_mobile.Modle.RoomModel
-import com.example.hotel_mobile.Modle.RoomTypeModel
-import com.example.hotel_mobile.Modle.UserModel
+import com.example.hotel_mobile.Modle.response.BookingModel
+import com.example.hotel_mobile.Modle.response.ImageModel
+import com.example.hotel_mobile.Modle.response.PersonModel
+import com.example.hotel_mobile.Modle.response.RoomModel
+import com.example.hotel_mobile.Modle.response.RoomTypeModel
+import com.example.hotel_mobile.Modle.response.UserModel
 
 object DtoToModule {
 
@@ -77,7 +77,10 @@ object DtoToModule {
             beglongTo = this.beglongTo,
             pricePerNight = this.pricePerNight,
             roomtypeid = this.roomtypeid,
-            roomTypeModel = this.roomTypeData?.toRoomTypeModel()
+            roomTypeModel = this.roomTypeData?.toRoomTypeModel(),
+            location = this.location,
+            longitude = this.longitude,
+            latitude = this.latitude
         )
     }
 

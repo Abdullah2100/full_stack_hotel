@@ -64,6 +64,7 @@ class MainActivity : ComponentActivity() {
                     Screens.home,
                     Screens.booking,
                     Screens.myRooms,
+                    Screens.bookingForMyRoom,
                     Screens.home,
                 )
                 val buttonNavItem = listOf(
@@ -73,11 +74,18 @@ class MainActivity : ComponentActivity() {
                     ),
                     ButtonSheetItem(
                         Icons.Default.DateRange,
-                        "الحجوزات"
-                    ), ButtonSheetItem(
-                  ImageVector.vectorResource(id = R.drawable.bedroom),
+                        "حجوزاتي"
+                    ),
+                    ButtonSheetItem(
+                        ImageVector.vectorResource(id = R.drawable.bedroom),
                         "غرفي"
                     ),
+
+                    ButtonSheetItem(
+                        ImageVector.vectorResource(id = R.drawable.baseline),
+                        "الحجوزات"
+                    ),
+
                     ButtonSheetItem(
                         Icons.Default.Settings,
                         "الاعدادات"
@@ -102,8 +110,10 @@ class MainActivity : ComponentActivity() {
                                                 ||
                                                 navBackStackEntry?.destination?.hasRoute(Screens.myRooms::class) == true
                                                 ||
-                                        navBackStackEntry?.destination?.hasRoute(Screens.booking::class) == true
-                                )
+                                                navBackStackEntry?.destination?.hasRoute(Screens.bookingForMyRoom::class) == true
+                                                ||
+                                                navBackStackEntry?.destination?.hasRoute(Screens.booking::class) == true
+                                        )
                             )
                                 NavigationBar(
                                     content = {

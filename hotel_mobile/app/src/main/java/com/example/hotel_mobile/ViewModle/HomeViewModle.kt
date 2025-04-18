@@ -1,21 +1,20 @@
 package com.example.hotel_mobile.ViewModle
 
-import android.content.Context
 import android.util.Log
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hotel_mobile.Data.Repository.HotelRepository
 import com.example.hotel_mobile.Di.IoDispatcher
 import com.example.hotel_mobile.Di.MainDispatcher
-import com.example.hotel_mobile.Dto.LoginDto
 import com.example.hotel_mobile.Dto.RoomDto
 import com.example.hotel_mobile.Dto.response.BookingResponseDto
-import com.example.hotel_mobile.Modle.BookingModel
-import com.example.hotel_mobile.Modle.BookingModleHolder
+import com.example.hotel_mobile.Modle.response.BookingModel
+import com.example.hotel_mobile.Modle.Request.BookingModleHolder
 import com.example.hotel_mobile.Modle.NetworkCallHandler
-import com.example.hotel_mobile.Modle.RoomModel
+import com.example.hotel_mobile.Modle.Request.RoomCreationModel
+import com.example.hotel_mobile.Modle.Request.RoomImageCreation
+import com.example.hotel_mobile.Modle.response.RoomModel
 import com.example.hotel_mobile.Modle.enDropDownDateType
 import com.example.hotel_mobile.Modle.enNetworkStatus
 import com.example.hotel_mobile.Util.DtoToModule.toBookingModel
@@ -43,6 +42,9 @@ class HomeViewModle @Inject constructor(
 
     private val _rooms = MutableStateFlow<MutableList<RoomModel>?>(null)
     val rooms = _rooms.asStateFlow()
+
+    private val _myRooms = MutableStateFlow<MutableList<RoomModel>?>(null)
+    val myRooms = _myRooms.asStateFlow()
 
     private val _statusChange = MutableStateFlow<enNetworkStatus>(enNetworkStatus.None)
     val statusChange: StateFlow<enNetworkStatus> = _statusChange.asStateFlow()
@@ -77,6 +79,89 @@ class HomeViewModle @Inject constructor(
     private val _bookingsList = MutableStateFlow<List<BookingModel>?>(null)
     val bookingsList = _bookingsList.asStateFlow()
 
+
+    private val _bookingsBelongToMyRoomList = MutableStateFlow<List<BookingModel>?>(null)
+    val bookingsBelongToMyRoomList = _bookingsBelongToMyRoomList.asStateFlow()
+
+    private val _roomData = MutableStateFlow<RoomCreationModel>(RoomCreationModel())
+    val roomData = _roomData.asStateFlow()
+
+
+  suspend  fun deletedImage(path:String,isThumbnail:Boolean?=false){
+        if(_roomData.value.images!=null){
+            val imagesHolder = _roomData.value.copy(images = _roomData.value.images!!.filter { it.data.path!=path }.toMutableList())
+            _roomData.emit(imagesHolder)
+        }
+    }
+
+    fun setRoomThumnail(image:RoomImageCreation,isDeleted:Boolean=false){
+
+       viewModelScope.launch(mainDispatcher+ errorHandling) {
+           if(isDeleted){
+               deletedImage(image.data.path,isDeleted)
+           }
+           else{
+               val imagesCop = _roomData.value.images;
+               val imagesList = mutableListOf<RoomImageCreation>()
+               when(imagesCop==null){
+                   true->{
+                       imagesList.add(image)
+                   }
+                   else->{
+                       imagesList.addAll(_roomData.value.images!!)
+                       imagesList.add(image)
+                   }
+               }
+               val copyRoomData = _roomData.value.copy(images = imagesList)
+               _roomData.emit(copyRoomData)
+           }
+
+       }
+    }
+
+    fun setRoomData(
+        pricePerNight: Double?=null,
+        capacity: Int? = null,
+        roomtypeid: UUID? = null,
+        bedNumber: Int? = null ,
+        location: String? = null,
+        latitude: Double? = null,
+        longitude: Double? = null
+    )
+    {
+      viewModelScope.launch {
+          if(pricePerNight!=null){
+              val roomDataCopy = _roomData.value.copy(pricePerNight = pricePerNight)
+              _roomData.emit(roomDataCopy)
+          }
+          if(capacity!=null){
+              val roomDataCopy = _roomData.value.copy(capacity = capacity)
+              _roomData.emit(roomDataCopy)
+          }
+          if(roomtypeid!=null){
+              val roomDataCopy = _roomData.value.copy(roomtypeid = roomtypeid)
+              _roomData.emit(roomDataCopy)
+          }
+          if(bedNumber!=null){
+              val roomDataCopy = _roomData.value.copy(bedNumber = bedNumber)
+              _roomData.emit(roomDataCopy)
+          }
+          if(location!=null){
+              val roomDataCopy = _roomData.value.copy(location = location)
+              _roomData.emit(roomDataCopy)
+          }
+
+          if(latitude!=null){
+              val roomDataCopy = _roomData.value.copy(latitude = latitude)
+              _roomData.emit(roomDataCopy)
+          }
+          if(longitude!=null){
+              val roomDataCopy = _roomData.value.copy(longitude = longitude)
+              _roomData.emit(roomDataCopy)
+          }
+      }
+
+    }
 
     fun handlTheSelectionDialog(
         day: Int,
@@ -178,10 +263,6 @@ class HomeViewModle @Inject constructor(
 
     }
 
-   suspend fun  settingRoomId(roomId:UUID){
-
-
-    }
 
     val errorHandling = CoroutineExceptionHandler { _, ex ->
         viewModelScope.launch {
@@ -210,10 +291,77 @@ class HomeViewModle @Inject constructor(
         return message;
     }
 
-    fun getRooms(pageNumber: Int = 1) {
+    fun getRooms(pageNumber: Int = 1,isBelongToMe:Boolean =false) {
         viewModelScope.launch(ioDispatcher + errorHandling) {
 
-            when (val result = homeRepository.getRooms(pageNumber)) {
+            when (val result = homeRepository.getRooms(pageNumber,isBelongToMe)) {
+                is NetworkCallHandler.Successful<*> -> {
+                    val roomData = result.data as List<RoomDto>?
+                    if (!roomData.isNullOrEmpty()) {
+                        var roomDataToMutale = roomData
+                            .map { listData -> listData.toRoomModel() }
+                            .toMutableList()
+                       when(isBelongToMe){
+                           true->{
+                               _myRooms.emit(roomDataToMutale)
+                           }
+                           else->{
+                               _rooms.emit(roomDataToMutale)
+                           }
+                       }
+                    } else {
+
+                        when(isBelongToMe){
+                            true->{
+                                if (_myRooms.value == null)
+                                    _myRooms.emit(mutableListOf<RoomModel>())
+                            }
+                            else->{
+                                if (_rooms.value == null)
+                                    _rooms.emit(mutableListOf<RoomModel>())
+                            }
+                        }
+                    }
+                }
+
+                is NetworkCallHandler.Error -> {
+                    when(isBelongToMe){
+                        true->{
+                            if (_myRooms.value == null)
+                                _myRooms.emit(mutableListOf<RoomModel>())
+                        }
+                        else->{
+                            if (_rooms.value == null)
+                                _rooms.emit(mutableListOf<RoomModel>())
+                        }
+                    }
+
+                    throw Exception(result.data?.replace("\"", ""));
+                }
+
+                else -> {
+                    when(isBelongToMe){
+                        true->{
+                            if (_myRooms.value == null)
+                                _myRooms.emit(mutableListOf<RoomModel>())
+                        }
+                        else->{
+                            if (_rooms.value == null)
+                                _rooms.emit(mutableListOf<RoomModel>())
+                        }
+                    }
+                    throw Exception("unexpected Stat");
+                }
+            }
+
+        }
+    }
+
+
+    fun getMyRooms(pageNumber: Int = 1) {
+        viewModelScope.launch(ioDispatcher + errorHandling) {
+
+            when (val result = homeRepository.getMyRooms(pageNumber)) {
                 is NetworkCallHandler.Successful<*> -> {
                     val roomData = result.data as List<RoomDto>?
                     if (!roomData.isNullOrEmpty()) {
@@ -221,25 +369,25 @@ class HomeViewModle @Inject constructor(
                             .map { listData -> listData.toRoomModel() }
                             .toMutableList()
 
-                        _rooms.emit(roomDataToMutale)
+                        _myRooms.emit(roomDataToMutale)
                     } else {
 
-                        if (_rooms.value == null)
-                            _rooms.emit(mutableListOf<RoomModel>())
+                        if (_myRooms.value == null)
+                            _myRooms.emit(mutableListOf<RoomModel>())
                     }
                 }
 
                 is NetworkCallHandler.Error -> {
-                    if (_rooms.value == null)
-                        _rooms.emit(mutableListOf<RoomModel>())
+                    if (_myRooms.value == null)
+                        _myRooms.emit(mutableListOf<RoomModel>())
 
 
                     throw Exception(result.data?.replace("\"", ""));
                 }
 
                 else -> {
-                    if (_rooms.value == null)
-                        _rooms.emit(mutableListOf<RoomModel>())
+                    if (_myRooms.value == null)
+                        _myRooms.emit(mutableListOf<RoomModel>())
 
                     throw Exception("unexpected Stat");
                 }
@@ -330,6 +478,45 @@ class HomeViewModle @Inject constructor(
         }
     }
 
+
+    fun getBookingBelongToMyRoom(pageNumber: Int = 1) {
+        viewModelScope.launch(mainDispatcher + errorHandling) {
+
+            when (val result = homeRepository.getBookingBelongToMyRoom(pageNumber)) {
+                is NetworkCallHandler.Successful<*> -> {
+                    val bookingDataHolder = result.data as List<BookingResponseDto>?
+                    if (!bookingDataHolder.isNullOrEmpty()) {
+                        val roomDataToMutale = bookingDataHolder
+                            .map { listData -> listData.toBookingModel() }
+                            .toMutableList()
+
+                        _bookingsBelongToMyRoomList.emit(roomDataToMutale)
+                    } else {
+
+                        if (_bookingsBelongToMyRoomList.value == null)
+                            _bookingsBelongToMyRoomList.emit(emptyList())
+                    }
+                }
+
+                is NetworkCallHandler.Error -> {
+                    if (_bookingsBelongToMyRoomList.value == null)
+                        _bookingsBelongToMyRoomList.emit(emptyList())
+
+
+                    throw Exception(result.data?.replace("\"", ""));
+                }
+
+                else -> {
+                    if (_bookingsBelongToMyRoomList.value == null)
+                        _bookingsBelongToMyRoomList.emit(mutableListOf())
+
+                    throw Exception("unexpected Stat");
+                }
+            }
+
+        }
+    }
+
     fun getBookedBookingDayAt(
         month: Int = General.getCurrentMonth(),
         year: Int = General.getCurrentYear(),
@@ -376,6 +563,14 @@ class HomeViewModle @Inject constructor(
 
     suspend fun clearErrorMessage() {
         _errorMessage.emit("")
+    }
+
+    init {
+        getRooms(1)
+        getRooms(1,true)
+        getBookingData(1)
+        getMyRooms(1)
+        getBookingBelongToMyRoom(1)
     }
 
 }
