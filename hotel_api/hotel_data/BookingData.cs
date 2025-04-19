@@ -183,4 +183,76 @@ public class BookingData
         
         return bookingList;
     }
+    
+    public static List<BookingDto> getBookingBelongToUserRoomData(Guid userId, int pageNumber, int limitSize = 25)
+    {
+        List<BookingDto> bookingList = new List<BookingDto>();
+        try
+        {
+            using (var con = new NpgsqlConnection(connectionUr))
+        {
+            con.Open();
+            string query = "SELECT * FROM fun_getBookingBelongToUserPagination(@belongId ,@pageNumber , @limitNumber );";
+            using (var cmd = new NpgsqlCommand(query, con))
+            {
+                cmd.Parameters.AddWithValue("@belongId", userId);
+                cmd.Parameters.AddWithValue("@pageNumber", pageNumber>=1?1:pageNumber);
+                cmd.Parameters.AddWithValue("@limitNumber", limitSize);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            var BookingDto = new BookingDto(
+                                bookingId: (Guid)reader["bookingid"],
+                                roomId: (Guid)reader["roomid"],
+                                userId: (Guid)reader["belongto"],
+                                bookingStart: (DateTime)reader["booking_start"],
+                                bookingEnd: (DateTime)reader["booking_end"],
+                                bookingStatus: (string)reader["bookingstatus"],
+                                totalPrice: (decimal)reader["totalprice"],
+                                
+                                servicePayment: reader["servicepayment"] == DBNull.Value
+                                    ? null
+                                    : (decimal)reader["servicepayment"],
+                                
+                                maintenancePayment: reader["maintenancepayment"] == DBNull.Value
+                                    ? null
+                                    : (decimal)reader["maintenancepayment"],
+                                
+                                paymentStatus: (string)reader["paymentstatus"],
+                                
+                                createdAt: (DateTime)reader["createdat"],
+                                
+                                cancelledAt: reader["cancelledat"] == DBNull.Value
+                                    ? null
+                                    : (DateTime)reader["cancelledat"],
+                                
+                                cancellationReason: reader["cancellationreason"] == DBNull.Value
+                                    ? null
+                                    : (string)reader["cancellationreason"],
+                                
+                                actualCheckOut: reader["actualcheckout"] == DBNull.Value
+                                    ? null
+                                    : (DateTime)reader["actualcheckout"]
+                            );
+                            bookingList.Add(BookingDto);
+                        }
+                    }
+                }
+            }
+        } 
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("this from check from get bookingList {0}", ex);
+        } 
+        
+        return bookingList;
+    }
+    
+   
+    
+    
 }

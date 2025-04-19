@@ -112,11 +112,79 @@ public class UserController : Controller
         return StatusCode(200, new { accessToken = $"{accesstoken}", refreshToken = $"{refreshToken}" });
     }
 
-    /// <summary>
-    /// this to get room date by page for user
-    /// </summary>
-    /// <param name="pageNumber"></param>
-    /// <returns></returns>
+      //room
+        [Authorize]
+        [HttpPost("room")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> createRoom
+            ([FromForm] RoomRequestDto roomData)
+        {
+            var authorizationHeader = HttpContext.Request.Headers["Authorization"];
+            var id = AuthinticationServices.GetPayloadFromToken("id",
+                authorizationHeader.ToString().Replace("Bearer ", ""));
+            Guid? adminid = null;
+            if (Guid.TryParse(id.Value, out Guid outID))
+            {
+                adminid = outID;
+            }
+
+            if (adminid == null)
+            {
+                return StatusCode(401, "you not have Permission");
+            }
+
+            var isHasPermissionToCreateUser = AdminBuissnes.isAdminExist(adminid ?? Guid.Empty);
+
+
+            if (!isHasPermissionToCreateUser)
+            {
+                return StatusCode(401, "you not have Permission");
+            }
+
+
+            var roomId = Guid.NewGuid();
+
+            List<ImageRequestDto>? imageHolderPath = null;
+            if (roomData.images != null)
+            {
+                imageHolderPath = await MinIoServices.uploadFile(
+                    _config,
+                    roomData.images,
+                    MinIoServices.enBucketName.ROOM,
+                    roomId.ToString()
+                );
+            }
+
+            saveImage(imageHolderPath, roomId);
+
+            var roomHolder = new RoomBuisness(
+                new RoomDto(
+                    roomId: roomId,
+                    status: roomData.status,
+                    pricePerNight: roomData.pricePerNight,
+                    roomtypeid: roomData.roomtypeid,
+                    capacity: roomData.capacity,
+                    bedNumber: roomData.bedNumber,
+                    beglongTo: (Guid)adminid,
+                    createdAt: DateTime.Now,
+                    location:roomData.location,
+                    longitude:roomData.longitude,
+                    latitude:roomData.latitude
+                )
+            );
+
+            var result = roomHolder.save();
+
+            if (result == false)
+                return StatusCode(500, "some thing wrong");
+
+            return StatusCode(201, new { message = "created seccessfully" });
+        }
+
+    
 
     [Authorize]
     [HttpGet("room/{pageNumber:int}")]
@@ -129,7 +197,6 @@ public class UserController : Controller
     {
         try
         {
-          //  string minioEndPoint = "http://" + _config.getKey("minio_end_point") + "/room/";
             var rooms = RoomBuisness.getAllRooms(
                 pageNumber, 
                 25//,
@@ -144,11 +211,46 @@ public class UserController : Controller
     }
 
 
-    /// <summary>
-    /// this creating new booking 
-    /// </summary>
-    /// <param name="booking"></param>
-    /// <returns></returns>
+    
+    [Authorize]
+    [HttpGet("room/me/{pageNumber:int}")]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> getMyRooms
+        (int pageNumber)
+    {
+        try
+        {
+            var authorizationHeader = HttpContext.Request.Headers["Authorization"];
+            var id = AuthinticationServices.GetPayloadFromToken("id",
+                authorizationHeader.ToString().Replace("Bearer ", ""));
+            Guid? userID = null;
+            if (Guid.TryParse(id.Value.ToString(), out Guid outID))
+            {
+                userID = outID;
+            }
+
+            if (userID == null)
+            {
+                return StatusCode(401, "you not have Permission");
+            }
+            var rooms = RoomBuisness.getAllRooms(
+                pageNumber, 
+                25,
+                userId:userID
+                
+            );
+            return Ok(rooms);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "Something went wrong");
+        }
+    }
+
+    
     [Authorize]
     [HttpPost("booking")]
     [ProducesResponseType(StatusCodes.Status201Created)]
@@ -230,6 +332,9 @@ public class UserController : Controller
         return StatusCode(200, bookingDay??[]);
     }
 
+    
+    
+    
   
     [Authorize]
     [HttpGet("booking/{pageNumber:int}")]
@@ -262,4 +367,59 @@ public class UserController : Controller
 
     } 
    
+    
+    
+    [Authorize]
+    [HttpGet("booking/myRooms/{pageNumber:int}")]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public IActionResult bookingsForMyRooms
+        (int pageNumber)
+    {
+        
+        var authorizationHeader = HttpContext.Request.Headers["Authorization"];
+        var id = AuthinticationServices.GetPayloadFromToken("id",
+            authorizationHeader.ToString().Replace("Bearer ", ""));
+        Guid? userID = null;
+        if (Guid.TryParse(id.Value.ToString(), out Guid outID))
+        {
+            userID = outID;
+        }
+
+        if (userID == null)
+        {
+            return StatusCode(401, "you not have Permission");
+        }
+
+        var myBookingListData = BookingBuiseness.getUserBookingList(userID.Value, pageNumber,24,true);
+        
+        return Ok(myBookingListData);
+
+    } 
+    
+    
+    
+    private void saveImage(
+        List<ImageRequestDto>? imagePath,
+        Guid id
+    )
+    {
+        if (imagePath != null)
+        {
+            foreach (var path in imagePath)
+            {
+                var imageHolder = new ImageBuissness(
+                    new ImagesTbDto(
+                        imagePath: path.fileName,
+                        belongTo: id,
+                        imagePathId: null,
+                        isThumnail: path.isThumnail)
+                );
+                imageHolder.save();
+            }
+        }
+    }
+    
 }

@@ -1,4 +1,4 @@
-package com.example.hotel_mobile.Modle
+package com.example.hotel_mobile.Modle.response
 
 import java.time.LocalDateTime
 import java.util.UUID

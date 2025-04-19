@@ -99,8 +99,13 @@ public class BookingBuiseness
         }
 
 
-        public static List<BookingDto> getUserBookingList(Guid userId, int pageNumber, int limitSize = 25)
+        public static List<BookingDto> getUserBookingList(Guid userId, int pageNumber, int limitSize = 25,bool isBelngToMe = false)
         {
-            return BookingData.getUserBookingData(userId, pageNumber, limitSize);
+            switch (isBelngToMe)
+            {
+                case true: return BookingData.getBookingBelongToUserRoomData(userId, pageNumber, limitSize);
+                default: return BookingData.getUserBookingData(userId, pageNumber, limitSize);
+            }
         }
+    
 }

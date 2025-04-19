@@ -11,9 +11,11 @@ import com.example.hotel_mobile.Dto.RoomDto
 import com.example.hotel_mobile.View.Pages.LoginPage
 import com.example.hotel_mobile.Modle.Screens
 import com.example.hotel_mobile.Util.RoomNavType
+import com.example.hotel_mobile.View.Pages.BookingForMyRoom
 import com.example.hotel_mobile.View.Pages.BookingPage
 import com.example.hotel_mobile.View.Pages.HomePage
 import com.example.hotel_mobile.View.Pages.MyRoom
+import com.example.hotel_mobile.View.Pages.RoomCreate
 import com.example.hotel_mobile.View.Pages.RoomPage
 import com.example.hotel_mobile.View.Pages.SignUpPage
 import com.example.hotel_mobile.ViewModle.AuthViewModle
@@ -65,6 +67,16 @@ fun NavController(
             composable<Screens.myRooms> {
                 MyRoom(nav = navController, homeViewModel = homeViewModle)
             }
+
+            composable<Screens.bookingForMyRoom> {
+                BookingForMyRoom(nav = navController, homeViewModel = homeViewModle)
+            }
+
+            composable<Screens.createNewRoom> {
+                RoomCreate(nav = navController, homeViewModel = homeViewModle)
+            }
+
+
             composable<Screens.Room>(
                 typeMap = mapOf(
                     typeOf<RoomDto>() to RoomNavType.RoomType

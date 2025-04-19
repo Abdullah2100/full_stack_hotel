@@ -7,13 +7,12 @@ import com.example.hotel_mobile.Dto.PersonDto
 import com.example.hotel_mobile.Dto.RoomDto
 import com.example.hotel_mobile.Dto.RoomTypeDto
 import com.example.hotel_mobile.Dto.UserDto
-import com.example.hotel_mobile.Modle.BookingModel
-import com.example.hotel_mobile.Modle.BookingModleHolder
-import com.example.hotel_mobile.Modle.ImageModel
-import com.example.hotel_mobile.Modle.PersonModel
-import com.example.hotel_mobile.Modle.RoomModel
-import com.example.hotel_mobile.Modle.RoomTypeModel
-import com.example.hotel_mobile.Modle.UserModel
+import com.example.hotel_mobile.Modle.Request.BookingModleHolder
+import com.example.hotel_mobile.Modle.response.ImageModel
+import com.example.hotel_mobile.Modle.response.PersonModel
+import com.example.hotel_mobile.Modle.response.RoomModel
+import com.example.hotel_mobile.Modle.response.RoomTypeModel
+import com.example.hotel_mobile.Modle.response.UserModel
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -80,7 +79,10 @@ object MoudelToDto {
             beglongTo = this.beglongTo,
             pricePerNight = this.pricePerNight,
             roomtypeid = this.roomtypeid,
-            roomTypeData = this.roomTypeModel?.toRoomTypeDto()
+            roomTypeData = this.roomTypeModel?.toRoomTypeDto(),
+            location = this.location,
+            longitude = this.longitude,
+            latitude = this.latitude
         )
     }
 

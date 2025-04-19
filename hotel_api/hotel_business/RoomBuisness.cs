@@ -16,6 +16,9 @@ public class RoomBuisness
     public DateTime createdAt { get; set; } = DateTime.UtcNow;
     public int bedNumber { get; set; }
     public Guid beglongTo { get; set; }
+    public string? location  {get; set; }
+    public double? latitude { get; set; }
+    public double? longitude { get; set; }
 
     public RoomDto roomHolder
     {
@@ -29,7 +32,10 @@ public class RoomBuisness
                 bedNumber: this.bedNumber,
                 roomtypeid: this.roomtypeid,
                 createdAt: this.createdAt,
-                beglongTo: this.beglongTo
+                beglongTo: this.beglongTo,
+                longitude: this.longitude,
+                location:this.location,
+                latitude: this.latitude
             );
         }
     }
@@ -83,13 +89,14 @@ public class RoomBuisness
 
     public static List<RoomDto> getAllRooms(
         int pagenumber,
-        int limitPerPage//,
-       // string? minioEndPoint=null
+        int limitPerPage,
+        Guid? userId=null
         )
     {
         return RoomData.getRoomByPage(
             pagenumber, 
-            limitPerPage//, minioEndPoint
+            limitPerPage,
+            userId
             );
     }
 

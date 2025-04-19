@@ -25,18 +25,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
-import com.example.hotel_mobile.Modle.BookingModel
-import com.example.hotel_mobile.Modle.Screens
+import com.example.hotel_mobile.Modle.response.BookingModel
 import com.example.hotel_mobile.R
 import com.example.hotel_mobile.Util.General
 import com.example.hotel_mobile.Util.General.toCustomString
-import com.example.hotel_mobile.Util.MoudelToDto.toRoomDto
 
 
 @Composable

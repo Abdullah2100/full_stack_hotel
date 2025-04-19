@@ -11,8 +11,11 @@ public class RoomDto
         int bedNumber,
         Guid beglongTo,
         DateTime createdAt,
-        bool isBlock =false,
-        bool isDeleted =false,
+        bool isBlock = false,
+        bool isDeleted = false,
+        string? location = null,
+        double? latitude = null,
+        double? longitude = null,
         List<ImagesTbDto>? images = null
     )
     {
@@ -27,6 +30,9 @@ public class RoomDto
         this.isBlock = isBlock;
         this.isDeleted = isDeleted;
         this.images = images;
+        this.location = location;
+        this.latitude = latitude;
+        this.longitude = longitude;
         var adminData = AdminData.getAdmin(beglongTo);
         var userData = UserData.getUser(beglongTo);
         if (adminData != null)
@@ -50,12 +56,15 @@ public class RoomDto
     public DateTime createdAt { get; set; } = DateTime.UtcNow;
     public int bedNumber { get; set; }
     public Guid beglongTo { get; set; }
-    
+
     public bool isBlock { get; set; } = false;
     public bool isDeleted { get; set; } = false;
 
     public UserDto? user { get; set; } = null;
     public RoomTypeDto? roomTypeData { get; set; } = null;
 
-    public List<ImagesTbDto>? images { get; set; } 
+    public List<ImagesTbDto>? images { get; set; }
+    public string? location { get; set; }
+    public double? latitude { get; set; }
+    public double? longitude { get; set; }
 }

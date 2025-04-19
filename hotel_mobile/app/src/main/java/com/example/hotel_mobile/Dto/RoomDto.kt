@@ -22,5 +22,8 @@ data class RoomDto(
     var user: UserDto? = null,
     var roomData: String? = null,
     var images: List<ImageDto>? = null,
-    var roomTypeData:RoomTypeDto?=null
+    var roomTypeData:RoomTypeDto?=null,
+    var location:String?,
+    var longitude:Double?,
+    val latitude:Double?
 )

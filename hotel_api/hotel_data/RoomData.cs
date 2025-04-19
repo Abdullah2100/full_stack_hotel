@@ -190,10 +190,9 @@ public class RoomData
         return isUpdate;
     }
 
-     public static List<RoomDto> getRoomByPage(
-         int pageNumber = 1,
-         int numberOfRoom = 20//,string? minioUrl=null
-         )
+     public static List<RoomDto> getRoomByPage(int pageNumber = 1,
+         int numberOfRoom = 20, Guid? userId=null 
+     )
         {
             List<RoomDto> rooms = new List<RoomDto>();
             try
@@ -201,12 +200,32 @@ public class RoomData
                 using (var con = new NpgsqlConnection(connectionUr))
                 {
                     con.Open();
-                    string query = @"select * from  getRoomsByPage(@pagenumber,@limitnumber)";
+                    
+                    string query="";
+                    switch (userId==null)
+                    {
+                        case true:
+                        {
+                            
+                           query = @"select * from  getRoomsByPage(@pagenumber,@limitnumber)";
+ 
+                        }
+                            break;
+                        default:
+                        {
+                            query= @"select * from  getRoomsByPage(@pagenumber,@limitnumber,@belongId)";
+
+                        }
+                            break;
+                        
+                    }
 
                     using (var cmd = new NpgsqlCommand(query, con))
                     {
                         cmd.Parameters.AddWithValue("@pagenumber", pageNumber <= 1 ? 1 : pageNumber - 1);
                         cmd.Parameters.AddWithValue("@limitnumber", numberOfRoom);
+                        if (userId != null)
+                            cmd.Parameters.AddWithValue("@belongId", userId);
 
                         using (var reader = cmd.ExecuteReader())
                         {

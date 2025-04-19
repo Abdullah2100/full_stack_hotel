@@ -41,15 +41,7 @@ fun HomePage(
 ) {
     val roomData = homeViewModel.rooms.collectAsState()
 
-    val items = listOf("Home", "Booking", "Setting")
-    val selectedIndex = remember{ mutableStateOf(0) }
 
-
-
-
-    LaunchedEffect(key1 = Unit) {
-        homeViewModel.getRooms(1)
-    }
 
 CustomErrorSnackBar(
     homeViewModel = homeViewModel,
