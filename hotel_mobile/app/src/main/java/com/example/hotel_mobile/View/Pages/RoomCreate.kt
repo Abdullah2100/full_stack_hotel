@@ -8,6 +8,7 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,6 +20,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -33,10 +35,14 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.outlined.KeyboardArrowLeft
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
@@ -55,13 +61,18 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavHostController
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
+import com.example.hotel_mobile.Dto.LoginDto
 import com.example.hotel_mobile.Modle.Request.RoomImageCreation
+import com.example.hotel_mobile.Modle.enNetworkStatus
 import com.example.hotel_mobile.Util.General
 import com.example.hotel_mobile.Util.General.toCustomFil
 import com.example.hotel_mobile.View.component.CustomErrorSnackBar
@@ -82,14 +93,19 @@ fun RoomCreate(
 
 
     val context = LocalContext.current
+    val keyboardController = LocalSoftwareKeyboardController.current
     val scop = rememberCoroutineScope()
+    val stateus = homeViewModel.statusChange.collectAsState()
     val roomdata = homeViewModel.roomData.collectAsState()
+    val roomtTypeData = homeViewModel.roomTypesData.collectAsState()
     val theumanil = roomdata.value.images?.firstOrNull { it.isThumbnail==true }
     val roomImages = roomdata.value.images?.filter { it.isThumbnail==false }
 
     val pricePerOnNigth = remember{mutableStateOf("")}
     val capacity = remember{mutableStateOf("")}
     val bedNumber = remember{mutableStateOf("")}
+    val isDropDownClicked = remember { mutableStateOf(false) }
+    val snackbarHostState = remember { SnackbarHostState() }
 
     val  onImageSelection =rememberLauncherForActivityResult(
         ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -142,7 +158,7 @@ fun RoomCreate(
 
         if (arePermissionsGranted) {
             scop.launch(Dispatchers.Main) {
-                val data = fusedLocationClient.lastLocation.awai
+                val data = fusedLocationClient.lastLocation.await()
                 data?.let {
                     location->
 
@@ -170,7 +186,9 @@ fun RoomCreate(
         page = {
 
             Scaffold(
-
+                snackbarHost = {
+                    SnackbarHost(hostState = snackbarHostState)
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxHeight()
@@ -179,7 +197,7 @@ fun RoomCreate(
                 topBar = {
                     Box(
                         modifier = Modifier
-                            .padding( start = 10.dp)
+                            .padding(start = 10.dp)
                             .height(30.dp)
                             .width(30.dp)
                             .background(Color.Blue, shape = RoundedCornerShape(15.dp))
@@ -199,19 +217,27 @@ fun RoomCreate(
                 it.calculateTopPadding()
                 it.calculateBottomPadding()
 
-                Column(modifier = Modifier.padding(top = 20.dp)
+                Column(modifier = Modifier
+                    .padding(top = 20.dp)
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState()))
                 {
-                    Box(Modifier.fillMaxWidth()
+                    Box(Modifier
+                        .fillMaxWidth()
                         .padding(top = 20.dp)
                         .padding(horizontal = 20.dp)
                         .height(220.dp)
                         .fillMaxWidth()
                         .drawBehind {
                             drawRoundRect(color = Color.Black, style = General.dashStrock())
-                        }.clickable {
-                            onImageSelection.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))                        }
+                        }
+                        .clickable {
+                            onImageSelection.launch(
+                                PickVisualMediaRequest(
+                                    ActivityResultContracts.PickVisualMedia.ImageOnly
+                                )
+                            )
+                        }
                         ,
                         contentAlignment = Alignment.Center
                         ) {
@@ -255,12 +281,18 @@ fun RoomCreate(
                                                 top = 5.dp,
                                                 end = 15.dp
                                             )
-                                            .background(Color.Red, shape = RoundedCornerShape(20.dp))
-                                            .constrainAs(iconRef){
+                                            .background(
+                                                Color.Red,
+                                                shape = RoundedCornerShape(20.dp)
+                                            )
+                                            .constrainAs(iconRef) {
                                                 end.linkTo(parent.end)
                                             }
                                             .clickable {
-                                                homeViewModel.setRoomThumnail(theumanil, isDeleted = true)
+                                                homeViewModel.setRoomThumnail(
+                                                    theumanil,
+                                                    isDeleted = true
+                                                )
                                             }
                                     ) {
                                         Icon(Icons.Default.Clear, contentDescription = "",
@@ -283,8 +315,14 @@ fun RoomCreate(
                         .drawBehind {
 
                             drawRoundRect(color = Color.Black, style = General.dashStrock())
-                        }.clickable {
-                            selectMutipleImages.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))                        }, contentAlignment = Alignment.Center)
+                        }
+                        .clickable {
+                            selectMutipleImages.launch(
+                                PickVisualMediaRequest(
+                                    ActivityResultContracts.PickVisualMedia.ImageOnly
+                                )
+                            )
+                        }, contentAlignment = Alignment.Center)
                     {
                         when(roomImages.isNullOrEmpty()){
                             true->{
@@ -302,8 +340,10 @@ fun RoomCreate(
 
                                   FlowRow (
                                       modifier = Modifier
-                                          .padding(horizontal = 10.dp,
-                                              vertical = 10.dp)
+                                          .padding(
+                                              horizontal = 10.dp,
+                                              vertical = 10.dp
+                                          )
                                           .fillMaxHeight()
                                           .fillMaxWidth(),
                                       horizontalArrangement = Arrangement.Center
@@ -345,12 +385,18 @@ fun RoomCreate(
                                                               top = 5.dp,
                                                               end = 5.dp
                                                           )
-                                                          .background(Color.Red, shape = RoundedCornerShape(20.dp))
-                                                          .constrainAs(iconRef){
+                                                          .background(
+                                                              Color.Red,
+                                                              shape = RoundedCornerShape(20.dp)
+                                                          )
+                                                          .constrainAs(iconRef) {
                                                               end.linkTo(parent.end)
                                                           }
                                                           .clickable {
-                                                              homeViewModel.setRoomThumnail(roomImage, isDeleted = true)
+                                                              homeViewModel.setRoomThumnail(
+                                                                  roomImage,
+                                                                  isDeleted = true
+                                                              )
                                                           }
                                                   ) {
                                                       Icon(Icons.Default.Clear, contentDescription = "",
@@ -365,6 +411,63 @@ fun RoomCreate(
                             }
                         }
                     }
+
+
+if(!roomtTypeData.value.isNullOrEmpty())
+{
+
+   Column(
+       modifier = Modifier
+           .padding(top = 20.dp)
+       .padding(horizontal = 20.dp)
+       .fillMaxWidth()
+   ) {
+       Text("تحديد نوع الغرفة",
+           fontWeight = FontWeight.Bold,
+           fontSize = 19.sp)
+       Box(
+           modifier = Modifier
+                  .height(50.dp)
+               .fillMaxWidth()
+
+               .border(
+                   width = 1.dp,
+                   color = Color.Black,
+                   shape = RoundedCornerShape(8.dp)
+               )
+               .padding(start = 10.dp)
+               .clickable {
+                   isDropDownClicked.value=true
+               },
+           contentAlignment = Alignment.CenterStart
+       ) {
+           Text(
+               if(roomdata.value.roomtypeid==null)
+                   roomtTypeData.value!!.get(0).roomTypeName
+               else
+                   roomtTypeData.value!!.first { it.roomTypeID==roomdata.value.roomtypeid }.roomTypeName
+           )
+       }
+       DropdownMenu(expanded =isDropDownClicked.value ,
+           onDismissRequest = {
+               isDropDownClicked.value=false;
+
+           }) {
+           roomtTypeData.value!!.forEachIndexed { index, roomTypeModel ->
+               DropdownMenuItem(text = {
+                   Text(roomTypeModel.roomTypeName)
+               }, onClick = {
+                   homeViewModel.setRoomData(
+                       roomtypeid = roomTypeModel.roomTypeID
+                   )
+                   isDropDownClicked.value=false;
+
+               })
+           }
+       }
+   }
+
+}
 
                     TextFeildNumber(pricePerOnNigth,"سعر اليلة الواحدة")
                     TextFeildNumber(capacity,"سعة الغرفة")
@@ -388,7 +491,48 @@ fun RoomCreate(
                         Text("تعيين الموقع الحالي للغرفة")
                     }
 
+                    Button(
+                        enabled = stateus.value != enNetworkStatus.Loading,
 
+                        onClick = {
+                            keyboardController?.hide();
+                            homeViewModel.setRoomData(
+                                pricePerNight =if(pricePerOnNigth.value.isNullOrEmpty())null else pricePerOnNigth.value?.trim()?.toDouble(),
+                                capacity= if(capacity.value.isNullOrEmpty())null else capacity.value?.trim()?.toInt(),
+                                bedNumber =if(bedNumber.value.isNullOrEmpty())null else bedNumber.value?.trim()?.toInt()
+                            )
+                            homeViewModel.createRoom(
+                                snackbarHostState = snackbarHostState,
+                                navController = nav
+                            )
+                        },
+                        modifier = Modifier
+                            .padding(top = 15.dp)
+                            .padding(horizontal = 20.dp)
+                            .fillMaxWidth()
+                            .height(35.dp)
+                    ) {
+                        when (stateus.value) {
+                            enNetworkStatus.Loading -> {
+                                CircularProgressIndicator(
+                                    color = Color.Blue, modifier = Modifier
+                                        .offset(y = -3.dp)
+                                        .height(25.dp)
+                                        .width(25.dp)
+                                )
+                            }
+
+                            else -> {
+                                Text(
+                                    "انشاء",
+                                    color = Color.White,
+                                    fontSize = 16.sp
+                                )
+                            }
+                        }
+
+
+                    }
                     Box(modifier=Modifier.height(90.dp))
                 }
             }

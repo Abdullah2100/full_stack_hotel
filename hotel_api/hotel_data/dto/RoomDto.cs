@@ -4,7 +4,7 @@ public class RoomDto
 {
     public RoomDto(
         Guid roomId,
-        enStatsu status,
+        string? status,
         decimal pricePerNight,
         int capacity,
         Guid roomtypeid,
@@ -49,7 +49,7 @@ public class RoomDto
     }
 
     public Guid roomId { get; set; }
-    public enStatsu status { get; set; } = enStatsu.Available;
+    public string? status { get; set; } = "Available";
     public decimal pricePerNight { get; set; }
     public int capacity { get; set; }
     public Guid roomtypeid { get; set; }

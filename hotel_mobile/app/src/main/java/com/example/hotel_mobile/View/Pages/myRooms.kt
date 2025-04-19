@@ -51,6 +51,8 @@ CustomErrorSnackBar(
     homeViewModel = homeViewModel,
     authViewModel = null
 ) {
+
+    homeViewModel.getRooms(1,true)
     Scaffold(
         modifier = Modifier
             .padding(top = 35.dp)
@@ -63,6 +65,7 @@ CustomErrorSnackBar(
                     .width(150.dp)
 
                 ,onClick = {
+                    homeViewModel.getMyRoomTypes()
                     nav.navigate(Screens.createNewRoom)
                 }) {
                 Text("انشاء غرفة جديدة")

@@ -1,34 +1,46 @@
 package com.example.hotel_mobile.ViewModle
 
 import android.util.Log
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
 import com.example.hotel_mobile.Data.Repository.HotelRepository
+import com.example.hotel_mobile.Data.Room.AuthModleEntity
 import com.example.hotel_mobile.Di.IoDispatcher
 import com.example.hotel_mobile.Di.MainDispatcher
+import com.example.hotel_mobile.Dto.AuthResultDto
+import com.example.hotel_mobile.Dto.LoginDto
 import com.example.hotel_mobile.Dto.RoomDto
+import com.example.hotel_mobile.Dto.RoomTypeDto
+import com.example.hotel_mobile.Dto.SingUpDto
 import com.example.hotel_mobile.Dto.response.BookingResponseDto
 import com.example.hotel_mobile.Modle.response.BookingModel
 import com.example.hotel_mobile.Modle.Request.BookingModleHolder
 import com.example.hotel_mobile.Modle.NetworkCallHandler
 import com.example.hotel_mobile.Modle.Request.RoomCreationModel
 import com.example.hotel_mobile.Modle.Request.RoomImageCreation
+import com.example.hotel_mobile.Modle.Screens
 import com.example.hotel_mobile.Modle.response.RoomModel
 import com.example.hotel_mobile.Modle.enDropDownDateType
 import com.example.hotel_mobile.Modle.enNetworkStatus
+import com.example.hotel_mobile.Modle.response.RoomTypeModel
 import com.example.hotel_mobile.Util.DtoToModule.toBookingModel
 import com.example.hotel_mobile.Util.DtoToModule.toRoomModel
+import com.example.hotel_mobile.Util.DtoToModule.toRoomTypeModel
 import com.example.hotel_mobile.Util.General
 import com.example.hotel_mobile.Util.MoudelToDto.toBookingDto
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json.Default.decodeFromString
 import java.util.UUID
 import javax.inject.Inject
 
@@ -85,6 +97,9 @@ class HomeViewModle @Inject constructor(
 
     private val _roomData = MutableStateFlow<RoomCreationModel>(RoomCreationModel())
     val roomData = _roomData.asStateFlow()
+
+    private val _roomTypesData = MutableStateFlow<List<RoomTypeModel>?>(null)
+    val roomTypesData = _roomTypesData.asStateFlow()
 
 
   suspend  fun deletedImage(path:String,isThumbnail:Boolean?=false){
@@ -396,6 +411,109 @@ class HomeViewModle @Inject constructor(
         }
     }
 
+    fun getMyRoomTypes() {
+        viewModelScope.launch(mainDispatcher + errorHandling) {
+
+            when (val result = homeRepository.getRoomType()) {
+                is NetworkCallHandler.Successful<*> -> {
+                    val roomTypesData = result.data as List<RoomTypeDto>?
+                    if (!roomTypesData.isNullOrEmpty()) {
+
+                        _roomTypesData.emit(roomTypesData.map { it.toRoomTypeModel() })
+                    } else {
+
+                        if ( _roomTypesData.value == null)
+                            _roomTypesData.emit(mutableListOf())
+                    }
+                }
+
+                is NetworkCallHandler.Error -> {
+                    if (_roomTypesData.value == null)
+                        _roomTypesData.emit(mutableListOf())
+
+
+                }
+
+                else -> {
+                    if (_myRooms.value == null)
+                        _roomTypesData.emit(mutableListOf())
+                }
+            }
+
+        }
+    }
+
+    private suspend fun validationInput(
+        snackbarHostState: SnackbarHostState
+    ): Boolean {
+
+        var message = ""
+        if (_roomData.value.images?.firstOrNull { it.isThumbnail == true } == null) {
+            message = "لا بد من تحديد الصورة الاساسية للغرفة"
+        } else if (_roomData.value.images?.map { it.isThumbnail != true } == null || _roomData.value.images!!.map { it.isThumbnail != true }.size == 0)
+            message = "لا بد من ادراج صور للغرفة"
+        else if (_roomData.value.pricePerNight == null)
+            message = "لا بد من تحديد سعر الغرفة لليلة الواحدة"
+        else if (_roomData.value.capacity == null)
+            message = "لا بد من تحديد سعة الغرفة"
+        else if (_roomData.value.bedNumber == null)
+            message = "لا بد من تحديد عدد السرائر داخل الغرفة"
+        else if (_roomData.value.latitude == null || _roomData.value.latitude == null)
+            message = "لا بد من تحديد الموقع الحالي للغرفة"
+
+        if (message.isNotEmpty()) {
+            _statusChange.emit(enNetworkStatus.None)
+            snackbarHostState.showSnackbar(message)
+            return false
+        }
+        return true;
+    }
+
+    fun createRoom(
+        snackbarHostState: SnackbarHostState,
+        navController: NavHostController
+    ) {
+        viewModelScope.launch(mainDispatcher + errorHandling) {
+            if(!validationInput(snackbarHostState))
+            {
+
+            }else{
+                _statusChange.emit(enNetworkStatus.Loading)
+
+                val resultValidatoin = validationInput( snackbarHostState )
+                if (resultValidatoin) {
+                    delay(1000L)
+                    when (val result = homeRepository.createRoom(_roomData.value)) {
+                        is NetworkCallHandler.Successful<*> -> {
+                            val roomData = result.data as String;
+                            _roomData.emit(RoomCreationModel())
+                            _statusChange.update { enNetworkStatus.Complate }
+                            navController.popBackStack()
+                        }
+                        is NetworkCallHandler.Error -> {
+                            _statusChange.update { enNetworkStatus.Error }
+
+                            throw Exception(result.data?.replace("\"",""));
+
+                        }
+
+                        else -> {
+                            _statusChange.update { enNetworkStatus.Error }
+
+                            throw Exception("unexpected Stat");
+
+                        }
+                    }
+
+                }
+            }
+          
+
+        }
+    }
+
+
+
     fun createBooking(
         bookingData: BookingModleHolder,
         errorMessage: MutableState<String?>,
@@ -439,6 +557,8 @@ class HomeViewModle @Inject constructor(
 
         }
     }
+
+
 
     fun getBookingData(pageNumber: Int = 1) {
         viewModelScope.launch(mainDispatcher + errorHandling) {

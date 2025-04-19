@@ -112,6 +112,32 @@ public class UserController : Controller
         return StatusCode(200, new { accessToken = $"{accesstoken}", refreshToken = $"{refreshToken}" });
     }
 
+    [Authorize]
+    [HttpGet("roomtype")]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public IActionResult getRoomTypes()
+    {
+        try
+        {
+           
+
+            var roomtypes = RoomtTypeBuissnes.getRoomTypes(true);
+
+            return Ok(roomtypes);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500, "some thing wrong");
+        }
+    }
+
+
+    
+    
       //room
         [Authorize]
         [HttpPost("room")]
@@ -125,25 +151,22 @@ public class UserController : Controller
             var authorizationHeader = HttpContext.Request.Headers["Authorization"];
             var id = AuthinticationServices.GetPayloadFromToken("id",
                 authorizationHeader.ToString().Replace("Bearer ", ""));
-            Guid? adminid = null;
+            Guid? userId = null;
             if (Guid.TryParse(id.Value, out Guid outID))
             {
-                adminid = outID;
+                userId = outID;
             }
 
-            if (adminid == null)
+            if (userId == null)
             {
                 return StatusCode(401, "you not have Permission");
             }
 
-            var isHasPermissionToCreateUser = AdminBuissnes.isAdminExist(adminid ?? Guid.Empty);
-
-
-            if (!isHasPermissionToCreateUser)
+            if (roomData.roomtypeid == null)
             {
-                return StatusCode(401, "you not have Permission");
-            }
+                return StatusCode(400, "لا بد من تحديد نوع الغرفة");
 
+            }
 
             var roomId = Guid.NewGuid();
 
@@ -163,12 +186,12 @@ public class UserController : Controller
             var roomHolder = new RoomBuisness(
                 new RoomDto(
                     roomId: roomId,
-                    status: roomData.status,
+                    status: null,
                     pricePerNight: roomData.pricePerNight,
-                    roomtypeid: roomData.roomtypeid,
+                    roomtypeid:(Guid) roomData.roomtypeid,
                     capacity: roomData.capacity,
                     bedNumber: roomData.bedNumber,
-                    beglongTo: (Guid)adminid,
+                    beglongTo: (Guid)userId,
                     createdAt: DateTime.Now,
                     location:roomData.location,
                     longitude:roomData.longitude,
@@ -197,10 +220,11 @@ public class UserController : Controller
     {
         try
         {
+        
+            
             var rooms = RoomBuisness.getAllRooms(
                 pageNumber, 
-                25//,
-               // minioEndPoint
+                25
                 );
             return Ok(rooms);
         }

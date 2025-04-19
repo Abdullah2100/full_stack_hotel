@@ -4,13 +4,12 @@ namespace hotel_api_.RequestDto;
 
 public class RoomRequestDto
 {
-    public enStatsu status {get; set;} 
     
     public decimal pricePerNight {get; set;}
     
     public int capacity {get; set;}
-    
-    public Guid roomtypeid {get; set;}
+
+    public Guid? roomtypeid { get; set; } = null;
     
     public int bedNumber { get; set; }
 

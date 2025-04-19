@@ -6,6 +6,7 @@ namespace hotel_data;
 public class RoomTypeData
 {
     static string connectionUr = clsConnnectionUrl.url;
+    private static string minioUrl = clsConnnectionUrl.minIoConnectionUrl + "roomtype/";
 
     public static RoomTypeDto? getRoomType(Guid roomTypeId)
     {
@@ -29,7 +30,7 @@ public class RoomTypeData
                             {
                                 //if ((bool)reader["isdeleted"] == true) continue;
 
-                                var imageHolder = ImagesData.image(roomTypeId);
+                                var imageHolder = ImagesData.image(roomTypeId,minioUrl);
                                 roomType = new RoomTypeDto(
                                     roomTypeId: roomTypeId,
                                     roomTypeName: (string)reader["name"],
@@ -73,8 +74,9 @@ public class RoomTypeData
                         {
                             while (reader.Read())
                             {
-                                //if ((bool)reader["isdeleted"] == true) continue;
-                                var imageHolder = ImagesData.image((Guid)reader["roomtypeid"]);
+                                var imageHolder = ImagesData.image(
+                                    (Guid)reader["roomtypeid"],
+                                    minioUrl);
 
                                 roomType = new RoomTypeDto(
                                     roomTypeId: (Guid)reader["roomtypeid"],
@@ -249,7 +251,9 @@ public class RoomTypeData
                             while (reader.Read())
                             {
                                 //if ((bool)reader["isdeleted"] == true) continue;
-                                var imageHolder = ImagesData.image((Guid)reader["roomtypeid"]);
+                                var imageHolder = ImagesData.image(
+                                    (Guid)reader["roomtypeid"],
+                                    minioUrl);
 
                                 var roomtypeHolder = new RoomTypeDto(
                                     roomTypeId: (Guid)reader["roomtypeid"],
@@ -316,4 +320,5 @@ public class RoomTypeData
 
         return isDeleted;
     }
+    
 }

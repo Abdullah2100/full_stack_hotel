@@ -705,9 +705,9 @@ namespace hotel_api.controller
             var roomHolder = new RoomBuisness(
                 new RoomDto(
                     roomId: roomId,
-                    status: roomData.status,
+                    status: null,
                     pricePerNight: roomData.pricePerNight,
-                    roomtypeid: roomData.roomtypeid,
+                    roomtypeid:(Guid) roomData.roomtypeid,
                     capacity: roomData.capacity,
                     bedNumber: roomData.bedNumber,
                     beglongTo: (Guid)adminid,
@@ -811,7 +811,7 @@ namespace hotel_api.controller
         {
             if (newRoomData.status != null && roomData.status != newRoomData.status)
             {
-                roomData.status = (enStatsu)newRoomData.status;
+                roomData.status = newRoomData.status;
             }
 
             if (newRoomData.pricePerNight != null && newRoomData.pricePerNight != roomData.pricePerNight)

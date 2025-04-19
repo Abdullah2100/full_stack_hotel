@@ -9,7 +9,7 @@ public class RoomBuisness
     enMode mode = enMode.add;
 
     public Guid ID { get; set; }
-    public enStatsu status { get; set; } = enStatsu.Available;
+    public string status { get; set; } = "Available";
     public decimal pricePerNight { get; set; }
     public int capacity { get; set; }
     public Guid roomtypeid { get; set; }

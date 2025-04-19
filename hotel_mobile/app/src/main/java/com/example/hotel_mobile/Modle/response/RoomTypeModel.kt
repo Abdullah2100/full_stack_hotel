@@ -7,7 +7,7 @@ data class RoomTypeModel(
     val roomTypeID: UUID?,
     val roomTypeName: String,
     val imagePath: String? = null,
-    val createdBy: UUID,
-    val createdAt: LocalDateTime,
-    val isDeleted: Boolean
+    val createdBy: UUID?=null,
+    val createdAt: LocalDateTime?=null,
+    val isDeleted: Boolean?=null
 )

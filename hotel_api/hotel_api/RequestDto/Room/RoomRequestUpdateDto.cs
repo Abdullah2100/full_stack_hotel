@@ -4,7 +4,7 @@ namespace hotel_api_.RequestDto;
 
 public class RoomRequestUpdateDto
 {
-    public enStatsu? status {get; set;} 
+    public string? status {get; set;} 
     
     public decimal? pricePerNight {get; set;}
     

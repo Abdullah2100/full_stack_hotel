@@ -30,7 +30,7 @@ public class RoomData
                                 string statusHolder = (string)reader["status"];
                                 room = new RoomDto(
                                     roomId:roomID,
-                                    status: convertStatusToEnum((string)reader["status"]),
+                                    status: (string)reader["status"],
                                     pricePerNight: (decimal)reader["pricepernight"],
                                     capacity: (int)reader["capacity"],
                                     roomtypeid: (Guid)reader["roomtypeid"],
@@ -118,7 +118,7 @@ public class RoomData
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
                     cmd.Parameters.AddWithValue("@roomid_u",roomData.roomId);
-                    cmd.Parameters.AddWithValue("@status",reversedStatusEnumToString(roomData.status));
+                    cmd.Parameters.AddWithValue("@status",roomData.status??"Available");
                     cmd.Parameters.AddWithValue("@pricePerNight_", roomData.pricePerNight);
                     cmd.Parameters.AddWithValue("@roomtypeid_", roomData.roomtypeid);
                     cmd.Parameters.AddWithValue("@capacity_", roomData.capacity);
@@ -168,7 +168,7 @@ public class RoomData
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
                     cmd.Parameters.AddWithValue("@roomid_", roomData.roomId);
-                    cmd.Parameters.AddWithValue("@status",reversedStatusEnumToString(roomData.status));
+                    cmd.Parameters.AddWithValue("@status", roomData.status);
                     cmd.Parameters.AddWithValue("@pricePerNight_", roomData.pricePerNight);
                     cmd.Parameters.AddWithValue("@roomtypeid_", roomData.roomtypeid);
                     cmd.Parameters.AddWithValue("@capacity_", roomData.capacity);
@@ -236,7 +236,7 @@ public class RoomData
                                     var roomid = (Guid)reader["roomid"];
                                 var roomHolder =     new RoomDto(
                                         roomId:roomid,
-                                        status: convertStatusToEnum((string)reader["status"]),
+                                        status: (string)reader["status"],
                                         pricePerNight: (decimal)reader["pricepernight"],
                                         capacity: (int)reader["capacity"],
                                         roomtypeid: (Guid)reader["roomtypeid"],
@@ -266,39 +266,7 @@ public class RoomData
 
     
     
-    public static enStatsu convertStatusToEnum(string status)
-    {
-        switch (status)
-        {
-            case "Available":
-            {
-                return enStatsu.Available;
-            }
-            case "Booked":
-            {
-                return enStatsu.Booked;
-            }
-            default: return enStatsu.UnderMaintenance;
-        }
-    }
-    
-    
-    private static string reversedStatusEnumToString(enStatsu status)
-    {
-        switch (status)
-        {
-            case enStatsu.Available:
-            {
-                return "Available"  ;
-            }
-            case enStatsu.Booked :
-            {
-                return "Booked";
-            }
-            default: return "Under Maintenance";
-        }
-    }
-
+  
     public static bool deleteRoom
     (
        Guid roomid,
